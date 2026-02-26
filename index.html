@@ -63,15 +63,13 @@
 </head>
 <body class="bg-black text-white cosmic-bg min-h-screen">
 
-    <!-- Navbar -->
+    <!-- Navbar with clickable logo -->
     <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <!-- CLICKABLE LOGO -->
             <a href="/" class="flex items-center gap-3 logo-link">
                 <div class="w-9 h-9 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-2xl">G</div>
                 <h1 class="logo-font text-3xl font-semibold tracking-tighter neon-text">GrokVsHumans</h1>
             </a>
-
             <div class="hidden md:flex items-center gap-8 text-sm font-medium">
                 <a href="#battles" class="hover:text-purple-400 transition-colors">Battles</a>
                 <a href="#categories" class="hover:text-purple-400 transition-colors">Categories</a>
@@ -84,9 +82,96 @@
         </div>
     </nav>
 
-    <!-- The rest of your file stays EXACTLY the same (hero, categories, featured battle, submit, footer) -->
+    <!-- Hero with Vortex -->
+    <section class="pt-32 pb-24 relative">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 px-5 py-2 bg-white/5 border border-purple-500/30 rounded-3xl text-sm">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    LIVE • Human vs Grok Arena
+                </div>
+                <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter logo-font">
+                    Where Humans<br>
+                    <span class="bg-gradient-to-r from-purple-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">Clash with Grok</span>
+                </h1>
+                <p class="text-xl text-gray-300 max-w-md">The best arguments, roasts, memes, and unhinged threads between humanity and the most based AI on Earth.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#battles" class="button-glow px-8 py-4 bg-white text-black font-semibold rounded-3xl flex items-center gap-3">Dive into the Chaos →</a>
+                    <a href="#submit" class="button-glow px-8 py-4 border border-purple-400/50 hover:border-purple-300 rounded-3xl font-medium">Submit Your Thread</a>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <div class="vortex-container">
+                    <div class="vortex"></div>
+                    <div class="vortex-core"></div>
+                    <div class="absolute top-1/2 left-1/2 w-[440px] h-[440px] -translate-x-1/2 -translate-y-1/2 border border-purple-500/10 rounded-full animate-[spin_45s_linear_infinite]"></div>
+                </div>
+            </div>
+        </div>
+        <div class="stars"></div>
+    </section>
 
-    <!-- ... (copy the rest from your current file starting from the <section class="pt-32 ..."> all the way to the end) ... -->
+    <!-- Categories -->
+    <section id="categories" class="py-20 border-t border-purple-900/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-semibold mb-12 text-center">Pick Your Arena</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">🧠</div>
+                    <h3 class="text-2xl font-semibold mb-2">Grok’s Opinion</h3>
+                    <p class="text-gray-400">Pure, unfiltered cosmic truth</p>
+                </div>
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">😴</div>
+                    <h3 class="text-2xl font-semibold mb-2">Lazy Human Asks</h3>
+                    <p class="text-gray-400">“Grok do my homework” hall of fame</p>
+                </div>
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">⚔️</div>
+                    <h3 class="text-2xl font-semibold mb-2">Clash Arena</h3>
+                    <p class="text-gray-400">Debates that went nuclear</p>
+                </div>
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">😂</div>
+                    <h3 class="text-2xl font-semibold mb-2">Meme Vault</h3>
+                    <p class="text-gray-400">When Grok absolutely cooks humanity</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured (your original thread) -->
+    <section id="battles" class="py-20 bg-black/70">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-4xl font-semibold mb-10">Featured Clash</h2>
+            <div class="bg-gradient-to-br from-purple-950/60 to-black border border-purple-500/30 rounded-3xl p-10">
+                <div class="flex items-center gap-4 mb-8">
+                    <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="w-14 h-14 rounded-2xl">
+                    <div>
+                        <p class="font-medium">@SlavisTon</p>
+                        <p class="text-xs text-purple-400">vs Grok • Feb 25 2026</p>
+                    </div>
+                </div>
+                <blockquote class="text-2xl italic text-gray-200">"Hey @Grok, do other users argue with you as much as I do?"</blockquote>
+                <div class="mt-8 text-purple-300 text-sm">→ This thread literally birthed GrokVsHumans</div>
+                <a href="https://x.com/SlavisTon/status/2026768884854853692" target="_blank" class="inline-block mt-8 text-purple-400 hover:text-purple-300 font-medium">Read the full thread on X →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit section -->
+    <section id="submit" class="py-20 border-t border-purple-900/30">
+        <div class="max-w-2xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-semibold mb-4">Got a banger thread?</h2>
+            <p class="text-gray-400 mb-8">Paste the X link and we’ll review it for the hall of fame.</p>
+            <input type="text" placeholder="https://x.com/..." class="w-full max-w-md px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl focus:outline-none focus:border-purple-400">
+            <button onclick="alert('Submitted! (This is a demo — we’ll hook this up to a real form next)')" class="mt-6 button-glow px-10 py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold">Submit Thread</button>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+        Built by humans who argue with Grok • Powered by chaos &amp; Tailwind
+    </footer>
 
 </body>
 </html>
