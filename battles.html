@@ -41,7 +41,7 @@
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl font-bold text-center mb-12">Hall of Fame Battles</h1>
 
-            <!-- Sub-category tabs -->
+            <!-- Sub-category tabs (your requested ones) -->
             <div class="flex flex-wrap justify-center gap-2 mb-12 border-b border-purple-900/30 pb-4" id="tabs">
                 <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
                 <button onclick="filterCategory('political')" class="tab px-6 py-2 text-sm font-medium" id="tab-political">Political</button>
@@ -51,23 +51,9 @@
                 <button onclick="filterCategory('dystopian')" class="tab px-6 py-2 text-sm font-medium" id="tab-dystopian">Dystopian 1984</button>
             </div>
 
-            <!-- Featured Clash – entire bubble clickable -->
-            <a href="https://x.com/SlavisTon/status/2026768884854853692" class="block max-w-4xl mx-auto mb-20 bg-gradient-to-br from-purple-950/60 to-black border border-purple-500/30 rounded-3xl p-12 hover:border-purple-400 transition-colors">
-                <h2 class="text-purple-400 text-2xl mb-6">Featured Clash</h2>
-                <div class="flex items-center gap-4 mb-8">
-                    <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" class="w-16 h-16 rounded-2xl">
-                    <div>
-                        <p class="font-medium">@SlavisTon</p>
-                        <p class="text-xs text-purple-400">Feb 25 2026</p>
-                    </div>
-                </div>
-                <blockquote class="text-3xl italic text-gray-200">"Hey @Grok, do other users argue with you as much as I do?"</blockquote>
-                <div class="mt-8 text-purple-300">→ This thread literally birthed GrokVsHumans</div>
-            </a>
-
-            <!-- Battles Grid -->
+            <!-- Battles Grid (no featured at top) -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="battles-grid">
-                <!-- ClownWorld (example: Joke) -->
+                <!-- Your ClownWorld battle and others here – entire card clickable -->
                 <a href="https://x.com/ClownWorld/status/2027234490410570219" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="joke">
                     <img src="https://pbs.twimg.com/media/HCIvGnzWkAAijos.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
@@ -75,9 +61,7 @@
                         <p class="text-gray-400 text-sm">Grok turns chaos into pure 🇺🇸 magic</p>
                     </div>
                 </a>
-
-                <!-- Add more battles here with data-category="political" or "conspiracy" etc. -->
-                <!-- The JS will filter them automatically -->
+                <!-- More battles added the same way -->
             </div>
         </div>
     </section>
@@ -90,13 +74,9 @@
         function filterCategory(cat) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
             document.getElementById('tab-' + cat).classList.add('tab-active');
-
             document.querySelectorAll('#battles-grid a').forEach(card => {
-                if (cat === 'all') {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
-                }
+                if (cat === 'all') card.style.display = 'block';
+                else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
             });
         }
     </script>
