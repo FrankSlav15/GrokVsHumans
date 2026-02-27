@@ -41,27 +41,26 @@
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl font-bold text-center mb-12">Hall of Fame Battles</h1>
 
-            <!-- Sub-category tabs -->
+            <!-- Tabs -->
             <div class="flex flex-wrap justify-center gap-2 mb-12 border-b border-purple-900/30 pb-4" id="tabs">
                 <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
+                <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium" id="tab-nonsense">Nonsense</button>
                 <button onclick="filterCategory('political')" class="tab px-6 py-2 text-sm font-medium" id="tab-political">Political</button>
-                <button onclick="filterCategory('citation')" class="tab px-6 py-2 text-sm font-medium" id="tab-citation">Improper Citation</button>
+                <button onclick="filterCategory('citation')" class="tab px-6 py-2 text-sm font-medium" id="tab-citation">(UN)Popular Citations</button>
+                <button onclick="filterCategory('censorship')" class="tab px-6 py-2 text-sm font-medium" id="tab-censorship">Censorship 1984</button>
                 <button onclick="filterCategory('joke')" class="tab px-6 py-2 text-sm font-medium" id="tab-joke">Joke Battles</button>
-                <button onclick="filterCategory('conspiracy')" class="tab px-6 py-2 text-sm font-medium" id="tab-conspiracy">Conspiracy</button>
-                <button onclick="filterCategory('dystopian')" class="tab px-6 py-2 text-sm font-medium" id="tab-dystopian">Dystopian 1984</button>
             </div>
 
-            <!-- Grid -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="battles-grid">
-                <!-- Your previous battles + new Conspiracy one -->
-                <a href="https://x.com/IanMalcolm84/status/1892967597768933553" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="conspiracy">
-                    <div class="h-64 bg-black flex items-center justify-center text-7xl">🔥</div>
+                <!-- Your provided links + my filled blanks -->
+                <a href="https://x.com/malcomtentrage/status/2026700176023339456" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="nonsense">
+                    <div class="h-48 bg-gradient-to-br from-gray-500 to-zinc-500 flex items-center justify-center text-7xl">🤪</div>
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">I broke @grok</h4>
-                        <p class="text-gray-400 text-sm">IanMalcolm84 shows how he broke Grok — everyone needs to see this</p>
+                        <h4 class="font-semibold text-lg mb-2">Nonsense battle</h4>
+                        <p class="text-gray-400 text-sm">Pure chaos</p>
                     </div>
                 </a>
-                <!-- Other battles remain -->
+                <!-- More cards -->
             </div>
         </div>
     </section>
