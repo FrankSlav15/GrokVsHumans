@@ -27,21 +27,21 @@
             animation: twinkle 8s infinite alternate;
         }
 
-        .vortex-container { position: relative; width: 380px; height: 380px; }
+        .vortex-container { position: relative; width: 340px; height: 340px; }
         .vortex {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 340px; height: 340px;
+            width: 300px; height: 300px;
             background: conic-gradient(from 90deg at 50% 50%, #000000 0deg, #4b0082 60deg, #7b00ff 120deg, #00f0ff 180deg, #7b00ff 240deg, #4b0082 300deg, #000000 360deg);
             border-radius: 50%;
             animation: spin 28s linear infinite;
-            box-shadow: 0 0 80px #7b00ff, inset 0 0 70px rgba(123,0,255,0.5);
+            box-shadow: 0 0 70px #7b00ff, inset 0 0 60px rgba(123,0,255,0.5);
         }
         .vortex-core {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 120px; height: 120px;
+            width: 110px; height: 110px;
             background: radial-gradient(circle, #000000 30%, #1a0033 100%);
             border-radius: 50%;
-            box-shadow: 0 0 50px #000000, inset 0 0 35px rgba(255,255,255,0.08);
+            box-shadow: 0 0 45px #000000, inset 0 0 30px rgba(255,255,255,0.08);
             animation: spin 9s linear infinite reverse;
         }
         @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
@@ -78,9 +78,9 @@
         </div>
     </nav>
 
-    <!-- Hero with teaser right next to title (above fold, no extra scroll) -->
-    <section class="pt-28 pb-20 relative">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <!-- Compact Hero - teaser on right, everything above fold -->
+    <section class="pt-28 pb-16 relative">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
             <!-- Left: Title + description + buttons -->
             <div class="space-y-8">
                 <div class="inline-flex items-center gap-2 px-5 py-2 bg-white/5 border border-purple-500/30 rounded-3xl text-sm">
@@ -99,11 +99,11 @@
             </div>
 
             <!-- Right: Vortex + teaser card (compact, above fold) -->
-            <div class="space-y-8">
+            <div class="space-y-6">
                 <div class="vortex-container mx-auto">
                     <div class="vortex"></div>
                     <div class="vortex-core"></div>
-                    <div class="absolute top-1/2 left-1/2 w-[400px] h-[400px] -translate-x-1/2 -translate-y-1/2 border border-purple-500/10 rounded-full animate-[spin_45s_linear_infinite]"></div>
+                    <div class="absolute top-1/2 left-1/2 w-[380px] h-[380px] -translate-x-1/2 -translate-y-1/2 border border-purple-500/10 rounded-full animate-[spin_45s_linear_infinite]"></div>
                 </div>
 
                 <a href="https://x.com/SlavisTon/status/2026768884854853692" class="teaser-card block bg-gradient-to-br from-purple-950/60 to-black border border-purple-500/30 rounded-3xl p-8 hover:border-purple-400 transition-colors">
@@ -120,32 +120,6 @@
             </div>
         </div>
         <div class="stars"></div>
-    </section>
-
-    <!-- Quick links -->
-    <section class="py-20 border-t border-purple-900/30">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <a href="battles.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
-                <div class="text-5xl mb-6">⚔️</div>
-                <h3 class="text-2xl font-semibold mb-2">Battles</h3>
-                <p class="text-gray-400">Epic back-and-forth arguments</p>
-            </a>
-            <a href="categories.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
-                <div class="text-5xl mb-6">📂</div>
-                <h3 class="text-2xl font-semibold mb-2">Categories</h3>
-                <p class="text-gray-400">Lazy Humans, Photo Edits, Grok Opinions & more</p>
-            </a>
-            <a href="memes.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
-                <div class="text-5xl mb-6">😂</div>
-                <h3 class="text-2xl font-semibold mb-2">Memes</h3>
-                <p class="text-gray-400">Grok cooks humanity hall of fame</p>
-            </a>
-            <a href="submit.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
-                <div class="text-5xl mb-6">📤</div>
-                <h3 class="text-2xl font-semibold mb-2">Submit Yours</h3>
-                <p class="text-gray-400">Got a banger? Send it here</p>
-            </a>
-        </div>
     </section>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
