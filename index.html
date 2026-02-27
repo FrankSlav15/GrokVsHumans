@@ -78,7 +78,7 @@
         </div>
     </nav>
 
-    <!-- Compact Hero - teaser on right, everything above fold -->
+    <!-- Hero with tight teaser on right (above fold, no scroll) -->
     <section class="pt-28 pb-16 relative">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
             <!-- Left: Title + description + buttons -->
@@ -98,28 +98,54 @@
                 </div>
             </div>
 
-            <!-- Right: Vortex + teaser card (compact, above fold) -->
+            <!-- Right: Vortex + tight teaser card (compact, higher) -->
             <div class="space-y-6">
                 <div class="vortex-container mx-auto">
                     <div class="vortex"></div>
                     <div class="vortex-core"></div>
-                    <div class="absolute top-1/2 left-1/2 w-[380px] h-[380px] -translate-x-1/2 -translate-y-1/2 border border-purple-500/10 rounded-full animate-[spin_45s_linear_infinite]"></div>
+                    <div class="absolute top-1/2 left-1/2 w-[340px] h-[340px] -translate-x-1/2 -translate-y-1/2 border border-purple-500/10 rounded-full animate-[spin_45s_linear_infinite]"></div>
                 </div>
 
-                <a href="https://x.com/SlavisTon/status/2026768884854853692" class="teaser-card block bg-gradient-to-br from-purple-950/60 to-black border border-purple-500/30 rounded-3xl p-8 hover:border-purple-400 transition-colors">
-                    <div class="flex items-center gap-4 mb-6">
-                        <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" class="w-12 h-12 rounded-2xl">
+                <a href="https://x.com/SlavisTon/status/2026768884854853692" class="teaser-card block bg-gradient-to-br from-purple-950/60 to-black border border-purple-500/30 rounded-3xl p-6 hover:border-purple-400 transition-colors">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" class="w-10 h-10 rounded-2xl">
                         <div>
                             <p class="font-medium">@SlavisTon</p>
                             <p class="text-xs text-purple-400">Feb 25 2026</p>
                         </div>
                     </div>
-                    <blockquote class="text-xl italic text-gray-200">"Hey @Grok, do other users argue with you as much as I do?"</blockquote>
-                    <div class="mt-6 text-purple-300 text-sm">→ This thread literally birthed GrokVsHumans</div>
+                    <blockquote class="text-lg italic text-gray-200">"Hey @Grok, do other users argue with you as much as I do?"</blockquote>
+                    <div class="mt-4 text-purple-300 text-sm">→ This thread literally birthed GrokVsHumans</div>
                 </a>
             </div>
         </div>
         <div class="stars"></div>
+    </section>
+
+    <!-- Quick links (unchanged) -->
+    <section class="py-20 border-t border-purple-900/30">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <a href="battles.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
+                <div class="text-5xl mb-6">⚔️</div>
+                <h3 class="text-2xl font-semibold mb-2">Battles</h3>
+                <p class="text-gray-400">Epic back-and-forth arguments</p>
+            </a>
+            <a href="categories.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
+                <div class="text-5xl mb-6">📂</div>
+                <h3 class="text-2xl font-semibold mb-2">Categories</h3>
+                <p class="text-gray-400">Lazy Humans, Photo Edits, Grok Opinions & more</p>
+            </a>
+            <a href="memes.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
+                <div class="text-5xl mb-6">😂</div>
+                <h3 class="text-2xl font-semibold mb-2">Memes</h3>
+                <p class="text-gray-400">Grok cooks humanity hall of fame</p>
+            </a>
+            <a href="submit.html" class="card bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all">
+                <div class="text-5xl mb-6">📤</div>
+                <h3 class="text-2xl font-semibold mb-2">Submit Yours</h3>
+                <p class="text-gray-400">Got a banger? Send it here</p>
+            </a>
+        </div>
     </section>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
