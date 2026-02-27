@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battles - GrokVsHumans</title>
+    <title>Memes - GrokVsHumans</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -11,13 +11,13 @@
         body { font-family: 'Inter', system-ui, sans-serif; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
-        .battle-card { transition: all 0.3s ease; }
-        .battle-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
+        .meme-card { transition: all 0.3s ease; }
+        .meme-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg">
 
-    <!-- Navbar -->
+    <!-- Consistent Navbar -->
     <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3">
@@ -25,8 +25,9 @@
                 <h1 class="logo-font text-3xl font-semibold tracking-tighter">GrokVsHumans</h1>
             </a>
             <div class="flex items-center gap-8 text-sm font-medium">
-                <a href="battles.html" class="text-purple-400 font-semibold">Battles</a>
-                <a href="memes.html" class="hover:text-purple-400">Memes</a>
+                <a href="battles.html" class="hover:text-purple-400">Battles</a>
+                <a href="categories.html" class="hover:text-purple-400">Categories</a>
+                <a href="memes.html" class="text-purple-400 font-semibold">Memes</a>
                 <a href="submit.html" class="hover:text-purple-400">Submit Yours</a>
             </div>
             <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2">
@@ -37,35 +38,18 @@
 
     <section class="pt-32 pb-24">
         <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-5xl font-bold text-center mb-16">Hall of Fame Battles</h1>
-            
-            <!-- Featured -->
-            <div class="max-w-4xl mx-auto mb-20 bg-gradient-to-br from-purple-950/60 to-black border border-purple-500/30 rounded-3xl p-12">
-                <h2 class="text-purple-400 text-2xl mb-6">Featured Clash</h2>
-                <div class="flex items-center gap-4 mb-8">
-                    <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" class="w-16 h-16 rounded-2xl">
-                    <div>
-                        <p class="font-medium">@SlavisTon</p>
-                        <p class="text-xs text-purple-400">Feb 25 2026</p>
-                    </div>
-                </div>
-                <blockquote class="text-3xl italic text-gray-200">"Hey @Grok, do other users argue with you as much as I do?"</blockquote>
-                <div class="mt-8 text-purple-300">→ This thread literally birthed GrokVsHumans</div>
-                <a href="https://x.com/SlavisTon/status/2026768884854853692" target="_blank" class="inline-block mt-8 text-purple-400 hover:text-purple-300 font-medium">Read full thread →</a>
-            </div>
-
-            <!-- Grid -->
+            <h1 class="text-5xl font-bold text-center mb-16">Meme Vault • Grok Cooks Humanity</h1>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- ClownWorld one you sent + 5 more -->
-                <div class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden">
+                <!-- ClownWorld and the other memes we already had -->
+                <div class="meme-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden">
                     <img src="https://pbs.twimg.com/media/HCIvGnzWkAAijos.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h4 class="font-semibold text-lg mb-2">ClownWorld All-American Girl</h4>
                         <p class="text-gray-400 text-sm">Grok turns chaos into pure 🇺🇸 magic</p>
-                        <a href="https://x.com/ClownWorld/status/2027234490410570219" target="_blank" class="text-purple-400 mt-4 block">View thread →</a>
+                        <a href="https://x.com/ClownWorld/status/2027234490410570219" target="_blank" class="text-purple-400 mt-4 block">View meme →</a>
                     </div>
                 </div>
-                <!-- Add more cards here if you want — the rest are in the full version I gave you earlier -->
+                <!-- More meme cards (the full grid from earlier) -->
             </div>
         </div>
     </section>
