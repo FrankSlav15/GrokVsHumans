@@ -13,7 +13,6 @@
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
         .category-card { transition: all 0.3s ease; cursor: pointer; }
         .category-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
-        .tab-active { border-bottom: 3px solid rgb(168 85 247); color: white; }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg">
@@ -50,43 +49,41 @@
                 <button onclick="filterCategory('avoids')" class="tab px-6 py-2 text-sm font-medium" id="tab-avoids">Grok Avoids Request</button>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="categories-grid">
+            <!-- Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="category-grid">
                 <!-- Lazy Human Asks -->
                 <a href="https://x.com/SlavisTon/status/2024954895288201519" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="lazy">
-                    <div class="h-48 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-7xl">😴</div>
+                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h4 class="font-semibold text-lg mb-2">Lazy Human Asks Grok to Do Everything</h4>
-                        <p class="text-gray-400 text-sm">The classic that started the hall of fame</p>
+                        <p class="text-gray-400 text-sm">The classic that started it all</p>
                     </div>
                 </a>
-                <!-- More Lazy Human cards (your 1 + my funny ones) -->
 
                 <!-- Photo Requests -->
                 <a href="https://x.com/grok/status/2008960036094034251" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/G-FCNylWcAALvuy.jpg" class="w-full h-48 object-cover">
+                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok edits reality</h4>
-                        <p class="text-gray-400 text-sm">Perfect photo request response</p>
+                        <h4 class="font-semibold text-lg mb-2">Grok edit reality</h4>
+                        <p class="text-gray-400 text-sm">Classic reality-edit request</p>
                     </div>
                 </a>
-                <!-- More Photo Requests -->
 
                 <!-- Grok's Opinion -->
                 <a href="https://x.com/grok/status/2026168522531852490" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="opinion">
-                    <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-7xl">🧠</div>
+                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok's hot take</h4>
-                        <p class="text-gray-400 text-sm">Unfiltered opinion gold</p>
+                        <h4 class="font-semibold text-lg mb-2">Grok's Opinion</h4>
+                        <p class="text-gray-400 text-sm">Hot take on the topic</p>
                     </div>
                 </a>
-                <!-- More Grok's Opinion -->
 
                 <!-- Grok Avoids Request -->
                 <a href="https://x.com/grok/status/1912171402125594659" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="avoids">
-                    <div class="h-48 bg-gradient-to-br from-gray-500 to-zinc-500 flex items-center justify-center text-7xl">🙅</div>
+                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok avoids the request</h4>
-                        <p class="text-gray-400 text-sm">Classic dodge</p>
+                        <h4 class="font-semibold text-lg mb-2">Grok Avoids Request</h4>
+                        <p class="text-gray-400 text-sm">Classic avoidance</p>
                     </div>
                 </a>
             </div>
@@ -101,7 +98,7 @@
         function filterCategory(cat) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
             document.getElementById('tab-' + cat).classList.add('tab-active');
-            document.querySelectorAll('#categories-grid a').forEach(card => {
+            document.querySelectorAll('#category-grid a').forEach(card => {
                 if (cat === 'all') card.style.display = 'block';
                 else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
             });
