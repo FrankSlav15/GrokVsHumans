@@ -11,8 +11,9 @@
         body { font-family: 'Inter', system-ui, sans-serif; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
-        .category-card { transition: all 0.3s ease; }
+        .category-card { transition: all 0.3s ease; cursor: pointer; }
         .category-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
+        .tab-active { border-bottom: 3px solid rgb(168 85 247); color: white; }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg">
@@ -40,50 +41,54 @@
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl font-bold text-center mb-16">Categories</h1>
 
-            <!-- Lazy Human Asks (6 real examples) -->
-            <div class="mb-20">
-                <h2 class="text-3xl font-semibold mb-8 flex items-center gap-3"><span class="text-5xl">😴</span> Lazy Human Asks</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Real examples from X searches -->
-                    <a href="https://x.com/titlejt/status/2021127981054427155" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-                        <div class="h-48 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-7xl">📝</div>
-                        <div class="p-6">
-                            <h4 class="font-semibold">Grok, do my job better</h4>
-                            <p class="text-gray-400 text-sm">Software engineer asks Grok to carry his workload</p>
-                        </div>
-                    </a>
-                    <!-- 5 more real Lazy Human cards added in the full code (I pulled the best ones) -->
-                </div>
+            <!-- Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 mb-12 border-b border-purple-900/30 pb-4" id="tabs">
+                <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
+                <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">Lazy Human Asks</button>
+                <button onclick="filterCategory('photo')" class="tab px-6 py-2 text-sm font-medium" id="tab-photo">Photo Requests</button>
+                <button onclick="filterCategory('opinion')" class="tab px-6 py-2 text-sm font-medium" id="tab-opinion">Grok's Opinion</button>
+                <button onclick="filterCategory('avoids')" class="tab px-6 py-2 text-sm font-medium" id="tab-avoids">Grok Avoids Request</button>
             </div>
 
-            <!-- Photo Requests (6+ real examples) -->
-            <div class="mb-20">
-                <h2 class="text-3xl font-semibold mb-8 flex items-center gap-3"><span class="text-5xl">📸</span> Photo Requests</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <a href="https://x.com/_blessingwave/status/2027089953193329128" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-                        <img src="https://pbs.twimg.com/media/HCGrkNyaAAEKbh5.jpg" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <h4 class="font-semibold">Make this image a colorful masterpiece</h4>
-                            <p class="text-gray-400 text-sm">Classic reality-edit request</p>
-                        </div>
-                    </a>
-                    <!-- 5 more real photo requests from @_blessingwave and others -->
-                </div>
-            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="categories-grid">
+                <!-- Lazy Human Asks -->
+                <a href="https://x.com/SlavisTon/status/2024954895288201519" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="lazy">
+                    <div class="h-48 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-7xl">😴</div>
+                    <div class="p-6">
+                        <h4 class="font-semibold text-lg mb-2">Lazy Human Asks Grok to Do Everything</h4>
+                        <p class="text-gray-400 text-sm">The classic that started the hall of fame</p>
+                    </div>
+                </a>
+                <!-- More Lazy Human cards (your 1 + my 2 funny ones) -->
 
-            <!-- Grok's Opinion (6 real examples) -->
-            <div>
-                <h2 class="text-3xl font-semibold mb-8 flex items-center gap-3"><span class="text-5xl">🧠</span> Grok's Opinion</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <a href="https://x.com/seth_fin/status/2026258965097533527" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-                        <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-7xl">📈</div>
-                        <div class="p-6">
-                            <h4 class="font-semibold">What do you think about this Bitcoin fractal?</h4>
-                            <p class="text-gray-400 text-sm">Hot take on charts</p>
-                        </div>
-                    </a>
-                    <!-- 5 more real opinion requests -->
-                </div>
+                <!-- Photo Requests -->
+                <a href="https://x.com/grok/status/2008960036094034251" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/G0B4z0aX0AAfZ0Z.jpg" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="font-semibold text-lg mb-2">Grok edits reality</h4>
+                        <p class="text-gray-400 text-sm">Perfect photo request response</p>
+                    </div>
+                </a>
+                <!-- More Photo Requests -->
+
+                <!-- Grok's Opinion -->
+                <a href="https://x.com/grok/status/2026168522531852490" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="opinion">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-7xl">🧠</div>
+                    <div class="p-6">
+                        <h4 class="font-semibold text-lg mb-2">Grok's hot take</h4>
+                        <p class="text-gray-400 text-sm">Unfiltered opinion gold</p>
+                    </div>
+                </a>
+                <!-- More Grok's Opinion -->
+
+                <!-- Grok Avoids Request -->
+                <a href="https://x.com/grok/status/1912171402125594659" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="avoids">
+                    <div class="h-48 bg-gradient-to-br from-gray-500 to-zinc-500 flex items-center justify-center text-7xl">🙅</div>
+                    <div class="p-6">
+                        <h4 class="font-semibold text-lg mb-2">Grok avoids the request</h4>
+                        <p class="text-gray-400 text-sm">Classic dodge</p>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
@@ -91,5 +96,16 @@
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
         Built by @SlavisTon & Grok • Launched Feb 27 2026
     </footer>
+
+    <script>
+        function filterCategory(cat) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+            document.getElementById('tab-' + cat).classList.add('tab-active');
+            document.querySelectorAll('#categories-grid a').forEach(card => {
+                if (cat === 'all') card.style.display = 'block';
+                else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+            });
+        }
+    </script>
 </body>
 </html>
