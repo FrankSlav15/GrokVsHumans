@@ -15,7 +15,7 @@
 </head>
 <body class="bg-black text-white cosmic-bg">
 
-    <!-- Same navbar, active on Submit -->
+    <!-- Consistent Navbar -->
     <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3">
@@ -24,6 +24,7 @@
             </a>
             <div class="flex items-center gap-8 text-sm font-medium">
                 <a href="battles.html" class="hover:text-purple-400">Battles</a>
+                <a href="categories.html" class="hover:text-purple-400">Categories</a>
                 <a href="memes.html" class="hover:text-purple-400">Memes</a>
                 <a href="submit.html" class="text-purple-400 font-semibold">Submit Yours</a>
             </div>
@@ -37,15 +38,13 @@
         <div class="max-w-2xl mx-auto px-6 text-center">
             <h1 class="text-5xl font-bold mb-6">Got a banger thread?</h1>
             <p class="text-gray-400 mb-12 text-xl">Paste the X link and we’ll review it for the hall of fame.</p>
-            
             <form id="submit-form" action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-6">
                 <input type="text" name="thread-link" placeholder="https://x.com/..." required class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500">
                 <input type="email" name="_replyto" placeholder="Your email (so we can say thanks)" class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500">
                 <textarea name="message" rows="4" placeholder="Optional: Why this thread is fire 🔥" class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500 resize-none"></textarea>
                 <button type="submit" class="w-full py-5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-xl">Send to the Team</button>
             </form>
-            
-            <div id="success-message" class="hidden mt-10 text-emerald-400 font-medium text-xl">✅ Thank you! Your thread has been received. We’ll review it soon!</div>
+            <div id="success-message" class="hidden mt-10 text-emerald-400 font-medium text-xl">✅ Thank you! Your thread has been received.</div>
         </div>
     </section>
 
