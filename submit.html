@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit - GrokVsHumans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+        .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
+    </style>
+</head>
+<body class="bg-black text-white cosmic-bg">
+
+    <!-- Same navbar, active on Submit -->
+    <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-2xl">G</div>
+                <h1 class="logo-font text-3xl font-semibold tracking-tighter">GrokVsHumans</h1>
+            </a>
+            <div class="flex items-center gap-8 text-sm font-medium">
+                <a href="battles.html" class="hover:text-purple-400">Battles</a>
+                <a href="memes.html" class="hover:text-purple-400">Memes</a>
+                <a href="submit.html" class="text-purple-400 font-semibold">Submit Yours</a>
+            </div>
+            <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Submit Battle
+            </a>
+        </div>
+    </nav>
+
+    <section class="pt-32 pb-24">
+        <div class="max-w-2xl mx-auto px-6 text-center">
+            <h1 class="text-5xl font-bold mb-6">Got a banger thread?</h1>
+            <p class="text-gray-400 mb-12 text-xl">Paste the X link and we’ll review it for the hall of fame.</p>
+            
+            <form id="submit-form" action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-6">
+                <input type="text" name="thread-link" placeholder="https://x.com/..." required class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500">
+                <input type="email" name="_replyto" placeholder="Your email (so we can say thanks)" class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500">
+                <textarea name="message" rows="4" placeholder="Optional: Why this thread is fire 🔥" class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500 resize-none"></textarea>
+                <button type="submit" class="w-full py-5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-xl">Send to the Team</button>
+            </form>
+            
+            <div id="success-message" class="hidden mt-10 text-emerald-400 font-medium text-xl">✅ Thank you! Your thread has been received. We’ll review it soon!</div>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+        Built by @SlavisTon & Grok • Launched Feb 27 2026
+    </footer>
+
+    <script>
+        const form = document.getElementById('submit-form');
+        const success = document.getElementById('success-message');
+        form.addEventListener('submit', () => {
+            setTimeout(() => {
+                form.reset();
+                success.classList.remove('hidden');
+                setTimeout(() => success.classList.add('hidden'), 8000);
+            }, 800);
+        });
+    </script>
+</body>
+</html>
