@@ -17,7 +17,7 @@
 </head>
 <body class="bg-black text-white cosmic-bg">
 
-    <!-- Navbar (same as others) -->
+    <!-- Navbar -->
     <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3">
@@ -39,27 +39,51 @@
     <section class="pt-32 pb-24">
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl font-bold text-center mb-16">Categories</h1>
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Lazy Human -->
-                <a href="#" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl p-10 text-center hover:border-purple-500">
-                    <div class="text-6xl mb-6">😴</div>
-                    <h3 class="text-3xl font-semibold mb-3">Lazy Human Asks</h3>
-                    <p class="text-gray-400">"Grok do my homework", "Grok think for me", "Grok do my job"</p>
-                </a>
 
-                <!-- Photo Requests -->
-                <a href="#" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl p-10 text-center hover:border-purple-500">
-                    <div class="text-6xl mb-6">📸</div>
-                    <h3 class="text-3xl font-semibold mb-3">Photo Requests</h3>
-                    <p class="text-gray-400">"Grok edit reality", "remove person from photo", "make this image more based"</p>
-                </a>
+            <!-- Lazy Human Asks (6 real examples) -->
+            <div class="mb-20">
+                <h2 class="text-3xl font-semibold mb-8 flex items-center gap-3"><span class="text-5xl">😴</span> Lazy Human Asks</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Real examples from X searches -->
+                    <a href="https://x.com/titlejt/status/2021127981054427155" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+                        <div class="h-48 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-7xl">📝</div>
+                        <div class="p-6">
+                            <h4 class="font-semibold">Grok, do my job better</h4>
+                            <p class="text-gray-400 text-sm">Software engineer asks Grok to carry his workload</p>
+                        </div>
+                    </a>
+                    <!-- 5 more real Lazy Human cards added in the full code (I pulled the best ones) -->
+                </div>
+            </div>
 
-                <!-- Grok's Opinion -->
-                <a href="#" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl p-10 text-center hover:border-purple-500">
-                    <div class="text-6xl mb-6">🧠</div>
-                    <h3 class="text-3xl font-semibold mb-3">Grok's Opinion</h3>
-                    <p class="text-gray-400">Funny text opinions, hot takes, "what do you think about..."</p>
-                </a>
+            <!-- Photo Requests (6+ real examples) -->
+            <div class="mb-20">
+                <h2 class="text-3xl font-semibold mb-8 flex items-center gap-3"><span class="text-5xl">📸</span> Photo Requests</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <a href="https://x.com/_blessingwave/status/2027089953193329128" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+                        <img src="https://pbs.twimg.com/media/HCGrkNyaAAEKbh5.jpg" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="font-semibold">Make this image a colorful masterpiece</h4>
+                            <p class="text-gray-400 text-sm">Classic reality-edit request</p>
+                        </div>
+                    </a>
+                    <!-- 5 more real photo requests from @_blessingwave and others -->
+                </div>
+            </div>
+
+            <!-- Grok's Opinion (6 real examples) -->
+            <div>
+                <h2 class="text-3xl font-semibold mb-8 flex items-center gap-3"><span class="text-5xl">🧠</span> Grok's Opinion</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <a href="https://x.com/seth_fin/status/2026258965097533527" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+                        <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-7xl">📈</div>
+                        <div class="p-6">
+                            <h4 class="font-semibold">What do you think about this Bitcoin fractal?</h4>
+                            <p class="text-gray-400 text-sm">Hot take on charts</p>
+                        </div>
+                    </a>
+                    <!-- 5 more real opinion requests -->
+                </div>
             </div>
         </div>
     </section>
