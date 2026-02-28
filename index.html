@@ -11,12 +11,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         body { font-family: 'Inter', system-ui, sans-serif; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
-        .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
+        .cosmic-bg { 
+            background: radial-gradient(circle at 50% 30%, #4c1d95 0%, #1e0a4d 40%, #0a0a1f 70%, #000000 100%); 
+            min-height: 100vh; 
+        }
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
         .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="bg-black text-white cosmic-bg">
+<body class="text-white cosmic-bg">
 
     <!-- FINAL NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
@@ -43,7 +46,6 @@
 
     <section class="pt-52 pb-20 relative">
         <div class="max-w-4xl mx-auto px-6 text-center">
-            <!-- LIVE badge -->
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-1.5 mb-8">
                 <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span class="text-sm font-medium">LIVE • Human vs Grok Arena</span>
@@ -67,7 +69,7 @@
                 </a>
             </div>
 
-            <!-- RESTORED FEATURED BIRTHING POST -->
+            <!-- YOUR FEATURED BIRTHING POST -->
             <div class="max-w-md mx-auto">
                 <a href="https://x.com/SlavisTon/status/2026768884854853692" class="block bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden hover:border-purple-500 transition-all">
                     <div class="p-5 flex items-center gap-3 border-b border-purple-900/30">
