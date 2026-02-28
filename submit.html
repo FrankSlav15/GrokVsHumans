@@ -11,13 +11,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         body { font-family: 'Inter', system-ui, sans-serif; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
-        .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
+        .cosmic-bg { 
+            background: radial-gradient(circle at 50% 30%, #4c1d95 0%, #1e0a4d 40%, #0a0a1f 70%, #000000 100%); 
+            min-height: 100vh; 
+        }
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
     </style>
 </head>
-<body class="bg-black text-white cosmic-bg">
+<body class="text-white cosmic-bg">
 
-    <!-- FINAL CENTERED NAVBAR -->
+    <!-- FINAL NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex justify-center py-4">
@@ -35,25 +38,22 @@
         </div>
     </nav>
 
-    <section class="pt-40 pb-10">
-        <div class="max-w-md mx-auto px-2">
-            <div class="text-center mb-2">
-                <h1 class="text-5xl font-bold tracking-tighter mb-2">Got a banger thread?</h1>
-                <p class="text-gray-400 text-l">Paste the X link and we’ll review it for the hall of fame.</p>
+    <section class="pt-40 pb-24">
+        <div class="max-w-md mx-auto px-6">
+            <div class="text-center mb-16">
+                <h1 class="text-5xl font-bold tracking-tighter mb-4">Got a banger thread?</h1>
+                <p class="text-gray-400 text-lg">Paste the X link and we’ll review it for the hall of fame.</p>
             </div>
 
-            <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-2">
+            <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-8">
                 <input type="url" name="thread_url" placeholder="https://x.com/..." required
-                       class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-2 py-2 text-white placeholder-gray-500 focus:outline-none text-base">
-
+                       class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-6 text-white placeholder-gray-500 focus:outline-none text-base">
                 <input type="email" name="email" placeholder="Your email (so we can reply)" required
-                       class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-2 py-2 text-white placeholder-gray-500 focus:outline-none text-base">
-
+                       class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-6 text-white placeholder-gray-500 focus:outline-none text-base">
                 <textarea name="reason" rows="4" placeholder="Optional: Why this thread is fire 🔥"
-                          class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-2 py-2 text-white placeholder-gray-500 focus:outline-none text-base resize-none"></textarea>
-
+                          class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-6 text-white placeholder-gray-500 focus:outline-none text-base resize-none"></textarea>
                 <button type="submit" 
-                        class="w-full py-2 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-lg hover:scale-[1.02] transition-transform">
+                        class="w-full py-6 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-lg hover:scale-[1.02] transition-transform">
                     Send to the Team
                 </button>
             </form>
