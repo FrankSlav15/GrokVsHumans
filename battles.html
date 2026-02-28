@@ -15,14 +15,15 @@
         .battle-card { transition: all 0.3s ease; cursor: pointer; }
         .battle-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
         .tab-active { border-bottom: 3px solid rgb(168 85 247); color: white; }
+        .nav-link.active {color: rgb(168 85 247) !important; font-weight: 600; }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg">
 
-    <!-- FINAL CENTERED NAVBAR – Perfect on desktop & mobile -->
+    <!-- FINAL NAVBAR with auto-active highlighting -->
 <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
     <div class="max-w-6xl mx-auto px-6">
-        <!-- Logo centered on every screen -->
+        <!-- Logo centered -->
         <div class="flex justify-center py-4">
             <a href="index.html" class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xl">G</div>
@@ -30,15 +31,15 @@
             </a>
         </div>
 
-        <!-- Links centered on mobile & desktop -->
-        <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm font-medium">
-            <a href="battles.html" class="hover:text-purple-400">Battles</a>
-            <a href="categories.html" class="hover:text-purple-400">Categories</a>
-            <a href="memes.html" class="hover:text-purple-400">Memes</a>
-            <a href="submit.html" class="hover:text-purple-400">Submit Yours</a>
+        <!-- Main links (centered, auto-highlight current page) -->
+        <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm font-medium" id="main-nav">
+            <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
+            <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
+            <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
+            <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit Yours</a>
         </div>
 
-        <!-- Submit button – compact on mobile, nicely placed on desktop -->
+        <!-- Submit button (compact & positioned nicely) -->
         <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-4 md:right-6">
             <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2 hover:scale-105 transition-transform">
                 <i class="fa-solid fa-plus"></i> Submit Battle
@@ -52,7 +53,7 @@
             <h1 class="text-4xl font-bold text-center mb-12">Hall of Fame Battles</h1>
 
             <!-- Sticky Tabs -->
-            <div class="sticky top-32 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4">
+            <div class="sticky top-30 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4">
                 <div class="flex flex-wrap justify-center gap-2" id="tabs">
                     <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
                     <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium" id="tab-nonsense">Nonsense</button>
