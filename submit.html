@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit - GrokVsHumans</title>
+    <title>Submit Yours - GrokVsHumans</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -13,9 +13,9 @@
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
     </style>
 </head>
-<body class="bg-black text-white cosmic-bg">
+<body class="bg-black text-white cosmic-bg flex flex-col min-h-screen">
 
-    <!-- Consistent Navbar -->
+    <!-- Navbar (same as before) -->
     <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3">
@@ -34,34 +34,22 @@
         </div>
     </nav>
 
-    <section class="pt-32 pb-24">
+    <main class="flex-1 pt-32 pb-24">
         <div class="max-w-2xl mx-auto px-6 text-center">
-            <h1 class="text-5xl font-bold mb-6">Got a banger thread?</h1>
-            <p class="text-gray-400 mb-12 text-xl">Paste the X link and we’ll review it for the hall of fame.</p>
-            <form id="submit-form" action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-6">
-                <input type="text" name="thread-link" placeholder="https://x.com/..." required class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500">
-                <input type="email" name="_replyto" placeholder="Your email (so we can say thanks)" class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500">
-                <textarea name="message" rows="4" placeholder="Optional: Why this thread is fire 🔥" class="w-full px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl text-white placeholder-gray-500 resize-none"></textarea>
-                <button type="submit" class="w-full py-5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-xl">Send to the Team</button>
-            </form>
-            <div id="success-message" class="hidden mt-10 text-emerald-400 font-medium text-xl">✅ Thank you! Your thread has been received.</div>
-        </div>
-    </section>
+            <h1 class="text-5xl font-bold mb-4">Got a banger thread?</h1>
+            <p class="text-xl text-gray-400 mb-12">Paste the X link and we’ll review it for the hall of fame.</p>
 
-    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+            <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-6">
+                <input type="url" name="thread" placeholder="https://x.com/..." required class="w-full bg-white/5 border border-purple-500/30 rounded-3xl px-6 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400">
+                <input type="email" name="email" placeholder="Your email (so we can reply)" class="w-full bg-white/5 border border-purple-500/30 rounded-3xl px-6 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400">
+                <textarea name="why" placeholder="Optional: Why this thread is fire 🔥" rows="4" class="w-full bg-white/5 border border-purple-500/30 rounded-3xl px-6 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400"></textarea>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 py-4 rounded-3xl font-semibold text-lg button-glow">Send to the Team</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm mt-auto">
         Built by @SlavisTon & Grok • Launched Feb 27 2026
     </footer>
-
-    <script>
-        const form = document.getElementById('submit-form');
-        const success = document.getElementById('success-message');
-        form.addEventListener('submit', () => {
-            setTimeout(() => {
-                form.reset();
-                success.classList.remove('hidden');
-                setTimeout(() => success.classList.add('hidden'), 8000);
-            }, 800);
-        });
-    </script>
 </body>
 </html>
