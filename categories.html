@@ -13,6 +13,7 @@
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
         .category-card { transition: all 0.3s ease; cursor: pointer; }
         .category-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
+        .tab-active { border-bottom: 3px solid rgb(168 85 247); color: white; }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg">
@@ -40,10 +41,10 @@
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl font-bold text-center mb-16">Categories</h1>
 
-            <!-- Tabs -->
+            <!-- Tabs with purple underline -->
             <div class="flex flex-wrap justify-center gap-2 mb-12 border-b border-purple-900/30 pb-4" id="tabs">
                 <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
-                <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">Lazy Human Asks</button>
+                <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">I'm Lazy Grok</button>
                 <button onclick="filterCategory('photo')" class="tab px-6 py-2 text-sm font-medium" id="tab-photo">Photo Requests</button>
                 <button onclick="filterCategory('opinion')" class="tab px-6 py-2 text-sm font-medium" id="tab-opinion">Grok's Opinion</button>
                 <button onclick="filterCategory('avoids')" class="tab px-6 py-2 text-sm font-medium" id="tab-avoids">Grok Avoids Request</button>
@@ -51,62 +52,66 @@
 
             <!-- Grid -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="category-grid">
-                <!-- Lazy Human Asks -->
+
+                <!-- 1 Lazy Human Asks - skeletor.jpg -->
                 <a href="https://x.com/SlavisTon/status/2024954895288201519" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="lazy">
-                    <img src="https://pbs.twimg.com/media/HBoVvdWW8AAzN7-.mp4" class="w-full h-64 object-cover">
+                    <img src="skeletor.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Lazy Human Asks Grok to Do Everything</h4>
-                        <p class="text-gray-400 text-sm">The classic that started it all</p>
+                        <h4 class="font-semibold text-lg mb-2">Grok, is this true?</h4>
+                        <p class="text-gray-400 text-sm">Oblivious satire victim</p>
                     </div>
                 </a>
 
-                <!-- Photo Requests -->
+                <!-- 2 Photo Requests - Potato brain -->
                 <a href="https://x.com/grok/status/2008960036094034251" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
                     <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok edit reality</h4>
-                        <p class="text-gray-400 text-sm">Classic reality-edit request</p>
+                        <h4 class="font-semibold text-lg mb-2">Potato brain</h4>
+                        <p class="text-gray-400 text-sm">A potato gets new clothes</p>
                     </div>
                 </a>
 
+                <!-- 3 Photo Requests - Magic actors -->
                 <a href="https://x.com/grok/status/2023279170436919602" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
                     <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok edit reality 2</h4>
-                        <p class="text-gray-400 text-sm">Another reality-edit request</p>
+                        <h4 class="font-semibold text-lg mb-2">Magic actors</h4>
+                        <p class="text-gray-400 text-sm">Bunnyfied</p>
                     </div>
                 </a>
 
+                <!-- 4 Photo Requests - Put some clothes on -->
                 <a href="https://x.com/thodahansle/status/2027262477348856183" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
                     <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok edit reality 3</h4>
-                        <p class="text-gray-400 text-sm">Classic reality-edit request</p>
+                        <h4 class="font-semibold text-lg mb-2">Put some clothes on</h4>
+                        <p class="text-gray-400 text-sm">A digital dressing</p>
                     </div>
                 </a>
 
-                <!-- Grok's Opinion -->
+                <!-- 5 Grok's Opinion - ventilator.jpg -->
                 <a href="https://x.com/grok/status/2026168522531852490" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="opinion">
-                    <img src="https://pbs.twimg.com/media/HBX4cXOXMAAgsDw.jpg" class="w-full h-64 object-cover">
+                    <img src="ventilator.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok's Opinion</h4>
-                        <p class="text-gray-400 text-sm">Hot take on the topic</p>
+                        <h4 class="font-semibold text-lg mb-2">Grok helps</h4>
+                        <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
                     </div>
                 </a>
 
+                <!-- 6 Grok's Opinion - Who's from the future -->
                 <a href="https://x.com/thodahansle/status/2023796696451609049" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="opinion">
                     <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok's Opinion 2</h4>
-                        <p class="text-gray-400 text-sm">Hot take on the topic</p>
+                        <h4 class="font-semibold text-lg mb-2">Who's from the future</h4>
+                        <p class="text-gray-400 text-sm">Grok chooses</p>
                     </div>
                 </a>
 
-                <!-- Grok Avoids Request -->
+                <!-- 7 Grok Avoids Request -->
                 <a href="https://x.com/grok/status/1912171402125594659" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="avoids">
                     <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" class="w-full h-64 object-cover">
                     <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Grok Avoids Request</h4>
+                        <h4 class="font-semibold text-lg mb-2">Grok goes on a tangent</h4>
                         <p class="text-gray-400 text-sm">Classic avoidance</p>
                     </div>
                 </a>
