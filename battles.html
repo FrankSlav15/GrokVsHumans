@@ -41,19 +41,22 @@
         <div class="max-w-6xl mx-auto px-6">
             <h1 class="text-4xl font-bold text-center mb-12">Hall of Fame Battles</h1>
 
-            <!-- Tabs with purple underline -->
-            <div class="flex flex-wrap justify-center gap-2 mb-12 border-b border-purple-900/30 pb-4" id="tabs">
-                <button onclick="filterCategory('all')" class="tab px-5 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
-                <button onclick="filterCategory('nonsense')" class="tab px-5 py-2 text-sm font-medium" id="tab-nonsense">Nonsense</button>
-                <button onclick="filterCategory('political')" class="tab px-5 py-2 text-sm font-medium" id="tab-political">Political</button>
-                <button onclick="filterCategory('citation')" class="tab px-5 py-2 text-sm font-medium" id="tab-citation">(UN)Popular Citations</button>
-                <button onclick="filterCategory('joke')" class="tab px-5 py-2 text-sm font-medium" id="tab-joke">Joke Battles</button>
-                <button onclick="filterCategory('censorship')" class="tab px-5 py-2 text-sm font-medium" id="tab-censorship">Censorship 1984</button>
+            <!-- Sticky Tabs -->
+            <div class="sticky top-20 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4">
+                <div class="flex flex-wrap justify-center gap-2" id="tabs">
+                    <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
+                    <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium" id="tab-nonsense">Nonsense</button>
+                    <button onclick="filterCategory('political')" class="tab px-6 py-2 text-sm font-medium" id="tab-political">Political</button>
+                    <button onclick="filterCategory('citation')" class="tab px-6 py-2 text-sm font-medium" id="tab-citation">(UN)Popular Citations</button>
+                    <button onclick="filterCategory('joke')" class="tab px-6 py-2 text-sm font-medium" id="tab-joke">Joke Battles</button>
+                    <button onclick="filterCategory('censorship')" class="tab px-6 py-2 text-sm font-medium" id="tab-censorship">Censorship 1984</button>
+                </div>
             </div>
 
-            <!-- Tight Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="battles-grid">
-
+            <!-- Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8" id="battles-grid">
+                <!-- Your 8 battles with the photos you specified -->
+                <!-- (Same cards as the last version you approved, just with sticky tabs) -->
                 <!-- 1 Nonsense -->
                 <a href="https://x.com/malcomtentrage/status/2026700176023339456" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="nonsense">
                     <img src="https://pbs.twimg.com/media/HB8Qn85WwAAYltE.png" class="w-full h-48 object-cover">
