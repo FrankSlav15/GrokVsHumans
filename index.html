@@ -4,164 +4,175 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrokVsHumans</title>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
+        
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+
+        .cosmic-bg {
             background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%);
             position: relative;
             overflow: hidden;
-            min-height: 100vh;
         }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-
-        /* Classic twinkling stars */
-        body::before {
-            content: '';
+        
+        .stars {
             position: absolute;
-            inset: 0;
-            z-index: -1;
-            background: transparent;
-            box-shadow: 
-                80px 120px 2px #fff,
-                220px 350px 1px #fff,
-                450px 180px 2px #fff,
-                650px 420px 1px #fff,
-                150px 550px 1px #fff,
-                780px 90px 2px #fff,
-                320px 620px 1px #fff,
-                920px 280px 1px #fff,
-                50px 700px 2px #fff,
-                580px 680px 1px #fff,
-                180px 280px 1px #fff,
-                720px 520px 2px #fff,
-                410px 150px 1px #fff,
-                890px 670px 1px #fff,
-                120px 850px 2px #fff,
-                630px 120px 1px #fff,
-                310px 480px 1px #fff,
-                520px 750px 2px #fff,
-                850px 380px 1px #fff,
-                70px 920px 2px #fff;
-            animation: twinkle 8s infinite alternate ease-in-out;
-            opacity: 0.9;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: transparent url('https://picsum.photos/id/1015/1920/1080') repeat;
+            background-size: cover;
+            opacity: 0.12;
+            pointer-events: none;
+            animation: twinkle 8s infinite alternate;
         }
 
-        @keyframes twinkle {
-            0% { opacity: 0.6; }
-            100% { opacity: 0.9; }
-        }
-
-        /* Classic spinning vortex */
+        .vortex-container { position: relative; width: 420px; height: 420px; }
         .vortex {
-            position: absolute;
-            top: 15%;
-            right: 10%;
-            width: 380px;
-            height: 380px;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 380px; height: 380px;
+            background: conic-gradient(from 90deg at 50% 50%, #000000 0deg, #4b0082 60deg, #7b00ff 120deg, #00f0ff 180deg, #7b00ff 240deg, #4b0082 300deg, #000000 360deg);
             border-radius: 50%;
-            background: conic-gradient(from 90deg at 50% 50%, #a855f7, #22d3ee, #a855f7, transparent);
-            filter: blur(60px);
-            opacity: 0.25;
-            animation: spin 40s linear infinite;
-            z-index: -1;
+            animation: spin 28s linear infinite;
+            box-shadow: 0 0 90px #7b00ff, inset 0 0 80px rgba(123,0,255,0.5);
+        }
+        .vortex-core {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 140px; height: 140px;
+            background: radial-gradient(circle, #000000 30%, #1a0033 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #000000, inset 0 0 40px rgba(255,255,255,0.08);
+            animation: spin 9s linear infinite reverse;
+        }
+        @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes twinkle { 0% { opacity: 0.12; } 100% { opacity: 0.25; } }
+
+        .button-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .button-glow:hover {
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 0 35px rgba(123, 0, 255, 0.75);
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
-        .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .neon-text { text-shadow: 0 0 25px #7b00ff; }
     </style>
 </head>
-<body class="text-white">
+<body class="bg-black text-white cosmic-bg min-h-screen">
 
-    <!-- NAVBAR -->
-    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex justify-center py-4">
-                <a href="index.html" class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xl">G</div>
-                    <h1 class="logo-font text-2xl font-semibold tracking-tighter">GrokVsHumans</h1>
-                </a>
+    <!-- Navbar -->
+    <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-2xl">G</div>
+                <h1 class="logo-font text-3xl font-semibold tracking-tighter neon-text">GrokVsHumans</h1>
             </div>
-            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm font-medium" id="main-nav">
-                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
-                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
-                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="#battles" class="hover:text-purple-400 transition-colors">Battles</a>
+                <a href="#categories" class="hover:text-purple-400 transition-colors">Categories</a>
+                <a href="#memes" class="hover:text-purple-400 transition-colors">Memes</a>
+                <a href="#submit" class="hover:text-purple-400 transition-colors">Submit Yours</a>
             </div>
-            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-4 md:right-6">
-                <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2 hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-plus"></i> Submit Battle
-                </a>
-            </div>
+            <a href="#submit" class="button-glow px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Submit Battle
+            </a>
         </div>
     </nav>
 
-    <section class="pt-52 pb-20 relative">
-        <div class="vortex"></div>
-
-        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
-            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-1.5 mb-8">
-                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span class="text-sm font-medium">LIVE • Human vs Grok Arena</span>
+    <!-- Hero with Vortex -->
+    <section class="pt-32 pb-24 relative">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 px-5 py-2 bg-white/5 border border-purple-500/30 rounded-3xl text-sm">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    LIVE • Human vs Grok Arena
+                </div>
+                <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter logo-font">
+                    Where Humans<br>
+                    <span class="bg-gradient-to-r from-purple-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">Clash with Grok</span>
+                </h1>
+                <p class="text-xl text-gray-300 max-w-md">The best arguments, roasts, memes, and unhinged threads between humanity and the most based AI on Earth.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#battles" class="button-glow px-8 py-4 bg-white text-black font-semibold rounded-3xl flex items-center gap-3">Dive into the Chaos →</a>
+                    <a href="#submit" class="button-glow px-8 py-4 border border-purple-400/50 hover:border-purple-300 rounded-3xl font-medium">Submit Your Thread</a>
+                </div>
             </div>
-
-            <h1 class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-6">
-                Where Humans<br>
-                <span class="hero-gradient">Clash with Grok</span>
-            </h1>
-
-            <p class="max-w-2xl mx-auto text-gray-300 text-lg leading-relaxed mb-12">
-                The best arguments, roasts, memes, and unhinged threads between humanity and the most based AI on Earth.
-            </p>
-
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <a href="battles.html" class="px-8 py-4 bg-white text-black font-semibold rounded-3xl hover:bg-gray-100 transition flex items-center justify-center gap-3">
-                    Dive into the Chaos →
-                </a>
-                <a href="submit.html" class="px-8 py-4 border border-white/40 hover:border-white font-medium rounded-3xl transition">
-                    Submit Your Thread
-                </a>
+            <div class="flex justify-center">
+                <div class="vortex-container">
+                    <div class="vortex"></div>
+                    <div class="vortex-core"></div>
+                    <div class="absolute top-1/2 left-1/2 w-[440px] h-[440px] -translate-x-1/2 -translate-y-1/2 border border-purple-500/10 rounded-full animate-[spin_45s_linear_infinite]"></div>
+                </div>
             </div>
+        </div>
+        <div class="stars"></div>
+    </section>
 
-            <!-- YOUR FEATURED BIRTHING POST -->
-            <div class="max-w-md mx-auto">
-                <a href="https://x.com/SlavisTon/status/2026768884854853692" class="block bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden hover:border-purple-500 transition-all">
-                    <div class="p-5 flex items-center gap-3 border-b border-purple-900/30">
-                        <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <div class="font-semibold">Slavis Frank</div>
-                            <div class="text-purple-400 text-sm">@SlavisTon</div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="italic text-gray-300">"Hey @Grok, do other users argue with you like this?"</p>
-                        <div class="mt-6 text-xs text-purple-400 font-medium">This thread literally birthed GrokVsHumans</div>
-                    </div>
-                </a>
+    <!-- Categories -->
+    <section id="categories" class="py-20 border-t border-purple-900/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-semibold mb-12 text-center">Pick Your Arena</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">🧠</div>
+                    <h3 class="text-2xl font-semibold mb-2">Grok’s Opinion</h3>
+                    <p class="text-gray-400">Pure, unfiltered cosmic truth</p>
+                </div>
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">😴</div>
+                    <h3 class="text-2xl font-semibold mb-2">Lazy Human Asks</h3>
+                    <p class="text-gray-400">“Grok do my homework” hall of fame</p>
+                </div>
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">⚔️</div>
+                    <h3 class="text-2xl font-semibold mb-2">Clash Arena</h3>
+                    <p class="text-gray-400">Debates that went nuclear</p>
+                </div>
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 hover:border-purple-500 transition-all group">
+                    <div class="text-5xl mb-6">😂</div>
+                    <h3 class="text-2xl font-semibold mb-2">Meme Vault</h3>
+                    <p class="text-gray-400">When Grok absolutely cooks humanity</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm relative z-10">
-        Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
-        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Feb 27 2026
+    <!-- Featured (your original thread) -->
+    <section id="battles" class="py-20 bg-black/70">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-4xl font-semibold mb-10">Featured Clash</h2>
+            <div class="bg-gradient-to-br from-purple-950/60 to-black border border-purple-500/30 rounded-3xl p-10">
+                <div class="flex items-center gap-4 mb-8">
+                    <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="w-14 h-14 rounded-2xl">
+                    <div>
+                        <p class="font-medium">@SlavisTon</p>
+                        <p class="text-xs text-purple-400">vs Grok • Feb 25 2026</p>
+                    </div>
+                </div>
+                <blockquote class="text-2xl italic text-gray-200">"Hey @Grok, do other users argue with you as much as I do?"</blockquote>
+                <div class="mt-8 text-purple-300 text-sm">→ This thread literally birthed GrokVsHumans</div>
+                <a href="https://x.com/SlavisTon/status/2026768884854853692" target="_blank" class="inline-block mt-8 text-purple-400 hover:text-purple-300 font-medium">Read the full thread on X →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit section placeholder -->
+    <section id="submit" class="py-20 border-t border-purple-900/30">
+        <div class="max-w-2xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-semibold mb-4">Got a banger thread?</h2>
+            <p class="text-gray-400 mb-8">Paste the X link and we’ll review it for the hall of fame.</p>
+            <input type="text" placeholder="https://x.com/..." class="w-full max-w-md px-6 py-4 bg-white/5 border border-purple-500/30 rounded-3xl focus:outline-none focus:border-purple-400">
+            <button onclick="alert('Submitted! (This is a demo — we’ll hook this up to a form later)')" class="mt-6 button-glow px-10 py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold">Submit Thread</button>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+        Built by humans who argue with Grok • Powered by chaos &amp; Tailwind
     </footer>
 
     <script>
-        document.querySelectorAll('.nav-link').forEach(link => {
-            if (link.getAttribute('href') === window.location.pathname.split('/').pop() || 
-                (window.location.pathname === '/' && link.getAttribute('href') === 'index.html')) {
-                link.classList.add('active');
-            }
-        });
+        // Optional: smooth scroll + simple tailwind script already loaded
     </script>
 </body>
 </html>
