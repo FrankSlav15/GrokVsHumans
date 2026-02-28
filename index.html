@@ -18,7 +18,7 @@
         }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        /* TWINKLING STARS - sharp & visible */
+        /* BIG, BRIGHT TWINKLING STARS */
         body::before {
             content: '';
             position: absolute;
@@ -26,36 +26,40 @@
             z-index: -1;
             background: transparent;
             box-shadow: 
-                80px 120px 2px #fff,
-                220px 350px 1px #fff,
-                450px 180px 2px #fff,
-                650px 420px 1px #fff,
-                150px 550px 1px #fff,
+                80px 120px 3px #fff,
+                220px 350px 2px #fff,
+                450px 180px 3px #fff,
+                650px 420px 2px #fff,
+                150px 550px 3px #fff,
                 780px 90px 2px #fff,
-                320px 620px 1px #fff,
-                920px 280px 1px #fff,
-                50px 700px 2px #fff,
-                580px 680px 1px #fff,
-                180px 280px 1px #fff,
+                320px 620px 3px #fff,
+                920px 280px 2px #fff,
+                50px 700px 3px #fff,
+                580px 680px 2px #fff,
+                180px 280px 3px #fff,
                 720px 520px 2px #fff,
-                410px 150px 1px #fff,
-                890px 670px 1px #fff,
-                120px 850px 2px #fff,
-                630px 120px 1px #fff,
-                310px 480px 1px #fff,
+                410px 150px 3px #fff,
+                890px 670px 2px #fff,
+                120px 850px 3px #fff,
+                630px 120px 2px #fff,
+                310px 480px 3px #fff,
                 520px 750px 2px #fff,
-                850px 380px 1px #fff,
-                70px 920px 2px #fff;
-            animation: twinkle 8s infinite alternate ease-in-out;
-            opacity: 0.95;
+                850px 380px 3px #fff,
+                70px 920px 2px #fff,
+                950px 150px 3px #fff,
+                40px 380px 2px #fff,
+                680px 820px 3px #fff,
+                280px 220px 2px #fff;
+            animation: twinkle 6s infinite alternate ease-in-out;
+            opacity: 0.98;
         }
 
         @keyframes twinkle {
-            0% { opacity: 0.6; }
-            100% { opacity: 0.95; }
+            0% { opacity: 0.65; }
+            100% { opacity: 0.98; }
         }
 
-        /* SPINNING VORTEX */
+        /* STRONG SPINNING VORTEX */
         .vortex {
             position: absolute;
             top: 12%;
@@ -64,9 +68,9 @@
             height: 420px;
             border-radius: 50%;
             background: conic-gradient(from 90deg at 50% 50%, #a855f7, #22d3ee, #a855f7, transparent);
-            filter: blur(70px);
-            opacity: 0.35;
-            animation: spin 45s linear infinite;
+            filter: blur(65px);
+            opacity: 0.45;
+            animation: spin 38s linear infinite;
             z-index: -1;
         }
 
@@ -81,7 +85,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (unchanged) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex justify-center py-4">
@@ -94,7 +98,7 @@
                 <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
                 <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
                 <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
+                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit Yours</a>
             </div>
             <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-4 md:right-6">
                 <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2 hover:scale-105 transition-transform">
