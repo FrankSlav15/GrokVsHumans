@@ -15,8 +15,7 @@
         .battle-card { transition: all 0.3s ease; cursor: pointer; }
         .battle-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
         .tab-active { border-bottom: 3px solid rgb(168 85 247); color: white; }
-        .nav-link
-        .active { color: rgb(168 85 247) !important; font-weight: 600; }
+        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg">
@@ -54,7 +53,7 @@
             <h1 class="text-4xl font-bold text-center mb-12">Hall of Fame Battles</h1>
 
             <!-- Sticky Tabs -->
-            <div class="sticky top-32 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4">
+            <div class="sticky top-28 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4">
                 <div class="flex flex-wrap justify-center gap-2" id="tabs">
                     <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
                     <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium" id="tab-nonsense">Nonsense</button>
@@ -222,6 +221,13 @@
                 updateVoteDisplay(id);
             });
         };
+        // Auto-highlight current page in navbar
+document.querySelectorAll('.nav-link').forEach(link => {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+    }
+});
     </script>
 </body>
 </html>
