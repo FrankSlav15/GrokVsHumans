@@ -9,6 +9,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background: url('/bg.jpg') 50% 35% / cover no-repeat fixed;
+            position: relative;
+            min-height: 100vh;
+        }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+
+        /* Dark overlay so text is perfectly readable */
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10,10,31,0.82);
+            z-index: -1;
+        }
+
+        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+        .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         body { font-family: 'Inter', system-ui, sans-serif; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
