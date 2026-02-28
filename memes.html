@@ -14,6 +14,7 @@
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
         .meme-card { transition: all 0.3s ease; cursor: pointer; }
         .meme-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(123,0,255,0.4); }
+        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600 }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg">
@@ -143,6 +144,15 @@
             </div>
         </div>
     </section>
+    <script>
+        // Auto-highlight current page in navbar
+document.querySelectorAll('.nav-link').forEach(link => {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+    }
+});
+    </script>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Feb 27 2026
