@@ -11,68 +11,19 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         body { 
             font-family: 'Inter', system-ui, sans-serif; 
-            background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%);
+            background: url('/bg.jpg') center/cover no-repeat fixed;
             position: relative;
-            overflow: hidden;
             min-height: 100vh;
         }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        /* Bright twinkling stars */
-        body::before {
+        /* Dark overlay so text is perfectly readable */
+        body::after {
             content: '';
             position: absolute;
             inset: 0;
+            background: rgba(10,10,31,0.82);
             z-index: -1;
-            background: transparent;
-            box-shadow: 
-                80px 120px 4px #fff,
-                220px 350px 3px #fff,
-                450px 180px 4px #fff,
-                650px 420px 3px #fff,
-                150px 550px 4px #fff,
-                780px 90px 3px #fff,
-                320px 620px 4px #fff,
-                920px 280px 3px #fff,
-                50px 700px 4px #fff,
-                580px 680px 3px #fff,
-                180px 280px 4px #fff,
-                720px 520px 3px #fff,
-                410px 150px 4px #fff,
-                890px 670px 3px #fff,
-                120px 850px 4px #fff,
-                630px 120px 3px #fff,
-                310px 480px 4px #fff,
-                520px 750px 3px #fff,
-                850px 380px 4px #fff,
-                70px 920px 3px #fff;
-            animation: twinkle 6s infinite alternate ease-in-out;
-            opacity: 0.95;
-        }
-
-        @keyframes twinkle {
-            0% { opacity: 0.7; }
-            100% { opacity: 0.95; }
-        }
-
-        /* Strong glowing vortex on the right */
-        .vortex {
-            position: absolute;
-            top: 12%;
-            right: 8%;
-            width: 420px;
-            height: 420px;
-            border-radius: 50%;
-            background: conic-gradient(from 90deg at 50% 50%, #a855f7, #22d3ee, #a855f7, transparent);
-            filter: blur(65px);
-            opacity: 0.45;
-            animation: spin 38s linear infinite;
-            z-index: -1;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
@@ -104,10 +55,8 @@
         </div>
     </nav>
 
-    <section class="pt-52 pb-20 relative">
-        <div class="vortex"></div>
-
-        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+    <section class="pt-52 pb-20 relative z-10">
+        <div class="max-w-4xl mx-auto px-6 text-center">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-1.5 mb-8">
                 <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span class="text-sm font-medium">LIVE • Human vs Grok Arena</span>
