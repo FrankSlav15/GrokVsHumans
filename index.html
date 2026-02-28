@@ -11,17 +11,66 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         body { font-family: 'Inter', system-ui, sans-serif; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
-        .cosmic-bg { 
-            background: radial-gradient(circle at 50% 25%, #8b5cf6 0%, #6d28d9 30%, #4c1d95 50%, #2e1065 70%, #1e0a4d 85%, #0a0a1f 100%); 
-            min-height: 100vh; 
+
+        .cosmic-bg {
+            background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%);
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
         }
+
+        .cosmic-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            box-shadow: 
+                80px 120px 2px #fff,
+                220px 350px 1px #fff,
+                450px 180px 2px #fff,
+                650px 420px 1px #fff,
+                150px 550px 1px #fff,
+                780px 90px 2px #fff,
+                320px 620px 1px #fff,
+                920px 280px 1px #fff,
+                50px 700px 2px #fff,
+                580px 680px 1px #fff;
+            animation: twinkle 8s infinite alternate ease-in-out;
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            100% { opacity: 0.95; }
+        }
+
+        .vortex {
+            position: absolute;
+            top: 15%;
+            right: 10%;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: conic-gradient(from 90deg at 50% 50%, #a855f7, #22d3ee, #a855f7, transparent);
+            filter: blur(60px);
+            opacity: 0.25;
+            animation: spin 40s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
         .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body class="text-white cosmic-bg">
 
-    <!-- FINAL NAVBAR -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex justify-center py-4">
@@ -45,7 +94,9 @@
     </nav>
 
     <section class="pt-52 pb-20 relative">
-        <div class="max-w-4xl mx-auto px-6 text-center">
+        <div class="vortex"></div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-1.5 mb-8">
                 <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span class="text-sm font-medium">LIVE • Human vs Grok Arena</span>
@@ -88,7 +139,7 @@
         </div>
     </section>
 
-    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm relative z-10">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
         <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Feb 27 2026
     </footer>
