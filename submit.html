@@ -12,6 +12,7 @@
         body { font-family: 'Inter', system-ui, sans-serif; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
         .cosmic-bg { background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%); min-height: 100vh; }
+        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
     </style>
 </head>
 <body class="bg-black text-white cosmic-bg flex flex-col min-h-screen">
@@ -56,6 +57,15 @@
             </form>
         </div>
     </main>
+    <script>
+        // Auto-highlight current page in navbar
+document.querySelectorAll('.nav-link').forEach(link => {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+    }
+});
+    </script>
 
     <footer class="py-10 border-t border-purple-900/30 text-center text-gray-500 text-sm mt-auto">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Feb 27 2026
