@@ -15,60 +15,67 @@
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
     </style>
 </head>
-<body class="bg-black text-white cosmic-bg flex flex-col min-h-screen">
+<body class="bg-black text-white cosmic-bg">
 
-   <!-- FINAL NAVBAR with auto-active highlighting -->
-<nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-    <div class="max-w-6xl mx-auto px-6">
-        <!-- Logo centered -->
-        <div class="flex justify-center py-4">
-            <a href="index.html" class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xl">G</div>
-                <h1 class="logo-font text-2xl font-semibold tracking-tighter">GrokVsHumans</h1>
-            </a>
+    <!-- FINAL CENTERED NAVBAR -->
+    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-center py-4">
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xl">G</div>
+                    <h1 class="logo-font text-2xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                </a>
+            </div>
+            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm font-medium" id="main-nav">
+                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
+                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
+                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
+                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors active">Submit Yours</a>
+            </div>
+            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-4 md:right-6">
+                <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2 hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-plus"></i> Submit Battle
+                </a>
+            </div>
         </div>
+    </nav>
 
-        <!-- Main links (centered, auto-highlight current page) -->
-        <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm font-medium" id="main-nav">
-            <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
-            <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
-            <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-            <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit Yours</a>
-        </div>
+    <section class="pt-40 pb-24">
+        <div class="max-w-md mx-auto px-6">
+            <div class="text-center mb-16">
+                <h1 class="text-5xl font-bold tracking-tighter mb-4">Got a banger thread?</h1>
+                <p class="text-gray-400 text-lg">Paste the X link and we’ll review it for the hall of fame.</p>
+            </div>
 
-        <!-- Submit button (compact & positioned nicely) -->
-        <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-4 md:right-6">
-            <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2 hover:scale-105 transition-transform">
-                <i class="fa-solid fa-plus"></i> Submit Battle
-            </a>
-        </div>
-    </div>
-</nav>
-    <main class="flex-1 pt-24 pb-16">
-        <div class="max-w-md mx-auto px-6 text-center">
-            <h1 class="text-4xl font-bold mb-3">Got a banger thread?</h1>
-            <p class="text-base text-gray-400 mb-10">Paste the X link and we’ll review it for the hall of fame.</p>
+            <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-8">
+                <input type="url" name="thread_url" placeholder="https://x.com/..." required
+                       class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-6 text-white placeholder-gray-500 focus:outline-none text-base">
 
-            <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-5">
-                <input type="url" name="thread" placeholder="https://x.com/..." required class="w-full bg-white/5 border border-purple-500/30 rounded-3xl px-5 py-3.5 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400">
-                <input type="email" name="email" placeholder="Your email (so we can reply)" class="w-full bg-white/5 border border-purple-500/30 rounded-3xl px-5 py-3.5 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400">
-                <textarea name="why" placeholder="Optional: Why this thread is fire 🔥" rows="3" class="w-full bg-white/5 border border-purple-500/30 rounded-3xl px-5 py-3.5 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400"></textarea>
-                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 py-3.5 rounded-3xl font-semibold text-base button-glow">Send to the Team</button>
+                <input type="email" name="email" placeholder="Your email (so we can reply)" required
+                       class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-6 text-white placeholder-gray-500 focus:outline-none text-base">
+
+                <textarea name="reason" rows="4" placeholder="Optional: Why this thread is fire 🔥"
+                          class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-6 text-white placeholder-gray-500 focus:outline-none text-base resize-none"></textarea>
+
+                <button type="submit" 
+                        class="w-full py-6 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-lg hover:scale-[1.02] transition-transform">
+                    Send to the Team
+                </button>
             </form>
         </div>
-    </main>
-    <script>
-        // Auto-highlight current page in navbar
-document.querySelectorAll('.nav-link').forEach(link => {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    if (link.getAttribute('href') === currentPage) {
-        link.classList.add('active');
-    }
-});
-    </script>
+    </section>
 
-    <footer class="py-10 border-t border-purple-900/30 text-center text-gray-500 text-sm mt-auto">
-        Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Feb 27 2026
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+        Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
+        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Feb 27 2026
     </footer>
+
+    <script>
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === window.location.pathname.split('/').pop()) {
+                link.classList.add('active');
+            }
+        });
+    </script>
 </body>
 </html>
