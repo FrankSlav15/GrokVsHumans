@@ -13,8 +13,7 @@
             font-family: 'Inter', system-ui, sans-serif; 
             background: url('/bg.jpg') 50% 35% / cover no-repeat fixed;
             position: relative;
-            min-height: 100vh;
-        }
+            min-height: 100vh; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
         /* Dark overlay so text is perfectly readable */
@@ -34,13 +33,15 @@
         .meme-card {
             transition: all 0.3s ease;
             cursor: pointer; }
-
         .battle-card:hover,
         .category-card:hover,
         .meme-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
+        .tab-active {
+            border-bottom: 3px solid rgb(168 85 247);
+            color: white; }
     </style>
 </head>
 <body class="text-white cosmic-bg">
