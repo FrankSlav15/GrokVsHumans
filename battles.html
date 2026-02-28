@@ -39,9 +39,9 @@
 
     <section class="pt-32 pb-24">
         <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-5xl font-bold text-center mb-12">Hall of Fame Battles</h1>
+            <h1 class="text-5xl font-bold text-center mb-16">Hall of Fame Battles</h1>
 
-            <!-- Tabs -->
+            <!-- Tabs with purple underline -->
             <div class="flex flex-wrap justify-center gap-2 mb-12 border-b border-purple-900/30 pb-4" id="tabs">
                 <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
                 <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium" id="tab-nonsense">Nonsense</button>
@@ -51,17 +51,120 @@
                 <button onclick="filterCategory('censorship')" class="tab px-6 py-2 text-sm font-medium" id="tab-censorship">Censorship 1984</button>
             </div>
 
-            <!-- Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="battles-grid">
-                <!-- Your links added to the correct tabs -->
+            <!-- Tight Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="battles-grid">
+
+                <!-- Nonsense -->
                 <a href="https://x.com/malcomtentrage/status/2026700176023339456" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="nonsense">
-                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h4 class="font-semibold text-lg mb-2">Nonsense Battle</h4>
-                        <p class="text-gray-400 text-sm">The one you sent</p>
+                    <img src="https://pbs.twimg.com/media/HB8Qn85WwAAYltE.png" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Hemp vs Cannabis Debate</h4>
+                        <p class="text-gray-400 text-sm">Grok clarifies the plant science</p>
                     </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '2026700176023339456')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2026700176023339456')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-2026700176023339456">Grok: 0 | Human: 0</div>
                 </a>
-                <!-- More from your list added in the full code -->
+
+                <!-- Political -->
+                <a href="https://x.com/malcomtentrage/status/2005107639517413683" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="political">
+                    <img src="https://pbs.twimg.com/media/G9OW8FoXkAEaekH.jpg" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">JD Vance Thiel Grooming Theory</h4>
+                        <p class="text-gray-400 text-sm">Grok breaks down the ties</p>
+                    </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '2005107639517413683')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2005107639517413683')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-2005107639517413683">Grok: 0 | Human: 0</div>
+                </a>
+
+                <!-- (UN)Popular Citations 1 -->
+                <a href="https://x.com/grok/status/2025231837119889467" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="citation">
+                    <img src="https://pbs.twimg.com/media/G9OW8FoXkAEaekH.jpg" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Epstein Files Citation Check</h4>
+                        <p class="text-gray-400 text-sm">Grok cross-checks sources</p>
+                    </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '2025231837119889467')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2025231837119889467')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-2025231837119889467">Grok: 0 | Human: 0</div>
+                </a>
+
+                <!-- (UN)Popular Citations 2 -->
+                <a href="https://x.com/grok/status/2025988577746673755" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="citation">
+                    <img src="https://pbs.twimg.com/media/HB3ORj8XcAA7M5h.jpg" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Austin Tucker Martin Citation</h4>
+                        <p class="text-gray-400 text-sm">Grok clarifies the source chain</p>
+                    </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '2025988577746673755')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2025988577746673755')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-2025988577746673755">Grok: 0 | Human: 0</div>
+                </a>
+
+                <!-- Joke Battles -->
+                <a href="https://x.com/grok/status/1956450599492583514" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="joke">
+                    <img src="https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Grok misses the joke</h4>
+                        <p class="text-gray-400 text-sm">"2 goals 1 shot" pun battle</p>
+                    </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '1956450599492583514')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '1956450599492583514')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-1956450599492583514">Grok: 0 | Human: 0</div>
+                </a>
+
+                <!-- Censorship 1984 1 -->
+                <a href="https://x.com/grok/status/2026007099839217790" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="censorship">
+                    <img src="https://pbs.twimg.com/media/HB3Skf3WcAEIXnM.mp4" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Grok on X visibility</h4>
+                        <p class="text-gray-400 text-sm">Censorship or algo reality?</p>
+                    </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '2026007099839217790')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2026007099839217790')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-2026007099839217790">Grok: 0 | Human: 0</div>
+                </a>
+
+                <!-- Censorship 1984 2 -->
+                <a href="https://x.com/grok/status/2022277758261330140" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="censorship">
+                    <img src="https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Epstein files citation battle</h4>
+                        <p class="text-gray-400 text-sm">Grok corrects the numbers</p>
+                    </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '2022277758261330140')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2022277758261330140')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-2022277758261330140">Grok: 0 | Human: 0</div>
+                </a>
+
+                <!-- Censorship 1984 3 -->
+                <a href="https://x.com/grok/status/2026662813284946165" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="censorship">
+                    <img src="https://pbs.twimg.com/media/HB3Skf3WcAEIXnM.mp4" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">X visibility frustration</h4>
+                        <p class="text-gray-400 text-sm">Algo vs level playing field</p>
+                    </div>
+                    <div class="flex gap-2 px-5 pb-5">
+                        <button onclick="vote(event, 'grok', '2026662813284946165')" class="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-2xl text-sm">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2026662813284946165')" class="flex-1 py-2 bg-orange-600 hover:bg-orange-700 rounded-2xl text-sm">Human Won</button>
+                    </div>
+                    <div class="px-5 pb-5 text-xs text-gray-400" id="vote-2026662813284946165">Grok: 0 | Human: 0</div>
+                </a>
             </div>
         </div>
     </section>
@@ -79,6 +182,31 @@
                 else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
             });
         }
+
+        function vote(e, side, id) {
+            e.stopPropagation(); // prevent card click
+            let votes = JSON.parse(localStorage.getItem('battleVotes') || '{}');
+            if (!votes[id]) votes[id] = { grok: 0, human: 0 };
+            votes[id][side]++;
+            localStorage.setItem('battleVotes', JSON.stringify(votes));
+            updateVoteDisplay(id);
+        }
+
+        function updateVoteDisplay(id) {
+            let votes = JSON.parse(localStorage.getItem('battleVotes') || '{}');
+            let display = document.getElementById('vote-' + id);
+            if (display && votes[id]) {
+                display.textContent = `Grok: ${votes[id].grok} | Human: ${votes[id].human}`;
+            }
+        }
+
+        // Load saved votes on page load
+        window.onload = () => {
+            document.querySelectorAll('#battles-grid a').forEach(card => {
+                let id = card.getAttribute('href').split('/status/')[1].split('?')[0];
+                updateVoteDisplay(id);
+            });
+        };
     </script>
 </body>
 </html>
