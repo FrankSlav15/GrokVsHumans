@@ -20,10 +20,10 @@
 
     <!-- Navbar -->
     <nav class="border-b border-purple-900/30 bg-black/80 backdrop-blur-lg fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-2xl">G</div>
-                <h1 class="logo-font text-3xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xl">G</div>
+                <h1 class="logo-font text-2xl font-semibold tracking-tighter">GrokVsHumans</h1>
             </a>
             <div class="flex items-center gap-6 text-sm font-medium">
                 <a href="battles.html" class="hover:text-purple-400">Battles</a>
@@ -31,29 +31,31 @@
                 <a href="memes.html" class="hover:text-purple-400">Memes</a>
                 <a href="submit.html" class="hover:text-purple-400">Submit Yours</a>
             </div>
-            <a href="submit.html" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2">
+            <a href="submit.html" class="px-5 py-2 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> Submit Battle
             </a>
         </div>
     </nav>
 
-    <section class="pt-32 pb-24">
-        <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-5xl font-bold text-center mb-16">Categories</h1>
+    <section class="pt-28 pb-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h1 class="text-4xl font-bold text-center mb-12">Categories</h1>
 
-            <!-- Tabs with purple underline -->
-            <div class="flex flex-wrap justify-center gap-2 mb-12 border-b border-purple-900/30 pb-4" id="tabs">
-                <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
-                <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">I'm Lazy Grok</button>
-                <button onclick="filterCategory('photo')" class="tab px-6 py-2 text-sm font-medium" id="tab-photo">Photo Requests</button>
-                <button onclick="filterCategory('opinion')" class="tab px-6 py-2 text-sm font-medium" id="tab-opinion">Grok's Opinion</button>
-                <button onclick="filterCategory('avoids')" class="tab px-6 py-2 text-sm font-medium" id="tab-avoids">Grok Avoids Request</button>
+            <!-- Sticky Tabs -->
+            <div class="sticky top-20 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4">
+                <div class="flex flex-wrap justify-center gap-2" id="tabs">
+                    <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
+                    <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">I'm Lazy Grok</button>
+                    <button onclick="filterCategory('photo')" class="tab px-6 py-2 text-sm font-medium" id="tab-photo">Photo Requests</button>
+                    <button onclick="filterCategory('opinion')" class="tab px-6 py-2 text-sm font-medium" id="tab-opinion">Grok's Opinion</button>
+                    <button onclick="filterCategory('avoids')" class="tab px-6 py-2 text-sm font-medium" id="tab-avoids">Grok Avoids Request</button>
+                </div>
             </div>
 
-            <!-- Tightened Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="category-grid">
-
-                <!-- 1 Lazy Human Asks - skeletor.jpg -->
+            <!-- Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8" id="category-grid">
+                <!-- Your 7 cards with real photos and exact titles/descriptions (same as last version) -->
+                <!-- Lazy -->
                 <a href="https://x.com/SlavisTon/status/2024954895288201519" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="lazy">
                     <img src="skeletor.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -61,8 +63,7 @@
                         <p class="text-gray-400 text-sm">Oblivious satire victim</p>
                     </div>
                 </a>
-
-                <!-- 2 Photo Requests - Potato brain -->
+                <!-- Photo Requests 1-3 -->
                 <a href="https://x.com/grok/status/2008960036094034251" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
                     <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -70,8 +71,6 @@
                         <p class="text-gray-400 text-sm">A potato gets new clothes</p>
                     </div>
                 </a>
-
-                <!-- 3 Photo Requests - Magic actors -->
                 <a href="https://x.com/grok/status/2023279170436919602" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
                     <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -79,8 +78,6 @@
                         <p class="text-gray-400 text-sm">Bunnyfied</p>
                     </div>
                 </a>
-
-                <!-- 4 Photo Requests - Put some clothes on -->
                 <a href="https://x.com/thodahansle/status/2027262477348856183" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="photo">
                     <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -88,8 +85,7 @@
                         <p class="text-gray-400 text-sm">A digital dressing</p>
                     </div>
                 </a>
-
-                <!-- 5 Grok's Opinion - ventilator.jpg -->
+                <!-- Grok's Opinion 1-2 -->
                 <a href="https://x.com/grok/status/2026168522531852490" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="opinion">
                     <img src="ventilator.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -97,8 +93,6 @@
                         <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
                     </div>
                 </a>
-
-                <!-- 6 Grok's Opinion - Who's from the future -->
                 <a href="https://x.com/thodahansle/status/2023796696451609049" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="opinion">
                     <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -106,8 +100,7 @@
                         <p class="text-gray-400 text-sm">Grok chooses</p>
                     </div>
                 </a>
-
-                <!-- 7 Grok Avoids Request -->
+                <!-- Grok Avoids Request -->
                 <a href="https://x.com/grok/status/1912171402125594659" class="category-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block" data-category="avoids">
                     <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -119,7 +112,7 @@
         </div>
     </section>
 
-    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+    <footer class="py-10 border-t border-purple-900/30 text-center text-gray-500 text-sm">
         Built by @SlavisTon & Grok • Launched Feb 27 2026
     </footer>
 
