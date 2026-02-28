@@ -15,8 +15,7 @@
 
         .cosmic-bg {
             background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%);
-            position: relative;
-            overflow: hidden;
+            min-height: 100vh;
         }
         
         .stars {
@@ -29,37 +28,34 @@
             animation: twinkle 8s infinite alternate;
         }
 
-        .vortex-container { position: relative; width: 420px; height: 420px; }
+        .vortex-container { position: relative; width: 340px; height: 340px; }
         .vortex {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 380px; height: 380px;
+            width: 300px; height: 300px;
             background: conic-gradient(from 90deg at 50% 50%, #000000 0deg, #4b0082 60deg, #7b00ff 120deg, #00f0ff 180deg, #7b00ff 240deg, #4b0082 300deg, #000000 360deg);
             border-radius: 50%;
             animation: spin 28s linear infinite;
-            box-shadow: 0 0 90px #7b00ff, inset 0 0 80px rgba(123,0,255,0.5);
+            box-shadow: 0 0 70px #7b00ff, inset 0 0 60px rgba(123,0,255,0.5);
         }
         .vortex-core {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 140px; height: 140px;
+            width: 110px; height: 110px;
             background: radial-gradient(circle, #000000 30%, #1a0033 100%);
             border-radius: 50%;
-            box-shadow: 0 0 60px #000000, inset 0 0 40px rgba(255,255,255,0.08);
+            box-shadow: 0 0 45px #000000, inset 0 0 30px rgba(255,255,255,0.08);
             animation: spin 9s linear infinite reverse;
         }
         @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
         @keyframes twinkle { 0% { opacity: 0.12; } 100% { opacity: 0.25; } }
 
-        .button-glow {
-            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-        }
-        .button-glow:hover {
-            transform: translateY(-4px) scale(1.04);
-            box-shadow: 0 0 35px rgba(123, 0, 255, 0.75);
-        }
+        .button-glow { transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); }
+        .button-glow:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 0 35px rgba(123, 0, 255, 0.75); }
 
         .neon-text { text-shadow: 0 0 25px #7b00ff; }
         .logo-link { transition: all 0.2s ease; }
         .logo-link:hover { opacity: 0.9; transform: scale(1.03); }
+        .teaser-card { transition: all 0.3s ease; cursor: pointer; }
+        .teaser-card:hover { transform: translateY(-4px); box-shadow: 0 0 35px rgba(123,0,255,0.4); }
     </style>
 </head>
 <body class="text-white">
