@@ -9,20 +9,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-
-        .cosmic-bg {
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
             background: radial-gradient(circle at center, #0a0a1f 0%, #000000 70%);
             position: relative;
             overflow: hidden;
             min-height: 100vh;
         }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        .cosmic-bg::before {
+        /* TWINKLING STARS - sharp & visible */
+        body::before {
             content: '';
             position: absolute;
             inset: 0;
+            z-index: -1;
             background: transparent;
             box-shadow: 
                 80px 120px 2px #fff,
@@ -42,29 +43,31 @@
                 120px 850px 2px #fff,
                 630px 120px 1px #fff,
                 310px 480px 1px #fff,
-                520px 750px 2px #fff;
+                520px 750px 2px #fff,
+                850px 380px 1px #fff,
+                70px 920px 2px #fff;
             animation: twinkle 8s infinite alternate ease-in-out;
-            opacity: 0.85;
-            z-index: 0;
+            opacity: 0.95;
         }
 
         @keyframes twinkle {
-            0% { opacity: 0.55; }
+            0% { opacity: 0.6; }
             100% { opacity: 0.95; }
         }
 
+        /* SPINNING VORTEX */
         .vortex {
             position: absolute;
-            top: 15%;
-            right: 10%;
-            width: 380px;
-            height: 380px;
+            top: 12%;
+            right: 8%;
+            width: 420px;
+            height: 420px;
             border-radius: 50%;
             background: conic-gradient(from 90deg at 50% 50%, #a855f7, #22d3ee, #a855f7, transparent);
-            filter: blur(60px);
-            opacity: 0.28;
-            animation: spin 40s linear infinite;
-            z-index: 0;
+            filter: blur(70px);
+            opacity: 0.35;
+            animation: spin 45s linear infinite;
+            z-index: -1;
         }
 
         @keyframes spin {
@@ -76,7 +79,7 @@
         .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="text-white cosmic-bg">
+<body class="text-white">
 
     <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
