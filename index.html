@@ -18,7 +18,7 @@
         }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        /* Classic twinkling stars */
+        /* Bright twinkling stars */
         body::before {
             content: '';
             position: absolute;
@@ -26,47 +26,47 @@
             z-index: -1;
             background: transparent;
             box-shadow: 
-                80px 120px 2px #fff,
-                220px 350px 1px #fff,
-                450px 180px 2px #fff,
-                650px 420px 1px #fff,
-                150px 550px 1px #fff,
-                780px 90px 2px #fff,
-                320px 620px 1px #fff,
-                920px 280px 1px #fff,
-                50px 700px 2px #fff,
-                580px 680px 1px #fff,
-                180px 280px 1px #fff,
-                720px 520px 2px #fff,
-                410px 150px 1px #fff,
-                890px 670px 1px #fff,
-                120px 850px 2px #fff,
-                630px 120px 1px #fff,
-                310px 480px 1px #fff,
-                520px 750px 2px #fff,
-                850px 380px 1px #fff,
-                70px 920px 2px #fff;
-            animation: twinkle 8s infinite alternate ease-in-out;
-            opacity: 0.9;
+                80px 120px 4px #fff,
+                220px 350px 3px #fff,
+                450px 180px 4px #fff,
+                650px 420px 3px #fff,
+                150px 550px 4px #fff,
+                780px 90px 3px #fff,
+                320px 620px 4px #fff,
+                920px 280px 3px #fff,
+                50px 700px 4px #fff,
+                580px 680px 3px #fff,
+                180px 280px 4px #fff,
+                720px 520px 3px #fff,
+                410px 150px 4px #fff,
+                890px 670px 3px #fff,
+                120px 850px 4px #fff,
+                630px 120px 3px #fff,
+                310px 480px 4px #fff,
+                520px 750px 3px #fff,
+                850px 380px 4px #fff,
+                70px 920px 3px #fff;
+            animation: twinkle 6s infinite alternate ease-in-out;
+            opacity: 0.95;
         }
 
         @keyframes twinkle {
-            0% { opacity: 0.6; }
-            100% { opacity: 0.9; }
+            0% { opacity: 0.7; }
+            100% { opacity: 0.95; }
         }
 
-        /* Classic spinning vortex */
+        /* Strong glowing vortex on the right */
         .vortex {
             position: absolute;
-            top: 15%;
-            right: 10%;
-            width: 380px;
-            height: 380px;
+            top: 12%;
+            right: 8%;
+            width: 420px;
+            height: 420px;
             border-radius: 50%;
             background: conic-gradient(from 90deg at 50% 50%, #a855f7, #22d3ee, #a855f7, transparent);
-            filter: blur(60px);
-            opacity: 0.25;
-            animation: spin 40s linear infinite;
+            filter: blur(65px);
+            opacity: 0.45;
+            animation: spin 38s linear infinite;
             z-index: -1;
         }
 
