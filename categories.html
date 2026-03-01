@@ -1,132 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Categories • GrokVsHumans</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0a; }
-    .battle-card {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      background: #111111;
-      border: 1px solid #333;
-    }
-    .battle-card:hover {
-      transform: translateY(-4px);
-      border-color: #666;
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - GrokVsHumans</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background: url('/bg.jpg') 50% 35% / cover no-repeat fixed;
+            position: relative;
+            min-height: 100vh; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10,10,31,0.82);
+            z-index: -1; }
+
+        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+        .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .category-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(168,85,247,0.2);
+        }
+        .category-card:hover { 
+            transform: translateY(-8px);
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+            border-color: rgb(168 85 247); 
+        }
+        .tab-active {
+            border-bottom: 3px solid rgb(168 85 247);
+            color: white; }
+    </style>
 </head>
-<body class="text-zinc-200 min-h-screen">
+<body class="text-white cosmic-bg">
 
-  <!-- NAV -->
-  <nav class="border-b border-zinc-800 bg-black sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-      <a href="/" class="text-2xl font-bold tracking-tighter">GrokVsHumans</a>
-      <div class="flex gap-8 text-sm">
-        <a href="/" class="hover:text-orange-400">Home</a>
-        <a href="/battles.html" class="hover:text-orange-400">Battles</a>
-        <a href="/categories.html" class="text-orange-400 font-semibold">Categories</a>
-        <a href="#" class="hover:text-orange-400">Memes</a>
-        <a href="#" class="hover:text-orange-400">Submit</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- TITLE + SUBTITLE -->
-  <div class="max-w-4xl mx-auto text-center pt-16 pb-8 px-6">
-    <h1 class="text-6xl font-bold tracking-tighter">Categories</h1>
-    <p class="text-xl text-zinc-400 mt-3">Every Grok vs Humans clash, neatly sorted</p>
-  </div>
-
-  <!-- TABS -->
-  <div class="max-w-6xl mx-auto px-6 border-b border-zinc-800">
-    <div class="flex gap-8 text-sm font-medium overflow-x-auto pb-3">
-      <a href="#" class="pb-3 border-b-2 border-orange-400 text-orange-400 whitespace-nowrap">All</a>
-      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">I'm Lazy Grok</a>
-      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">Photo Requests</a>
-      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">Grok's Opinion</a>
-      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">Grok Avoids Request</a>
-    </div>
-  </div>
-
-  <!-- GRID OF YOUR 7 CARDS -->
-  <div class="max-w-6xl mx-auto px-6 py-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-      <!-- 1 Grok, is this true? -->
-      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-SKELETOR-IMAGE.jpg" class="w-full h-52 object-cover">
-        <div class="p-5">
-          <h4 class="font-semibold text-lg">Grok, is this true?</h4>
-          <p class="text-gray-400 text-sm mt-1">Oblivious satire victim</p>
+    <!-- NAVBAR -->
+    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-center py-4">
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-xl">G</div>
+                    <h1 class="logo-font text-2xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                </a>
+            </div>
+            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm font-medium" id="main-nav">
+                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
+                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors active">Categories</a>
+                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
+                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
+            </div>
         </div>
-      </a>
+    </nav>
 
-      <!-- 2 Potato brain -->
-      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-POTATO-BRAIN-IMAGE.jpg" class="w-full h-52 object-cover">
-        <div class="p-5">
-          <h4 class="font-semibold text-lg">Potato brain</h4>
-          <p class="text-gray-400 text-sm mt-1">A potato gets new clothes</p>
+    <section class="pt-28 pb-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h1 class="text-4xl font-bold text-center mb-3">Categories</h1>
+            <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
+
+            <!-- Sticky Tabs -->
+            <div class="sticky top-28 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-12">
+                <div class="flex flex-wrap justify-center gap-2" id="tabs">
+                    <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
+                    <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">I'm Lazy Grok</button>
+                    <button onclick="filterCategory('photo')" class="tab px-6 py-2 text-sm font-medium" id="tab-photo">Photo Requests</button>
+                    <button onclick="filterCategory('opinion')" class="tab px-6 py-2 text-sm font-medium" id="tab-opinion">Grok's Opinion</button>
+                    <button onclick="filterCategory('avoids')" class="tab px-6 py-2 text-sm font-medium" id="tab-avoids">Grok Avoids Request</button>
+                </div>
+            </div>
+
+            <!-- GRID -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-10" id="category-grid">
+
+                <!-- 1 Lazy Grok -->
+                <a href="https://x.com/SlavisTon/status/2024954895288201519" class="category-card rounded-3xl overflow-hidden block" data-category="lazy">
+                    <img src="skeletor.jpg" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Grok, is this true?</h4>
+                        <p class="text-gray-400 text-sm">Oblivious satire victim</p>
+                    </div>
+                </a>
+
+                <!-- 2 Photo Requests -->
+                <a href="https://x.com/grok/status/2008960036094034251" class="category-card rounded-3xl overflow-hidden block" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Potato brain</h4>
+                        <p class="text-gray-400 text-sm">A potato gets new clothes</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/grok/status/2023279170436919602" class="category-card rounded-3xl overflow-hidden block" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Magic actors</h4>
+                        <p class="text-gray-400 text-sm">Bunnyfied</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/thodahansle/status/2027262477348856183" class="category-card rounded-3xl overflow-hidden block" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Put some clothes on</h4>
+                        <p class="text-gray-400 text-sm">A digital dressing</p>
+                    </div>
+                </a>
+
+                <!-- Grok's Opinion -->
+                <a href="https://x.com/grok/status/2026168522531852490" class="category-card rounded-3xl overflow-hidden block" data-category="opinion">
+                    <img src="ventilator.jpg" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Grok helps</h4>
+                        <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/thodahansle/status/2023796696451609049" class="category-card rounded-3xl overflow-hidden block" data-category="opinion">
+                    <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Who's from the future</h4>
+                        <p class="text-gray-400 text-sm">Grok chooses</p>
+                    </div>
+                </a>
+
+                <!-- Grok Avoids Request -->
+                <a href="https://x.com/grok/status/1912171402125594659" class="category-card rounded-3xl overflow-hidden block relative" data-category="avoids">
+                    <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-semibold text-lg mb-2">Grok goes on a tangent</h4>
+                        <p class="text-gray-400 text-sm">Classic avoidance</p>
+                    </div>
+                    <div class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bannation</div>
+                </a>
+
+            </div>
         </div>
-      </a>
+    </section>
 
-      <!-- 3 Magic actors -->
-      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-MAGIC-ACTORS-IMAGE.jpg" class="w-full h-52 object-cover">
-        <div class="p-5">
-          <h4 class="font-semibold text-lg">Magic actors</h4>
-          <p class="text-gray-400 text-sm mt-1">Bunnyfied</p>
-        </div>
-      </a>
+    <footer class="py-10 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+        Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
+        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
+        Launched Mar 01 2026
+    </footer>
 
-      <!-- 4 Put some clothes on -->
-      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-CLOTHES-ON-IMAGE.jpg" class="w-full h-52 object-cover">
-        <div class="p-5">
-          <h4 class="font-semibold text-lg">Put some clothes on</h4>
-          <p class="text-gray-400 text-sm mt-1">A digital dressing</p>
-        </div>
-      </a>
+    <script>
+        function filterCategory(cat) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+            document.getElementById('tab-' + cat).classList.add('tab-active');
 
-      <!-- 5 Grok helps -->
-      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-GROK-HELPS-IMAGE.jpg" class="w-full h-52 object-cover">
-        <div class="p-5">
-          <h4 class="font-semibold text-lg">Grok helps</h4>
-          <p class="text-gray-400 text-sm mt-1">Grok offers positive vibes</p>
-        </div>
-      </a>
+            document.querySelectorAll('#category-grid a').forEach(card => {
+                if (cat === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+                }
+            });
+        }
 
-      <!-- 6 Who's from the future -->
-      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-FUTURE-CARTOON-IMAGE.jpg" class="w-full h-52 object-cover">
-        <div class="p-5">
-          <h4 class="font-semibold text-lg">Who's from the future</h4>
-          <p class="text-gray-400 text-sm mt-1">Grok chooses</p>
-        </div>
-      </a>
-
-      <!-- 7 Grok goes on a tangent -->
-      <a href="#" class="battle-card rounded-3xl overflow-hidden block relative">
-        <img src="https://pbs.twimg.com/media/YOUR-TANGENT-IMAGE.jpg" class="w-full h-52 object-cover">
-        <div class="p-5">
-          <h4 class="font-semibold text-lg">Grok goes on a tangent</h4>
-          <p class="text-gray-400 text-sm mt-1">Classic avoidance</p>
-        </div>
-        <div class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bannation</div>
-      </a>
-
-    </div>
-  </div>
-
-  <footer class="border-t border-zinc-800 bg-black py-12 text-center text-zinc-500 text-sm">
-    grokvshumans.com • Built for the lulz and the truth
-  </footer>
-
+        // Auto-highlight current page
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            }
+        });
+    </script>
 </body>
 </html>
