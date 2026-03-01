@@ -7,20 +7,23 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    body { font-family: 'Inter', system-ui, sans-serif; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0a; }
     .battle-card {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: #111111;
+      border: 1px solid #333;
     }
     .battle-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
+      border-color: #666;
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
     }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+<body class="text-zinc-200 min-h-screen">
 
-  <!-- NAV (matching your live site) -->
-  <nav class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur-md sticky top-0 z-50">
+  <!-- NAV -->
+  <nav class="border-b border-zinc-800 bg-black sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
       <a href="/" class="text-2xl font-bold tracking-tighter">GrokVsHumans</a>
       <div class="flex gap-8 text-sm">
@@ -33,87 +36,87 @@
     </div>
   </nav>
 
-  <!-- HERO -->
-  <div class="max-w-4xl mx-auto text-center pt-20 pb-8 px-6">
-    <h1 class="text-6xl font-bold tracking-tighter mb-3">Categories</h1>
-    <p class="text-xl text-zinc-400">Every Grok vs Humans clash, neatly sorted</p>
+  <!-- TITLE + SUBTITLE -->
+  <div class="max-w-4xl mx-auto text-center pt-16 pb-8 px-6">
+    <h1 class="text-6xl font-bold tracking-tighter">Categories</h1>
+    <p class="text-xl text-zinc-400 mt-3">Every Grok vs Humans clash, neatly sorted</p>
   </div>
 
   <!-- TABS -->
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="border-b border-zinc-800 flex gap-8 text-sm font-medium overflow-x-auto pb-1">
-      <a href="#" class="pb-4 border-b-2 border-orange-400 text-orange-400">All</a>
-      <a href="#" class="pb-4 text-zinc-400 hover:text-zinc-300">I'm Lazy Grok</a>
-      <a href="#" class="pb-4 text-zinc-400 hover:text-zinc-300">Photo Requests</a>
-      <a href="#" class="pb-4 text-zinc-400 hover:text-zinc-300">Grok's Opinion</a>
-      <a href="#" class="pb-4 text-zinc-400 hover:text-zinc-300">Grok Avoids Request</a>
+  <div class="max-w-6xl mx-auto px-6 border-b border-zinc-800">
+    <div class="flex gap-8 text-sm font-medium overflow-x-auto pb-3">
+      <a href="#" class="pb-3 border-b-2 border-orange-400 text-orange-400 whitespace-nowrap">All</a>
+      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">I'm Lazy Grok</a>
+      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">Photo Requests</a>
+      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">Grok's Opinion</a>
+      <a href="#" class="pb-3 text-zinc-400 hover:text-zinc-300 whitespace-nowrap">Grok Avoids Request</a>
     </div>
   </div>
 
-  <!-- GRID - YOUR EXACT 7 CARDS -->
+  <!-- GRID OF YOUR 7 CARDS -->
   <div class="max-w-6xl mx-auto px-6 py-12">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
       <!-- 1 Grok, is this true? -->
-      <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
         <img src="https://pbs.twimg.com/media/YOUR-SKELETOR-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
-          <h4 class="font-semibold text-lg mb-1">Grok, is this true?</h4>
-          <p class="text-gray-400 text-sm">Oblivious satire victim</p>
+          <h4 class="font-semibold text-lg">Grok, is this true?</h4>
+          <p class="text-gray-400 text-sm mt-1">Oblivious satire victim</p>
         </div>
       </a>
 
       <!-- 2 Potato brain -->
-      <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
         <img src="https://pbs.twimg.com/media/YOUR-POTATO-BRAIN-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
-          <h4 class="font-semibold text-lg mb-1">Potato brain</h4>
-          <p class="text-gray-400 text-sm">A potato gets new clothes</p>
+          <h4 class="font-semibold text-lg">Potato brain</h4>
+          <p class="text-gray-400 text-sm mt-1">A potato gets new clothes</p>
         </div>
       </a>
 
       <!-- 3 Magic actors -->
-      <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
         <img src="https://pbs.twimg.com/media/YOUR-MAGIC-ACTORS-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
-          <h4 class="font-semibold text-lg mb-1">Magic actors</h4>
-          <p class="text-gray-400 text-sm">Bunnyfied</p>
+          <h4 class="font-semibold text-lg">Magic actors</h4>
+          <p class="text-gray-400 text-sm mt-1">Bunnyfied</p>
         </div>
       </a>
 
       <!-- 4 Put some clothes on -->
-      <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
         <img src="https://pbs.twimg.com/media/YOUR-CLOTHES-ON-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
-          <h4 class="font-semibold text-lg mb-1">Put some clothes on</h4>
-          <p class="text-gray-400 text-sm">A digital dressing</p>
+          <h4 class="font-semibold text-lg">Put some clothes on</h4>
+          <p class="text-gray-400 text-sm mt-1">A digital dressing</p>
         </div>
       </a>
 
       <!-- 5 Grok helps -->
-      <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
         <img src="https://pbs.twimg.com/media/YOUR-GROK-HELPS-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
-          <h4 class="font-semibold text-lg mb-1">Grok helps</h4>
-          <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
+          <h4 class="font-semibold text-lg">Grok helps</h4>
+          <p class="text-gray-400 text-sm mt-1">Grok offers positive vibes</p>
         </div>
       </a>
 
       <!-- 6 Who's from the future -->
-      <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
+      <a href="#" class="battle-card rounded-3xl overflow-hidden block">
         <img src="https://pbs.twimg.com/media/YOUR-FUTURE-CARTOON-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
-          <h4 class="font-semibold text-lg mb-1">Who's from the future</h4>
-          <p class="text-gray-400 text-sm">Grok chooses</p>
+          <h4 class="font-semibold text-lg">Who's from the future</h4>
+          <p class="text-gray-400 text-sm mt-1">Grok chooses</p>
         </div>
       </a>
 
       <!-- 7 Grok goes on a tangent -->
-      <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block relative">
+      <a href="#" class="battle-card rounded-3xl overflow-hidden block relative">
         <img src="https://pbs.twimg.com/media/YOUR-TANGENT-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
-          <h4 class="font-semibold text-lg mb-1">Grok goes on a tangent</h4>
-          <p class="text-gray-400 text-sm">Classic avoidance</p>
+          <h4 class="font-semibold text-lg">Grok goes on a tangent</h4>
+          <p class="text-gray-400 text-sm mt-1">Classic avoidance</p>
         </div>
         <div class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bannation</div>
       </a>
@@ -121,7 +124,7 @@
     </div>
   </div>
 
-  <footer class="border-t border-zinc-800 bg-zinc-900 py-12 text-center text-zinc-500 text-sm">
+  <footer class="border-t border-zinc-800 bg-black py-12 text-center text-zinc-500 text-sm">
     grokvshumans.com • Built for the lulz and the truth
   </footer>
 
