@@ -11,7 +11,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         body { 
             font-family: 'Inter', system-ui, sans-serif; 
-            background: url('/bg.jpg') 50% 35% / cover no-repeat fixed;
+            background: none;
             position: relative;
             min-height: 100vh; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
@@ -164,6 +164,24 @@
     </footer>
 
     <script>
+        // === RANDOM BACKGROUND ROTATOR ===
+        const bgs = ['bg1.webp', 'bg2.webp', 'bg3.webp', 'bg4.webp', 'bg5.webp', 'bg6.webp', 'bg7.webp', 'bg8.webp', 'bg9.webp', 'bg10.webp', 'bg11.webp', 'bg12.webp', 'bg13.webp', 'bg14.webp', 'bg15.webp', 'bg16.webp', 'bg17.webp', 'bg18.webp', 'bg19.webp', 'bg20.webp',]; // add more filenames here anytime
+        const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
+        document.body.style.backgroundImage = `url('/${randomBg}')`;
+        document.body.style.backgroundPosition = '50% 35%';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
+        
+        function filterCategory(cat) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+            document.getElementById('tab-' + cat).classList.add('tab-active');
+            document.querySelectorAll('#battle-grid a').forEach(card => {
+                if (cat === 'all') card.style.display = 'block';
+                else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+            });
+        }
+
         document.querySelectorAll('.nav-link').forEach(link => {
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
             if (link.getAttribute('href') === currentPage) link.classList.add('active');
