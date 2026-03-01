@@ -22,21 +22,17 @@
             inset: 0;
             background: rgba(10,10,31,0.82);
             z-index: -1; }
-
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
-        .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .category-card {
             transition: all 0.3s ease;
             cursor: pointer;
             background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2);
-        }
+            border: 1px solid rgba(168,85,247,0.2); }
         .category-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
-            border-color: rgb(168 85 247); 
-        }
+            border-color: rgb(168 85 247); }
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
             color: white; }
@@ -55,7 +51,7 @@
             </div>
             <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm font-medium" id="main-nav">
                 <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
-                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors active">Categories</a>
+                <a href="categories.html" class="nav-link active hover:text-purple-400 transition-colors">Categories</a>
                 <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
                 <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
             </div>
@@ -71,7 +67,7 @@
             <div class="sticky top-28 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-12">
                 <div class="flex flex-wrap justify-center gap-2" id="tabs">
                     <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
-                    <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">I'm Lazy Grok</button>
+                    <button onclick="filterCategory('lazy')" class="tab px-6 py-2 text-sm font-medium" id="tab-lazy">Grok, Think For Me</button>
                     <button onclick="filterCategory('photo')" class="tab px-6 py-2 text-sm font-medium" id="tab-photo">Photo Requests</button>
                     <button onclick="filterCategory('opinion')" class="tab px-6 py-2 text-sm font-medium" id="tab-opinion">Grok's Opinion</button>
                     <button onclick="filterCategory('avoids')" class="tab px-6 py-2 text-sm font-medium" id="tab-avoids">Grok Avoids Request</button>
@@ -81,7 +77,7 @@
             <!-- GRID -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-10" id="category-grid">
 
-                <!-- 1 Lazy Grok -->
+                <!-- 1 Grok, Think For Me -->
                 <a href="https://x.com/SlavisTon/status/2024954895288201519" class="category-card rounded-3xl overflow-hidden block" data-category="lazy">
                     <img src="skeletor.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
@@ -90,7 +86,7 @@
                     </div>
                 </a>
 
-                <!-- 2 Photo Requests -->
+                <!-- Photo Requests -->
                 <a href="https://x.com/grok/status/2008960036094034251" class="category-card rounded-3xl overflow-hidden block" data-category="photo">
                     <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" class="w-full h-48 object-cover">
                     <div class="p-5">
