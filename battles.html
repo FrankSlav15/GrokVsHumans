@@ -40,12 +40,14 @@
         .battle-card .content {
             flex: 1;
             padding: 1.25rem;
-            min-height: 110px; /* forces uniform height so buttons always sit at bottom */
         }
         .battle-card .buttons {
             flex-shrink: 0;
             border-top: 1px solid #27272a;
         }
+        .tab-active {
+            border-bottom: 3px solid rgb(168 85 247);
+            color: white; }
     </style>
 </head>
 <body class="text-white cosmic-bg">
@@ -72,6 +74,19 @@
         <div class="max-w-6xl mx-auto px-6">
             <h1 class="text-4xl font-bold text-center mb-3">Battles</h1>
             <p class="text-center text-zinc-400 text-lg">Where Grok tells the truth… and humans lose their minds</p>
+
+            <!-- Sticky Tabs -->
+            <div class="sticky top-28 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-12">
+                <div class="flex flex-wrap justify-center gap-2" id="tabs">
+                    <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active" id="tab-all">All</button>
+                    <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium" id="tab-nonsense">Nonsense</button>
+                    <button onclick="filterCategory('political')" class="tab px-6 py-2 text-sm font-medium" id="tab-political">Political</button>
+                    <button onclick="filterCategory('serious')" class="tab px-6 py-2 text-sm font-medium" id="tab-serious">Now, In All Seriousness</button>
+                    <button onclick="filterCategory('citation')" class="tab px-6 py-2 text-sm font-medium" id="tab-citation">(UN)Popular Citations</button>
+                    <button onclick="filterCategory('joke')" class="tab px-6 py-2 text-sm font-medium" id="tab-joke">Joke Battles</button>
+                    <button onclick="filterCategory('censorship')" class="tab px-6 py-2 text-sm font-medium" id="tab-censorship">Censorship 1984</button>
+                </div>
+            </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-10" id="battle-grid">
 
@@ -257,6 +272,19 @@
                     </div>
                 </a>
 
+            <!-- Example placeholder for a "Now, In All Seriousness" card - add your real ones with data-category="serious" -->
+                <!-- <a href="..." class="battle-card rounded-3xl overflow-hidden block" data-category="serious">
+                    <img src="..." loading="lazy" decoding="async" width="1200" height="675" class="w-full h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Your Serious Title</h4>
+                        <p class="text-gray-400 text-sm">Description here</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', 'ID')" class="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold">Grok Won</button>
+                        <button onclick="vote(event, 'human', 'ID')" class="flex-1 py-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold">Human Won</button>
+                    </div>
+                </a> -->
+
             </div>
         </div>
     </section>
@@ -268,6 +296,16 @@
     </footer>
 
     <script>
+        function filterCategory(cat) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+            document.getElementById('tab-' + cat).classList.add('tab-active');
+
+            document.querySelectorAll('#battle-grid a').forEach(card => {
+                if (cat === 'all') card.style.display = 'block';
+                else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+            });
+        }
+
         document.querySelectorAll('.nav-link').forEach(link => {
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
             if (link.getAttribute('href') === currentPage) link.classList.add('active');
