@@ -12,15 +12,15 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .battle-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
     }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen">
 
-  <!-- NAV -->
-  <nav class="border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-md sticky top-0 z-50">
+  <!-- NAV (matching your live site) -->
+  <nav class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
       <a href="/" class="text-2xl font-bold tracking-tighter">GrokVsHumans</a>
       <div class="flex gap-8 text-sm">
@@ -34,8 +34,8 @@
   </nav>
 
   <!-- HERO -->
-  <div class="max-w-4xl mx-auto text-center pt-20 pb-12 px-6">
-    <h1 class="text-6xl font-bold tracking-tighter mb-4">Categories</h1>
+  <div class="max-w-4xl mx-auto text-center pt-20 pb-8 px-6">
+    <h1 class="text-6xl font-bold tracking-tighter mb-3">Categories</h1>
     <p class="text-xl text-zinc-400">Every Grok vs Humans clash, neatly sorted</p>
   </div>
 
@@ -50,13 +50,13 @@
     </div>
   </div>
 
-  <!-- GRID WITH YOUR ORIGINAL 7 CARDS -->
+  <!-- GRID - YOUR EXACT 7 CARDS -->
   <div class="max-w-6xl mx-auto px-6 py-12">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
       <!-- 1 Grok, is this true? -->
       <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-SKELETOR-IMAGE-URL.jpg" class="w-full h-52 object-cover" alt="">
+        <img src="https://pbs.twimg.com/media/YOUR-SKELETOR-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
           <h4 class="font-semibold text-lg mb-1">Grok, is this true?</h4>
           <p class="text-gray-400 text-sm">Oblivious satire victim</p>
@@ -65,7 +65,7 @@
 
       <!-- 2 Potato brain -->
       <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-POTATO-BRAIN-IMAGE-URL.jpg" class="w-full h-52 object-cover" alt="">
+        <img src="https://pbs.twimg.com/media/YOUR-POTATO-BRAIN-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
           <h4 class="font-semibold text-lg mb-1">Potato brain</h4>
           <p class="text-gray-400 text-sm">A potato gets new clothes</p>
@@ -74,7 +74,7 @@
 
       <!-- 3 Magic actors -->
       <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-MAGIC-ACTORS-IMAGE-URL.jpg" class="w-full h-52 object-cover" alt="">
+        <img src="https://pbs.twimg.com/media/YOUR-MAGIC-ACTORS-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
           <h4 class="font-semibold text-lg mb-1">Magic actors</h4>
           <p class="text-gray-400 text-sm">Bunnyfied</p>
@@ -83,7 +83,7 @@
 
       <!-- 4 Put some clothes on -->
       <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-CLOTHES-ON-IMAGE-URL.jpg" class="w-full h-52 object-cover" alt="">
+        <img src="https://pbs.twimg.com/media/YOUR-CLOTHES-ON-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
           <h4 class="font-semibold text-lg mb-1">Put some clothes on</h4>
           <p class="text-gray-400 text-sm">A digital dressing</p>
@@ -92,7 +92,7 @@
 
       <!-- 5 Grok helps -->
       <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-GROK-HELPS-IMAGE-URL.jpg" class="w-full h-52 object-cover" alt="">
+        <img src="https://pbs.twimg.com/media/YOUR-GROK-HELPS-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
           <h4 class="font-semibold text-lg mb-1">Grok helps</h4>
           <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
@@ -101,7 +101,7 @@
 
       <!-- 6 Who's from the future -->
       <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block">
-        <img src="https://pbs.twimg.com/media/YOUR-FUTURE-CARTOON-IMAGE-URL.jpg" class="w-full h-52 object-cover" alt="">
+        <img src="https://pbs.twimg.com/media/YOUR-FUTURE-CARTOON-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
           <h4 class="font-semibold text-lg mb-1">Who's from the future</h4>
           <p class="text-gray-400 text-sm">Grok chooses</p>
@@ -110,7 +110,7 @@
 
       <!-- 7 Grok goes on a tangent -->
       <a href="#" class="battle-card bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden block relative">
-        <img src="https://pbs.twimg.com/media/YOUR-TANGENT-IMAGE-URL.jpg" class="w-full h-52 object-cover" alt="">
+        <img src="https://pbs.twimg.com/media/YOUR-TANGENT-IMAGE.jpg" class="w-full h-52 object-cover">
         <div class="p-5">
           <h4 class="font-semibold text-lg mb-1">Grok goes on a tangent</h4>
           <p class="text-gray-400 text-sm">Classic avoidance</p>
