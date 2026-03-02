@@ -340,17 +340,20 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Force consistent button height + centering (fixes the size difference)
-    const buttonStyle = document.createElement('style');
-    buttonStyle.textContent = `
+    // FORCE ALL BUTTONS TO THE SAME EXACT HEIGHT (this fixes the issue)
+    const fixedButtonStyle = document.createElement('style');
+    fixedButtonStyle.textContent = `
         .battle-card .buttons button {
-            min-height: 58px !important;
+            height: 64px !important;
+            min-height: 64px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
+            padding: 0 16px !important;
+            font-size: 1.1rem;
         }
     `;
-    document.head.appendChild(buttonStyle);
+    document.head.appendChild(fixedButtonStyle);
 
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
