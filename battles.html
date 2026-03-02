@@ -321,7 +321,7 @@
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-        // === FIREBASE SETUP (updated for europe-west1) ===
+    // === FIREBASE SETUP (correct europe-west1) ===
     const firebaseConfig = {
       apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
       authDomain: "grokvshumans.firebaseapp.com",
@@ -332,14 +332,8 @@
       appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
     };
 
-    let database;
-    try {
-        firebase.initializeApp(firebaseConfig);
-        database = firebase.database();
-        console.log("✅ Firebase connected successfully");
-    } catch (e) {
-        console.error("❌ Firebase init failed:", e);
-    }
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
@@ -368,13 +362,6 @@
         }, 2800);
     }
 
-    function updateButtonUI(id, grokCount, humanCount) {
-        const grokBtn = document.getElementById('grok-btn-' + id);
-        const humanBtn = document.getElementById('human-btn-' + id);
-        if (grokBtn) grokBtn.textContent = `Grok Won (${grokCount})`;
-        if (humanBtn) humanBtn.textContent = `Human Won (${humanCount})`;
-    }
-
     function vote(event, winner, id) {
         event.stopImmediatePropagation();
         event.preventDefault();
@@ -385,51 +372,31 @@
             return;
         }
 
-        console.log(`🗳️ Voting for ${winner} on battle ${id}`);
+        showToast("Vote sent to Firebase! Refresh database tab now...");
 
-        // Optimistic update so you see the number instantly
-        let currentGrok = 0, currentHuman = 0;
-        const grokBtn = document.getElementById('grok-btn-' + id);
-        const humanBtn = document.getElementById('human-btn-' + id);
-        if (grokBtn) currentGrok = parseInt(grokBtn.textContent.match(/\d+/) || 0);
-        if (humanBtn) currentHuman = parseInt(humanBtn.textContent.match(/\d+/) || 0);
-
-        if (winner === 'grok') currentGrok++;
-        else currentHuman++;
-        updateButtonUI(id, currentGrok, currentHuman);
-
-        // Send to Firebase
-        if (database) {
-            const ref = database.ref('battles/' + id);
-            ref.transaction(current => {
-                if (current === null) current = { grok: 0, human: 0 };
-                if (winner === 'grok') current.grok = (current.grok || 0) + 1;
-                else current.human = (current.human || 0) + 1;
-                return current;
-            }, (error, committed) => {
-                if (error) console.error("❌ Firebase transaction failed:", error);
-                else if (committed) console.log("✅ Vote saved globally!");
-            });
-        } else {
-            console.error("❌ Database not ready — check SDK scripts in <head>");
-        }
+        const ref = database.ref('battles/' + id);
+        ref.transaction(current => {
+            if (current === null) current = { grok: 0, human: 0 };
+            if (winner === 'grok') current.grok = (current.grok || 0) + 1;
+            else current.human = (current.human || 0) + 1;
+            return current;
+        });
 
         localStorage.setItem(votedKey, 'true');
         showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
     }
 
-    // Live updates from everyone else
+    // Live updates
     document.addEventListener('DOMContentLoaded', () => {
-        console.log("📡 Attaching live listeners to all cards");
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
             const id = btn.id.replace('grok-btn-', '');
-            if (database) {
-                database.ref('battles/' + id).on('value', (snapshot) => {
-                    const data = snapshot.val() || { grok: 0, human: 0 };
-                    console.log(`📡 Live update for ${id}:`, data);
-                    updateButtonUI(id, data.grok, data.human);
-                });
-            }
+            database.ref('battles/' + id).on('value', (snapshot) => {
+                const data = snapshot.val() || { grok: 0, human: 0 };
+                const grokBtn = document.getElementById('grok-btn-' + id);
+                const humanBtn = document.getElementById('human-btn-' + id);
+                if (grokBtn) grokBtn.textContent = `Grok Won (${data.grok})`;
+                if (humanBtn) humanBtn.textContent = `Human Won (${data.human})`;
+            });
         });
     });
 
