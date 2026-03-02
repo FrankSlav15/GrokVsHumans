@@ -363,12 +363,17 @@
         }, 2800);
     }
 
-    function updateButtonUI(id, grokCount, humanCount) {
+    function updateButtonUI(id, grokCount, humanCount, hasVoted) {
         const grokBtn = document.getElementById('grok-btn-' + id);
         const humanBtn = document.getElementById('human-btn-' + id);
         
-        if (grokBtn) grokBtn.innerHTML = `Grok: <span class="text-2xl font-bold">${grokCount}</span>`;
-        if (humanBtn) humanBtn.innerHTML = `<span class="text-2xl font-bold">${humanCount}</span> :Human`;
+        if (hasVoted) {
+            if (grokBtn) grokBtn.innerHTML = `Grok: <span class="text-2xl font-bold">${grokCount}</span>`;
+            if (humanBtn) humanBtn.innerHTML = `<span class="text-2xl font-bold">${humanCount}</span> :Human`;
+        } else {
+            if (grokBtn) grokBtn.textContent = 'Grok Won';
+            if (humanBtn) humanBtn.textContent = 'Human Won';
+        }
     }
 
     function vote(event, winner, id) {
@@ -393,13 +398,22 @@
         showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
     }
 
-    // Live updates + initial load
+    // Show correct state on load + live updates
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
             const id = btn.id.replace('grok-btn-', '');
+            const hasVoted = !!localStorage.getItem('voted_' + id);
+
+            // Initial load
+            database.ref('battles/' + id).once('value', (snapshot) => {
+                const data = snapshot.val() || { grok: 0, human: 0 };
+                updateButtonUI(id, data.grok, data.human, hasVoted);
+            });
+
+            // Live updates (only show numbers if user has voted on this card)
             database.ref('battles/' + id).on('value', (snapshot) => {
                 const data = snapshot.val() || { grok: 0, human: 0 };
-                updateButtonUI(id, data.grok, data.human);
+                updateButtonUI(id, data.grok, data.human, hasVoted);
             });
         });
     });
