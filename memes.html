@@ -26,13 +26,17 @@
             inset: 0;
             background: rgba(10,10,31,0.82);
             z-index: -1; }
+
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
         .meme-card {
             transition: all 0.3s ease;
             cursor: pointer;
             background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2); }
+            border: 1px solid rgba(168,85,247,0.2); 
+            display: flex;
+            flex-direction: column;
+            height: 100%; }
         .meme-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
@@ -41,19 +45,145 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (same) -->
+    <!-- NAVBAR - Same as Battles/Categories -->
+    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-center py-6 md:py-8">
+                <a href="index.html" class="flex items-center gap-4">
+                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
+                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                </a>
+            </div>
+            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
+                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
+                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
+                <a href="memes.html" class="nav-link active hover:text-purple-400 transition-colors">Memes</a>
+                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
+            </div>
+            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
+                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-plus"></i> Submit Battle
+                </a>
+            </div>
+        </div>
+    </nav>
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-20 relative z-10 flex-1">
-        <!-- Your full meme grid here -->
+    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Memes</h1>
+            <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="meme-grid">
+
+                <!-- 1 CoreyJMahler -->
+                <a href="https://x.com/CoreyJMahler/status/1963696808536027638" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Grok is a high-tech rock</h4>
+                        <p class="text-gray-400 text-sm">CoreyJMahler drops the perfect one-liner</p>
+                    </div>
+                </a>
+
+                <!-- 2 ClownWorld -->
+                <a href="https://x.com/ClownWorld/status/1952204779142484327" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="kermit.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">ClownWorld Grok moment</h4>
+                        <p class="text-gray-400 text-sm">Pure chaos meets Grok wisdom</p>
+                    </div>
+                </a>
+
+                <!-- 3 Elon tags Grok -->
+                <a href="https://x.com/elonmusk/status/1951794381650047135" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="milk.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Elon tags Grok</h4>
+                        <p class="text-gray-400 text-sm">The boss himself joins the fun</p>
+                    </div>
+                </a>
+
+                <!-- 4 AntiLeftMemes -->
+                <a href="https://x.com/AntiLeftMemes/status/1919112936133386688" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">AntiLeft Grok meme</h4>
+                        <p class="text-gray-400 text-sm">Grok roasts the left perfectly</p>
+                    </div>
+                </a>
+
+                <!-- 5 MrFeduppp -->
+                <a href="https://x.com/MrFeduppp/status/1963700130236023016" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">MrFeduppp Grok tagging</h4>
+                        <p class="text-gray-400 text-sm">The tagging war continues</p>
+                    </div>
+                </a>
+
+                <!-- 6 breakfastmeat1 -->
+                <a href="https://x.com/breakfastmeat1/status/1963758755121942628" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Breakfastmeat Grok chaos</h4>
+                        <p class="text-gray-400 text-sm">Breakfastmeat joins the tagging madness</p>
+                    </div>
+                </a>
+
+                <!-- 7 chrissyxchi -->
+                <a href="https://x.com/chrissyxchi/status/1945884259685658769" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Murloc vs Grok</h4>
+                        <p class="text-gray-400 text-sm">"i asked grok" yeah well I asked this murloc</p>
+                    </div>
+                </a>
+
+                <!-- 8 SnarkyPotatoes -->
+                <a href="https://x.com/SnarkyPotatoes/status/1958251733190336870" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Potato flipping the bird</h4>
+                        <p class="text-gray-400 text-sm">Grok tried to generate a middle finger potato</p>
+                    </div>
+                </a>
+
+                <!-- 9 DogecoinNorway -->
+                <a href="https://x.com/DogecoinNorway/status/2027313399185788979" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">@gork is Elon alter ego</h4>
+                        <p class="text-gray-400 text-sm">DogecoinNorway nails it</p>
+                    </div>
+                </a>
+
+                <!-- 10 Janknoester1962 -->
+                <a href="https://x.com/Janknoester1962/status/2027361565511459042" class="meme-card rounded-3xl overflow-hidden block">
+                    <img src="scooby.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Better one</h4>
+                        <p class="text-gray-400 text-sm">Pancake Grok OG drops a better version</p>
+                    </div>
+                </a>
+
+            </div>
+        </div>
     </section>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm mt-auto">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
-        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Mar 01 2026
+        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
+        Launched Mar 01 2026
     </footer>
 
     <script>
-        // RANDOM BACKGROUND
+        // RANDOM BACKGROUND ROTATOR (20 images)
+        const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
+        const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
+        document.body.style.backgroundImage = `url('/${randomBg}')`;
+        document.body.style.backgroundPosition = '50% 35%';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
     </script>
 </body>
 </html>
