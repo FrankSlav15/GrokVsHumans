@@ -53,7 +53,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR - Bigger logo & title on desktop -->
+    <!-- NAVBAR - Big logo & title -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -81,16 +81,20 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Battles</h1>
             <p class="text-center text-zinc-400 text-lg">Where Grok tells the truth… and humans lose their minds</p>
 
-            <!-- Sticky Tabs - Fixed for mobile -->
-            <div class="sticky top-28 md:top-36 lg:top-44 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-10 overflow-x-auto">
-                <div class="flex gap-2 min-w-max" id="tabs">
-                    <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
-                    <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-nonsense">Nonsense</button>
-                    <button onclick="filterCategory('political')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-political">Political</button>
-                    <button onclick="filterCategory('serious')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-serious">Now, In All Seriousness</button>
-                    <button onclick="filterCategory('citation')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-citation">(UN)Popular Citations</button>
-                    <button onclick="filterCategory('joke')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-joke">Joke Battles</button>
-                    <button onclick="filterCategory('censorship')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-censorship">Conspiracy 1984</button>
+            <!-- Sticky Tabs - Centered on desktop, scrollable on mobile -->
+            <div class="sticky top-28 md:top-36 lg:top-44 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-10">
+                <div class="max-w-7xl mx-auto px-6">
+                    <div class="flex justify-center">
+                        <div class="flex gap-2 min-w-max overflow-x-auto" id="tabs">
+                            <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
+                            <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-nonsense">Nonsense</button>
+                            <button onclick="filterCategory('political')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-political">Political</button>
+                            <button onclick="filterCategory('serious')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-serious">Now, In All Seriousness</button>
+                            <button onclick="filterCategory('citation')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-citation">(UN)Popular Citations</button>
+                            <button onclick="filterCategory('joke')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-joke">Joke Battles</button>
+                            <button onclick="filterCategory('censorship')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-censorship">Conspiracy 1984</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
