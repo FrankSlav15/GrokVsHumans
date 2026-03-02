@@ -83,17 +83,17 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Battles</h1>
             <p class="text-center text-zinc-400 text-lg">Where Grok tells the truth… and humans lose their minds</p>
 
-            <!-- Sticky Tabs - Centered desktop, sticky + scrollable mobile -->
-            <div class="sticky top-44 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
-                <div class="flex justify-center px-6">
-                    <div class="flex gap-2 min-w-max overflow-x-auto" id="tabs">
-                        <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
-                        <button onclick="filterCategory('nonsense')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-nonsense">Nonsense</button>
-                        <button onclick="filterCategory('political')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-political">Political</button>
-                        <button onclick="filterCategory('serious')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-serious">Now, In All Seriousness</button>
-                        <button onclick="filterCategory('citation')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-citation">(UN)Popular Citations</button>
-                        <button onclick="filterCategory('joke')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-joke">Joke Battles</button>
-                        <button onclick="filterCategory('censorship')" class="tab px-6 py-2 text-sm font-medium whitespace-nowrap" id="tab-censorship">Conspiracy 1984</button>
+            <!-- Sticky Tabs - Perfect spacing + all tabs visible on mobile -->
+            <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
+                <div class="flex justify-start md:justify-center px-4 md:px-6">
+                    <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
+                        <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
+                        <button onclick="filterCategory('nonsense')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-nonsense">Nonsense</button>
+                        <button onclick="filterCategory('political')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-political">Political</button>
+                        <button onclick="filterCategory('serious')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-serious">Now, In All Seriousness</button>
+                        <button onclick="filterCategory('citation')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-citation">(UN)Popular Citations</button>
+                        <button onclick="filterCategory('joke')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-joke">Joke Battles</button>
+                        <button onclick="filterCategory('censorship')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-censorship">Conspiracy 1984</button>
                     </div>
                 </div>
             </div>
