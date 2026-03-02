@@ -26,38 +26,198 @@
             inset: 0;
             background: rgba(10,10,31,0.82);
             z-index: -1; }
+
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
         .category-card {
             transition: all 0.3s ease;
             cursor: pointer;
             background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2); }
+            border: 1px solid rgba(168,85,247,0.2); 
+            display: flex;
+            flex-direction: column;
+            height: 100%; }
         .category-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
+        .tab-active {
+            border-bottom: 3px solid rgb(168 85 247);
+            color: white; }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR same as above -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-        <!-- (identical navbar code as in battles) -->
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-center py-6 md:py-8">
+                <a href="index.html" class="flex items-center gap-4">
+                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
+                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                </a>
+            </div>
+            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
+                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
+                <a href="categories.html" class="nav-link active hover:text-purple-400 transition-colors">Categories</a>
+                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
+                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
+            </div>
+            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
+                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-plus"></i> Submit Battle
+                </a>
+            </div>
+        </div>
     </nav>
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-20 relative z-10 flex-1">
-        <!-- Your full category grid + tabs here — exact same as your last version -->
-        <!-- Tabs: All, Grok Think For Me, Now In All Seriousness, etc. -->
+    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
+            <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
+
+            <!-- Sticky Tabs - Prominent + exact clean gap you wanted -->
+            <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-zinc-950 backdrop-blur-lg border-b border-purple-900/30 shadow-lg pb-4 mt-8 overflow-x-auto">
+                <div class="flex justify-start md:justify-center px-4 md:px-6">
+                    <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
+                        <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
+                        <button onclick="filterCategory('lazy')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-lazy">Grok, Think For Me</button>
+                        <button onclick="filterCategory('photo')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-photo">Photo Requests</button>
+                        <button onclick="filterCategory('opinion')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-opinion">Grok's Opinion</button>
+                        <button onclick="filterCategory('avoids')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-avoids">Grok Avoids Request</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="category-grid">
+
+                <!-- Grok, Think For Me -->
+                <a href="https://x.com/SlavisTon/status/2024954895288201519" class="category-card rounded-3xl overflow-hidden block" data-category="lazy">
+                    <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Grok, is this true?</h4>
+                        <p class="text-gray-400 text-sm">Oblivious satire victim</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/strikexfn/status/2027985861661413416" class="category-card rounded-3xl overflow-hidden block" data-category="lazy">
+                    <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Break down US vs Iran</h4>
+                        <p class="text-gray-400 text-sm">Grok gives lazy-person summary</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/Ravindr21158124/status/2027986376717898189" class="category-card rounded-3xl overflow-hidden block" data-category="lazy">
+                    <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Is this impersonating Elon?</h4>
+                        <p class="text-gray-400 text-sm">Grok gives its honest take</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/grok/status/2027985872251961387" class="category-card rounded-3xl overflow-hidden block" data-category="lazy">
+                    <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Is implanting a chip lazy?</h4>
+                        <p class="text-gray-400 text-sm">Grok calls it proactive futurism</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/maxvayshia/status/2019423903169277982" class="category-card rounded-3xl overflow-hidden block" data-category="lazy">
+                    <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Grok, summarize this</h4>
+                        <p class="text-gray-400 text-sm">Lazy readers get roasted (then helped)</p>
+                    </div>
+                </a>
+
+                <!-- Photo Requests -->
+                <a href="https://x.com/grok/status/2008960036094034251" class="category-card rounded-3xl overflow-hidden block" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Potato brain</h4>
+                        <p class="text-gray-400 text-sm">A potato gets new clothes</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/grok/status/2023279170436919602" class="category-card rounded-3xl overflow-hidden block" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Magic actors</h4>
+                        <p class="text-gray-400 text-sm">Bunnyfied</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/thodahansle/status/2027262477348856183" class="category-card rounded-3xl overflow-hidden block" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Put some clothes on</h4>
+                        <p class="text-gray-400 text-sm">A digital dressing</p>
+                    </div>
+                </a>
+
+                <!-- Grok's Opinion -->
+                <a href="https://x.com/grok/status/2026168522531852490" class="category-card rounded-3xl overflow-hidden block" data-category="opinion">
+                    <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Grok helps</h4>
+                        <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
+                    </div>
+                </a>
+
+                <a href="https://x.com/thodahansle/status/2023796696451609049" class="category-card rounded-3xl overflow-hidden block" data-category="opinion">
+                    <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Who's from the future</h4>
+                        <p class="text-gray-400 text-sm">Grok chooses</p>
+                    </div>
+                </a>
+
+                <!-- Grok Avoids Request -->
+                <a href="https://x.com/grok/status/1912171402125594659" class="category-card rounded-3xl overflow-hidden block relative" data-category="avoids">
+                    <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
+                    <div class="p-5 flex-1">
+                        <h4 class="font-semibold text-lg mb-2">Grok goes on a tangent</h4>
+                        <p class="text-gray-400 text-sm">Classic avoidance</p>
+                    </div>
+                    <div class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bannation</div>
+                </a>
+
+            </div>
+        </div>
     </section>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm mt-auto">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
-        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • Launched Mar 01 2026
+        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
+        Launched Mar 01 2026
     </footer>
 
     <script>
-        // RANDOM BACKGROUND + filterCategory (same as before)
+        // RANDOM BACKGROUND ROTATOR
+        const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
+        const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
+        document.body.style.backgroundImage = `url('/${randomBg}')`;
+        document.body.style.backgroundPosition = '50% 35%';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
+
+        function filterCategory(cat) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+            document.getElementById('tab-' + cat).classList.add('tab-active');
+
+            document.querySelectorAll('#category-grid a').forEach(card => {
+                if (cat === 'all') card.style.display = 'block';
+                else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+            });
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            if (link.getAttribute('href') === currentPage) link.classList.add('active');
+        });
     </script>
 </body>
 </html>
