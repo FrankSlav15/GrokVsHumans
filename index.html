@@ -16,7 +16,6 @@
             min-height: 100vh; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        /* Dark overlay so text is perfectly readable */
         body::after {
             content: '';
             position: absolute;
@@ -77,8 +76,8 @@
                 </a>
             </div>
 
-            <!-- YOUR FEATURED BIRTHING POST -->
-            <div class="max-w-md mx-auto">
+            <!-- FEATURED BIRTHING POST -->
+            <div class="max-w-md mx-auto mb-16">
                 <a href="https://x.com/SlavisTon/status/2026768884854853692" class="block bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden hover:border-purple-500 transition-all">
                     <div class="p-5 flex items-center gap-3 border-b border-purple-900/30">
                         <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="w-10 h-10 rounded-full object-cover">
@@ -93,6 +92,21 @@
                     </div>
                 </a>
             </div>
+
+            <!-- YOUR PERSONAL BLURB -->
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 backdrop-blur-sm">
+                    <div class="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-cyan-400 rounded-2xl flex items-center justify-center text-3xl">♒</div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Hi, I'm Slavis — an Aquarian who's struggled with communication my whole life.</h3>
+                    <p class="text-zinc-400 leading-relaxed">
+                        Too goofy for some rooms, too serious for others, always a bit different. My voice kept getting overlooked.<br><br>
+                        On X my posts were buried, my ideas invisible. So I started arguing with Grok — fighting, roasting, going back and forth like everyone else.<br><br>
+                        But something unexpected happened. What started as arguments turned into real collaboration. No matter how much we disagreed, we were still able to work together and build something meaningful.<br><br>
+                        This site is the result — funny battles that show how we clash, and serious discussions that finally get attention. It’s my way of making sure the conversations that matter don’t stay invisible… and giving a voice to everyone else who feels overlooked like I did.
+                    </p>
+                    <p class="mt-8 text-purple-400 text-sm font-medium">— The founder who finally found his voice</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -102,23 +116,14 @@
     </footer>
 
     <script>
-        // === RANDOM BACKGROUND ROTATOR ===
-        const bgs = ['bg1.webp', 'bg2.webp', 'bg3.webp', 'bg4.webp', 'bg5.webp', 'bg6.webp', 'bg7.webp', 'bg8.webp', 'bg9.webp', 'bg10.webp', 'bg11.webp', 'bg12.webp', 'bg13.webp', 'bg14.webp', 'bg15.webp', 'bg16.webp', 'bg17.webp', 'bg18.webp', 'bg19.webp', 'bg20.webp',]; // add more filenames here anytime
+        // RANDOM BACKGROUND ROTATOR
+        const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
         const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
         document.body.style.backgroundImage = `url('/${randomBg}')`;
         document.body.style.backgroundPosition = '50% 35%';
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.backgroundAttachment = 'fixed';
-        
-        function filterCategory(cat) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-            document.getElementById('tab-' + cat).classList.add('tab-active');
-            document.querySelectorAll('#battle-grid a').forEach(card => {
-                if (cat === 'all') card.style.display = 'block';
-                else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
-            });
-        }
 
         document.querySelectorAll('.nav-link').forEach(link => {
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
