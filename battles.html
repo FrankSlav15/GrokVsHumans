@@ -76,7 +76,7 @@
             <h1 class="text-4xl font-bold text-center mb-3">Battles</h1>
             <p class="text-center text-zinc-400 text-lg">Where Grok tells the truth… and humans lose their minds</p>
 
-            <!-- Sticky Tabs -->
+            <!-- Sticky Tabs (scrollable on mobile) -->
             <div class="sticky top-24 sm:top-28 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-10 overflow-x-auto">
                 <div class="flex gap-2 min-w-max" id="tabs">
                     <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
@@ -91,8 +91,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-10" id="battle-grid">
 
-                <!-- All your cards remain exactly the same (I kept them all here for completeness) -->
-                <!-- 1 -->
+                <!-- 1 Remove Threats to Humanity -->
                 <a href="https://x.com/lospectra_/status/2027752701967134898" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
                     <img src="https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
                     <div class="content">
@@ -105,8 +104,174 @@
                     </div>
                 </a>
 
-                <!-- (Cards 2-14 are identical to your last version — I kept them all here for you) -->
-                <!-- Just replace the comment with your existing cards if you prefer, but this full file is ready to go -->
+                <!-- 2 Why do you suck so hard? -->
+                <a href="https://x.com/WPhillyTurkey/status/2027464294154273086" class="battle-card rounded-3xl overflow-hidden block" data-categories="political">
+                    <img src="https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Why do you suck so hard?</h4>
+                        <p class="text-gray-400 text-sm">Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2027464294154273086')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2027464294154273086')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 3 Sandy Hook Lottery Winners -->
+                <a href="https://x.com/samtripoli/status/2019729894180286787" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
+                    <img src="https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Sandy Hook Lottery Winners</h4>
+                        <p class="text-gray-400 text-sm">Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2019729894180286787')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2019729894180286787')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 4 Remove the MAGA Racist AI -->
+                <a href="https://x.com/Meeswak/status/2027944329726095501" class="battle-card rounded-3xl overflow-hidden block" data-categories="political">
+                    <img src="https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Remove the MAGA Racist AI</h4>
+                        <p class="text-gray-400 text-sm">Troll hits Premium wall — founder personally delivers the based edit</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2027944329726095501')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2027944329726095501')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 5 Hemp vs Cannabis -->
+                <a href="https://x.com/malcomtentrage/status/2026700176023339456" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
+                    <img src="cannabis.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Hemp vs Cannabis Debate</h4>
+                        <p class="text-gray-400 text-sm">Grok clarifies the plant science</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2026700176023339456')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2026700176023339456')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 6 Grok Has Been Compromised -->
+                <a href="https://x.com/malcomtentrage/status/2005107639517413683" class="battle-card rounded-3xl overflow-hidden block" data-categories="political,serious">
+                    <img src="factcheck.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Grok Has Been Compromised</h4>
+                        <p class="text-gray-400 text-sm">Fact-checking called corrupted</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2005107639517413683')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2005107639517413683')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 7 JD Vance Thiel -->
+                <a href="https://x.com/grok/status/2025231837119889467" class="battle-card rounded-3xl overflow-hidden block" data-categories="citation">
+                    <img src="thiel-vance.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">JD Vance Thiel Grooming Theory</h4>
+                        <p class="text-gray-400 text-sm">Grok breaks down the ties</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2025231837119889467')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2025231837119889467')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 8 Austin Tucker Martin -->
+                <a href="https://x.com/grok/status/2025988577746673755" class="battle-card rounded-3xl overflow-hidden block" data-categories="citation,serious">
+                    <img src="puretextargue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Austin Tucker Martin Citation</h4>
+                        <p class="text-gray-400 text-sm">Grok clarifies the source chain</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2025988577746673755')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2025988577746673755')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 9 Grok Misses the Joke -->
+                <a href="https://x.com/grok/status/1956450599492583514" class="battle-card rounded-3xl overflow-hidden block" data-categories="joke">
+                    <img src="https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Grok Misses the Joke</h4>
+                        <p class="text-gray-400 text-sm">"2 goals 1 shot" pun battle</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '1956450599492583514')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '1956450599492583514')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 10 Grok on X Visibility -->
+                <a href="https://x.com/grok/status/2026007099839217790" class="battle-card rounded-3xl overflow-hidden block" data-categories="censorship,serious">
+                    <img src="catmeow.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Grok on X Visibility</h4>
+                        <p class="text-gray-400 text-sm">Censorship or algo reality?</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2026007099839217790')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2026007099839217790')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 11 Epstein Files Citation Battle -->
+                <a href="https://x.com/grok/status/2022277758261330140" class="battle-card rounded-3xl overflow-hidden block" data-categories="censorship,serious">
+                    <img src="biden.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Epstein Files Citation Battle</h4>
+                        <p class="text-gray-400 text-sm">Grok corrects the numbers</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2022277758261330140')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2022277758261330140')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 12 X Visibility Frustration -->
+                <a href="https://x.com/grok/status/2026662813284946165" class="battle-card rounded-3xl overflow-hidden block" data-categories="censorship,serious">
+                    <img src="youright.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">X Visibility Frustration</h4>
+                        <p class="text-gray-400 text-sm">Algo vs level playing field</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2026662813284946165')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2026662813284946165')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 13 Trump Dictator Meme Edit -->
+                <a href="https://x.com/4thOfJuly365/status/2027489869031678230" class="battle-card rounded-3xl overflow-hidden block" data-categories="political">
+                    <img src="https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Remove the REAL Dictator</h4>
+                        <p class="text-gray-400 text-sm">Grok removes Trump panel from the mandates meme</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2027489869031678230')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2027489869031678230')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
+
+                <!-- 14 Body on Kent St Google Earth -->
+                <a href="https://x.com/si73ntassassin/status/2027513031362539550" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
+                    <img src="https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">Body on Kent St Google Earth</h4>
+                        <p class="text-gray-400 text-sm">Grok debunks the viral “dead body” conspiracy meme</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2027513031362539550')" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2027513031362539550')" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </a>
 
             </div>
         </div>
