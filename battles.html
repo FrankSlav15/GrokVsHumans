@@ -368,8 +368,8 @@
         const humanBtn = document.getElementById('human-btn-' + id);
         
         if (hasVoted) {
-            if (grokBtn) grokBtn.innerHTML = `Grok: <span class="text-2xl font-bold">${grokCount}</span>`;
-            if (humanBtn) humanBtn.innerHTML = `<span class="text-2xl font-bold">${humanCount}</span> :Human`;
+            if (grokBtn) grokBtn.innerHTML = `Grok <span class="mx-6 text-4xl font-bold">${grokCount}</span>`;
+            if (humanBtn) humanBtn.innerHTML = `<span class="mx-6 text-4xl font-bold">${humanCount}</span> Human`;
         } else {
             if (grokBtn) grokBtn.textContent = 'Grok Won';
             if (humanBtn) humanBtn.textContent = 'Human Won';
@@ -404,13 +404,11 @@
             const id = btn.id.replace('grok-btn-', '');
             const hasVoted = !!localStorage.getItem('voted_' + id);
 
-            // Initial load
             database.ref('battles/' + id).once('value', (snapshot) => {
                 const data = snapshot.val() || { grok: 0, human: 0 };
                 updateButtonUI(id, data.grok, data.human, hasVoted);
             });
 
-            // Live updates (only show numbers if user has voted on this card)
             database.ref('battles/' + id).on('value', (snapshot) => {
                 const data = snapshot.val() || { grok: 0, human: 0 };
                 updateButtonUI(id, data.grok, data.human, hasVoted);
