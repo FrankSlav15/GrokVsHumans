@@ -326,7 +326,7 @@
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-        // === FIREBASE SETUP (correct modern URL) ===
+    // FIREBASE SETUP
     const firebaseConfig = {
       apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
       authDomain: "grokvshumans.firebaseapp.com",
@@ -339,7 +339,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    console.log("✅ Firebase initialized successfully");
 
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
@@ -354,7 +353,7 @@
     function showToast(message) {
         const toast = document.getElementById('toast');
         const text = document.getElementById('toast-text');
-        if (!toast || !text) { console.error("❌ Toast element missing"); return; }
+        if (!toast || !text) return;
         text.textContent = message;
         toast.classList.remove('hidden');
         toast.style.transform = 'translate(-50%, 0)';
@@ -362,6 +361,14 @@
             toast.style.transform = 'translate(-50%, 80px)';
             setTimeout(() => toast.classList.add('hidden'), 400);
         }, 2800);
+    }
+
+    function updateButtonUI(id, grokCount, humanCount) {
+        const grokBtn = document.getElementById('grok-btn-' + id);
+        const humanBtn = document.getElementById('human-btn-' + id);
+        
+        if (grokBtn) grokBtn.innerHTML = `Grok: <span class="text-2xl font-bold">${grokCount}</span>`;
+        if (humanBtn) humanBtn.innerHTML = `<span class="text-2xl font-bold">${humanCount}</span> :Human`;
     }
 
     function vote(event, winner, id) {
@@ -374,36 +381,25 @@
             return;
         }
 
-        console.log(`🗳️ Voting for ${winner} on card ${id}`);
-        showToast("Sending vote to Firebase...");
-
         const ref = database.ref('battles/' + id);
         ref.transaction(current => {
             if (current === null) current = { grok: 0, human: 0 };
             if (winner === 'grok') current.grok = (current.grok || 0) + 1;
             else current.human = (current.human || 0) + 1;
             return current;
-        }, (error, committed) => {
-            if (error) console.error("❌ Firebase error:", error);
-            else if (committed) console.log("✅ Vote saved globally!");
         });
 
         localStorage.setItem(votedKey, 'true');
         showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
     }
 
-    // Live updates
+    // Live updates + initial load
     document.addEventListener('DOMContentLoaded', () => {
-        console.log("📡 Starting live vote listeners");
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
             const id = btn.id.replace('grok-btn-', '');
             database.ref('battles/' + id).on('value', (snapshot) => {
                 const data = snapshot.val() || { grok: 0, human: 0 };
-                console.log(`📡 Live update ${id}:`, data);
-                const grokBtn = document.getElementById('grok-btn-' + id);
-                const humanBtn = document.getElementById('human-btn-' + id);
-                if (grokBtn) grokBtn.textContent = `Grok Won (${data.grok})`;
-                if (humanBtn) humanBtn.textContent = `Human Won (${data.human})`;
+                updateButtonUI(id, data.grok, data.human);
             });
         });
     });
