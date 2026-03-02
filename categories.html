@@ -67,13 +67,13 @@
         </div>
     </nav>
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-16">
+    <section class="pt-52 md:pt-52 lg:pt-60 pb-16">
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
             <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
 
-            <!-- Sticky Tabs - Same spacing & mobile behavior as Battles -->
-            <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
+            <!-- Sticky Tabs - Same as Battles (tight mobile gap) -->
+            <div class="sticky top-40 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
                         <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <!-- GRID - Consistent with Battles -->
+            <!-- GRID -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="category-grid">
 
                 <!-- Grok, Think For Me -->
