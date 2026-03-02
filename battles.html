@@ -53,13 +53,13 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR - Larger on desktop -->
+    <!-- NAVBAR - Bigger logo & title on desktop -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex justify-center py-5 md:py-7">
-                <a href="index.html" class="flex items-center gap-3">
-                    <div class="w-9 h-9 md:w-12 md:h-12 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-2xl md:text-3xl">G</div>
-                    <h1 class="logo-font text-2xl md:text-3xl font-semibold tracking-tighter">GrokVsHumans</h1>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-center py-6 md:py-8">
+                <a href="index.html" class="flex items-center gap-4">
+                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
+                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
                 </a>
             </div>
             <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium" id="main-nav">
@@ -68,20 +68,20 @@
                 <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
                 <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
             </div>
-            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-5 md:right-6">
-                <a href="submit.html" class="px-6 py-3 md:py-3.5 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
+            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
+                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
                     <i class="fa-solid fa-plus"></i> Submit Battle
                 </a>
             </div>
         </div>
     </nav>
 
-    <section class="pt-32 md:pt-40 lg:pt-48 pb-16">
+    <section class="pt-36 md:pt-44 lg:pt-52 pb-16">
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Battles</h1>
             <p class="text-center text-zinc-400 text-lg">Where Grok tells the truth… and humans lose their minds</p>
 
-            <!-- Sticky Tabs -->
+            <!-- Sticky Tabs - Fixed for mobile -->
             <div class="sticky top-28 md:top-36 lg:top-44 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-10 overflow-x-auto">
                 <div class="flex gap-2 min-w-max" id="tabs">
                     <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
@@ -98,7 +98,7 @@
 
                 <!-- 1 Remove Threats to Humanity -->
                 <a href="https://x.com/lospectra_/status/2027752701967134898" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
-                    <img src="https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Remove Threats to Humanity</h4>
                         <p class="text-gray-400 text-sm">Grok removes real threats based on facts — fans melt down when their heroes stay</p>
@@ -111,7 +111,7 @@
 
                 <!-- 2 Why do you suck so hard? -->
                 <a href="https://x.com/WPhillyTurkey/status/2027464294154273086" class="battle-card rounded-3xl overflow-hidden block" data-categories="political">
-                    <img src="https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Why do you suck so hard?</h4>
                         <p class="text-gray-400 text-sm">Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking</p>
@@ -124,7 +124,7 @@
 
                 <!-- 3 Sandy Hook Lottery Winners -->
                 <a href="https://x.com/samtripoli/status/2019729894180286787" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
-                    <img src="https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Sandy Hook Lottery Winners</h4>
                         <p class="text-gray-400 text-sm">Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources</p>
@@ -137,7 +137,7 @@
 
                 <!-- 4 Remove the MAGA Racist AI -->
                 <a href="https://x.com/Meeswak/status/2027944329726095501" class="battle-card rounded-3xl overflow-hidden block" data-categories="political">
-                    <img src="https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Remove the MAGA Racist AI</h4>
                         <p class="text-gray-400 text-sm">Troll hits Premium wall — founder personally delivers the based edit</p>
@@ -150,7 +150,7 @@
 
                 <!-- 5 Hemp vs Cannabis -->
                 <a href="https://x.com/malcomtentrage/status/2026700176023339456" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
-                    <img src="cannabis.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="cannabis.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Hemp vs Cannabis Debate</h4>
                         <p class="text-gray-400 text-sm">Grok clarifies the plant science</p>
@@ -163,7 +163,7 @@
 
                 <!-- 6 Grok Has Been Compromised -->
                 <a href="https://x.com/malcomtentrage/status/2005107639517413683" class="battle-card rounded-3xl overflow-hidden block" data-categories="political,serious">
-                    <img src="factcheck.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="factcheck.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Grok Has Been Compromised</h4>
                         <p class="text-gray-400 text-sm">Fact-checking called corrupted</p>
@@ -176,7 +176,7 @@
 
                 <!-- 7 JD Vance Thiel -->
                 <a href="https://x.com/grok/status/2025231837119889467" class="battle-card rounded-3xl overflow-hidden block" data-categories="citation">
-                    <img src="thiel-vance.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="thiel-vance.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">JD Vance Thiel Grooming Theory</h4>
                         <p class="text-gray-400 text-sm">Grok breaks down the ties</p>
@@ -189,7 +189,7 @@
 
                 <!-- 8 Austin Tucker Martin -->
                 <a href="https://x.com/grok/status/2025988577746673755" class="battle-card rounded-3xl overflow-hidden block" data-categories="citation,serious">
-                    <img src="puretextargue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="puretextargue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Austin Tucker Martin Citation</h4>
                         <p class="text-gray-400 text-sm">Grok clarifies the source chain</p>
@@ -202,7 +202,7 @@
 
                 <!-- 9 Grok Misses the Joke -->
                 <a href="https://x.com/grok/status/1956450599492583514" class="battle-card rounded-3xl overflow-hidden block" data-categories="joke">
-                    <img src="https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Grok Misses the Joke</h4>
                         <p class="text-gray-400 text-sm">"2 goals 1 shot" pun battle</p>
@@ -215,7 +215,7 @@
 
                 <!-- 10 Grok on X Visibility -->
                 <a href="https://x.com/grok/status/2026007099839217790" class="battle-card rounded-3xl overflow-hidden block" data-categories="censorship,serious">
-                    <img src="catmeow.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="catmeow.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Grok on X Visibility</h4>
                         <p class="text-gray-400 text-sm">Censorship or algo reality?</p>
@@ -228,7 +228,7 @@
 
                 <!-- 11 Epstein Files Citation Battle -->
                 <a href="https://x.com/grok/status/2022277758261330140" class="battle-card rounded-3xl overflow-hidden block" data-categories="censorship,serious">
-                    <img src="biden.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="biden.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Epstein Files Citation Battle</h4>
                         <p class="text-gray-400 text-sm">Grok corrects the numbers</p>
@@ -241,7 +241,7 @@
 
                 <!-- 12 X Visibility Frustration -->
                 <a href="https://x.com/grok/status/2026662813284946165" class="battle-card rounded-3xl overflow-hidden block" data-categories="censorship,serious">
-                    <img src="youright.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="youright.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">X Visibility Frustration</h4>
                         <p class="text-gray-400 text-sm">Algo vs level playing field</p>
@@ -254,7 +254,7 @@
 
                 <!-- 13 Trump Dictator Meme Edit -->
                 <a href="https://x.com/4thOfJuly365/status/2027489869031678230" class="battle-card rounded-3xl overflow-hidden block" data-categories="political">
-                    <img src="https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Remove the REAL Dictator</h4>
                         <p class="text-gray-400 text-sm">Grok removes Trump panel from the mandates meme</p>
@@ -267,7 +267,7 @@
 
                 <!-- 14 Body on Kent St Google Earth -->
                 <a href="https://x.com/si73ntassassin/status/2027513031362539550" class="battle-card rounded-3xl overflow-hidden block" data-categories="nonsense">
-                    <img src="https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-56 object-cover">
+                    <img src="https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
                         <h4 class="font-semibold text-lg mb-2">Body on Kent St Google Earth</h4>
                         <p class="text-gray-400 text-sm">Grok debunks the viral “dead body” conspiracy meme</p>
