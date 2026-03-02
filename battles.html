@@ -340,6 +340,18 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
+    // Force consistent button height + centering (fixes the size difference)
+    const buttonStyle = document.createElement('style');
+    buttonStyle.textContent = `
+        .battle-card .buttons button {
+            min-height: 58px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+    `;
+    document.head.appendChild(buttonStyle);
+
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
         document.getElementById('tab-' + cat).classList.add('tab-active');
@@ -368,8 +380,8 @@
         const humanBtn = document.getElementById('human-btn-' + id);
         
         if (hasVoted) {
-            if (grokBtn) grokBtn.innerHTML = `Grok <span class="mx-6 text-4xl font-bold">${grokCount}</span>`;
-            if (humanBtn) humanBtn.innerHTML = `<span class="mx-6 text-4xl font-bold">${humanCount}</span> Human`;
+            if (grokBtn) grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${grokCount}</span>`;
+            if (humanBtn) humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${humanCount}</span> Human`;
         } else {
             if (grokBtn) grokBtn.textContent = 'Grok Won';
             if (humanBtn) humanBtn.textContent = 'Human Won';
