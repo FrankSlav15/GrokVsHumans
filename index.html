@@ -28,7 +28,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR - Consistent with all pages -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -41,7 +41,7 @@
                 <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
                 <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
                 <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link active hover:text-purple-400 transition-colors">Submit</a>
+                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
             </div>
             <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
                 <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
@@ -58,7 +58,7 @@
                 <span class="text-sm font-medium">LIVE • Human vs Grok Arena</span>
             </div>
 
-            <h1 class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-6">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-none mb-6">
                 Where Humans<br>
                 <span class="hero-gradient">Clash with Grok</span>
             </h1>
@@ -144,6 +144,7 @@
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.backgroundAttachment = 'fixed';
 
+        // Active nav link (nothing highlighted on homepage)
         document.querySelectorAll('.nav-link').forEach(link => {
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
             if (link.getAttribute('href') === currentPage) link.classList.add('active');
