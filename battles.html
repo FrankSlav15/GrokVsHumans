@@ -76,7 +76,7 @@
             <h1 class="text-4xl font-bold text-center mb-3">Battles</h1>
             <p class="text-center text-zinc-400 text-lg">Where Grok tells the truth… and humans lose their minds</p>
 
-            <!-- Sticky Tabs (scrollable on mobile) -->
+            <!-- Sticky Tabs (horizontal scroll on mobile) -->
             <div class="sticky top-24 sm:top-28 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-10 overflow-x-auto">
                 <div class="flex gap-2 min-w-max" id="tabs">
                     <button onclick="filterCategory('all')" class="tab px-6 py-2 text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
@@ -284,6 +284,15 @@
     </footer>
 
     <script>
+        // RANDOM BACKGROUND ROTATOR (20 images)
+        const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
+        const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
+        document.body.style.backgroundImage = `url('/${randomBg}')`;
+        document.body.style.backgroundPosition = '50% 35%';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
+
         function filterCategory(cat) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
             document.getElementById('tab-' + cat).classList.add('tab-active');
