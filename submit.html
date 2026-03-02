@@ -2,18 +2,22 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Submit Yours - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        html { height: 100%; }
         body { 
             font-family: 'Inter', system-ui, sans-serif; 
-            background: none;
+            background: #0a0a1f;
             position: relative;
-            min-height: 100vh; }
+            min-height: 100dvh;
+            margin: 0;
+            display: flex;
+            flex-direction: column; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
         body::after {
@@ -51,7 +55,7 @@
         </div>
     </nav>
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-16">
+    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Form Section -->
             <div class="max-w-md mx-auto">
@@ -109,7 +113,7 @@
         </div>
     </section>
 
-    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm mt-auto">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
         <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
         Launched Mar 01 2026
