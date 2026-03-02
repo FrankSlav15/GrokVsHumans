@@ -2,18 +2,25 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        
+        html {
+            height: 100%;
+        }
+        
         body { 
             font-family: 'Inter', system-ui, sans-serif; 
-            background: none;
+            background: #0a0a1f;
             position: relative;
-            min-height: 100vh; }
+            min-height: 100dvh;
+            margin: 0;
+        }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
         body::after {
@@ -26,7 +33,7 @@
         .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="text-white">
+<body class="text-white flex flex-col">
 
     <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
@@ -51,7 +58,7 @@
         </div>
     </nav>
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-20 relative z-10">
+    <section class="pt-80 md:pt-52 lg:pt-60 pb-20 relative z-10 flex-1">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-1.5 mb-8">
                 <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -128,14 +135,14 @@
         </div>
     </section>
 
-    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm">
+    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-sm mt-auto">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
         <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
         Launched Mar 01 2026
     </footer>
 
     <script>
-        // RANDOM BACKGROUND ROTATOR (20 images)
+        // RANDOM BACKGROUND ROTATOR
         const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
         const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
         document.body.style.backgroundImage = `url('/${randomBg}')`;
@@ -144,7 +151,6 @@
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.backgroundAttachment = 'fixed';
 
-        // Active nav link (nothing highlighted on homepage)
         document.querySelectorAll('.nav-link').forEach(link => {
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
             if (link.getAttribute('href') === currentPage) link.classList.add('active');
