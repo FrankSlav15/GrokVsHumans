@@ -51,15 +51,6 @@
             flex-shrink: 0;
             border-top: 1px solid #27272a;
             margin-top: auto;
-            display: flex;
-            gap: 0;
-        }
-        .battle-card .buttons button {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
         }
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
@@ -347,7 +338,6 @@
             votes.voted = true;
             localStorage.setItem(key, JSON.stringify(votes));
 
-            // SWITCH THE BUTTON TEXT TO THE COUNT
             const grokBtn = document.getElementById('grok-btn-' + id);
             const humanBtn = document.getElementById('human-btn-' + id);
             if (grokBtn) grokBtn.textContent = `Grok: ${votes.grok}`;
@@ -355,6 +345,23 @@
 
             alert(`You voted for ${winner.toUpperCase()}! 🏆`);
         }
+
+        // RESTORE OLD VOTES ON PAGE LOAD
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('button[id^="grok-btn-"]').forEach(grokBtn => {
+                const id = grokBtn.id.replace('grok-btn-', '');
+                const key = 'votes_' + id;
+                const saved = localStorage.getItem(key);
+                if (saved) {
+                    const votes = JSON.parse(saved);
+                    if (votes.voted) {
+                        const humanBtn = document.getElementById('human-btn-' + id);
+                        if (grokBtn) grokBtn.textContent = `Grok: ${votes.grok}`;
+                        if (humanBtn) humanBtn.textContent = `Human: ${votes.human}`;
+                    }
+                }
+            });
+        });
 
         document.querySelectorAll('.nav-link').forEach(link => {
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
