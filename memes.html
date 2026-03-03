@@ -6,8 +6,6 @@
     <title>Memes - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Google Analytics -->
@@ -48,11 +46,32 @@
             border: 1px solid rgba(168,85,247,0.2); 
             display: flex;
             flex-direction: column;
-            height: 100%; }
+            height: 100%;
+            overflow: hidden;
+            border-radius: 1.5rem; }
         .meme-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
+        .meme-card > img {
+            flex-shrink: 0;
+            height: 15.5rem; /* taller & more prominent images */
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem; }
+        .meme-card .content {
+            flex: 1;
+            padding: 1.25rem;
+            background: #18181b;
+            display: flex;
+            flex-direction: column;
+            min-height: 6rem; }
+        .meme-card .title-area {
+            min-height: 1.75rem; /* exactly 1 line reserved for title */ }
+        .meme-card .desc-area {
+            flex: 1;
+            min-height: 3.5rem; /* max 2 lines reserved for description */ }
     </style>
 </head>
 <body class="text-white">
@@ -85,158 +104,226 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Memes</h1>
             <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="meme-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
 
-                <!-- 1 CoreyJMahler -->
-                <div onclick="openMemeModal(1)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok is a high-tech rock</h4>
-                        <p class="text-gray-400 text-sm">CoreyJMahler drops the perfect one-liner</p>
-                    </div>
-                </div>
-
-                <!-- 2 ClownWorld -->
-                <div onclick="openMemeModal(2)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="kermit.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">ClownWorld Grok moment</h4>
-                        <p class="text-gray-400 text-sm">Pure chaos meets Grok wisdom</p>
-                    </div>
-                </div>
-
-                <!-- 3 Elon tags Grok -->
-                <div onclick="openMemeModal(3)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="milk.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Elon tags Grok</h4>
-                        <p class="text-gray-400 text-sm">The boss himself joins the fun</p>
-                    </div>
-                </div>
-
-                <!-- 4 AntiLeftMemes -->
-                <div onclick="openMemeModal(4)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">AntiLeft Grok meme</h4>
-                        <p class="text-gray-400 text-sm">Grok roasts the left perfectly</p>
-                    </div>
-                </div>
-
-                <!-- 5 MrFeduppp -->
-                <div onclick="openMemeModal(5)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">MrFeduppp Grok tagging</h4>
-                        <p class="text-gray-400 text-sm">The tagging war continues</p>
-                    </div>
-                </div>
-
-                <!-- 6 breakfastmeat1 -->
-                <div onclick="openMemeModal(6)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Breakfastmeat Grok chaos</h4>
-                        <p class="text-gray-400 text-sm">Breakfastmeat joins the tagging madness</p>
-                    </div>
-                </div>
-
-                <!-- 7 chrissyxchi -->
-                <div onclick="openMemeModal(7)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Murloc vs Grok</h4>
-                        <p class="text-gray-400 text-sm">"i asked grok" yeah well I asked this murloc</p>
-                    </div>
-                </div>
-
-                <!-- 8 SnarkyPotatoes -->
-                <div onclick="openMemeModal(8)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Potato flipping the bird</h4>
-                        <p class="text-gray-400 text-sm">Grok tried to generate a middle finger potato</p>
-                    </div>
-                </div>
-
-                <!-- 9 DogecoinNorway -->
-                <div onclick="openMemeModal(9)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">@gork is Elon alter ego</h4>
-                        <p class="text-gray-400 text-sm">DogecoinNorway nails it</p>
-                    </div>
-                </div>
-
-                <!-- 10 Janknoester1962 -->
-                <div onclick="openMemeModal(10)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="scooby.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Better one</h4>
-                        <p class="text-gray-400 text-sm">Pancake Grok OG drops a better version</p>
-                    </div>
-                </div>
-
-                <!-- 11 Grok Pope Meme -->
-                <div onclick="openMemeModal(11)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok Pope Meme</h4>
-                        <p class="text-gray-400 text-sm">Grok steals the show in the Pope ChatGPT sermon debate</p>
-                    </div>
-                </div>
-
-                <!-- 12 The Future Pope -->
-                <div onclick="openMemeModal(12)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">The Future Pope</h4>
-                        <p class="text-gray-400 text-sm">Grok predicts the next Pope in hilarious fashion</p>
-                    </div>
-                </div>
-
-                <!-- 13 Everyone in the Comments -->
-                <div onclick="openMemeModal(13)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="grokisthistrue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Everyone in the Comments</h4>
-                        <p class="text-gray-400 text-sm">Grok has the whole thread laughing</p>
-                    </div>
-                </div>
-
-                <!-- 14 Pope Meme Cry -->
-                <div onclick="openMemeModal(14)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Pope Meme Cry</h4>
-                        <p class="text-gray-400 text-sm">Grok leaves the Pope in tears of laughter</p>
-                    </div>
-                </div>
-
-                <!-- 15 Bear Chooses Grok -->
-                <div onclick="openMemeModal(15)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Bear Chooses Grok</h4>
-                        <p class="text-gray-400 text-sm">The bear always picks Grok and the truth</p>
-                    </div>
-                </div>
-
-                <!-- 16 Grok 4.20 FTW -->
-                <div onclick="openMemeModal(16)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok 4.20 FTW</h4>
-                        <p class="text-gray-400 text-sm">Grok 4.20 wins the humor battle</p>
-                    </div>
-                </div>
-
-                <!-- 17 Grok Has the Best Humor -->
+                <!-- 17 newest at top -->
                 <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
-                    <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok Has the Best Humor</h4>
-                        <p class="text-gray-400 text-sm">The side with the best sense of humor are the good guys — Grok ftw</p>
+                    <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Has the Best Humor</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">The side with the best sense of humor are the good guys — Grok ftw</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 16 -->
+                <div onclick="openMemeModal(16)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok 4.20 FTW</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Grok 4.20 wins the humor battle</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 15 -->
+                <div onclick="openMemeModal(15)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Bear Chooses Grok</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">The bear always picks Grok and the truth</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 14 -->
+                <div onclick="openMemeModal(14)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Pope Meme Cry</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Grok leaves the Pope in tears of laughter</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 13 -->
+                <div onclick="openMemeModal(13)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="grokisthistrue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Everyone in the Comments</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Grok has the whole thread laughing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 12 -->
+                <div onclick="openMemeModal(12)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">The Future Pope</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Grok predicts the next Pope in hilarious fashion</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 11 -->
+                <div onclick="openMemeModal(11)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Pope Meme</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Grok steals the show in the Pope ChatGPT sermon debate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10 -->
+                <div onclick="openMemeModal(10)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="scooby.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Better one</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Pancake Grok OG drops a better version</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9 -->
+                <div onclick="openMemeModal(9)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">@gork is Elon alter ego</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">DogecoinNorway nails it</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8 -->
+                <div onclick="openMemeModal(8)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Potato flipping the bird</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Grok tried to generate a middle finger potato</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7 -->
+                <div onclick="openMemeModal(7)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Murloc vs Grok</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">"i asked grok" yeah well I asked this murloc</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6 -->
+                <div onclick="openMemeModal(6)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Breakfastmeat Grok chaos</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Breakfastmeat joins the tagging madness</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 -->
+                <div onclick="openMemeModal(5)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">MrFeduppp Grok tagging</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">The tagging war continues</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 -->
+                <div onclick="openMemeModal(4)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">AntiLeft Grok meme</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Grok roasts the left perfectly</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 -->
+                <div onclick="openMemeModal(3)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="milk.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Elon tags Grok</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">The boss himself joins the fun</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2 -->
+                <div onclick="openMemeModal(2)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="kermit.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">ClownWorld Grok moment</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">Pure chaos meets Grok wisdom</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1 oldest at bottom -->
+                <div onclick="openMemeModal(1)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok is a high-tech rock</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-2">CoreyJMahler drops the perfect one-liner</p>
+                        </div>
                     </div>
                 </div>
 
@@ -287,19 +374,6 @@
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
-
-    // FIREBASE SETUP
-    const firebaseConfig = {
-      apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
-      authDomain: "grokvshumans.firebaseapp.com",
-      databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "grokvshumans",
-      storageBucket: "grokvshumans.firebasestorage.app",
-      messagingSenderId: "483683492125",
-      appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
 
     function showToast(message) {
         const toast = document.getElementById('toast');
@@ -432,7 +506,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(checkDeepLink, 300);   // small delay ensures everything is loaded
+        setTimeout(checkDeepLink, 300);
     });
 
     window.addEventListener('hashchange', checkDeepLink);
