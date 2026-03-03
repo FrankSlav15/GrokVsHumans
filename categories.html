@@ -57,7 +57,7 @@
             border-color: rgb(168 85 247); }
         .category-card > img {
             flex-shrink: 0;
-            height: 15.5rem; /* TALLER — shows images much better */
+            height: 15.5rem;
             width: 100%;
             object-fit: cover;
             border-top-left-radius: 1.5rem;
@@ -125,7 +125,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="category-grid">
 
                 <!-- 11 newest at top -->
-                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer relative" data-category="avoids">
+                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="avoids">
                     <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
                         <div class="title-area">
@@ -135,7 +135,6 @@
                             <p class="text-gray-400 text-sm line-clamp-4">Classic avoidance</p>
                         </div>
                     </div>
-                    <div class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bannation</div>
                 </div>
 
                 <!-- 10 -->
@@ -283,15 +282,13 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL – BIGGER IMAGE AREA -->
+    <!-- CATEGORY MODAL – LARGE FULL-FORMAT IMAGE -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
             <div class="relative flex-shrink-0">
                 <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
-                <div id="modal-image" class="h-80 w-full bg-zinc-800 overflow-hidden"> <!-- MUCH TALLER — full photo format -->
-                    <!-- image injected by JS -->
-                </div>
+                <div id="modal-image" class="h-80 w-full bg-zinc-800 overflow-hidden"></div>
             </div>
 
             <!-- Body -->
@@ -357,7 +354,6 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== YOUR ORIGINAL CATEGORY DATA ====================
     const categoryData = {
         1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
         2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User wants a lazy-person summary of a complex geopolitical situation.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
@@ -379,7 +375,7 @@
         if (!data) return;
         currentCategoryId = id;
 
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-contain" alt="${data.title}">`; // full format, no cropping
+        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-contain" alt="${data.title}">`;
         document.getElementById('modal-title').textContent = data.title;
 
         const displayMap = {
@@ -462,7 +458,6 @@
         });
     }
 
-    // DEEP LINKING
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
