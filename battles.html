@@ -38,20 +38,32 @@
             border: 1px solid rgba(168,85,247,0.2); 
             display: flex;
             flex-direction: column;
-            height: 100%; }
+            height: 100%;
+            overflow: hidden;
+            border-radius: 1.5rem; }
         .battle-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
+        .battle-card > img {
+            flex-shrink: 0;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem; }
         .battle-card .content {
             flex: 1;
             padding: 1.25rem;
             background: #18181b;
-            min-height: 160px; }   /* bumped for better stretching */
+            display: flex;
+            flex-direction: column;
+            min-height: 160px; }
         .battle-card .buttons {
             flex-shrink: 0;
             border-top: 1px solid #27272a;
-            margin-top: auto; }   /* this forces buttons to bottom on every card */
+            margin-top: auto;
+            padding: 0;
+            border-bottom-left-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+            overflow: hidden; }
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
             color: white; }
@@ -102,8 +114,8 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="battle-grid">
-                <!-- 16 (newest) at top -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="battle-grid">
+                <!-- 16 newest at top -->
                 <div onclick="openBattleModal(16)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious,censorship">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover" alt="Obama Long-Form Birth Certificate">
                     <div class="content">
@@ -298,7 +310,7 @@
                     </div>
                 </div>
 
-                <!-- 1 (oldest) at bottom -->
+                <!-- 1 oldest at bottom -->
                 <div onclick="openBattleModal(1)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="nonsense">
                     <img src="https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
@@ -520,7 +532,6 @@
 
         document.getElementById('modal-x-link').href = data.xLink;
 
-        // FORCE PLAIN TEXT BUTTONS EVERY TIME MODAL OPENS
         const grokBtn = document.getElementById('modal-grok-btn');
         const humanBtn = document.getElementById('modal-human-btn');
         grokBtn.innerHTML = 'Grok Won';
