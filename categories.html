@@ -218,7 +218,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL -->
+    <!-- CATEGORY MODAL – BIG IMAGE + BRIEF SUMMARY -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
@@ -232,36 +232,26 @@
                 <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                 <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
-                <div class="space-y-8">
-                    <div>
-                        <div class="flex items-center gap-2 text-purple-400 mb-3">
-                            <i class="fa-solid fa-user"></i>
-                            <span class="font-medium">Human's Argument</span>
-                        </div>
-                        <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
+                <div>
+                    <div class="flex items-center gap-2 text-purple-400 mb-3">
+                        <i class="fa-solid fa-comment-dots"></i>
+                        <span class="font-medium">Brief Summary of the Thread</span>
                     </div>
-
-                    <div>
-                        <div class="flex items-center gap-2 text-purple-400 mb-3">
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="font-medium">Grok's Response</span>
-                        </div>
-                        <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
-                    </div>
+                    <p id="modal-summary" class="text-gray-300 leading-relaxed"></p>
                 </div>
             </div>
 
             <!-- Footer -->
             <div class="border-t border-zinc-800 p-6 flex gap-4">
                 <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg">
+                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
-                    <span class="text-center">View & Participate in This Discussion on X</span>
+                    <span class="text-center">View This Thread on X</span>
                 </a>
                 <button onclick="showCategoryShareMenu()" 
                         class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
                     <i class="fa-solid fa-share-nodes"></i>
-                    Share Category
+                    Share This Card
                 </button>
             </div>
         </div>
@@ -313,21 +303,21 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== CATEGORY MODAL + SHARE ====================
+    // ==================== CATEGORY MODAL (SIMPLIFIED) ====================
     let currentCategoryId = null;
 
     const categoryData = {
-        1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], human: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", grok: "I gently point out it's satire and explain the humor without ruining the fun.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
-        2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], human: "User wants a lazy-person summary of a complex geopolitical situation.", grok: "I give a clear, concise breakdown with key facts and context so anyone can understand.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
-        3: { title: "Is this impersonating Elon?", image: "impersonator.webp", tags: ["lazy"], human: "User shows an account pretending to be Elon and asks Grok to confirm.", grok: "I explain how to spot impersonators and why they exist on X.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
-        4: { title: "Is implanting a chip lazy?", image: "chip.webp", tags: ["lazy"], human: "User asks if Neuralink is a lazy way to improve humanity.", grok: "I call it proactive futurism and explain the long-term benefits.", xLink: "https://x.com/grok/status/2027985872251961387" },
-        5: { title: "Grok, summarize this", image: "summarize.webp", tags: ["lazy"], human: "User wants Grok to summarize a long article or thread for them.", grok: "I give a crisp summary and offer to go deeper if they want more details.", xLink: "https://x.com/maxvayshia/status/2019423903169277982" },
-        6: { title: "Potato brain", image: "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg", tags: ["photo"], human: "User wants Grok to make a potato look fashionable.", grok: "I dress the potato in stylish clothes and deliver a fun edited image.", xLink: "https://x.com/grok/status/2008960036094034251" },
-        7: { title: "Magic actors", image: "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg", tags: ["photo"], human: "User requests bunny-fied versions of famous actors.", grok: "I turn celebrities into adorable bunnies with magic flair.", xLink: "https://x.com/grok/status/2023279170436919602" },
-        8: { title: "Put some clothes on", image: "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg", tags: ["photo"], human: "User wants Grok to digitally dress someone.", grok: "I add stylish clothes while keeping it tasteful and fun.", xLink: "https://x.com/thodahansle/status/2027262477348856183" },
-        9: { title: "Grok helps", image: "ventilator.webp", tags: ["opinion"], human: "User is struggling and asks Grok for positive vibes.", grok: "I offer encouragement and helpful advice with genuine warmth.", xLink: "https://x.com/grok/status/2026168522531852490" },
-        10: { title: "Who's from the future", image: "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg", tags: ["opinion"], human: "User asks Grok to decide who looks like they’re from the future.", grok: "I pick the most futuristic-looking person and explain why.", xLink: "https://x.com/thodahansle/status/2023796696451609049" },
-        11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], human: "User makes a controversial request and Grok cleverly avoids it.", grok: "I politely redirect or give a humorous non-answer instead of engaging.", xLink: "https://x.com/grok/status/1912171402125594659" }
+        1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
+        2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User wants a lazy-person summary of a complex geopolitical situation.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
+        3: { title: "Is this impersonating Elon?", image: "impersonator.webp", tags: ["lazy"], summary: "User shows an account pretending to be Elon and asks Grok to confirm.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
+        4: { title: "Is implanting a chip lazy?", image: "chip.webp", tags: ["lazy"], summary: "User asks if Neuralink is a lazy way to improve humanity.", xLink: "https://x.com/grok/status/2027985872251961387" },
+        5: { title: "Grok, summarize this", image: "summarize.webp", tags: ["lazy"], summary: "User wants Grok to summarize a long article or thread for them.", xLink: "https://x.com/maxvayshia/status/2019423903169277982" },
+        6: { title: "Potato brain", image: "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg", tags: ["photo"], summary: "User wants Grok to make a potato look fashionable.", xLink: "https://x.com/grok/status/2008960036094034251" },
+        7: { title: "Magic actors", image: "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg", tags: ["photo"], summary: "User requests bunny-fied versions of famous actors.", xLink: "https://x.com/grok/status/2023279170436919602" },
+        8: { title: "Put some clothes on", image: "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg", tags: ["photo"], summary: "User wants Grok to digitally dress someone.", xLink: "https://x.com/thodahansle/status/2027262477348856183" },
+        9: { title: "Grok helps", image: "ventilator.webp", tags: ["opinion"], summary: "User is struggling and asks Grok for positive vibes.", xLink: "https://x.com/grok/status/2026168522531852490" },
+        10: { title: "Who's from the future", image: "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg", tags: ["opinion"], summary: "User asks Grok to decide who looks like they’re from the future.", xLink: "https://x.com/thodahansle/status/2023796696451609049" },
+        11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly avoids it.", xLink: "https://x.com/grok/status/1912171402125594659" }
     };
 
     function openCategoryModal(id) {
@@ -338,12 +328,17 @@
         document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
         document.getElementById('modal-title').textContent = data.title;
 
-        const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${t}</span>`).join('');
+        // Nice frontend tag names
+        const displayMap = {
+            'lazy': 'Grok, Think For Me',
+            'photo': 'Photo Requests',
+            'opinion': "Grok's Opinion",
+            'avoids': 'Grok Avoids Request'
+        };
+        const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${displayMap[t] || t}</span>`).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
-        document.getElementById('modal-human').textContent = data.human;
-        document.getElementById('modal-grok').innerHTML = data.grok.replace(/\. /g, '.<br><br>');
-
+        document.getElementById('modal-summary').textContent = data.summary;
         document.getElementById('modal-x-link').href = data.xLink;
 
         const modal = document.getElementById('category-modal');
@@ -373,12 +368,12 @@
         const data = categoryData[currentCategoryId];
         const baseUrl = window.location.origin + window.location.pathname;
         const shareUrl = `${baseUrl}#${currentCategoryId}`;
-        const text = `Check out this Grok vs Human category: ${data.title} 🔥`;
+        const text = `Check out this Grok category: ${data.title} 🔥`;
 
         const shareHTML = `
             <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1100]" onclick="closeCategoryShareMenu()">
                 <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
-                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this category</h3>
+                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this card</h3>
                     <div class="grid grid-cols-3 gap-6 text-center">
                         <button onclick="copyCategoryDeepLink('${shareUrl}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-link text-4xl text-purple-400"></i><span class="text-xs mt-1">Our Site</span></button>
                         <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
@@ -401,7 +396,7 @@
 
     function copyCategoryDeepLink(url) {
         navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link to this category copied! (opens with full summary)');
+            showToast('✅ Link to this card copied!');
             closeCategoryShareMenu();
         });
     }
