@@ -407,6 +407,24 @@
             closeCategoryShareMenu();
         });
     }
+
+    // ==================== ROBUST DEEP LINKING ====================
+    function checkDeepLink() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && !isNaN(hash)) {
+            const id = parseInt(hash);
+            if (categoryData[id]) {
+                openCategoryModal(id);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkDeepLink, 300);
+    });
+
+    window.addEventListener('hashchange', checkDeepLink);
+
     </script>
 </body>
 </html>
