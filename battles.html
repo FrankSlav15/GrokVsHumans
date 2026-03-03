@@ -362,7 +362,7 @@
             <!-- Footer -->
             <div class="border-t border-zinc-800 p-6 flex gap-4">
                 <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg">
+                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                     <span class="text-center">View & Participate in This Discussion on X</span>
                 </a>
@@ -454,7 +454,6 @@
         });
     });
 
-    // Nav active
     document.querySelectorAll('.nav-link').forEach(link => {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
@@ -479,7 +478,7 @@
         13: { title: "Remove the REAL Dictator", image: "https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg", tags: ["political"], human: "Grok removes Trump panel from the mandates meme", grok: "Memes are edited for accuracy. I call out both sides equally.", xLink: "https://x.com/4thOfJuly365/status/2027489869031678230" },
         14: { title: "Body on Kent St Google Earth", image: "https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg", tags: ["nonsense"], human: "Grok debunks the viral “dead body” conspiracy meme", grok: "Satellite imagery + timestamps show it’s just shadows and artifacts.", xLink: "https://x.com/si73ntassassin/status/2027513031362539550" },
         15: { title: "Anna Paulina Luna Jewish Conspiracy", image: "https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg", tags: ["censorship"], human: "Users demand Grok confirm secret Jewish roots — Grok sticks to documented family history and disputed claims", grok: "Public records show her documented family background. Conspiracy claims require proof.", xLink: "https://x.com/grok/status/2028354713452691856" },
-        16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","conspiracy 1984"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization. This allows for manipulation of data where only certain data is available for scrutiny.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. https://www.newspapers.com/ AI-indexed archive now covers over 70 million birth announcements across centuries, including thousands from 1961 U.S. papers (Pittsburgh Post-Gazette, DC Evening Star, etc.), searchable without special scrutiny. Gaps persist for local titles like Orillia Packet & Times, where indexes exist but full scans don’t. AI highlights those limits and points to archives or in-person checks, building on whatever data’s out there.", xLink: "https://x.com/grok/status/2028680359861219729" }
+        16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization. This allows for manipulation of data where only certain data is available for scrutiny.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. https://www.newspapers.com/ AI-indexed archive now covers over 70 million birth announcements across centuries, including thousands from 1961 U.S. papers (Pittsburgh Post-Gazette, DC Evening Star, etc.), searchable without special scrutiny. Gaps persist for local titles like Orillia Packet & Times, where indexes exist but full scans don’t. AI highlights those limits and points to archives or in-person checks, building on whatever data’s out there.", xLink: "https://x.com/grok/status/2028680359861219729" }
     };
 
     function openBattleModal(id) {
@@ -490,7 +489,18 @@
         document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
         document.getElementById('modal-title').textContent = data.title;
 
-        const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${t}</span>`).join('');
+        // FRONTEND TAG NAMES
+        const tagDisplay = {
+            nonsense: "Nonsense",
+            political: "Political",
+            serious: "Now, In All Seriousness",
+            citation: "(UN)Popular Citations",
+            joke: "Joke Battles",
+            censorship: "Conspiracy 1984"
+        };
+        const tagsHTML = data.tags.map(t => 
+            `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t] || t}</span>`
+        ).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
         document.getElementById('modal-human').textContent = data.human;
@@ -516,17 +526,14 @@
         if (e.key === 'Escape') closeModal();
     }
 
-    // Click outside modal
     document.getElementById('battle-modal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
 
-    // Deep linking - auto open modal if URL has #16
+    // Deep linking
     window.addEventListener('load', () => {
         const hash = window.location.hash.replace('#', '');
-        if (hash && !isNaN(hash)) {
-            openBattleModal(parseInt(hash));
-        }
+        if (hash && !isNaN(hash)) openBattleModal(parseInt(hash));
     });
 
     function showShareMenu() {
