@@ -326,7 +326,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL – FIXED FOR LONG TEXT -->
+    <!-- BATTLE MODAL WITH VOTING INSIDE -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
@@ -357,9 +357,26 @@
                         <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
                     </div>
                 </div>
+
+                <!-- VOTING SECTION INSIDE MODAL -->
+                <div class="mt-12 pt-8 border-t border-zinc-800">
+                    <p class="text-center text-purple-400 font-medium mb-5 text-lg">Who won this battle?</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn"
+                                class="py-6 bg-gradient-to-b from-purple-700 to-purple-800 hover:from-purple-600 hover:to-purple-700 rounded-3xl font-semibold text-xl transition-all flex flex-col items-center border border-purple-500/30">
+                            <span class="mb-1">Grok</span>
+                            <span id="modal-grok-score" class="text-4xl font-bold">0</span>
+                        </button>
+                        <button onclick="voteFromModal(event, 'human')" id="modal-human-btn"
+                                class="py-6 bg-gradient-to-b from-rose-700 to-rose-800 hover:from-rose-600 hover:to-rose-700 rounded-3xl font-semibold text-xl transition-all flex flex-col items-center border border-rose-500/30">
+                            <span class="mb-1">Human</span>
+                            <span id="modal-human-score" class="text-4xl font-bold">0</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Footer (always visible) -->
+            <!-- Footer -->
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
                 <a id="modal-x-link" href="#" target="_blank" 
                    class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
@@ -437,7 +454,7 @@
         showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
     }
 
-    // Load votes
+    // Load votes on grid
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
             const id = btn.id.replace('grok-btn-', '');
@@ -459,7 +476,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MODAL + DEEP LINK SHARE ====================
+    // ==================== MODAL + VOTING + DEEP LINKING ====================
     let currentBattleId = null;
 
     const battleData = {
@@ -512,6 +529,8 @@
         document.body.style.overflow = 'hidden';
 
         document.addEventListener('keydown', handleEscape);
+
+        updateModalVoteUI();   // show live scores immediately
     }
 
     function closeModal() {
@@ -529,14 +548,43 @@
         if (e.target === this) closeModal();
     });
 
-    // ==================== ROBUST DEEP LINKING ====================
+    // Vote from inside modal
+    function voteFromModal(event, winner) {
+        event.stopImmediatePropagation();
+        if (currentBattleId) {
+            vote(event, winner, currentBattleId);
+            updateModalVoteUI();
+        }
+    }
+
+    // Update modal scores + disable buttons if already voted
+    function updateModalVoteUI() {
+        if (!currentBattleId) return;
+        const id = currentBattleId;
+        const hasVoted = !!localStorage.getItem('voted_' + id);
+
+        database.ref('battles/' + id).once('value', (snapshot) => {
+            const data = snapshot.val() || { grok: 0, human: 0 };
+            document.getElementById('modal-grok-score').textContent = data.grok || 0;
+            document.getElementById('modal-human-score').textContent = data.human || 0;
+
+            const grokBtn = document.getElementById('modal-grok-btn');
+            const humanBtn = document.getElementById('modal-human-btn');
+            if (hasVoted) {
+                grokBtn.disabled = true;
+                humanBtn.disabled = true;
+                grokBtn.style.opacity = '0.7';
+                humanBtn.style.opacity = '0.7';
+            }
+        });
+    }
+
+    // Robust deep linking
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
             const id = parseInt(hash);
-            if (battleData[id]) {
-                openBattleModal(id);
-            }
+            if (battleData[id]) openBattleModal(id);
         }
     }
 
