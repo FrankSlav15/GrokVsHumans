@@ -453,7 +453,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== FINAL MODAL JS – CLICK OUTSIDE NOW WORKS ====================
+    // ==================== CLEAN MODAL + SHARE (click outside + Escape + Share works) ====================
         let currentBattleId = null;
         
         const battleData = {
@@ -510,16 +510,51 @@
             if (e.key === 'Escape') closeModal();
         }
         
-        // BULLETPROOF click outside (works on iOS Safari, Chrome, everything)
+        // Click outside the modal box (reliable on mobile Safari too)
         document.getElementById('battle-modal').addEventListener('click', function(e) {
-            if (!e.target.closest('.modal-content')) {
-                closeModal();
-            }
+            if (e.target.id === 'battle-modal') closeModal();
         });
+        
+        function showShareMenu() {
+            if (!currentBattleId) return;
+            const data = battleData[currentBattleId];
+            const url = data.xLink;
+            const text = `Check out this Grok vs Human battle: ${data.title} 🔥`;
+        
+            const shareHTML = `
+                <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1100]" onclick="closeShareMenu()">
+                    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
+                        <h3 class="text-2xl font-semibold mb-8 text-center">Share this battle</h3>
+                        <div class="grid grid-cols-3 gap-6 text-center">
+                            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-facebook text-4xl text-blue-500"></i><span class="text-xs mt-1">Facebook</span></a>
+                            <a href="#" onclick="copyToClipboard('${url}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-4xl text-pink-500"></i><span class="text-xs mt-1">Instagram</span></a>
+                            <a href="#" onclick="copyToClipboard('${url}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-4xl"></i><span class="text-xs mt-1">TikTok</span></a>
+                            <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + '\\n' + url)}" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-envelope text-4xl text-green-400"></i><span class="text-xs mt-1">Email</span></a>
+                            <button onclick="copyToClipboard('${url}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-copy text-4xl text-purple-400"></i><span class="text-xs mt-1">Copy Link</span></button>
+                        </div>
+                        <button onclick="closeShareMenu()" class="mt-10 w-full py-4 border border-zinc-700 rounded-2xl hover:bg-zinc-800 font-medium">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', shareHTML);
+        }
+        
+        function closeShareMenu() {
+            const overlay = document.getElementById('share-overlay');
+            if (overlay) overlay.remove();
+        }
+        
+        function copyToClipboard(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('✅ Link copied to clipboard!');
+                closeShareMenu();
+            });
+        }
     
 </script>
 
-<!-- BATTLE MODAL (paste right before </body>) -->
+<!-- BATTLE MODAL -->
 <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
     <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
         <!-- Header -->
@@ -554,13 +589,11 @@
 
         <!-- Footer -->
         <div class="border-t border-zinc-800 p-6 flex gap-4">
-            <a id="modal-x-link" href="#" target="_blank" 
-               class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
+            <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
                 <i class="fa-brands fa-x-twitter text-xl"></i>
                 View Full Thread on X
             </a>
-            <button onclick="showShareMenu()" 
-                    class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+            <button onclick="showShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
                 <i class="fa-solid fa-share-nodes"></i>
                 Share Battle
             </button>
