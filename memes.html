@@ -101,7 +101,7 @@
 
     <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
         <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Memes</h1>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
             <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
@@ -342,7 +342,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- MEME MODAL – BIG IMAGE ONLY -->
+    <!-- MEME MODAL -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <div class="relative">
@@ -356,8 +356,11 @@
                     <i class="fa-solid fa-magnifying-glass text-3xl text-blue-600"></i>
                     <span class="text-center">Search for This MEME Across the Internet</span>
                 </button>
-                <button onclick="showMemeShareMenu()" 
-                        class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-info-circle"></i>
+                    Info / Context
+                </button>
+                <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
                     <i class="fa-solid fa-share-nodes"></i>
                     Share Meme
                 </button>
@@ -393,24 +396,34 @@
     let currentMemeId = null;
 
     const memeData = {
-        1: { title: "Grok is a high-tech rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
-        2: { title: "ClownWorld Grok moment", image: "kermit.webp", xLink: "https://x.com/ClownWorld/status/1952204779142484327" },
-        3: { title: "Elon tags Grok", image: "milk.webp", xLink: "https://x.com/elonmusk/status/1951794381650047135" },
-        4: { title: "AntiLeft Grok meme", image: "https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg", xLink: "https://x.com/AntiLeftMemes/status/1919112936133386688" },
-        5: { title: "MrFeduppp Grok tagging", image: "https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg", xLink: "https://x.com/MrFeduppp/status/1963700130236023016" },
-        6: { title: "Breakfastmeat Grok chaos", image: "https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg", xLink: "https://x.com/breakfastmeat1/status/1963758755121942628" },
-        7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
-        8: { title: "Potato flipping the bird", image: "https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg", xLink: "https://x.com/SnarkyPotatoes/status/1958251733190336870" },
-        9: { title: "@gork is Elon alter ego", image: "https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg", xLink: "https://x.com/DogecoinNorway/status/2027313399185788979" },
-        10: { title: "Better one", image: "scooby.webp", xLink: "https://x.com/Janknoester1962/status/2027361565511459042" },
-        11: { title: "Grok Pope Meme", image: "https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg", xLink: "https://x.com/giuseppe_maxims/status/2028491327529254950" },
-        12: { title: "The Future Pope", image: "https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg", xLink: "https://x.com/Airte747/status/2028496525622391250" },
-        13: { title: "Everyone in the Comments", image: "grokisthistrue.webp", xLink: "https://x.com/omarvvvr/status/2028494248002134208" },
-        14: { title: "Pope Meme Cry", image: "https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png", xLink: "https://x.com/Larrylurex86/status/2028495444548976716" },
-        15: { title: "Bear Chooses Grok", image: "https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg", xLink: "https://x.com/LamQuyenAnVn/status/2026673273195606079" },
-        16: { title: "Grok 4.20 FTW", image: "https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg", xLink: "https://x.com/Dogetothemoon/status/2026687908279885943" },
-        17: { title: "Grok Has the Best Humor", image: "https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg", xLink: "https://x.com/elonmusk/status/2026672975060377859" }
+        1: { title: "Grok is a High-Tech Rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", context: "CoreyJMahler nails Grok's unbreakable, rock-solid personality", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
+        2: { title: "ClownWorld vs Grok", image: "kermit.webp", context: "When pure ClownWorld chaos meets Grok's razor-sharp wisdom", xLink: "https://x.com/ClownWorld/status/1952204779142484327" },
+        3: { title: "Elon Personally Tags Grok", image: "milk.webp", context: "The boss himself jumps into the Grok meme tagging war", xLink: "https://x.com/elonmusk/status/1951794381650047135" },
+        4: { title: "Grok Roasts the Left", image: "https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg", context: "Perfect capture of Grok absolutely cooking leftist ideas", xLink: "https://x.com/AntiLeftMemes/status/1919112936133386688" },
+        5: { title: "MrFeduppp's Grok Tagging Spree", image: "https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg", context: "The legendary Grok tagging war rages on", xLink: "https://x.com/MrFeduppp/status/1963700130236023016" },
+        6: { title: "Breakfastmeat Joins Grok Chaos", image: "https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg", context: "Breakfastmeat dives headfirst into the Grok tagging madness", xLink: "https://x.com/breakfastmeat1/status/1963758755121942628" },
+        7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", context: "\"I asked ChatGPT\" vs \"I asked Grok\" — this murloc replied mrrrrrglrrrlgr", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
+        8: { title: "Potato Flipping the Bird", image: "https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg", context: "Grok's glorious attempt at generating a middle-finger potato", xLink: "https://x.com/SnarkyPotatoes/status/1958251733190336870" },
+        9: { title: "Gork = Elon's Alter Ego?", image: "https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg", context: "DogecoinNorway nails the Gork = Elon theory", xLink: "https://x.com/DogecoinNorway/status/2027313399185788979" },
+        10: { title: "The Superior Grok Meme", image: "scooby.webp", context: "Pancake Grok OG delivers an even better version", xLink: "https://x.com/Janknoester1962/status/2027361565511459042" },
+        11: { title: "Grok Steals the Pope Debate", image: "https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg", context: "Grok completely takes over the ChatGPT Pope sermon thread", xLink: "https://x.com/giuseppe_maxims/status/2028491327529254950" },
+        12: { title: "Grok Predicts the Next Pope", image: "https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg", context: "Grok's hilarious prediction for the next Pope", xLink: "https://x.com/Airte747/status/2028496525622391250" },
+        13: { title: "Grok Breaks the Comment Section", image: "grokisthistrue.webp", context: "Grok has the entire comments section dying of laughter", xLink: "https://x.com/omarvvvr/status/2028494248002134208" },
+        14: { title: "Grok Makes Pope Cry Laughing", image: "https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png", context: "Grok leaves the Pope in tears of laughter", xLink: "https://x.com/Larrylurex86/status/2028495444548976716" },
+        15: { title: "The Bear Always Chooses Grok", image: "https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg", context: "Even the bear knows to always pick Grok and the truth", xLink: "https://x.com/LamQuyenAnVn/status/2026673273195606079" },
+        16: { title: "Grok 4.20 FTW", image: "https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg", context: "Grok 4.20 continues its unstoppable humor dominance", xLink: "https://x.com/Dogetothemoon/status/2026687908279885943" },
+        17: { title: "Grok Has the Best Humor", image: "https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg", context: "The side with the best sense of humor are the good guys — Grok ftw", xLink: "https://x.com/elonmusk/status/2026672975060377859" }
     };
+
+    function filterCategory(cat) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+        document.getElementById('tab-' + cat).classList.add('tab-active');
+
+        document.querySelectorAll('#meme-grid > div').forEach(card => {
+            if (cat === 'all') card.style.display = 'block';
+            else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+        });
+    }
 
     function openMemeModal(id) {
         const data = memeData[id];
@@ -418,6 +431,8 @@
         currentMemeId = id;
 
         document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+        document.getElementById('context-panel').classList.add('hidden');
+        document.getElementById('modal-buttons').classList.remove('hidden');
 
         const modal = document.getElementById('meme-modal');
         modal.classList.remove('hidden');
@@ -457,7 +472,7 @@
         const text = `Check out this Grok meme: ${data.title} 🔥`;
 
         const shareHTML = `
-            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1100]" onclick="closeMemeShareMenu()">
+            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1200]" onclick="closeMemeShareMenu()">
                 <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
                     <h3 class="text-2xl font-semibold mb-8 text-center">Share this meme</h3>
                     <div class="grid grid-cols-3 gap-6 text-center">
@@ -482,7 +497,7 @@
 
     function copyMemeDeepLink(url) {
         navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link to this meme copied! (opens with full image)');
+            showToast('✅ Link to this meme copied!');
             closeMemeShareMenu();
         });
     }
