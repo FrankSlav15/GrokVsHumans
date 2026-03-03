@@ -72,6 +72,21 @@
         .meme-card .desc-area {
             flex: 1;
             min-height: 3.5rem; }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid transparent;
+        }
+        .tab-active, .tab:hover {
+            background: rgb(168 85 247);
+            color: white;
+            border-color: rgb(168 85 247);
+        }
     </style>
 </head>
 <body class="text-white">
@@ -101,229 +116,171 @@
 
     <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
         <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Memes</h1>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
             <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
+            <!-- TABS -->
+            <div class="flex justify-center gap-2 flex-wrap mb-8">
+                <button onclick="filterCategory('all')" id="tab-all" class="tab tab-active">All</button>
+                <button onclick="filterCategory('grok-memes')" id="tab-grok-memes" class="tab">Grok Memes</button>
+                <button onclick="filterCategory('misc-memes')" id="tab-misc-memes" class="tab">Miscellaneous Memes</button>
+                <button onclick="filterCategory('gifs')" id="tab-gifs" class="tab">GIFs</button>
+                <button onclick="filterCategory('ai-tech')" id="tab-ai-tech" class="tab">AI Meme Tech</button>
+                <button onclick="filterCategory('other')" id="tab-other" class="tab">Other</button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch" id="meme-grid">
 
                 <!-- 17 newest at top -->
-                <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Has the Best Humor</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">The side with the best sense of humor are the good guys — Grok ftw</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Has the Best Humor</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The side with the best sense of humor are the good guys — Grok ftw</p></div>
                     </div>
                 </div>
 
                 <!-- 16 -->
-                <div onclick="openMemeModal(16)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(16)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok 4.20 FTW</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Grok 4.20 continues its unstoppable humor dominance</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok 4.20 FTW</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok 4.20 continues its unstoppable humor dominance</p></div>
                     </div>
                 </div>
 
                 <!-- 15 -->
-                <div onclick="openMemeModal(15)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(15)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">The Bear Always Chooses Grok</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Even the bear knows to always pick Grok and the truth</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">The Bear Always Chooses Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Even the bear knows to always pick Grok and the truth</p></div>
                     </div>
                 </div>
 
                 <!-- 14 -->
-                <div onclick="openMemeModal(14)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(14)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Makes Pope Cry Laughing</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Grok leaves the Pope in tears of laughter</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Makes Pope Cry Laughing</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok leaves the Pope in tears of laughter</p></div>
                     </div>
                 </div>
 
                 <!-- 13 -->
-                <div onclick="openMemeModal(13)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(13)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="grokisthistrue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Breaks the Comment Section</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Grok has the entire comments section dying of laughter</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Breaks the Comment Section</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok has the entire comments section dying of laughter</p></div>
                     </div>
                 </div>
 
                 <!-- 12 -->
-                <div onclick="openMemeModal(12)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(12)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Predicts the Next Pope</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Grok's hilarious and spot-on prediction for the next Pope</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Predicts the Next Pope</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok's hilarious prediction for the next Pope</p></div>
                     </div>
                 </div>
 
                 <!-- 11 -->
-                <div onclick="openMemeModal(11)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(11)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Steals the Pope Debate</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Grok completely takes over the ChatGPT Pope sermon thread</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Steals the Pope Debate</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok completely takes over the ChatGPT Pope sermon thread</p></div>
                     </div>
                 </div>
 
                 <!-- 10 -->
-                <div onclick="openMemeModal(10)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(10)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
                     <img src="scooby.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">The Superior Grok Meme</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Pancake Grok OG delivers an even better version</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">The Superior Grok Meme</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Pancake Grok OG delivers an even better version</p></div>
                     </div>
                 </div>
 
                 <!-- 9 -->
-                <div onclick="openMemeModal(9)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(9)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Gork = Elon's Alter Ego?</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">DogecoinNorway perfectly nails the Gork = Elon theory</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Gork = Elon's Alter Ego?</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">DogecoinNorway nails the Gork = Elon theory</p></div>
                     </div>
                 </div>
 
                 <!-- 8 -->
-                <div onclick="openMemeModal(8)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(8)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
                     <img src="https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Potato Flipping the Bird</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Grok's glorious attempt at generating a middle-finger potato</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Potato Flipping the Bird</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok's glorious attempt at generating a middle-finger potato</p></div>
                     </div>
                 </div>
 
                 <!-- 7 -->
-                <div onclick="openMemeModal(7)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(7)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Murloc vs Grok</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">"I asked ChatGPT" vs "I asked Grok" — this murloc replied mrrrrrglrrrlgr</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Murloc vs Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">"I asked ChatGPT" vs "I asked Grok" — this murloc replied mrrrrrglrrrlgr</p></div>
                     </div>
                 </div>
 
                 <!-- 6 -->
-                <div onclick="openMemeModal(6)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(6)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Breakfastmeat Joins Grok Chaos</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Breakfastmeat dives headfirst into the Grok tagging madness</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Breakfastmeat Joins Grok Chaos</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Breakfastmeat dives headfirst into the Grok tagging madness</p></div>
                     </div>
                 </div>
 
                 <!-- 5 -->
-                <div onclick="openMemeModal(5)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(5)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">MrFeduppp's Grok Tagging Spree</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">The legendary Grok tagging war rages on</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">MrFeduppp's Grok Tagging Spree</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The legendary Grok tagging war rages on</p></div>
                     </div>
                 </div>
 
                 <!-- 4 -->
-                <div onclick="openMemeModal(4)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(4)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Roasts the Left</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">Perfect capture of Grok absolutely cooking leftist ideas</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Roasts the Left</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Perfect capture of Grok absolutely cooking leftist ideas</p></div>
                     </div>
                 </div>
 
                 <!-- 3 -->
-                <div onclick="openMemeModal(3)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(3)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="milk.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Elon Personally Tags Grok</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">The boss himself jumps into the Grok meme tagging war</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Elon Personally Tags Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The boss himself jumps into the Grok meme tagging war</p></div>
                     </div>
                 </div>
 
                 <!-- 2 -->
-                <div onclick="openMemeModal(2)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(2)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
                     <img src="kermit.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">ClownWorld vs Grok</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">When pure ClownWorld chaos meets Grok's razor-sharp wisdom</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">ClownWorld vs Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">When pure ClownWorld chaos meets Grok's razor-sharp wisdom</p></div>
                     </div>
                 </div>
 
                 <!-- 1 oldest at bottom -->
-                <div onclick="openMemeModal(1)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer">
+                <div onclick="openMemeModal(1)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok is a High-Tech Rock</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-2">CoreyJMahler nails Grok's unbreakable, rock-solid personality</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok is a High-Tech Rock</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">CoreyJMahler nails Grok's unbreakable, rock-solid personality</p></div>
                     </div>
                 </div>
 
@@ -408,14 +365,14 @@
     let currentMemeId = null;
 
     const memeData = {
-        1: { title: "Grok is a High-Tech Rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", context: "Most of the people who tag @grok in my replies get this rock-solid response", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
-        2: { title: "ClownWorld vs Grok", image: "kermit.webp", context: "Turning wild ClownWorld memes into videos with Grok Imagine", xLink: "https://x.com/ClownWorld/status/1952204779142484327" },
+        1: { title: "Grok is a High-Tech Rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", context: "CoreyJMahler nails Grok's unbreakable, rock-solid personality", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
+        2: { title: "ClownWorld vs Grok", image: "kermit.webp", context: "When pure ClownWorld chaos meets Grok's razor-sharp wisdom", xLink: "https://x.com/ClownWorld/status/1952204779142484327" },
         3: { title: "Elon Personally Tags Grok", image: "milk.webp", context: "The boss himself jumps into the Grok meme tagging war", xLink: "https://x.com/elonmusk/status/1951794381650047135" },
         4: { title: "Grok Roasts the Left", image: "https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg", context: "Perfect capture of Grok absolutely cooking leftist ideas", xLink: "https://x.com/AntiLeftMemes/status/1919112936133386688" },
         5: { title: "MrFeduppp's Grok Tagging Spree", image: "https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg", context: "The legendary Grok tagging war rages on", xLink: "https://x.com/MrFeduppp/status/1963700130236023016" },
         6: { title: "Breakfastmeat Joins Grok Chaos", image: "https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg", context: "Breakfastmeat dives headfirst into the Grok tagging madness", xLink: "https://x.com/breakfastmeat1/status/1963758755121942628" },
-        7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", context: "\"i asked chatgpt\" \"i asked grok\" yeah well i asked this murloc and he said “mrrrrrglrrrlgr”", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
-        8: { title: "Potato Flipping the Bird", image: "https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg", context: "Grok tried to generate a middle finger potato — close enough", xLink: "https://x.com/SnarkyPotatoes/status/1958251733190336870" },
+        7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", context: "\"I asked ChatGPT\" vs \"I asked Grok\" — this murloc replied mrrrrrglrrrlgr", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
+        8: { title: "Potato Flipping the Bird", image: "https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg", context: "Grok's glorious attempt at generating a middle-finger potato", xLink: "https://x.com/SnarkyPotatoes/status/1958251733190336870" },
         9: { title: "Gork = Elon's Alter Ego?", image: "https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg", context: "DogecoinNorway nails the Gork = Elon theory", xLink: "https://x.com/DogecoinNorway/status/2027313399185788979" },
         10: { title: "The Superior Grok Meme", image: "scooby.webp", context: "Pancake Grok OG delivers an even better version", xLink: "https://x.com/Janknoester1962/status/2027361565511459042" },
         11: { title: "Grok Steals the Pope Debate", image: "https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg", context: "Grok completely takes over the ChatGPT Pope sermon thread", xLink: "https://x.com/giuseppe_maxims/status/2028491327529254950" },
@@ -426,6 +383,19 @@
         16: { title: "Grok 4.20 FTW", image: "https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg", context: "Grok 4.20 continues its unstoppable humor dominance", xLink: "https://x.com/Dogetothemoon/status/2026687908279885943" },
         17: { title: "Grok Has the Best Humor", image: "https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg", context: "The side with the best sense of humor are the good guys — Grok ftw", xLink: "https://x.com/elonmusk/status/2026672975060377859" }
     };
+
+    function filterCategory(cat) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+        document.getElementById('tab-' + cat).classList.add('tab-active');
+
+        document.querySelectorAll('#meme-grid > div').forEach(card => {
+            if (cat === 'all') {
+                card.style.display = 'block';
+            } else {
+                card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+            }
+        });
+    }
 
     function openMemeModal(id) {
         const data = memeData[id];
@@ -535,6 +505,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
+        filterCategory('all'); // start with All selected
     });
 
     window.addEventListener('hashchange', checkDeepLink);
