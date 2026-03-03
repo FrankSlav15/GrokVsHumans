@@ -344,18 +344,32 @@
 
     <!-- MEME MODAL -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <div class="relative">
-                <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
-                <div id="modal-image" class="w-full bg-zinc-800"></div>
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
+            <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
+            
+            <div id="modal-image" class="w-full bg-zinc-800"></div>
+
+            <!-- SMALL BOTTOM CONTEXT PANEL (exactly as you asked) -->
+            <div id="context-panel" class="hidden absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-purple-500/50 p-5 rounded-b-3xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 pr-8">
+                        <p id="context-text" class="text-gray-300 text-sm leading-relaxed line-clamp-4"></p>
+                    </div>
+                    <button onclick="hideContextPanel()" class="text-zinc-400 hover:text-white text-3xl leading-none">✕</button>
+                </div>
+                <a id="context-x-link" href="#" target="_blank" class="mt-4 block w-full text-center bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-3">
+                    <i class="fa-brands fa-x-twitter"></i>
+                    View Original Thread on X
+                </a>
             </div>
 
-            <div class="border-t border-zinc-800 p-6 flex gap-3">
+            <!-- Normal buttons (hidden when panel is open) -->
+            <div id="modal-buttons" class="border-t border-zinc-800 p-6 flex gap-3">
                 <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
                     <i class="fa-solid fa-magnifying-glass text-3xl text-blue-600"></i>
                     <span class="text-center">Search for This MEME Across the Internet</span>
                 </button>
-                <button onclick="showMemeInfo()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
                     <i class="fa-solid fa-info-circle"></i>
                     Info / Context
                 </button>
@@ -364,19 +378,6 @@
                     Share Meme
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- CONTEXT OVERLAY -->
-    <div id="context-overlay" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1100] p-4">
-        <div class="bg-zinc-950 rounded-3xl max-w-lg w-full p-8 border border-purple-500/30" onclick="event.stopImmediatePropagation()">
-            <button onclick="closeContextOverlay()" class="float-right text-3xl text-zinc-400 hover:text-white">✕</button>
-            <h3 class="text-2xl font-bold mb-6">Original Context</h3>
-            <p id="context-text" class="text-gray-300 leading-relaxed mb-8"></p>
-            <a id="context-x-link" href="#" target="_blank" class="block w-full text-center bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3">
-                <i class="fa-brands fa-x-twitter text-2xl"></i>
-                View Original Thread on X
-            </a>
         </div>
     </div>
 
@@ -413,7 +414,7 @@
         4: { title: "AntiLeft Grok meme", image: "https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg", context: "Grok roasts the left perfectly", xLink: "https://x.com/AntiLeftMemes/status/1919112936133386688" },
         5: { title: "MrFeduppp Grok tagging", image: "https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg", context: "The tagging war continues", xLink: "https://x.com/MrFeduppp/status/1963700130236023016" },
         6: { title: "Breakfastmeat Grok chaos", image: "https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg", context: "Breakfastmeat joins the tagging madness", xLink: "https://x.com/breakfastmeat1/status/1963758755121942628" },
-        7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", context: "\"i asked chatgpt\" \"i asked grok\" yeah well i asked this murloc and he said \“mrrrrrglrrrlgr\”", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
+        7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", context: "\"i asked chatgpt\" \"i asked grok\" yeah well i asked this murloc and he said \"mrrrrrglrrrlgr\"", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
         8: { title: "Potato flipping the bird", image: "https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg", context: "Grok tried to generate a middle finger potato", xLink: "https://x.com/SnarkyPotatoes/status/1958251733190336870" },
         9: { title: "@gork is Elon alter ego", image: "https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg", context: "DogecoinNorway nails it", xLink: "https://x.com/DogecoinNorway/status/2027313399185788979" },
         10: { title: "Better one", image: "scooby.webp", context: "Pancake Grok OG drops a better version", xLink: "https://x.com/Janknoester1962/status/2027361565511459042" },
@@ -432,6 +433,8 @@
         currentMemeId = id;
 
         document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+        document.getElementById('context-panel').classList.add('hidden');
+        document.getElementById('modal-buttons').classList.remove('hidden');
 
         const modal = document.getElementById('meme-modal');
         modal.classList.remove('hidden');
@@ -455,16 +458,18 @@
         if (e.target === this) closeMemeModal();
     });
 
-    function showMemeInfo() {
+    function showContextPanel() {
         if (!currentMemeId) return;
         const data = memeData[currentMemeId];
         document.getElementById('context-text').textContent = data.context;
         document.getElementById('context-x-link').href = data.xLink;
-        document.getElementById('context-overlay').classList.remove('hidden');
+        document.getElementById('context-panel').classList.remove('hidden');
+        document.getElementById('modal-buttons').classList.add('hidden');
     }
 
-    function closeContextOverlay() {
-        document.getElementById('context-overlay').classList.add('hidden');
+    function hideContextPanel() {
+        document.getElementById('context-panel').classList.add('hidden');
+        document.getElementById('modal-buttons').classList.remove('hidden');
     }
 
     function searchMemeImage() {
