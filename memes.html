@@ -69,7 +69,6 @@
         .meme-card .title-area { min-height: 1.75rem; }
         .meme-card .desc-area { flex: 1; min-height: 3.5rem; }
 
-        /* Sticky Tabs */
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -82,7 +81,7 @@
             color: white;
         }
 
-        /* MODAL - ESCAPE + CLICK OUTSIDE + SLIM CONTEXT BAR */
+        /* MODAL */
         #meme-modal {
             position: fixed;
             inset: 0;
@@ -107,8 +106,6 @@
             max-height: 68vh;
             object-fit: contain;
         }
-
-        /* SLIM CONTEXT BAR - under the image, photo stays fully visible */
         #context-panel {
             position: absolute;
             bottom: 0;
@@ -119,7 +116,6 @@
             border-top: 1px solid rgba(168,85,247,0.4);
             padding: 14px 16px;
             display: none;
-            max-height: 110px;
         }
         #context-text {
             color: #e5e5e5;
@@ -135,27 +131,12 @@
             font-weight: 600;
             text-align: center;
         }
-
-        /* MOBILE - extra small buttons + slim bar */
         @media (max-width: 640px) {
             #meme-modal { padding: 8px; }
-            .modal-content { border-radius: 20px; max-height: 96vh; }
+            .modal-content { max-height: 96vh; border-radius: 20px; }
             #modal-image img { max-height: 68vh !important; }
-            #modal-buttons {
-                padding: 10px 8px !important;
-                gap: 6px !important;
-            }
-            #modal-buttons button {
-                padding: 10px 8px !important;
-                font-size: 0.78rem !important;
-                min-height: 44px;
-                gap: 5px;
-            }
-            #modal-buttons button span {
-                font-size: 0.73rem;
-                line-height: 1.15;
-            }
-            #context-panel { padding: 12px 14px; max-height: 105px; }
+            #modal-buttons button { font-size: 0.78rem; padding: 10px 8px; }
+            #context-panel { padding: 12px 14px; }
             #context-text { font-size: 0.82rem; }
             #context-x-link { padding: 10px; font-size: 0.85rem; }
         }
@@ -163,7 +144,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (your exact one) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -191,7 +172,6 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
             <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
 
-            <!-- Sticky Tabs -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
@@ -205,9 +185,8 @@
                 </div>
             </div>
 
-            <!-- YOUR 17 CARDS EXACTLY AS YOU HAD -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
-                <!-- card 17 -->
+                <!-- 17 -->
                 <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -215,7 +194,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The side with the best sense of humor are the good guys — Grok ftw</p></div>
                     </div>
                 </div>
-                <!-- card 16 -->
+                <!-- 16 -->
                 <div onclick="openMemeModal(16)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -223,7 +202,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok 4.20 continues its unstoppable humor dominance</p></div>
                     </div>
                 </div>
-                <!-- card 15 -->
+                <!-- 15 -->
                 <div onclick="openMemeModal(15)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -231,7 +210,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Even the bear knows to always pick Grok and the truth</p></div>
                     </div>
                 </div>
-                <!-- card 14 -->
+                <!-- 14 -->
                 <div onclick="openMemeModal(14)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -239,7 +218,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok leaves the Pope in tears of laughter</p></div>
                     </div>
                 </div>
-                <!-- card 13 -->
+                <!-- 13 -->
                 <div onclick="openMemeModal(13)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="grokisthistrue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -247,7 +226,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok has the entire comments section dying of laughter</p></div>
                     </div>
                 </div>
-                <!-- card 12 -->
+                <!-- 12 -->
                 <div onclick="openMemeModal(12)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -255,7 +234,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok's hilarious prediction for the next Pope</p></div>
                     </div>
                 </div>
-                <!-- card 11 -->
+                <!-- 11 -->
                 <div onclick="openMemeModal(11)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -263,7 +242,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok completely takes over the ChatGPT Pope sermon thread</p></div>
                     </div>
                 </div>
-                <!-- card 10 -->
+                <!-- 10 -->
                 <div onclick="openMemeModal(10)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
                     <img src="scooby.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -271,7 +250,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Pancake Grok OG delivers an even better version</p></div>
                     </div>
                 </div>
-                <!-- card 9 -->
+                <!-- 9 -->
                 <div onclick="openMemeModal(9)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -279,7 +258,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">DogecoinNorway nails the Gork = Elon theory</p></div>
                     </div>
                 </div>
-                <!-- card 8 -->
+                <!-- 8 -->
                 <div onclick="openMemeModal(8)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
                     <img src="https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -287,7 +266,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok's glorious attempt at generating a middle-finger potato</p></div>
                     </div>
                 </div>
-                <!-- card 7 -->
+                <!-- 7 -->
                 <div onclick="openMemeModal(7)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
                     <img src="https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -295,7 +274,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">"I asked ChatGPT" vs "I asked Grok" — this murloc replied mrrrrrglrrrlgr</p></div>
                     </div>
                 </div>
-                <!-- card 6 -->
+                <!-- 6 -->
                 <div onclick="openMemeModal(6)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -303,7 +282,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Breakfastmeat dives headfirst into the Grok tagging madness</p></div>
                     </div>
                 </div>
-                <!-- card 5 -->
+                <!-- 5 -->
                 <div onclick="openMemeModal(5)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -311,7 +290,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The legendary Grok tagging war rages on</p></div>
                     </div>
                 </div>
-                <!-- card 4 -->
+                <!-- 4 -->
                 <div onclick="openMemeModal(4)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -319,7 +298,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Perfect capture of Grok absolutely cooking leftist ideas</p></div>
                     </div>
                 </div>
-                <!-- card 3 -->
+                <!-- 3 -->
                 <div onclick="openMemeModal(3)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="milk.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -327,7 +306,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The boss himself jumps into the Grok meme tagging war</p></div>
                     </div>
                 </div>
-                <!-- card 2 -->
+                <!-- 2 -->
                 <div onclick="openMemeModal(2)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
                     <img src="kermit.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -335,7 +314,7 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">When pure ClownWorld chaos meets Grok's razor-sharp wisdom</p></div>
                     </div>
                 </div>
-                <!-- card 1 -->
+                <!-- 1 -->
                 <div onclick="openMemeModal(1)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -353,13 +332,12 @@
         Launched Mar 01 2026
     </footer>
 
-    <!-- Toast -->
     <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900 border border-purple-500 px-8 py-4 rounded-3xl shadow-2xl z-[100] transition-all duration-300">
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- MEME MODAL -->
-    <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target===this)closeMemeModal()">
+    <!-- MODAL -->
+    <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
             
@@ -450,25 +428,15 @@
         if (!data) return;
         currentMemeId = id;
         document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
-        document.getElementById('context-panel').classList.add('hidden');
-        document.getElementById('modal-buttons').classList.remove('hidden');
-        const modal = document.getElementById('meme-modal');
-        modal.classList.remove('hidden');
+        document.getElementById('context-panel').style.display = 'none';
+        document.getElementById('modal-buttons').style.display = 'flex';
+        document.getElementById('meme-modal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-
-        // ESCAPE KEY
-        document.addEventListener('keydown', handleEscape);
-    }
-
-    function handleEscape(e) {
-        if (e.key === 'Escape') closeMemeModal();
     }
 
     function closeMemeModal() {
-        const modal = document.getElementById('meme-modal');
-        modal.classList.add('hidden');
+        document.getElementById('meme-modal').style.display = 'none';
         document.body.style.overflow = 'visible';
-        document.removeEventListener('keydown', handleEscape);
     }
 
     function showContextPanel() {
@@ -476,20 +444,19 @@
         const data = memeData[currentMemeId];
         document.getElementById('context-text').textContent = data.context;
         document.getElementById('context-x-link').href = data.xLink;
-        document.getElementById('context-panel').classList.remove('hidden');
-        document.getElementById('modal-buttons').classList.add('hidden');
+        document.getElementById('context-panel').style.display = 'block';
+        document.getElementById('modal-buttons').style.display = 'none';
     }
 
     function hideContextPanel() {
-        document.getElementById('context-panel').classList.add('hidden');
-        document.getElementById('modal-buttons').classList.remove('hidden');
+        document.getElementById('context-panel').style.display = 'none';
+        document.getElementById('modal-buttons').style.display = 'flex';
     }
 
     function searchMemeImage() {
         if (!currentMemeId) return;
         const data = memeData[currentMemeId];
-        const searchUrl = `https://lens.google.com/uploadbyurl?url=${encodeURIComponent(data.image)}`;
-        window.open(searchUrl, '_blank');
+        window.open(`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(data.image)}`, '_blank');
     }
 
     function showMemeShareMenu() {
@@ -550,6 +517,14 @@
     });
 
     window.addEventListener('hashchange', checkDeepLink);
+
+    // ESCAPE KEY
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('meme-modal');
+            if (modal.style.display === 'flex') closeMemeModal();
+        }
+    });
 
     </script>
 </body>
