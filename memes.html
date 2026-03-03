@@ -73,7 +73,7 @@
             flex: 1;
             min-height: 3.5rem; }
 
-        /* Sticky Tabs - exactly like Categories page */
+        /* Sticky Tabs - exact match to Categories page */
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -84,6 +84,29 @@
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
             color: white;
+        }
+
+        /* Mobile popup improvements */
+        @media (max-width: 640px) {
+            #modal-buttons button {
+                padding: 14px 12px !important;
+                font-size: 0.875rem !important;
+                gap: 8px;
+            }
+            #context-panel {
+                padding: 16px 14px !important;
+            }
+            #context-text {
+                font-size: 0.875rem !important;
+                line-height: 1.35;
+            }
+            #context-x-link {
+                padding: 12px !important;
+                font-size: 0.9rem !important;
+            }
+            #modal-image img {
+                max-height: 55vh !important;
+            }
         }
     </style>
 </head>
@@ -117,7 +140,7 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
             <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
 
-            <!-- Sticky Tabs - EXACTLY like Categories page -->
+            <!-- Sticky Tabs (exactly like Categories page) -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
@@ -132,7 +155,6 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
-
                 <!-- 17 newest at top -->
                 <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
@@ -312,11 +334,11 @@
             <div id="context-panel" class="hidden absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-purple-500/50 p-5 rounded-b-3xl">
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex-1 pr-8">
-                        <p id="context-text" class="text-gray-300 text-sm leading-relaxed line-clamp-4"></p>
+                        <p id="context-text" class="text-gray-300 text-xs md:text-sm leading-relaxed line-clamp-4"></p>
                     </div>
                     <button onclick="hideContextPanel()" class="text-zinc-400 hover:text-white text-3xl leading-none">✕</button>
                 </div>
-                <a id="context-x-link" href="#" target="_blank" class="mt-4 block w-full text-center bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-3">
+                <a id="context-x-link" href="#" target="_blank" class="mt-4 block w-full text-center bg-white hover:bg-gray-100 text-black font-semibold py-3 md:py-4 rounded-2xl flex items-center justify-center gap-3 text-sm md:text-base">
                     <i class="fa-brands fa-x-twitter"></i>
                     View Original Thread on X
                 </a>
@@ -324,15 +346,15 @@
 
             <!-- Normal buttons -->
             <div id="modal-buttons" class="border-t border-zinc-800 p-6 flex gap-3">
-                <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
-                    <i class="fa-solid fa-magnifying-glass text-3xl text-blue-600"></i>
+                <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-3 md:py-4 px-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-xs md:text-sm">
+                    <i class="fa-solid fa-magnifying-glass text-2xl md:text-3xl text-blue-600"></i>
                     <span class="text-center">Search for This MEME Across the Internet</span>
                 </button>
-                <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-3 md:py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-xs md:text-sm">
                     <i class="fa-solid fa-info-circle"></i>
                     Info / Context
                 </button>
-                <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-3 md:py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-xs md:text-sm">
                     <i class="fa-solid fa-share-nodes"></i>
                     Share Meme
                 </button>
@@ -401,7 +423,7 @@
         if (!data) return;
         currentMemeId = id;
 
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] md:max-h-[65vh] object-contain mx-auto" alt="${data.title}">`;
         document.getElementById('context-panel').classList.add('hidden');
         document.getElementById('modal-buttons').classList.remove('hidden');
 
@@ -504,7 +526,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
-        filterCategory('all');   // start on All
+        filterCategory('all');
     });
 
     window.addEventListener('hashchange', checkDeepLink);
