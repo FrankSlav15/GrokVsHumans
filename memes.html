@@ -258,17 +258,15 @@
     <!-- MEME MODAL – BIG IMAGE ONLY -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <!-- Big full meme image -->
             <div class="relative">
                 <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
                 <div id="modal-image" class="w-full bg-zinc-800"></div>
             </div>
 
-            <!-- Footer -->
             <div class="border-t border-zinc-800 p-6 flex gap-4">
                 <button onclick="searchMemeImage()" 
                         class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
-                    <i class="fa-solid fa-magnifying-glass text-3xl text-blue-600 flex-shrink-0"></i>
+                    <i class="fa-solid fa-magnifying-glass text-3xl text-blue-600"></i>
                     <span class="text-center">Search for This MEME Across the Internet</span>
                 </button>
                 <button onclick="showMemeShareMenu()" 
@@ -317,7 +315,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MEME MODAL + REAL REVERSE IMAGE SEARCH ====================
+    // ==================== MEME DATA & FUNCTIONS ====================
     let currentMemeId = null;
 
     const memeData = {
@@ -369,7 +367,6 @@
         if (e.target === this) closeMemeModal();
     });
 
-    // REAL GOOGLE REVERSE IMAGE SEARCH
     function searchMemeImage() {
         if (!currentMemeId) return;
         const data = memeData[currentMemeId];
@@ -422,6 +419,24 @@
             closeMemeShareMenu();
         });
     }
+
+    // ==================== ROBUST DEEP LINKING ====================
+    function checkDeepLink() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && !isNaN(hash)) {
+            const id = parseInt(hash);
+            if (memeData[id]) {
+                openMemeModal(id);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkDeepLink, 300);   // small delay ensures everything is loaded
+    });
+
+    window.addEventListener('hashchange', checkDeepLink);
+
     </script>
 </body>
 </html>
