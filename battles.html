@@ -47,12 +47,11 @@
             flex: 1;
             padding: 1.25rem;
             background: #18181b;
-            min-height: 145px; }
+            min-height: 160px; }   /* bumped for better stretching */
         .battle-card .buttons {
             flex-shrink: 0;
             border-top: 1px solid #27272a;
-            margin-top: auto;
-        }
+            margin-top: auto; }   /* this forces buttons to bottom on every card */
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
             color: white; }
@@ -104,7 +103,7 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="battle-grid">
-                <!-- 16 (newest) first -->
+                <!-- 16 (newest) at top -->
                 <div onclick="openBattleModal(16)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious,censorship">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover" alt="Obama Long-Form Birth Certificate">
                     <div class="content">
@@ -299,7 +298,7 @@
                     </div>
                 </div>
 
-                <!-- 1 (oldest) last -->
+                <!-- 1 (oldest) at bottom -->
                 <div onclick="openBattleModal(1)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="nonsense">
                     <img src="https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
                     <div class="content">
