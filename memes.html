@@ -73,19 +73,17 @@
             flex: 1;
             min-height: 3.5rem; }
 
+        /* Sticky Tabs - exactly like Categories page */
         .tab {
             padding: 0.75rem 1.25rem;
-            border-radius: 9999px;
             font-weight: 500;
             font-size: 0.875rem;
             transition: all 0.2s ease;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid transparent;
+            white-space: nowrap;
         }
-        .tab-active, .tab:hover {
-            background: rgb(168 85 247);
+        .tab-active {
+            border-bottom: 3px solid rgb(168 85 247);
             color: white;
-            border-color: rgb(168 85 247);
         }
     </style>
 </head>
@@ -119,17 +117,21 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
             <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
 
-            <!-- TABS -->
-            <div class="flex justify-center gap-2 flex-wrap mb-8">
-                <button onclick="filterCategory('all')" id="tab-all" class="tab tab-active">All</button>
-                <button onclick="filterCategory('grok-memes')" id="tab-grok-memes" class="tab">Grok Memes</button>
-                <button onclick="filterCategory('misc-memes')" id="tab-misc-memes" class="tab">Miscellaneous Memes</button>
-                <button onclick="filterCategory('gifs')" id="tab-gifs" class="tab">GIFs</button>
-                <button onclick="filterCategory('ai-tech')" id="tab-ai-tech" class="tab">AI Meme Tech</button>
-                <button onclick="filterCategory('other')" id="tab-other" class="tab">Other</button>
+            <!-- Sticky Tabs - EXACTLY like Categories page -->
+            <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
+                <div class="flex justify-start md:justify-center px-4 md:px-6">
+                    <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
+                        <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
+                        <button onclick="filterCategory('grok-memes')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-grok-memes">Grok Memes</button>
+                        <button onclick="filterCategory('misc-memes')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-misc-memes">Miscellaneous Memes</button>
+                        <button onclick="filterCategory('gifs')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-gifs">GIFs</button>
+                        <button onclick="filterCategory('ai-tech')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-ai-tech">AI Meme Tech</button>
+                        <button onclick="filterCategory('other')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-other">Other</button>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch" id="meme-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
 
                 <!-- 17 newest at top -->
                 <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
@@ -389,11 +391,8 @@
         document.getElementById('tab-' + cat).classList.add('tab-active');
 
         document.querySelectorAll('#meme-grid > div').forEach(card => {
-            if (cat === 'all') {
-                card.style.display = 'block';
-            } else {
-                card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
-            }
+            if (cat === 'all') card.style.display = 'block';
+            else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
         });
     }
 
@@ -505,7 +504,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
-        filterCategory('all'); // start with All selected
+        filterCategory('all');   // start on All
     });
 
     window.addEventListener('hashchange', checkDeepLink);
