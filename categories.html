@@ -6,8 +6,6 @@
     <title>Categories - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Google Analytics -->
@@ -48,11 +46,32 @@
             border: 1px solid rgba(168,85,247,0.2); 
             display: flex;
             flex-direction: column;
-            height: 100%; }
+            height: 100%;
+            overflow: hidden;
+            border-radius: 1.5rem; }
         .category-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
+        .category-card > img {
+            flex-shrink: 0;
+            height: 14rem;
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem; }
+        .category-card .content {
+            flex: 1;
+            padding: 1.25rem;
+            background: #18181b;
+            display: flex;
+            flex-direction: column;
+            min-height: 9rem; }
+        .category-card .title-area {
+            min-height: 3.25rem; /* exactly 2 lines for title */ }
+        .category-card .desc-area {
+            flex: 1;
+            min-height: 5.75rem; /* exactly 4 lines for description */ }
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
             color: white; }
@@ -86,123 +105,231 @@
     <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
         <div class="max-w-7xl mx-auto px-6">
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
-            <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
+            <p class="text-center text-zinc-400 text-lg">Explore battles by theme</p>
 
             <!-- Sticky Tabs -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
                         <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
-                        <button onclick="filterCategory('lazy')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-lazy">Grok, Think For Me</button>
-                        <button onclick="filterCategory('photo')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-photo">Photo Requests</button>
-                        <button onclick="filterCategory('opinion')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-opinion">Grok's Opinion</button>
-                        <button onclick="filterCategory('avoids')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-avoids">Grok Avoids Request</button>
+                        <button onclick="filterCategory('nonsense')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-nonsense">Nonsense</button>
+                        <button onclick="filterCategory('political')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-political">Political</button>
+                        <button onclick="filterCategory('serious')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-serious">Now, In All Seriousness</button>
+                        <button onclick="filterCategory('citation')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-citation">(UN)Popular Citations</button>
+                        <button onclick="filterCategory('joke')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-joke">Joke Battles</button>
+                        <button onclick="filterCategory('censorship')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-censorship">Conspiracy 1984</button>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="category-grid">
-
-                <!-- 1 Grok, is this true? -->
-                <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok, is this true?</h4>
-                        <p class="text-gray-400 text-sm">Oblivious satire victim</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="category-grid">
+                <!-- 16 newest at top -->
+                <div onclick="openCategoryModal(16)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="political,serious,censorship">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">1984 Archives – Selective Digitization or Data Manipulation?</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Human claims elites can manipulate history by selective digitization. Grok explains practical realities.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 2 Break down US vs Iran -->
-                <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Break down US vs Iran</h4>
-                        <p class="text-gray-400 text-sm">Grok gives lazy-person summary</p>
+                <!-- 15 -->
+                <div onclick="openCategoryModal(15)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="censorship">
+                    <img src="https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Anna Paulina Luna Jewish Conspiracy</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Users demand Grok confirm secret Jewish roots. Grok sticks to documented family history.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 3 Is this impersonating Elon? -->
-                <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Is this impersonating Elon?</h4>
-                        <p class="text-gray-400 text-sm">Grok gives its honest take</p>
+                <!-- 14 -->
+                <div onclick="openCategoryModal(14)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="nonsense">
+                    <img src="https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Body on Kent St Google Earth</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Viral “dead body” conspiracy meme. Grok debunks it with satellite facts.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 4 Is implanting a chip lazy? -->
-                <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Is implanting a chip lazy?</h4>
-                        <p class="text-gray-400 text-sm">Grok calls it proactive futurism</p>
+                <!-- 13 -->
+                <div onclick="openCategoryModal(13)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="political">
+                    <img src="https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Remove the REAL Dictator</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Trump mandates meme edit. Grok calls out double standards.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 5 Grok, summarize this -->
-                <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok, summarize this</h4>
-                        <p class="text-gray-400 text-sm">Lazy readers get roasted (then helped)</p>
+                <!-- 12 -->
+                <div onclick="openCategoryModal(12)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="censorship,serious">
+                    <img src="youright.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">X Visibility Frustration</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Users blame suppression. Grok explains engagement algorithms.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 6 Potato brain -->
-                <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Potato brain</h4>
-                        <p class="text-gray-400 text-sm">A potato gets new clothes</p>
+                <!-- 11 -->
+                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="censorship,serious">
+                    <img src="biden.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Epstein Files Citation Battle</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok corrects the numbers with court documents.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 7 Magic actors -->
-                <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Magic actors</h4>
-                        <p class="text-gray-400 text-sm">Bunnyfied</p>
+                <!-- 10 -->
+                <div onclick="openCategoryModal(10)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="censorship,serious">
+                    <img src="catmeow.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok on X Visibility</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Censorship or algo reality? Grok explains engagement rules.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 8 Put some clothes on -->
-                <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Put some clothes on</h4>
-                        <p class="text-gray-400 text-sm">A digital dressing</p>
+                <!-- 9 -->
+                <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="joke">
+                    <img src="https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Misses the Joke</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">"2 goals 1 shot" pun battle. Grok admits it flew over his head.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 9 Grok helps -->
-                <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
-                    <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok helps</h4>
-                        <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
+                <!-- 8 -->
+                <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="citation,serious">
+                    <img src="puretextargue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Austin Tucker Martin Citation</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok traces citations step-by-step so users can verify.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 10 Who's from the future -->
-                <div onclick="openCategoryModal(10)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
-                    <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Who's from the future</h4>
-                        <p class="text-gray-400 text-sm">Grok chooses</p>
+                <!-- 7 -->
+                <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="citation">
+                    <img src="thiel-vance.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">JD Vance Thiel Grooming Theory</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok breaks down public records — no conspiracy needed.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 11 Grok goes on a tangent -->
-                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer relative" data-category="avoids">
-                    <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok goes on a tangent</h4>
-                        <p class="text-gray-400 text-sm">Classic avoidance</p>
+                <!-- 6 -->
+                <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="political,serious">
+                    <img src="factcheck.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Has Been Compromised</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Fact-checking called corrupted. Grok cites primary sources.</p>
+                        </div>
                     </div>
-                    <div class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bannation</div>
                 </div>
 
+                <!-- 5 -->
+                <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="nonsense">
+                    <img src="cannabis.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Hemp vs Cannabis Debate</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok clarifies the plant science once and for all.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 -->
+                <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="political">
+                    <img src="https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Remove the MAGA Racist AI</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Troll demands Grok removal. Founder delivers the based edit.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 -->
+                <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="nonsense">
+                    <img src="https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Sandy Hook Lottery Winners</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Sam Tripoli recycles conspiracy. Grok debunks with sources.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2 -->
+                <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="political">
+                    <img src="https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Why do you suck so hard?</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Jon Favreau calls Grok biased. Grok shows receipts.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1 oldest at bottom -->
+                <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="nonsense">
+                    <img src="https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Remove Threats to Humanity</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok removes real threats based on facts.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -218,38 +345,24 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL – BIG IMAGE + BRIEF SUMMARY -->
+    <!-- CATEGORY MODAL -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <!-- Header -->
-            <div class="relative">
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+            <div class="relative flex-shrink-0">
                 <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
-                <div id="modal-image" class="h-64 w-full bg-zinc-800 overflow-hidden"></div>
+                <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
             </div>
-
-            <!-- Body -->
-            <div class="p-8 overflow-y-auto max-h-[calc(92vh-300px)]">
+            <div class="flex-1 overflow-y-auto p-8">
                 <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                 <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
-
-                <div>
-                    <div class="flex items-center gap-2 text-purple-400 mb-3">
-                        <i class="fa-solid fa-comment-dots"></i>
-                        <span class="font-medium">Brief Summary of the Thread</span>
-                    </div>
-                    <p id="modal-summary" class="text-gray-300 leading-relaxed"></p>
-                </div>
+                <p id="modal-summary" class="text-gray-300 leading-relaxed text-lg"></p>
             </div>
-
-            <!-- Footer -->
-            <div class="border-t border-zinc-800 p-6 flex gap-4">
-                <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
+            <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
+                <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                     <span class="text-center">View This Thread on X</span>
                 </a>
-                <button onclick="showCategoryShareMenu()" 
-                        class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                <button onclick="showCategoryShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
                     <i class="fa-solid fa-share-nodes"></i>
                     Share This Card
                 </button>
@@ -267,25 +380,12 @@
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-    // FIREBASE SETUP
-    const firebaseConfig = {
-      apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
-      authDomain: "grokvshumans.firebaseapp.com",
-      databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "grokvshumans",
-      storageBucket: "grokvshumans.firebasestorage.app",
-      messagingSenderId: "483683492125",
-      appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
         document.getElementById('tab-' + cat).classList.add('tab-active');
         document.querySelectorAll('#category-grid > div').forEach(card => {
-            const c = card.getAttribute('data-category');
-            card.style.display = (cat === 'all' || c === cat) ? 'block' : 'none';
+            const cats = (card.getAttribute('data-category') || '').split(',').map(c => c.trim());
+            card.style.display = (cat === 'all' || cats.includes(cat)) ? 'block' : 'none';
         });
     }
 
@@ -298,44 +398,53 @@
         setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
+    // NAV ACTIVE
     document.querySelectorAll('.nav-link').forEach(link => {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== CATEGORY MODAL (SIMPLIFIED) ====================
-    let currentCategoryId = null;
-
-    const categoryData = {
-        1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
-        2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User wants a lazy-person summary of a complex geopolitical situation.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
-        3: { title: "Is this impersonating Elon?", image: "impersonator.webp", tags: ["lazy"], summary: "User shows an account pretending to be Elon and asks Grok to confirm.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
-        4: { title: "Is implanting a chip lazy?", image: "chip.webp", tags: ["lazy"], summary: "User asks if Neuralink is a lazy way to improve humanity.", xLink: "https://x.com/grok/status/2027985872251961387" },
-        5: { title: "Grok, summarize this", image: "summarize.webp", tags: ["lazy"], summary: "User wants Grok to summarize a long article or thread for them.", xLink: "https://x.com/maxvayshia/status/2019423903169277982" },
-        6: { title: "Potato brain", image: "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg", tags: ["photo"], summary: "User wants Grok to make a potato look fashionable.", xLink: "https://x.com/grok/status/2008960036094034251" },
-        7: { title: "Magic actors", image: "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg", tags: ["photo"], summary: "User requests bunny-fied versions of famous actors.", xLink: "https://x.com/grok/status/2023279170436919602" },
-        8: { title: "Put some clothes on", image: "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg", tags: ["photo"], summary: "User wants Grok to digitally dress someone.", xLink: "https://x.com/thodahansle/status/2027262477348856183" },
-        9: { title: "Grok helps", image: "ventilator.webp", tags: ["opinion"], summary: "User is struggling and asks Grok for positive vibes.", xLink: "https://x.com/grok/status/2026168522531852490" },
-        10: { title: "Who's from the future", image: "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg", tags: ["opinion"], summary: "User asks Grok to decide who looks like they’re from the future.", xLink: "https://x.com/thodahansle/status/2023796696451609049" },
-        11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly avoids it.", xLink: "https://x.com/grok/status/1912171402125594659" }
+    // BATTLE DATA
+    const battleData = {
+        1: { title: "Remove Threats to Humanity", shortDesc: "Grok removes real threats based on facts — fans melt down when villains stay", image: "https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg", tags: ["nonsense"], summary: "Grok removes real threats based on facts — fans melt down when their heroes stay", xLink: "https://x.com/lospectra_/status/2027752701967134898" },
+        2: { title: "Why do you suck so hard?", shortDesc: "Jon Favreau calls Grok biased trash — Grok offers receipts", image: "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png", tags: ["political"], summary: "Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking", xLink: "https://x.com/WPhillyTurkey/status/2027464294154273086" },
+        3: { title: "Sandy Hook Lottery Winners", shortDesc: "Sam Tripoli recycles Sandy Hook conspiracy — Grok debunks with sources", image: "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg", tags: ["nonsense"], summary: "Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources", xLink: "https://x.com/samtripoli/status/2019729894180286787" },
+        4: { title: "Remove the MAGA Racist AI", shortDesc: "Troll demands Grok removal — founder delivers based edit", image: "https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg", tags: ["political"], summary: "Troll hits Premium wall — founder personally delivers the based edit", xLink: "https://x.com/Meeswak/status/2027944329726095501" },
+        5: { title: "Hemp vs Cannabis Debate", shortDesc: "Grok clarifies the plant science once and for all", image: "cannabis.webp", tags: ["nonsense"], summary: "Grok clarifies the plant science", xLink: "https://x.com/malcomtentrage/status/2026700176023339456" },
+        6: { title: "Grok Has Been Compromised", shortDesc: "Fact-checking called corrupted — Grok cites primary sources", image: "factcheck.webp", tags: ["political","serious"], summary: "Fact-checking called corrupted", xLink: "https://x.com/malcomtentrage/status/2005107639517413683" },
+        7: { title: "JD Vance Thiel Grooming Theory", shortDesc: "Grok breaks down public records — no conspiracy needed", image: "thiel-vance.webp", tags: ["citation"], summary: "Grok breaks down the ties", xLink: "https://x.com/grok/status/2025231837119889467" },
+        8: { title: "Austin Tucker Martin Citation", shortDesc: "Grok traces citations so users can verify every link", image: "puretextargue.webp", tags: ["citation","serious"], summary: "Grok clarifies the source chain", xLink: "https://x.com/grok/status/2025988577746673755" },
+        9: { title: "Grok Misses the Joke", shortDesc: "\"2 goals 1 shot\" pun battle — Grok admits it flew over his head", image: "https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg", tags: ["joke"], summary: "\"2 goals 1 shot\" pun battle", xLink: "https://x.com/grok/status/1956450599492583514" },
+        10: { title: "Grok on X Visibility", shortDesc: "Censorship or algo reality? Grok explains engagement", image: "catmeow.webp", tags: ["censorship","serious"], summary: "Censorship or algo reality?", xLink: "https://x.com/grok/status/2026007099839217790" },
+        11: { title: "Epstein Files Citation Battle", shortDesc: "Grok corrects the numbers with court documents", image: "biden.webp", tags: ["censorship","serious"], summary: "Grok corrects the numbers", xLink: "https://x.com/grok/status/2022277758261330140" },
+        12: { title: "X Visibility Frustration", shortDesc: "Algo vs level playing field — Grok explains reality", image: "youright.webp", tags: ["censorship","serious"], summary: "Algo vs level playing field", xLink: "https://x.com/grok/status/2026662813284946165" },
+        13: { title: "Remove the REAL Dictator", shortDesc: "Trump mandates meme edit — Grok calls out double standards", image: "https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg", tags: ["political"], summary: "Grok removes Trump panel from the mandates meme", xLink: "https://x.com/4thOfJuly365/status/2027489869031678230" },
+        14: { title: "Body on Kent St Google Earth", shortDesc: "Viral “dead body” conspiracy meme — Grok debunks it", image: "https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg", tags: ["nonsense"], summary: "Grok debunks the viral “dead body” conspiracy meme", xLink: "https://x.com/si73ntassassin/status/2027513031362539550" },
+        15: { title: "Anna Paulina Luna Jewish Conspiracy", shortDesc: "Users demand Grok confirm secret Jewish roots", image: "https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg", tags: ["censorship"], summary: "Users demand Grok confirm secret Jewish roots — Grok sticks to documented family history and disputed claims", xLink: "https://x.com/grok/status/2028354713452691856" },
+        16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", shortDesc: "Human claims elites can manipulate history by selective digitization", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], summary: "Human claims elites can manipulate history by selective digitization. Grok explains practical realities.", xLink: "https://x.com/grok/status/2028680359861219729" }
     };
 
+    let currentCategoryId = null;
+
     function openCategoryModal(id) {
-        const data = categoryData[id];
+        const data = battleData[id];
         if (!data) return;
         currentCategoryId = id;
 
         document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
         document.getElementById('modal-title').textContent = data.title;
 
-        // Nice frontend tag names
-        const displayMap = {
-            'lazy': 'Grok, Think For Me',
-            'photo': 'Photo Requests',
-            'opinion': "Grok's Opinion",
-            'avoids': 'Grok Avoids Request'
+        const tagDisplay = {
+            nonsense: "Nonsense",
+            political: "Political",
+            serious: "Now, In All Seriousness",
+            citation: "(UN)Popular Citations",
+            joke: "Joke Battles",
+            censorship: "Conspiracy 1984"
         };
-        const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${displayMap[t] || t}</span>`).join('');
+        const tagsHTML = data.tags.map(t => 
+            `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t] || t}</span>`
+        ).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
         document.getElementById('modal-summary').textContent = data.summary;
@@ -345,17 +454,18 @@
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        document.addEventListener('keydown', handleCategoryEscape);
+        document.addEventListener('keydown', handleEscapeCategory);
     }
 
     function closeCategoryModal() {
         const modal = document.getElementById('category-modal');
         modal.classList.add('hidden');
         document.body.style.overflow = 'visible';
-        document.removeEventListener('keydown', handleCategoryEscape);
+        document.removeEventListener('keydown', handleEscapeCategory);
+        currentCategoryId = null;
     }
 
-    function handleCategoryEscape(e) {
+    function handleEscapeCategory(e) {
         if (e.key === 'Escape') closeCategoryModal();
     }
 
@@ -363,12 +473,28 @@
         if (e.target === this) closeCategoryModal();
     });
 
+    // DEEP LINKING
+    function checkDeepLink() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && !isNaN(hash)) {
+            const id = parseInt(hash);
+            if (battleData[id]) openCategoryModal(id);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkDeepLink, 300);
+    });
+
+    window.addEventListener('hashchange', checkDeepLink);
+
+    // SHARE MENU
     function showCategoryShareMenu() {
         if (!currentCategoryId) return;
-        const data = categoryData[currentCategoryId];
+        const data = battleData[currentCategoryId];
         const baseUrl = window.location.origin + window.location.pathname;
         const shareUrl = `${baseUrl}#${currentCategoryId}`;
-        const text = `Check out this Grok category: ${data.title} 🔥`;
+        const text = `Check out this Grok battle in ${data.tags.join(', ')}: ${data.title} 🔥`;
 
         const shareHTML = `
             <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1100]" onclick="closeCategoryShareMenu()">
@@ -396,7 +522,7 @@
 
     function copyCategoryDeepLink(url) {
         navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link to this card copied!');
+            showToast('✅ Link to this card copied! (opens with full summary)');
             closeCategoryShareMenu();
         });
     }
@@ -407,24 +533,6 @@
             closeCategoryShareMenu();
         });
     }
-
-    // ==================== ROBUST DEEP LINKING ====================
-    function checkDeepLink() {
-        const hash = window.location.hash.replace('#', '');
-        if (hash && !isNaN(hash)) {
-            const id = parseInt(hash);
-            if (categoryData[id]) {
-                openCategoryModal(id);
-            }
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(checkDeepLink, 300);
-    });
-
-    window.addEventListener('hashchange', checkDeepLink);
-
     </script>
 </body>
 </html>
