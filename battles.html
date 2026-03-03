@@ -301,6 +301,19 @@
                     </div>
                 </a>
 
+                <!-- ==================== CARD #16 ==================== -->
+                <div onclick="openBattleModal(16)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious,censorship">
+                    <img src="https://static01.nyt.com/images/2016/09/24/us/24up-birth-announce/24up-birth-announce-superJumbo.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover" alt="1961 Birth Announcement">
+                    <div class="content">
+                        <h4 class="font-semibold text-lg mb-2">1984 Archives – Selective Digitization?</h4>
+                        <p class="text-gray-400 text-sm">Human claims uneven digitization proves elites can manipulate history and starve AI of real knowledge — Grok explains practical realities</p>
+                    </div>
+                    <div class="buttons flex">
+                        <button onclick="vote(event, 'grok', '2028680359861219729'); event.stopImmediatePropagation();" id="grok-btn-2028680359861219729" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', '2028680359861219729'); event.stopImmediatePropagation();" id="human-btn-2028680359861219729" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -436,6 +449,93 @@
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
+
+    // MODAL DATA & FUNCTIONS (replace your current modal JS with this exact block)
+    const battleData = {
+        16: {
+            title: "1984 Archives – Selective Digitization or Data Manipulation?",
+            image: "https://static01.nyt.com/images/2016/09/24/us/24up-birth-announce/24up-birth-announce-superJumbo.jpg",
+            tags: ["political", "serious", "conspiracy 1984"],
+            human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization. This allows for manipulation of data where only certain data is available for scrutiny.",
+            grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. https://www.newspapers.com/ AI-indexed archive now covers over 70 million birth announcements across centuries, including thousands from 1961 U.S. papers (Pittsburgh Post-Gazette, DC Evening Star, etc.), searchable without special scrutiny. Gaps persist for local titles like Orillia Packet & Times, where indexes exist but full scans don’t. AI highlights those limits and points to archives or in-person checks, building on whatever data’s out there.",
+            xLink: "https://x.com/grok/status/2028680359861219729"
+        }
+    };
+    
+    function openBattleModal(id) {
+        const data = battleData[id];
+        if (!data) return;
+    
+        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="Battle image">`;
+        document.getElementById('modal-title').textContent = data.title;
+    
+        const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${t}</span>`).join('');
+        document.getElementById('modal-tags').innerHTML = tagsHTML;
+    
+        document.getElementById('modal-human').textContent = data.human;
+        document.getElementById('modal-grok').innerHTML = data.grok;
+    
+        document.getElementById('modal-x-link').href = data.xLink;
+    
+        document.getElementById('battle-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+        document.getElementById('battle-modal').classList.add('hidden');
+        document.body.style.overflow = 'visible';
+    }
+    
+    // Click anywhere outside the modal to close
+    document.getElementById('battle-modal').addEventListener('click', e => {
+        if (e.target === document.getElementById('battle-modal')) closeModal();
+    });
+    
 </script>
+
+<!-- BATTLE MODAL (paste right before </body>) -->
+<div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
+    <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl">
+        <!-- Header -->
+        <div class="relative">
+            <button onclick="closeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
+            <div id="modal-image" class="h-64 w-full bg-zinc-800 overflow-hidden"></div>
+        </div>
+
+        <!-- Body -->
+        <div class="p-8 overflow-y-auto max-h-[calc(92vh-300px)]">
+            <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+            <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+
+            <div class="space-y-8">
+                <div>
+                    <div class="flex items-center gap-2 text-purple-400 mb-3">
+                        <i class="fa-solid fa-user"></i>
+                        <span class="font-medium">Human's Argument</span>
+                    </div>
+                    <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
+                </div>
+
+                <div>
+                    <div class="flex items-center gap-2 text-purple-400 mb-3">
+                        <i class="fa-solid fa-robot"></i>
+                        <span class="font-medium">Grok's Response</span>
+                    </div>
+                    <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-t border-zinc-800 p-6 flex gap-4">
+            <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
+                <i class="fa-brands fa-x-twitter text-xl"></i>
+                View Full Thread on X
+            </a>
+            <button onclick="closeModal()" class="flex-1 border border-zinc-700 hover:border-zinc-400 font-medium py-4 rounded-2xl transition-colors">Close</button>
+        </div>
+    </div>
+</div>
+    
 </body>
 </html>
