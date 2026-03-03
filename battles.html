@@ -358,7 +358,7 @@
                     </div>
                 </div>
 
-                <!-- VOTING SECTION – MATCHES GRID EXACTLY -->
+                <!-- VOTING SECTION – EXACTLY LIKE GRID -->
                 <div class="mt-12 pt-8 border-t border-zinc-800">
                     <div class="buttons flex">
                         <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
@@ -461,19 +461,11 @@
         });
     }
 
+    // Load votes on grid
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
             const id = btn.id.replace('grok-btn-', '');
-            database.ref('battles/' + id).on('value', (snapshot) => {
-                const data = snapshot.val() || { grok: 0, human: 0 };
-                const hasVoted = !!localStorage.getItem('voted_' + id);
-                const grokBtn = document.getElementById('grok-btn-' + id);
-                const humanBtn = document.getElementById('human-btn-' + id);
-                if (hasVoted && grokBtn && humanBtn) {
-                    grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${data.grok}</span>`;
-                    humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${data.human}</span> Human`;
-                }
-            });
+            database.ref('battles/' + id).on('value', () => updateGridVoteUI(id));
         });
     });
 
@@ -482,7 +474,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MODAL ====================
+    // ==================== MODAL + VOTING + DEEP LINKING ====================
     let currentBattleId = null;
 
     const battleData = {
@@ -536,7 +528,6 @@
 
         document.addEventListener('keydown', handleEscape);
 
-        // Reset modal buttons to text (no numbers yet)
         updateModalVoteUI();
     }
 
@@ -545,6 +536,12 @@
         modal.classList.add('hidden');
         document.body.style.overflow = 'visible';
         document.removeEventListener('keydown', handleEscape);
+
+        // FORCE GRID UPDATE WHEN CLOSING MODAL
+        if (currentBattleId) {
+            updateGridVoteUI(currentBattleId);
+            currentBattleId = null;
+        }
     }
 
     function handleEscape(e) {
