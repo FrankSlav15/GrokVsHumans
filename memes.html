@@ -258,7 +258,7 @@
     <!-- MEME MODAL – BIG IMAGE ONLY -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <!-- Header with full meme image -->
+            <!-- Big full meme image -->
             <div class="relative">
                 <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
                 <div id="modal-image" class="w-full bg-zinc-800"></div>
@@ -266,11 +266,11 @@
 
             <!-- Footer -->
             <div class="border-t border-zinc-800 p-6 flex gap-4">
-                <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg">
+                <button onclick="searchMemeImage()" 
+                        class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                     <span class="text-center">Search for This MEME Across the Internet</span>
-                </a>
+                </button>
                 <button onclick="showMemeShareMenu()" 
                         class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
                     <i class="fa-solid fa-share-nodes"></i>
@@ -317,7 +317,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MEME MODAL (BIG IMAGE ONLY) ====================
+    // ==================== MEME MODAL (BIG IMAGE + REAL REVERSE IMAGE SEARCH) ====================
     let currentMemeId = null;
 
     const memeData = {
@@ -345,8 +345,7 @@
         if (!data) return;
         currentMemeId = id;
 
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain" alt="${data.title}">`;
-        document.getElementById('modal-x-link').href = data.xLink;
+        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
 
         const modal = document.getElementById('meme-modal');
         modal.classList.remove('hidden');
@@ -369,6 +368,14 @@
     document.getElementById('meme-modal').addEventListener('click', function(e) {
         if (e.target === this) closeMemeModal();
     });
+
+    // REAL REVERSE IMAGE SEARCH
+    function searchMemeImage() {
+        if (!currentMemeId) return;
+        const data = memeData[currentMemeId];
+        const searchUrl = `https://www.google.com/searchbyimage?image_url=${encodeURIComponent(data.image)}`;
+        window.open(searchUrl, '_blank');
+    }
 
     function showMemeShareMenu() {
         if (!currentMemeId) return;
