@@ -48,11 +48,32 @@
             border: 1px solid rgba(168,85,247,0.2); 
             display: flex;
             flex-direction: column;
-            height: 100%; }
+            height: 100%;
+            overflow: hidden;
+            border-radius: 1.5rem; }
         .category-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
+        .category-card > img {
+            flex-shrink: 0;
+            height: 15.5rem;
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem; }
+        .category-card .content {
+            flex: 1;
+            padding: 1.25rem;
+            background: #18181b;
+            display: flex;
+            flex-direction: column;
+            min-height: 9rem; }
+        .category-card .title-area {
+            min-height: 3.25rem; /* exactly 2 lines reserved for title */ }
+        .category-card .desc-area {
+            flex: 1;
+            min-height: 5.75rem; /* exactly 4 lines reserved for description */ }
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
             color: white; }
@@ -101,106 +122,149 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="category-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="category-grid">
 
-                <!-- 1 Grok, is this true? -->
-                <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok, is this true?</h4>
-                        <p class="text-gray-400 text-sm">Oblivious satire victim</p>
+                <!-- 11 newest at top -->
+                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="avoids">
+                    <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok goes on a tangent</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Classic avoidance</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 2 Break down US vs Iran -->
-                <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Break down US vs Iran</h4>
-                        <p class="text-gray-400 text-sm">Grok gives lazy-person summary</p>
-                    </div>
-                </div>
-
-                <!-- 3 Is this impersonating Elon? -->
-                <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Is this impersonating Elon?</h4>
-                        <p class="text-gray-400 text-sm">Grok gives its honest take</p>
-                    </div>
-                </div>
-
-                <!-- 4 Is implanting a chip lazy? -->
-                <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Is implanting a chip lazy?</h4>
-                        <p class="text-gray-400 text-sm">Grok calls it proactive futurism</p>
-                    </div>
-                </div>
-
-                <!-- 5 Grok, summarize this -->
-                <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok, summarize this</h4>
-                        <p class="text-gray-400 text-sm">Lazy readers get roasted (then helped)</p>
-                    </div>
-                </div>
-
-                <!-- 6 Potato brain -->
-                <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Potato brain</h4>
-                        <p class="text-gray-400 text-sm">A potato gets new clothes</p>
-                    </div>
-                </div>
-
-                <!-- 7 Magic actors -->
-                <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Magic actors</h4>
-                        <p class="text-gray-400 text-sm">Bunnyfied</p>
-                    </div>
-                </div>
-
-                <!-- 8 Put some clothes on -->
-                <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Put some clothes on</h4>
-                        <p class="text-gray-400 text-sm">A digital dressing</p>
-                    </div>
-                </div>
-
-                <!-- 9 Grok helps -->
-                <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
-                    <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok helps</h4>
-                        <p class="text-gray-400 text-sm">Grok offers positive vibes</p>
-                    </div>
-                </div>
-
-                <!-- 10 Who's from the future -->
+                <!-- 10 -->
                 <div onclick="openCategoryModal(10)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
-                    <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Who's from the future</h4>
-                        <p class="text-gray-400 text-sm">Grok chooses</p>
+                    <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Who's from the future</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok chooses</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 11 Grok goes on a tangent -->
-                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer relative" data-category="avoids">
-                    <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
-                    <div class="p-5 flex-1">
-                        <h4 class="font-semibold text-lg mb-2">Grok goes on a tangent</h4>
-                        <p class="text-gray-400 text-sm">Classic avoidance</p>
+                <!-- 9 -->
+                <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
+                    <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok helps</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok offers positive vibes</p>
+                        </div>
                     </div>
-                    <div class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bannation</div>
+                </div>
+
+                <!-- 8 -->
+                <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Put some clothes on</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">A digital dressing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7 -->
+                <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Magic actors</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Bunnyfied</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6 -->
+                <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
+                    <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Potato brain</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">A potato gets new clothes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 -->
+                <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
+                    <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, summarize this</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Lazy readers get roasted (then helped)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 -->
+                <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
+                    <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Is implanting a chip lazy?</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok calls it proactive futurism</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 -->
+                <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
+                    <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Is this impersonating Elon?</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok gives its honest take</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2 -->
+                <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
+                    <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Break down US vs Iran</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok gives lazy-person summary</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1 oldest at bottom -->
+                <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
+                    <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area">
+                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, is this true?</h4>
+                        </div>
+                        <div class="desc-area">
+                            <p class="text-gray-400 text-sm line-clamp-4">Oblivious satire victim</p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -218,17 +282,17 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL – BIG IMAGE + BRIEF SUMMARY -->
+    <!-- CATEGORY MODAL – LARGE FULL-FORMAT IMAGE -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
-            <div class="relative">
+            <div class="relative flex-shrink-0">
                 <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
-                <div id="modal-image" class="h-64 w-full bg-zinc-800 overflow-hidden"></div>
+                <div id="modal-image" class="h-80 w-full bg-zinc-800 overflow-hidden"></div>
             </div>
 
             <!-- Body -->
-            <div class="p-8 overflow-y-auto max-h-[calc(92vh-300px)]">
+            <div class="p-8 overflow-y-auto flex-1">
                 <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                 <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
@@ -242,7 +306,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="border-t border-zinc-800 p-6 flex gap-4">
+            <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
                 <a id="modal-x-link" href="#" target="_blank" 
                    class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
@@ -267,19 +331,6 @@
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-    // FIREBASE SETUP
-    const firebaseConfig = {
-      apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
-      authDomain: "grokvshumans.firebaseapp.com",
-      databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "grokvshumans",
-      storageBucket: "grokvshumans.firebasestorage.app",
-      messagingSenderId: "483683492125",
-      appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
         document.getElementById('tab-' + cat).classList.add('tab-active');
@@ -303,9 +354,6 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== CATEGORY MODAL (SIMPLIFIED) ====================
-    let currentCategoryId = null;
-
     const categoryData = {
         1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
         2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User wants a lazy-person summary of a complex geopolitical situation.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
@@ -320,15 +368,16 @@
         11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly avoids it.", xLink: "https://x.com/grok/status/1912171402125594659" }
     };
 
+    let currentCategoryId = null;
+
     function openCategoryModal(id) {
         const data = categoryData[id];
         if (!data) return;
         currentCategoryId = id;
 
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
+        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-contain" alt="${data.title}">`;
         document.getElementById('modal-title').textContent = data.title;
 
-        // Nice frontend tag names
         const displayMap = {
             'lazy': 'Grok, Think For Me',
             'photo': 'Photo Requests',
@@ -353,6 +402,7 @@
         modal.classList.add('hidden');
         document.body.style.overflow = 'visible';
         document.removeEventListener('keydown', handleCategoryEscape);
+        currentCategoryId = null;
     }
 
     function handleCategoryEscape(e) {
@@ -407,6 +457,21 @@
             closeCategoryShareMenu();
         });
     }
+
+    function checkDeepLink() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && !isNaN(hash)) {
+            const id = parseInt(hash);
+            if (categoryData[id]) openCategoryModal(id);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkDeepLink, 300);
+    });
+
+    window.addEventListener('hashchange', checkDeepLink);
+
     </script>
 </body>
 </html>
