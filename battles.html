@@ -358,7 +358,7 @@
                     </div>
                 </div>
 
-                <!-- VOTING SECTION – EXACTLY LIKE GRID -->
+                <!-- VOTING SECTION -->
                 <div class="mt-12 pt-8 border-t border-zinc-800">
                     <div class="buttons flex">
                         <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
@@ -461,7 +461,6 @@
         });
     }
 
-    // Load votes on grid
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
             const id = btn.id.replace('grok-btn-', '');
@@ -474,7 +473,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MODAL + VOTING + DEEP LINKING ====================
+    // ==================== MODAL + VOTING ====================
     let currentBattleId = null;
 
     const battleData = {
@@ -522,6 +521,14 @@
 
         document.getElementById('modal-x-link').href = data.xLink;
 
+        // FORCE PLAIN TEXT RESET EVERY TIME MODAL OPENS
+        const grokBtn = document.getElementById('modal-grok-btn');
+        const humanBtn = document.getElementById('modal-human-btn');
+        grokBtn.innerHTML = 'Grok Won';
+        humanBtn.innerHTML = 'Human Won';
+        grokBtn.disabled = false;
+        humanBtn.disabled = false;
+
         const modal = document.getElementById('battle-modal');
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -537,7 +544,6 @@
         document.body.style.overflow = 'visible';
         document.removeEventListener('keydown', handleEscape);
 
-        // FORCE GRID UPDATE WHEN CLOSING MODAL
         if (currentBattleId) {
             updateGridVoteUI(currentBattleId);
             currentBattleId = null;
