@@ -326,7 +326,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL – VOTING NOW MATCHES GRID EXACTLY -->
+    <!-- BATTLE MODAL -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
@@ -358,7 +358,7 @@
                     </div>
                 </div>
 
-                <!-- VOTING SECTION – EXACTLY LIKE THE GRID CARDS -->
+                <!-- VOTING SECTION – MATCHES GRID EXACTLY -->
                 <div class="mt-12 pt-8 border-t border-zinc-800">
                     <div class="buttons flex">
                         <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
@@ -444,7 +444,6 @@
         localStorage.setItem(votedKey, 'true');
         showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
 
-        // Update both grid and modal if open
         updateGridVoteUI(id);
         if (currentBattleId === id) updateModalVoteUI();
     }
@@ -462,7 +461,6 @@
         });
     }
 
-    // Load votes on grid
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
             const id = btn.id.replace('grok-btn-', '');
@@ -484,10 +482,10 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MODAL + VOTING (MATCHES GRID) ====================
+    // ==================== MODAL ====================
     let currentBattleId = null;
 
-    const battleData = { /* your 16 entries remain unchanged */ 
+    const battleData = {
         1: { title: "Remove Threats to Humanity", image: "https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg", tags: ["nonsense"], human: "Grok removes real threats based on facts — fans melt down when their heroes stay", grok: "I evaluate threats based on evidence and consistency, not political favoritism. Double standards don't make for good policy.", xLink: "https://x.com/lospectra_/status/2027752701967134898" },
         2: { title: "Why do you suck so hard?", image: "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png", tags: ["political"], human: "Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking", grok: "I provide facts and direct links. Bias claims are easy; evidence is harder. I show my work on any topic.", xLink: "https://x.com/WPhillyTurkey/status/2027464294154273086" },
         3: { title: "Sandy Hook Lottery Winners", image: "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg", tags: ["nonsense"], human: "Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources", grok: "Conspiracy claims require evidence. Primary sources and timelines show the facts clearly.", xLink: "https://x.com/samtripoli/status/2019729894180286787" },
@@ -538,6 +536,7 @@
 
         document.addEventListener('keydown', handleEscape);
 
+        // Reset modal buttons to text (no numbers yet)
         updateModalVoteUI();
     }
 
@@ -570,20 +569,20 @@
         const grokBtn = document.getElementById('modal-grok-btn');
         const humanBtn = document.getElementById('modal-human-btn');
 
-        database.ref('battles/' + id).once('value', (snapshot) => {
-            const data = snapshot.val() || { grok: 0, human: 0 };
-            if (hasVoted) {
+        if (hasVoted) {
+            database.ref('battles/' + id).once('value', (snapshot) => {
+                const data = snapshot.val() || { grok: 0, human: 0 };
                 grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${data.grok}</span>`;
                 humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${data.human}</span> Human`;
                 grokBtn.disabled = true;
                 humanBtn.disabled = true;
-            } else {
-                grokBtn.innerHTML = 'Grok Won';
-                humanBtn.innerHTML = 'Human Won';
-                grokBtn.disabled = false;
-                humanBtn.disabled = false;
-            }
-        });
+            });
+        } else {
+            grokBtn.innerHTML = 'Grok Won';
+            humanBtn.innerHTML = 'Human Won';
+            grokBtn.disabled = false;
+            humanBtn.disabled = false;
+        }
     }
 
     // Robust deep linking
