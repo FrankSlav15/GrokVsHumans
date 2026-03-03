@@ -104,6 +104,7 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10" id="battle-grid">
+                <!-- All 16 cards use numeric ID 1-16 now -->
                 <!-- 1 Remove Threats to Humanity -->
                 <div onclick="openBattleModal(1)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="nonsense">
                     <img src="https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-44 md:h-52 lg:h-60 object-cover">
@@ -112,8 +113,8 @@
                         <p class="text-gray-400 text-sm">Grok removes real threats based on facts — fans melt down when their heroes stay</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2027752701967134898'); event.stopImmediatePropagation();" id="grok-btn-2027752701967134898" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2027752701967134898'); event.stopImmediatePropagation();" id="human-btn-2027752701967134898" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 1); event.stopImmediatePropagation();" id="grok-btn-1" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 1); event.stopImmediatePropagation();" id="human-btn-1" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -125,8 +126,8 @@
                         <p class="text-gray-400 text-sm">Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2027464294154273086'); event.stopImmediatePropagation();" id="grok-btn-2027464294154273086" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2027464294154273086'); event.stopImmediatePropagation();" id="human-btn-2027464294154273086" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 2); event.stopImmediatePropagation();" id="grok-btn-2" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 2); event.stopImmediatePropagation();" id="human-btn-2" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -138,8 +139,8 @@
                         <p class="text-gray-400 text-sm">Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2019729894180286787'); event.stopImmediatePropagation();" id="grok-btn-2019729894180286787" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2019729894180286787'); event.stopImmediatePropagation();" id="human-btn-2019729894180286787" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 3); event.stopImmediatePropagation();" id="grok-btn-3" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 3); event.stopImmediatePropagation();" id="human-btn-3" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -151,8 +152,8 @@
                         <p class="text-gray-400 text-sm">Troll hits Premium wall — founder personally delivers the based edit</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2027944329726095501'); event.stopImmediatePropagation();" id="grok-btn-2027944329726095501" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2027944329726095501'); event.stopImmediatePropagation();" id="human-btn-2027944329726095501" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 4); event.stopImmediatePropagation();" id="grok-btn-4" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 4); event.stopImmediatePropagation();" id="human-btn-4" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -164,8 +165,8 @@
                         <p class="text-gray-400 text-sm">Grok clarifies the plant science</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2026700176023339456'); event.stopImmediatePropagation();" id="grok-btn-2026700176023339456" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2026700176023339456'); event.stopImmediatePropagation();" id="human-btn-2026700176023339456" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 5); event.stopImmediatePropagation();" id="grok-btn-5" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 5); event.stopImmediatePropagation();" id="human-btn-5" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -177,8 +178,8 @@
                         <p class="text-gray-400 text-sm">Fact-checking called corrupted</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2005107639517413683'); event.stopImmediatePropagation();" id="grok-btn-2005107639517413683" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2005107639517413683'); event.stopImmediatePropagation();" id="human-btn-2005107639517413683" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 6); event.stopImmediatePropagation();" id="grok-btn-6" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 6); event.stopImmediatePropagation();" id="human-btn-6" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -190,8 +191,8 @@
                         <p class="text-gray-400 text-sm">Grok breaks down the ties</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2025231837119889467'); event.stopImmediatePropagation();" id="grok-btn-2025231837119889467" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2025231837119889467'); event.stopImmediatePropagation();" id="human-btn-2025231837119889467" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 7); event.stopImmediatePropagation();" id="grok-btn-7" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 7); event.stopImmediatePropagation();" id="human-btn-7" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -203,8 +204,8 @@
                         <p class="text-gray-400 text-sm">Grok clarifies the source chain</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2025988577746673755'); event.stopImmediatePropagation();" id="grok-btn-2025988577746673755" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2025988577746673755'); event.stopImmediatePropagation();" id="human-btn-2025988577746673755" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 8); event.stopImmediatePropagation();" id="grok-btn-8" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 8); event.stopImmediatePropagation();" id="human-btn-8" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -216,8 +217,8 @@
                         <p class="text-gray-400 text-sm">"2 goals 1 shot" pun battle</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '1956450599492583514'); event.stopImmediatePropagation();" id="grok-btn-1956450599492583514" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '1956450599492583514'); event.stopImmediatePropagation();" id="human-btn-1956450599492583514" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 9); event.stopImmediatePropagation();" id="grok-btn-9" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 9); event.stopImmediatePropagation();" id="human-btn-9" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -229,8 +230,8 @@
                         <p class="text-gray-400 text-sm">Censorship or algo reality?</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2026007099839217790'); event.stopImmediatePropagation();" id="grok-btn-2026007099839217790" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2026007099839217790'); event.stopImmediatePropagation();" id="human-btn-2026007099839217790" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 10); event.stopImmediatePropagation();" id="grok-btn-10" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 10); event.stopImmediatePropagation();" id="human-btn-10" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -242,8 +243,8 @@
                         <p class="text-gray-400 text-sm">Grok corrects the numbers</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2022277758261330140'); event.stopImmediatePropagation();" id="grok-btn-2022277758261330140" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2022277758261330140'); event.stopImmediatePropagation();" id="human-btn-2022277758261330140" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 11); event.stopImmediatePropagation();" id="grok-btn-11" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 11); event.stopImmediatePropagation();" id="human-btn-11" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -255,8 +256,8 @@
                         <p class="text-gray-400 text-sm">Algo vs level playing field</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2026662813284946165'); event.stopImmediatePropagation();" id="grok-btn-2026662813284946165" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2026662813284946165'); event.stopImmediatePropagation();" id="human-btn-2026662813284946165" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 12); event.stopImmediatePropagation();" id="grok-btn-12" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 12); event.stopImmediatePropagation();" id="human-btn-12" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -268,8 +269,8 @@
                         <p class="text-gray-400 text-sm">Grok removes Trump panel from the mandates meme</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2027489869031678230'); event.stopImmediatePropagation();" id="grok-btn-2027489869031678230" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2027489869031678230'); event.stopImmediatePropagation();" id="human-btn-2027489869031678230" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 13); event.stopImmediatePropagation();" id="grok-btn-13" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 13); event.stopImmediatePropagation();" id="human-btn-13" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -281,8 +282,8 @@
                         <p class="text-gray-400 text-sm">Grok debunks the viral “dead body” conspiracy meme</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2027513031362539550'); event.stopImmediatePropagation();" id="grok-btn-2027513031362539550" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2027513031362539550'); event.stopImmediatePropagation();" id="human-btn-2027513031362539550" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 14); event.stopImmediatePropagation();" id="grok-btn-14" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 14); event.stopImmediatePropagation();" id="human-btn-14" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -294,8 +295,8 @@
                         <p class="text-gray-400 text-sm">Users demand Grok confirm secret Jewish roots — Grok sticks to documented family history and disputed claims</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2028354713452691856'); event.stopImmediatePropagation();" id="grok-btn-2028354713452691856" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2028354713452691856'); event.stopImmediatePropagation();" id="human-btn-2028354713452691856" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 15); event.stopImmediatePropagation();" id="grok-btn-15" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 15); event.stopImmediatePropagation();" id="human-btn-15" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
 
@@ -307,8 +308,8 @@
                         <p class="text-gray-400 text-sm">Human claims uneven digitization proves elites can manipulate history and starve AI of real knowledge — Grok explains practical realities</p>
                     </div>
                     <div class="buttons flex">
-                        <button onclick="vote(event, 'grok', '2028680359861219729'); event.stopImmediatePropagation();" id="grok-btn-2028680359861219729" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="vote(event, 'human', '2028680359861219729'); event.stopImmediatePropagation();" id="human-btn-2028680359861219729" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                        <button onclick="vote(event, 'grok', 16); event.stopImmediatePropagation();" id="grok-btn-16" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="vote(event, 'human', 16); event.stopImmediatePropagation();" id="human-btn-16" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
             </div>
@@ -358,7 +359,7 @@
                     </div>
                 </div>
 
-                <!-- VOTING SECTION -->
+                <!-- VOTING SECTION – EXACT SAME AS GRID -->
                 <div class="mt-12 pt-8 border-t border-zinc-800">
                     <div class="buttons flex">
                         <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
@@ -463,7 +464,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
-            const id = btn.id.replace('grok-btn-', '');
+            const id = parseInt(btn.id.replace('grok-btn-', ''));
             database.ref('battles/' + id).on('value', () => updateGridVoteUI(id));
         });
     });
@@ -521,7 +522,7 @@
 
         document.getElementById('modal-x-link').href = data.xLink;
 
-        // FORCE PLAIN TEXT BUTTONS EVERY TIME THE MODAL OPENS
+        // FORCE PLAIN TEXT BUTTONS EVERY TIME MODAL OPENS
         const grokBtn = document.getElementById('modal-grok-btn');
         const humanBtn = document.getElementById('modal-human-btn');
         grokBtn.innerHTML = 'Grok Won';
