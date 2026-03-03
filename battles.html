@@ -326,7 +326,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL WITH VOTING INSIDE -->
+    <!-- BATTLE MODAL – VOTING NOW MATCHES GRID EXACTLY -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
@@ -358,20 +358,11 @@
                     </div>
                 </div>
 
-                <!-- VOTING SECTION INSIDE MODAL -->
+                <!-- VOTING SECTION – EXACTLY LIKE THE GRID CARDS -->
                 <div class="mt-12 pt-8 border-t border-zinc-800">
-                    <p class="text-center text-purple-400 font-medium mb-5 text-lg">Who won this battle?</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn"
-                                class="py-6 bg-gradient-to-b from-purple-700 to-purple-800 hover:from-purple-600 hover:to-purple-700 rounded-3xl font-semibold text-xl transition-all flex flex-col items-center border border-purple-500/30">
-                            <span class="mb-1">Grok</span>
-                            <span id="modal-grok-score" class="text-4xl font-bold">0</span>
-                        </button>
-                        <button onclick="voteFromModal(event, 'human')" id="modal-human-btn"
-                                class="py-6 bg-gradient-to-b from-rose-700 to-rose-800 hover:from-rose-600 hover:to-rose-700 rounded-3xl font-semibold text-xl transition-all flex flex-col items-center border border-rose-500/30">
-                            <span class="mb-1">Human</span>
-                            <span id="modal-human-score" class="text-4xl font-bold">0</span>
-                        </button>
+                    <div class="buttons flex">
+                        <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button onclick="voteFromModal(event, 'human')" id="modal-human-btn" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
                     </div>
                 </div>
             </div>
@@ -417,7 +408,7 @@
 
     // FIXED BUTTON HEIGHT
     const fixedButtonStyle = document.createElement('style');
-    fixedButtonStyle.textContent = `.battle-card .buttons button { height: 64px !important; min-height: 64px !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 16px !important; font-size: 1.1rem; }`;
+    fixedButtonStyle.textContent = `.battle-card .buttons button, #modal-grok-btn, #modal-human-btn { height: 64px !important; min-height: 64px !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 16px !important; font-size: 1.1rem; }`;
     document.head.appendChild(fixedButtonStyle);
 
     function filterCategory(cat) {
@@ -452,6 +443,23 @@
         });
         localStorage.setItem(votedKey, 'true');
         showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
+
+        // Update both grid and modal if open
+        updateGridVoteUI(id);
+        if (currentBattleId === id) updateModalVoteUI();
+    }
+
+    function updateGridVoteUI(id) {
+        const hasVoted = !!localStorage.getItem('voted_' + id);
+        database.ref('battles/' + id).once('value', (snapshot) => {
+            const data = snapshot.val() || { grok: 0, human: 0 };
+            const grokBtn = document.getElementById('grok-btn-' + id);
+            const humanBtn = document.getElementById('human-btn-' + id);
+            if (hasVoted && grokBtn && humanBtn) {
+                grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${data.grok}</span>`;
+                humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${data.human}</span> Human`;
+            }
+        });
     }
 
     // Load votes on grid
@@ -463,9 +471,9 @@
                 const hasVoted = !!localStorage.getItem('voted_' + id);
                 const grokBtn = document.getElementById('grok-btn-' + id);
                 const humanBtn = document.getElementById('human-btn-' + id);
-                if (hasVoted) {
-                    if (grokBtn) grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${data.grok}</span>`;
-                    if (humanBtn) humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${data.human}</span> Human`;
+                if (hasVoted && grokBtn && humanBtn) {
+                    grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${data.grok}</span>`;
+                    humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${data.human}</span> Human`;
                 }
             });
         });
@@ -476,10 +484,10 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MODAL + VOTING + DEEP LINKING ====================
+    // ==================== MODAL + VOTING (MATCHES GRID) ====================
     let currentBattleId = null;
 
-    const battleData = {
+    const battleData = { /* your 16 entries remain unchanged */ 
         1: { title: "Remove Threats to Humanity", image: "https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg", tags: ["nonsense"], human: "Grok removes real threats based on facts — fans melt down when their heroes stay", grok: "I evaluate threats based on evidence and consistency, not political favoritism. Double standards don't make for good policy.", xLink: "https://x.com/lospectra_/status/2027752701967134898" },
         2: { title: "Why do you suck so hard?", image: "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png", tags: ["political"], human: "Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking", grok: "I provide facts and direct links. Bias claims are easy; evidence is harder. I show my work on any topic.", xLink: "https://x.com/WPhillyTurkey/status/2027464294154273086" },
         3: { title: "Sandy Hook Lottery Winners", image: "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg", tags: ["nonsense"], human: "Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources", grok: "Conspiracy claims require evidence. Primary sources and timelines show the facts clearly.", xLink: "https://x.com/samtripoli/status/2019729894180286787" },
@@ -530,7 +538,7 @@
 
         document.addEventListener('keydown', handleEscape);
 
-        updateModalVoteUI();   // show live scores immediately
+        updateModalVoteUI();
     }
 
     function closeModal() {
@@ -548,33 +556,32 @@
         if (e.target === this) closeModal();
     });
 
-    // Vote from inside modal
     function voteFromModal(event, winner) {
         event.stopImmediatePropagation();
         if (currentBattleId) {
             vote(event, winner, currentBattleId);
-            updateModalVoteUI();
         }
     }
 
-    // Update modal scores + disable buttons if already voted
     function updateModalVoteUI() {
         if (!currentBattleId) return;
         const id = currentBattleId;
         const hasVoted = !!localStorage.getItem('voted_' + id);
+        const grokBtn = document.getElementById('modal-grok-btn');
+        const humanBtn = document.getElementById('modal-human-btn');
 
         database.ref('battles/' + id).once('value', (snapshot) => {
             const data = snapshot.val() || { grok: 0, human: 0 };
-            document.getElementById('modal-grok-score').textContent = data.grok || 0;
-            document.getElementById('modal-human-score').textContent = data.human || 0;
-
-            const grokBtn = document.getElementById('modal-grok-btn');
-            const humanBtn = document.getElementById('modal-human-btn');
             if (hasVoted) {
+                grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${data.grok}</span>`;
+                humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${data.human}</span> Human`;
                 grokBtn.disabled = true;
                 humanBtn.disabled = true;
-                grokBtn.style.opacity = '0.7';
-                humanBtn.style.opacity = '0.7';
+            } else {
+                grokBtn.innerHTML = 'Grok Won';
+                humanBtn.innerHTML = 'Human Won';
+                grokBtn.disabled = false;
+                humanBtn.disabled = false;
             }
         });
     }
