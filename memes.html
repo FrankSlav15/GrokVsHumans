@@ -86,33 +86,34 @@
             color: white;
         }
 
-        /* Mobile optimizations */
+        /* STRONGER MOBILE FIXES - buttons now compact and clean */
         @media (max-width: 640px) {
+            #meme-modal { padding: 8px !important; }
+            .modal-content { border-radius: 20px; max-height: 94vh; }
+            #modal-image img { max-height: 52vh !important; }
+            #modal-buttons {
+                padding: 10px 8px !important;
+                gap: 6px !important;
+            }
             #modal-buttons button {
-                padding: 14px 12px !important;
-                font-size: 0.875rem !important;
-                gap: 8px;
+                padding: 10px 8px !important;
+                font-size: 0.78rem !important;
+                min-height: 44px;
+                gap: 5px;
             }
-            #context-panel {
-                padding: 16px 14px !important;
+            #modal-buttons button span {
+                font-size: 0.73rem;
+                line-height: 1.15;
             }
-            #context-text {
-                font-size: 0.875rem !important;
-                line-height: 1.35;
-            }
-            #context-x-link {
-                padding: 12px !important;
-                font-size: 0.9rem !important;
-            }
-            #modal-image img {
-                max-height: 55vh !important;
-            }
+            #context-panel { padding: 12px 10px !important; }
+            #context-text { font-size: 0.82rem !important; line-height: 1.35; }
+            #context-x-link { padding: 10px !important; font-size: 0.85rem !important; }
         }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (exactly as you had) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -140,7 +141,7 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
             <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
 
-            <!-- Sticky Tabs (exact same style as Categories page) -->
+            <!-- Sticky Tabs -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
@@ -154,8 +155,9 @@
                 </div>
             </div>
 
+            <!-- FULL GRID - ALL 17 CARDS EXACTLY AS YOU HAD -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
-                <!-- 17 newest at top -->
+                <!-- 17 newest -->
                 <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -299,7 +301,7 @@
                     </div>
                 </div>
 
-                <!-- 1 oldest at bottom -->
+                <!-- 1 oldest -->
                 <div onclick="openMemeModal(1)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
@@ -329,7 +331,7 @@
             
             <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-            <!-- SMALL BOTTOM CONTEXT PANEL -->
+            <!-- Context Panel -->
             <div id="context-panel" class="hidden absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-purple-500/50 p-5 rounded-b-3xl">
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex-1 pr-8">
@@ -338,24 +340,21 @@
                     <button onclick="hideContextPanel()" class="text-zinc-400 hover:text-white text-3xl leading-none">✕</button>
                 </div>
                 <a id="context-x-link" href="#" target="_blank" class="mt-4 block w-full text-center bg-white hover:bg-gray-100 text-black font-semibold py-3 md:py-4 rounded-2xl flex items-center justify-center gap-3 text-sm md:text-base">
-                    <i class="fa-brands fa-x-twitter"></i>
-                    View Original Thread on X
+                    <i class="fa-brands fa-x-twitter"></i> View Original Thread on X
                 </a>
             </div>
 
-            <!-- Normal buttons -->
+            <!-- Buttons -->
             <div id="modal-buttons" class="border-t border-zinc-800 p-6 flex gap-3">
                 <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-3 md:py-4 px-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-xs md:text-sm">
                     <i class="fa-solid fa-magnifying-glass text-2xl md:text-3xl text-blue-600"></i>
                     <span class="text-center">Search for This MEME Across the Internet</span>
                 </button>
                 <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-3 md:py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-xs md:text-sm">
-                    <i class="fa-solid fa-info-circle"></i>
-                    Info / Context
+                    <i class="fa-solid fa-info-circle"></i> Info / Context
                 </button>
                 <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-3 md:py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-xs md:text-sm">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    Share Meme
+                    <i class="fa-solid fa-share-nodes"></i> Share Meme
                 </button>
             </div>
         </div>
@@ -430,23 +429,14 @@
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        document.addEventListener('keydown', handleMemeEscape);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMemeModal(); });
     }
 
     function closeMemeModal() {
         const modal = document.getElementById('meme-modal');
         modal.classList.add('hidden');
         document.body.style.overflow = 'visible';
-        document.removeEventListener('keydown', handleMemeEscape);
     }
-
-    function handleMemeEscape(e) {
-        if (e.key === 'Escape') closeMemeModal();
-    }
-
-    document.getElementById('meme-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeMemeModal();
-    });
 
     function showContextPanel() {
         if (!currentMemeId) return;
