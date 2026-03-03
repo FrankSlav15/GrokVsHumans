@@ -268,7 +268,7 @@
             <div class="border-t border-zinc-800 p-6 flex gap-4">
                 <button onclick="searchMemeImage()" 
                         class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg">
-                    <i class="fa-brands fa-x-twitter text-3xl"></i>
+                    <i class="fa-solid fa-magnifying-glass text-3xl text-blue-600"></i>
                     <span class="text-center">Search for This MEME Across the Internet</span>
                 </button>
                 <button onclick="showMemeShareMenu()" 
@@ -317,7 +317,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== MEME MODAL (BIG IMAGE + REAL REVERSE IMAGE SEARCH) ====================
+    // ==================== MEME MODAL + REAL REVERSE IMAGE SEARCH ====================
     let currentMemeId = null;
 
     const memeData = {
@@ -369,11 +369,12 @@
         if (e.target === this) closeMemeModal();
     });
 
-    // REAL REVERSE IMAGE SEARCH
+    // REAL GOOGLE REVERSE IMAGE SEARCH
     function searchMemeImage() {
         if (!currentMemeId) return;
         const data = memeData[currentMemeId];
-        const searchUrl = `https://www.google.com/searchbyimage?image_url=${encodeURIComponent(data.image)}`;
+        const fullImageUrl = new URL(data.image, window.location.origin).href;
+        const searchUrl = `https://lens.google.com/uploadbyurl?url=${encodeURIComponent(fullImageUrl)}`;
         window.open(searchUrl, '_blank');
     }
 
