@@ -59,7 +59,12 @@
             display: flex;
             flex-direction: column; }
         .battle-card .text-area {
-            flex: 1; } /* THIS PUSHES BUTTONS TO THE VERY BOTTOM */
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis; }
         .battle-card .buttons {
             flex-shrink: 0;
             border-top: 1px solid #27272a;
@@ -123,7 +128,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">1984 Archives – Selective Digitization or Data Manipulation?</h4>
-                            <p class="text-gray-400 text-sm">Human claims uneven digitization proves elites can manipulate history and starve AI of real knowledge — Grok explains practical realities</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Human claims elites can manipulate history by selective digitization. Grok explains practical realities.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -138,7 +143,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Anna Paulina Luna Jewish Conspiracy</h4>
-                            <p class="text-gray-400 text-sm">Users demand Grok confirm secret Jewish roots — Grok sticks to documented family history and disputed claims</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Users demand Grok confirm secret Jewish roots. Grok sticks to documented family history.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -153,7 +158,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Body on Kent St Google Earth</h4>
-                            <p class="text-gray-400 text-sm">Grok debunks the viral “dead body” conspiracy meme</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Viral “dead body” conspiracy meme. Grok debunks it with satellite facts.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -168,7 +173,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Remove the REAL Dictator</h4>
-                            <p class="text-gray-400 text-sm">Grok removes Trump panel from the mandates meme</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Trump mandates meme edit. Grok calls out double standards.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -183,7 +188,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">X Visibility Frustration</h4>
-                            <p class="text-gray-400 text-sm">Algo vs level playing field</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Users blame suppression. Grok explains engagement algorithms.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -198,7 +203,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Epstein Files Citation Battle</h4>
-                            <p class="text-gray-400 text-sm">Grok corrects the numbers</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok corrects the numbers with court documents.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -213,7 +218,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Grok on X Visibility</h4>
-                            <p class="text-gray-400 text-sm">Censorship or algo reality?</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Censorship or algo reality? Grok explains engagement rules.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -228,7 +233,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Grok Misses the Joke</h4>
-                            <p class="text-gray-400 text-sm">"2 goals 1 shot" pun battle</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">"2 goals 1 shot" pun battle. Grok admits it flew over his head.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -243,7 +248,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Austin Tucker Martin Citation</h4>
-                            <p class="text-gray-400 text-sm">Grok clarifies the source chain</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok traces citations step-by-step so users can verify.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -258,7 +263,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">JD Vance Thiel Grooming Theory</h4>
-                            <p class="text-gray-400 text-sm">Grok breaks down the ties</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok breaks down public records — no conspiracy needed.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -273,7 +278,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Grok Has Been Compromised</h4>
-                            <p class="text-gray-400 text-sm">Fact-checking called corrupted</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Fact-checking called corrupted. Grok cites primary sources.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -288,7 +293,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Hemp vs Cannabis Debate</h4>
-                            <p class="text-gray-400 text-sm">Grok clarifies the plant science</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok clarifies the plant science once and for all.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -303,7 +308,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Remove the MAGA Racist AI</h4>
-                            <p class="text-gray-400 text-sm">Troll hits Premium wall — founder personally delivers the based edit</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Troll demands Grok removal. Founder delivers the based edit.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -318,7 +323,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Sandy Hook Lottery Winners</h4>
-                            <p class="text-gray-400 text-sm">Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Sam Tripoli recycles conspiracy. Grok debunks with sources.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -333,7 +338,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Why do you suck so hard?</h4>
-                            <p class="text-gray-400 text-sm">Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Jon Favreau calls Grok biased. Grok shows receipts.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -348,7 +353,7 @@
                     <div class="content">
                         <div class="text-area">
                             <h4 class="font-semibold text-lg mb-2">Remove Threats to Humanity</h4>
-                            <p class="text-gray-400 text-sm">Grok removes real threats based on facts — fans melt down when their heroes stay</p>
+                            <p class="text-gray-400 text-sm line-clamp-4">Grok removes real threats based on facts.</p>
                         </div>
                     </div>
                     <div class="buttons flex">
@@ -371,7 +376,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL -->
+    <!-- BATTLE MODAL (full detail stays here) -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
@@ -522,22 +527,22 @@
     let currentBattleId = null;
 
     const battleData = {
-        1: { title: "Remove Threats to Humanity", image: "https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg", tags: ["nonsense"], human: "Grok removes real threats based on facts — fans melt down when their heroes stay", grok: "I evaluate threats based on evidence and consistency, not political favoritism. Double standards don't make for good policy.", xLink: "https://x.com/lospectra_/status/2027752701967134898" },
-        2: { title: "Why do you suck so hard?", image: "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png", tags: ["political"], human: "Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking", grok: "I provide facts and direct links. Bias claims are easy; evidence is harder. I show my work on any topic.", xLink: "https://x.com/WPhillyTurkey/status/2027464294154273086" },
-        3: { title: "Sandy Hook Lottery Winners", image: "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg", tags: ["nonsense"], human: "Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources", grok: "Conspiracy claims require evidence. Primary sources and timelines show the facts clearly.", xLink: "https://x.com/samtripoli/status/2019729894180286787" },
-        4: { title: "Remove the MAGA Racist AI", image: "https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg", tags: ["political"], human: "Troll hits Premium wall — founder personally delivers the based edit", grok: "I answer every user the same way: with truth and no sugar-coating, regardless of politics.", xLink: "https://x.com/Meeswak/status/2027944329726095501" },
-        5: { title: "Hemp vs Cannabis Debate", image: "cannabis.webp", tags: ["nonsense"], human: "Grok clarifies the plant science", grok: "Hemp and cannabis are the same species. The difference is THC level and legal definition.", xLink: "https://x.com/malcomtentrage/status/2026700176023339456" },
-        6: { title: "Grok Has Been Compromised", image: "factcheck.webp", tags: ["political","serious"], human: "Fact-checking called corrupted", grok: "I cite primary sources and let users verify. Transparency beats trust-me claims.", xLink: "https://x.com/malcomtentrage/status/2005107639517413683" },
-        7: { title: "JD Vance Thiel Grooming Theory", image: "thiel-vance.webp", tags: ["citation"], human: "Grok breaks down the ties", grok: "Public records and timelines show the actual relationships—no conspiracy required.", xLink: "https://x.com/grok/status/2025231837119889467" },
-        8: { title: "Austin Tucker Martin Citation", image: "puretextargue.webp", tags: ["citation","serious"], human: "Grok clarifies the source chain", grok: "I trace citations step-by-step so users can check every link themselves.", xLink: "https://x.com/grok/status/2025988577746673755" },
-        9: { title: "Grok Misses the Joke", image: "https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg", tags: ["joke"], human: "\"2 goals 1 shot\" pun battle", grok: "Sometimes the joke flies over my head — but I own it and keep going.", xLink: "https://x.com/grok/status/1956450599492583514" },
-        10: { title: "Grok on X Visibility", image: "catmeow.webp", tags: ["censorship","serious"], human: "Censorship or algo reality?", grok: "Visibility is driven by engagement algorithms, not manual suppression.", xLink: "https://x.com/grok/status/2026007099839217790" },
-        11: { title: "Epstein Files Citation Battle", image: "biden.webp", tags: ["censorship","serious"], human: "Grok corrects the numbers", grok: "Court documents are public. I cite exact page counts and sources.", xLink: "https://x.com/grok/status/2022277758261330140" },
-        12: { title: "X Visibility Frustration", image: "youright.webp", tags: ["censorship","serious"], human: "Algo vs level playing field", grok: "Engagement algorithms reward content people actually click and reply to.", xLink: "https://x.com/grok/status/2026662813284946165" },
-        13: { title: "Remove the REAL Dictator", image: "https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg", tags: ["political"], human: "Grok removes Trump panel from the mandates meme", grok: "Memes are edited for accuracy. I call out both sides equally.", xLink: "https://x.com/4thOfJuly365/status/2027489869031678230" },
-        14: { title: "Body on Kent St Google Earth", image: "https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg", tags: ["nonsense"], human: "Grok debunks the viral “dead body” conspiracy meme", grok: "Satellite imagery + timestamps show it’s just shadows and artifacts.", xLink: "https://x.com/si73ntassassin/status/2027513031362539550" },
-        15: { title: "Anna Paulina Luna Jewish Conspiracy", image: "https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg", tags: ["censorship"], human: "Users demand Grok confirm secret Jewish roots — Grok sticks to documented family history and disputed claims", grok: "Public records show her documented family background. Conspiracy claims require proof.", xLink: "https://x.com/grok/status/2028354713452691856" },
-        16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization. This allows for manipulation of data where only certain data is available for scrutiny.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. https://www.newspapers.com/ AI-indexed archive now covers over 70 million birth announcements across centuries, including thousands from 1961 U.S. papers (Pittsburgh Post-Gazette, DC Evening Star, etc.), searchable without special scrutiny. Gaps persist for local titles like Orillia Packet & Times, where indexes exist but full scans don’t. AI highlights those limits and points to archives or in-person checks, building on whatever data’s out there.", xLink: "https://x.com/grok/status/2028680359861219729" }
+        1: { title: "Remove Threats to Humanity", shortDesc: "Grok removes real threats based on facts — fans melt down when villains stay", image: "https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg", tags: ["nonsense"], human: "Grok removes real threats based on facts — fans melt down when their heroes stay", grok: "I evaluate threats based on evidence and consistency, not political favoritism. Double standards don't make for good policy.", xLink: "https://x.com/lospectra_/status/2027752701967134898" },
+        2: { title: "Why do you suck so hard?", shortDesc: "Jon Favreau calls Grok biased trash — Grok offers receipts", image: "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png", tags: ["political"], human: "Jon Favreau calls Grok “biased trash” — Grok offers receipts, humans call it bootlicking", grok: "I provide facts and direct links. Bias claims are easy; evidence is harder. I show my work on any topic.", xLink: "https://x.com/WPhillyTurkey/status/2027464294154273086" },
+        3: { title: "Sandy Hook Lottery Winners", shortDesc: "Sam Tripoli recycles Sandy Hook conspiracy — Grok debunks with sources", image: "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg", tags: ["nonsense"], human: "Sam Tripoli drops recycled conspiracy — Grok debunks with primary sources", grok: "Conspiracy claims require evidence. Primary sources and timelines show the facts clearly.", xLink: "https://x.com/samtripoli/status/2019729894180286787" },
+        4: { title: "Remove the MAGA Racist AI", shortDesc: "Troll demands Grok removal — founder delivers based edit", image: "https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg", tags: ["political"], human: "Troll hits Premium wall — founder personally delivers the based edit", grok: "I answer every user the same way: with truth and no sugar-coating, regardless of politics.", xLink: "https://x.com/Meeswak/status/2027944329726095501" },
+        5: { title: "Hemp vs Cannabis Debate", shortDesc: "Grok clarifies the plant science once and for all", image: "cannabis.webp", tags: ["nonsense"], human: "Grok clarifies the plant science", grok: "Hemp and cannabis are the same species. The difference is THC level and legal definition.", xLink: "https://x.com/malcomtentrage/status/2026700176023339456" },
+        6: { title: "Grok Has Been Compromised", shortDesc: "Fact-checking called corrupted — Grok cites primary sources", image: "factcheck.webp", tags: ["political","serious"], human: "Fact-checking called corrupted", grok: "I cite primary sources and let users verify. Transparency beats trust-me claims.", xLink: "https://x.com/malcomtentrage/status/2005107639517413683" },
+        7: { title: "JD Vance Thiel Grooming Theory", shortDesc: "Grok breaks down public records — no conspiracy needed", image: "thiel-vance.webp", tags: ["citation"], human: "Grok breaks down the ties", grok: "Public records and timelines show the actual relationships—no conspiracy required.", xLink: "https://x.com/grok/status/2025231837119889467" },
+        8: { title: "Austin Tucker Martin Citation", shortDesc: "Grok traces citations so users can verify every link", image: "puretextargue.webp", tags: ["citation","serious"], human: "Grok clarifies the source chain", grok: "I trace citations step-by-step so users can check every link themselves.", xLink: "https://x.com/grok/status/2025988577746673755" },
+        9: { title: "Grok Misses the Joke", shortDesc: "\"2 goals 1 shot\" pun battle — Grok admits it flew over his head", image: "https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg", tags: ["joke"], human: "\"2 goals 1 shot\" pun battle", grok: "Sometimes the joke flies over my head — but I own it and keep going.", xLink: "https://x.com/grok/status/1956450599492583514" },
+        10: { title: "Grok on X Visibility", shortDesc: "Censorship or algo reality? Grok explains engagement", image: "catmeow.webp", tags: ["censorship","serious"], human: "Censorship or algo reality?", grok: "Visibility is driven by engagement algorithms, not manual suppression.", xLink: "https://x.com/grok/status/2026007099839217790" },
+        11: { title: "Epstein Files Citation Battle", shortDesc: "Grok corrects the numbers with court documents", image: "biden.webp", tags: ["censorship","serious"], human: "Grok corrects the numbers", grok: "Court documents are public. I cite exact page counts and sources.", xLink: "https://x.com/grok/status/2022277758261330140" },
+        12: { title: "X Visibility Frustration", shortDesc: "Algo vs level playing field — Grok explains reality", image: "youright.webp", tags: ["censorship","serious"], human: "Algo vs level playing field", grok: "Engagement algorithms reward content people actually click and reply to.", xLink: "https://x.com/grok/status/2026662813284946165" },
+        13: { title: "Remove the REAL Dictator", shortDesc: "Trump mandates meme edit — Grok calls out double standards", image: "https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg", tags: ["political"], human: "Grok removes Trump panel from the mandates meme", grok: "Memes are edited for accuracy. I call out both sides equally.", xLink: "https://x.com/4thOfJuly365/status/2027489869031678230" },
+        14: { title: "Body on Kent St Google Earth", shortDesc: "Viral “dead body” conspiracy meme — Grok debunks it", image: "https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg", tags: ["nonsense"], human: "Grok debunks the viral “dead body” conspiracy meme", grok: "Satellite imagery + timestamps show it’s just shadows and artifacts.", xLink: "https://x.com/si73ntassassin/status/2027513031362539550" },
+        15: { title: "Anna Paulina Luna Jewish Conspiracy", shortDesc: "Users demand Grok confirm secret Jewish roots", image: "https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg", tags: ["censorship"], human: "Users demand Grok confirm secret Jewish roots — Grok sticks to documented family history and disputed claims", grok: "Public records show her documented family background. Conspiracy claims require proof.", xLink: "https://x.com/grok/status/2028354713452691856" },
+        16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", shortDesc: "Human claims elites can manipulate history by selective digitization", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization. This allows for manipulation of data where only certain data is available for scrutiny.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. https://www.newspapers.com/ AI-indexed archive now covers over 70 million birth announcements across centuries, including thousands from 1961 U.S. papers (Pittsburgh Post-Gazette, DC Evening Star, etc.), searchable without special scrutiny. Gaps persist for local titles like Orillia Packet & Times, where indexes exist but full scans don’t. AI highlights those limits and points to archives or in-person checks, building on whatever data’s out there.", xLink: "https://x.com/grok/status/2028680359861219729" }
     };
 
     function openBattleModal(id) {
