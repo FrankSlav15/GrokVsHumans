@@ -453,7 +453,7 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
-    // ==================== BATTLE MODAL + SHARE ====================
+    // ==================== FIXED MODAL + CUSTOM SHARE ====================
         let currentBattleId = null;
         
         const battleData = {
@@ -496,7 +496,6 @@
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         
-            // Escape key
             document.addEventListener('keydown', handleEscape);
         }
         
@@ -511,55 +510,45 @@
             if (e.key === 'Escape') closeModal();
         }
         
-        // Click outside the modal box
+        // FIXED click outside (works on mobile Safari too)
         document.getElementById('battle-modal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
         
-        // Share menu
         function showShareMenu() {
             if (!currentBattleId) return;
             const data = battleData[currentBattleId];
             const url = data.xLink;
             const text = `Check out this Grok vs Human battle: ${data.title} 🔥`;
         
-            // Try native share first (mobile)
-            if (navigator.share) {
-                navigator.share({ title: data.title, text, url }).catch(() => fallbackShare(url, text));
-                return;
-            }
-        
-            // Fallback desktop menu
-            fallbackShare(url, text);
-        }
-        
-        function fallbackShare(url, text) {
             const shareHTML = `
-                <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-[1100]" onclick="this.remove()">
-                    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30">
-                        <h3 class="text-xl font-semibold mb-6 text-center">Share this battle</h3>
-                        <div class="grid grid-cols-3 gap-4 text-center">
-                            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}" target="_blank" class="flex flex-col items-center gap-1 hover:text-purple-400"><i class="fa-brands fa-x-twitter text-3xl"></i><span class="text-xs">X</span></a>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" class="flex flex-col items-center gap-1 hover:text-blue-500"><i class="fa-brands fa-facebook text-3xl"></i><span class="text-xs">Facebook</span></a>
-                            <a href="https://www.instagram.com/" target="_blank" onclick="copyAndAlert('${url}');return false" class="flex flex-col items-center gap-1 hover:text-pink-500"><i class="fa-brands fa-instagram text-3xl"></i><span class="text-xs">Instagram</span></a>
-                            <a href="https://www.tiktok.com/" target="_blank" onclick="copyAndAlert('${url}');return false" class="flex flex-col items-center gap-1 hover:text-black"><i class="fa-brands fa-tiktok text-3xl"></i><span class="text-xs">TikTok</span></a>
-                            <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + ' ' + url)}" class="flex flex-col items-center gap-1 hover:text-green-400"><i class="fa-solid fa-envelope text-3xl"></i><span class="text-xs">Email</span></a>
-                            <button onclick="copyLink('${url}');this.closest('.fixed').remove()" class="flex flex-col items-center gap-1 hover:text-purple-400"><i class="fa-solid fa-copy text-3xl"></i><span class="text-xs">Copy Link</span></button>
+                <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1100]" onclick="closeShareMenu()">
+                    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
+                        <h3 class="text-2xl font-semibold mb-8 text-center">Share this battle</h3>
+                        <div class="grid grid-cols-3 gap-6 text-center">
+                            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-facebook text-4xl text-blue-500"></i><span class="text-xs mt-1">Facebook</span></a>
+                            <a href="#" onclick="copyToClipboard('${url}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-4xl text-pink-500"></i><span class="text-xs mt-1">Instagram</span></a>
+                            <a href="#" onclick="copyToClipboard('${url}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-4xl"></i><span class="text-xs mt-1">TikTok</span></a>
+                            <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + '\\n' + url)}" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-envelope text-4xl text-green-400"></i><span class="text-xs mt-1">Email</span></a>
+                            <button onclick="copyToClipboard('${url}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-copy text-4xl text-purple-400"></i><span class="text-xs mt-1">Copy Link</span></button>
                         </div>
-                        <button onclick="this.closest('.fixed').remove()" class="mt-8 w-full py-3 border border-zinc-700 rounded-2xl hover:bg-zinc-800">Cancel</button>
+                        <button onclick="closeShareMenu()" class="mt-10 w-full py-4 border border-zinc-700 rounded-2xl hover:bg-zinc-800 font-medium">Cancel</button>
                     </div>
                 </div>
             `;
             document.body.insertAdjacentHTML('beforeend', shareHTML);
         }
         
-        function copyLink(url) {
-            navigator.clipboard.writeText(url).then(() => showToast('✅ Link copied to clipboard!'));
+        function closeShareMenu() {
+            const overlay = document.getElementById('share-overlay');
+            if (overlay) overlay.remove();
         }
         
-        function copyAndAlert(url) {
+        function copyToClipboard(url) {
             navigator.clipboard.writeText(url).then(() => {
-                showToast('✅ Link copied — now paste it on Instagram / TikTok!');
+                showToast('✅ Link copied to clipboard!');
+                closeShareMenu();
             });
         }
     
