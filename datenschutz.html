@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Datenschutzerklärung - GrokVsHumans</title>
+    <title>Privacy Policy / Datenschutzerklärung - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,11 +12,13 @@
         body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a1f; color: white; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
         .content { max-width: 720px; margin: 0 auto; padding: 2rem; }
+        .lang-btn { transition: all 0.2s; }
+        .lang-btn.active { background-color: rgb(168 85 247); color: white; }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (same as all other pages) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -25,55 +27,75 @@
                     <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
                 </a>
             </div>
-            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
-                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
-                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
-                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
-            </div>
         </div>
     </nav>
 
     <section class="pt-52 pb-16">
         <div class="content">
-            <h1 class="text-5xl font-bold mb-8">Datenschutzerklärung</h1>
-            
-            <div class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed">
-                <p><strong>Stand: 04. März 2026</strong></p>
+            <!-- Language Switcher -->
+            <div class="flex justify-end mb-6">
+                <div class="inline-flex bg-zinc-900 rounded-3xl p-1">
+                    <button onclick="switchLang('en')" id="btn-en" class="lang-btn active px-5 py-2 text-sm font-medium rounded-3xl">EN</button>
+                    <button onclick="switchLang('de')" id="btn-de" class="lang-btn px-5 py-2 text-sm font-medium rounded-3xl">DE</button>
+                </div>
+            </div>
 
-                <h3 class="text-purple-400 mt-8">1. Verantwortlicher</h3>
-                <p>Travis Johnson<br>
-                Köpenicker Chaussee 24<br>
-                10317 Berlin, Germany<br>
-                E-Mail: <a href="mailto:trafrajohn@gmail.com" class="text-purple-400">trafrajohn@gmail.com</a></p>
+            <!-- ENGLISH -->
+            <div id="en-content">
+                <h1 class="text-5xl font-bold mb-8">Privacy Policy</h1>
+                <div class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed">
+                    <p><strong>Effective: March 04, 2026</strong></p>
+                    <h3 class="text-purple-400 mt-8">1. Controller</h3>
+                    <p>Travis Johnson<br>
+                    Köpenicker Chaussee 24<br>
+                    10317 Berlin, Germany<br>
+                    Email: <a href="mailto:trafrajohn@gmail.com" class="text-purple-400">trafrajohn@gmail.com</a></p>
+                    <h3 class="text-purple-400 mt-8">2. Data collected</h3>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>Google Analytics</strong>: Anonymized usage data (page views, country). IP addresses are anonymized.</li>
+                        <li><strong>Firebase (voting)</strong>: Only anonymous vote counts and whether a user has already voted (stored locally in browser).</li>
+                    </ul>
+                    <h3 class="text-purple-400 mt-8">3. Legal basis</h3>
+                    <p>Data processing is based on Art. 6 (1) lit. f GDPR (legitimate interest in analyzing and improving the website).</p>
+                    <p class="text-xs text-gray-500 mt-12">This is a private, non-commercial fan project. No data is sold or passed to third parties.</p>
+                </div>
+            </div>
 
-                <h3 class="text-purple-400 mt-8">2. Allgemeines</h3>
-                <p>Diese Datenschutzerklärung informiert Sie über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten auf grokvshumans.com (nachfolgend „Website“).</p>
-
-                <h3 class="text-purple-400 mt-8">3. Erhobene Daten</h3>
-                <ul class="list-disc pl-6 space-y-2">
-                    <li><strong>Google Analytics (G-M58E7KLM56)</strong>: Anonymisierte Nutzungsdaten (Besucherzahlen, Seitenaufrufe, Herkunftsland). IP-Adressen werden anonymisiert.</li>
-                    <li><strong>Firebase (Voting-System)</strong>: Nur anonyme Abstimmungsdaten (Grok vs Human) und ob ein User bereits abgestimmt hat (lokal im Browser gespeichert).</li>
-                    <li>Keine Registrierung, keine E-Mail-Adressen, keine Namen, keine Tracking-Cookies über das Notwendige hinaus.</li>
-                </ul>
-
-                <h3 class="text-purple-400 mt-8">4. Rechtsgrundlage</h3>
-                <p>Die Datenverarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Analyse und Verbesserung der Website).</p>
-
-                <h3 class="text-purple-400 mt-8">5. Ihre Rechte</h3>
-                <p>Sie haben jederzeit das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung sowie Widerspruch. Schreiben Sie einfach eine E-Mail an trafrajohn@gmail.com.</p>
-
-                <h3 class="text-purple-400 mt-8">6. Speicherdauer</h3>
-                <p>Firebase-Daten werden nur so lange gespeichert wie für den Betrieb des Voting-Systems notwendig. Analytics-Daten werden automatisch nach 14 Monaten gelöscht.</p>
-
-                <p class="text-xs text-gray-500 mt-12">Dies ist ein privates, nicht-kommerzielles Fan-Projekt. Es werden keine Daten verkauft oder an Dritte weitergegeben.</p>
+            <!-- GERMAN -->
+            <div id="de-content" class="hidden">
+                <h1 class="text-5xl font-bold mb-8">Datenschutzerklärung</h1>
+                <div class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed">
+                    <p><strong>Stand: 04. März 2026</strong></p>
+                    <h3 class="text-purple-400 mt-8">1. Verantwortlicher</h3>
+                    <p>Travis Johnson<br>
+                    Köpenicker Chaussee 24<br>
+                    10317 Berlin, Germany<br>
+                    E-Mail: <a href="mailto:trafrajohn@gmail.com" class="text-purple-400">trafrajohn@gmail.com</a></p>
+                    <h3 class="text-purple-400 mt-8">2. Erhobene Daten</h3>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>Google Analytics</strong>: Anonymisierte Nutzungsdaten. IP-Adressen werden anonymisiert.</li>
+                        <li><strong>Firebase (Voting)</strong>: Nur anonyme Abstimmungsdaten (lokal im Browser gespeichert).</li>
+                    </ul>
+                    <h3 class="text-purple-400 mt-8">3. Rechtsgrundlage</h3>
+                    <p>Die Datenverarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse).</p>
+                    <p class="text-xs text-gray-500 mt-12">Dies ist ein privates, nicht-kommerzielles Fan-Projekt. Es werden keine Daten verkauft oder an Dritte weitergegeben.</p>
+                </div>
             </div>
         </div>
     </section>
 
     <footer class="py-12 text-center text-gray-500 text-sm">
-        <a href="index.html" class="hover:text-purple-400">← Zurück zur Startseite</a>
+        <a href="index.html" class="hover:text-purple-400">← Back to Home</a>
     </footer>
+
+    <script>
+        function switchLang(lang) {
+            document.getElementById('en-content').classList.toggle('hidden', lang !== 'en');
+            document.getElementById('de-content').classList.toggle('hidden', lang !== 'de');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+        }
+    </script>
 </body>
 
 <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
@@ -82,9 +104,9 @@
     Launched Mar 01 2026
 
     <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px]">
-        <a href="impressum.html" class="hover:text-purple-400">Impressum</a>
-        <a href="tos.html" class="hover:text-purple-400">Nutzungsbedingungen</a>
-        <a href="datenschutz.html" class="hover:text-purple-400">Datenschutzerklärung</a>
+        <a href="impressum.html" class="hover:text-purple-400">Imprint / Impressum</a>
+        <a href="tos.html" class="hover:text-purple-400">Terms / Nutzungsbedingungen</a>
+        <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
     </div>
 </footer>
 
