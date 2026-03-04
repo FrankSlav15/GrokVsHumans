@@ -58,26 +58,71 @@
             background: #18181b;
             display: flex;
             flex-direction: column;
-            min-height: 9rem; /* 2 title lines + 4 description lines */ }
-        .battle-card .title-area {
-            min-height: 3.25rem; /* exactly 2 lines reserved for title */ }
-        .battle-card .desc-area {
-            flex: 1;
-            min-height: 5.75rem; /* exactly 4 lines reserved for description */ }
+            min-height: 9rem; }
+        .battle-card .title-area { min-height: 3.25rem; }
+        .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
         .battle-card .buttons {
             flex-shrink: 0;
             border-top: 1px solid #27272a;
             border-bottom-left-radius: 1.5rem;
             border-bottom-right-radius: 1.5rem;
             overflow: hidden; }
+
+        /* TAB STYLING – identical to memes.html */
+        .tab {
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
-            color: white; }
+            color: white;
+        }
+
+        /* ULTRA-COMPACT MOBILE OPTIMIZATIONS – exact match to memes.html */
+        @media (max-width: 640px) {
+            #battle-modal { padding: 8px; }
+            .modal-content { 
+                max-height: 96vh !important; 
+                border-radius: 20px; 
+            }
+            #modal-image { 
+                height: 220px !important; 
+            }
+            .modal-content .p-8 { padding: 1.25rem !important; }
+            .modal-content .p-6 { 
+                padding: 14px 16px !important; 
+                gap: 10px !important; 
+            }
+            .modal-content .p-6 a,
+            .modal-content .p-6 button {
+                padding: 13px 14px !important;
+                font-size: 0.875rem !important;
+                min-height: 50px;
+                gap: 8px;
+            }
+            #modal-title {
+                font-size: 1.6rem !important;
+                line-height: 1.25 !important;
+            }
+            #modal-tags span {
+                font-size: 0.73rem !important;
+                padding: 4px 10px !important;
+            }
+            /* Voting buttons in modal body */
+            .modal-content .buttons button {
+                padding: 12px 10px !important;
+                font-size: 0.9rem !important;
+                min-height: 48px;
+            }
+        }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (identical to memes.html) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -407,8 +452,8 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL (full detail stays here) -->
-    <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
+    <!-- BATTLE MODAL (mobile-optimized) -->
+    <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
             <div class="relative flex-shrink-0">
@@ -487,7 +532,7 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // FIXED BUTTON HEIGHT
+    // FIXED BUTTON HEIGHT (unchanged)
     const fixedButtonStyle = document.createElement('style');
     fixedButtonStyle.textContent = `.battle-card .buttons button, #modal-grok-btn, #modal-human-btn { height: 64px !important; min-height: 64px !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 16px !important; font-size: 1.1rem; }`;
     document.head.appendChild(fixedButtonStyle);
@@ -633,10 +678,6 @@
     function handleEscape(e) {
         if (e.key === 'Escape') closeModal();
     }
-
-    document.getElementById('battle-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
 
     function voteFromModal(event, winner) {
         event.stopImmediatePropagation();
