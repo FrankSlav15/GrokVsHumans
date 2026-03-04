@@ -9,75 +9,128 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        html { height: 100%; }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            flex-direction: column; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-M58E7KLM56');
+        </script>
 
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+                html { height: 100%; }
+                body { 
+                    font-family: 'Inter', system-ui, sans-serif; 
+                    background: #0a0a1f;
+                    position: relative;
+                    min-height: 100dvh;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column; }
+                .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        .battle-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2); 
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 1.5rem; }
-        .battle-card:hover { 
-            transform: translateY(-8px);
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
-            border-color: rgb(168 85 247); }
-        .battle-card > img {
-            flex-shrink: 0;
-            height: 14rem;
-            width: 100%;
-            object-fit: cover;
-            border-top-left-radius: 1.5rem;
-            border-top-right-radius: 1.5rem; }
-        .battle-card .content {
-            flex: 1;
-            padding: 1.25rem;
-            background: #18181b;
-            display: flex;
-            flex-direction: column;
-            min-height: 9rem; /* 2 title lines + 4 description lines */ }
-        .battle-card .title-area {
-            min-height: 3.25rem; /* exactly 2 lines reserved for title */ }
-        .battle-card .desc-area {
-            flex: 1;
-            min-height: 5.75rem; /* exactly 4 lines reserved for description */ }
-        .battle-card .buttons {
-            flex-shrink: 0;
-            border-top: 1px solid #27272a;
-            border-bottom-left-radius: 1.5rem;
-            border-bottom-right-radius: 1.5rem;
-            overflow: hidden; }
-        .tab-active {
-            border-bottom: 3px solid rgb(168 85 247);
-            color: white; }
-    </style>
+                body::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(10,10,31,0.82);
+                    z-index: -1; }
+
+                .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+
+                .battle-card {
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid rgba(168,85,247,0.2); 
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    overflow: hidden;
+                    border-radius: 1.5rem; }
+                .battle-card:hover { 
+                    transform: translateY(-8px);
+                    box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+                    border-color: rgb(168 85 247); }
+                .battle-card > img {
+                    flex-shrink: 0;
+                    height: 14rem;
+                    width: 100%;
+                    object-fit: cover;
+                    border-top-left-radius: 1.5rem;
+                    border-top-right-radius: 1.5rem; }
+                .battle-card .content {
+                    flex: 1;
+                    padding: 1.25rem;
+                    background: #18181b;
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 9rem; }
+                .battle-card .title-area { min-height: 3.25rem; }
+                .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
+                .battle-card .buttons {
+                    flex-shrink: 0;
+                    border-top: 1px solid #27272a;
+                    border-bottom-left-radius: 1.5rem;
+                    border-bottom-right-radius: 1.5rem;
+                    overflow: hidden; }
+
+                .tab {
+                    padding: 0.75rem 1.25rem;
+                    font-weight: 500;
+                    font-size: 0.875rem;
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                }
+                .tab-active {
+                    border-bottom: 3px solid rgb(168 85 247);
+                    color: white;
+                }
+
+                /* ULTRA-COMPACT MOBILE – even smaller buttons */
+                @media (max-width: 640px) {
+                    #battle-modal { padding: 8px; }
+                    .modal-content { 
+                        max-height: 96vh !important; 
+                        border-radius: 20px; 
+                    }
+                    #modal-image { height: 205px !important; }
+                    .modal-content .p-8 { padding: 1.05rem !important; }
+                    .modal-content .p-6 { 
+                        padding: 11px 13px !important; 
+                        gap: 8px !important; 
+                    }
+                    .modal-content .p-6 a,
+                    .modal-content .p-6 button {
+                        padding: 10px 12px !important;
+                        font-size: 0.80rem !important;
+                        min-height: 46px;
+                        line-height: 1.15;
+                        white-space: normal;
+                    }
+                    #modal-x-link span { font-size: 0.79rem !important; }
+                    #modal-title { 
+                        font-size: 1.52rem !important; 
+                        line-height: 1.22 !important; 
+                    }
+                    .modal-content .buttons button {
+                        padding: 9px !important;
+                        font-size: 0.85rem !important;
+                        min-height: 44px;
+                    }
+                    #modal-tags span {
+                        font-size: 0.71rem !important;
+                        padding: 3px 8px !important;
+                    }
+                }
+            </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (identical to memes.html) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -407,8 +460,8 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL (full detail stays here) -->
-    <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
+        <!-- BATTLE MODAL (mobile-optimized) -->
+    <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
             <div class="relative flex-shrink-0">
@@ -448,12 +501,12 @@
                 </div>
             </div>
 
-            <!-- Footer -->
+                        <!-- Footer -->
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
                 <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
+                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
-                    <span class="text-center">View & Participate in This Discussion on X</span>
+                    <span class="text-center">Participate</span>
                 </a>
                 <button onclick="showShareMenu()" 
                         class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
@@ -487,7 +540,7 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // FIXED BUTTON HEIGHT
+    // FIXED BUTTON HEIGHT (unchanged)
     const fixedButtonStyle = document.createElement('style');
     fixedButtonStyle.textContent = `.battle-card .buttons button, #modal-grok-btn, #modal-human-btn { height: 64px !important; min-height: 64px !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 16px !important; font-size: 1.1rem; }`;
     document.head.appendChild(fixedButtonStyle);
@@ -633,10 +686,6 @@
     function handleEscape(e) {
         if (e.key === 'Escape') closeModal();
     }
-
-    document.getElementById('battle-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
 
     function voteFromModal(event, winner) {
         event.stopImmediatePropagation();
