@@ -48,7 +48,8 @@
             flex-direction: column;
             height: 100%;
             overflow: hidden;
-            border-radius: 1.5rem; }
+            border-radius: 1.5rem;
+            position: relative; }
         .meme-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
@@ -69,6 +70,26 @@
             min-height: 6rem; }
         .meme-card .title-area { min-height: 1.75rem; }
         .meme-card .desc-area { flex: 1; min-height: 3.5rem; }
+
+        /* VIDEO PLAY ICON ON GRID */
+        .video-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .video-card:hover::after { opacity: 1; }
+        .video-card::after i {
+            font-size: 3.8rem;
+            color: white;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
+        }
 
         .tab {
             padding: 0.75rem 1.25rem;
@@ -102,7 +123,8 @@
             overflow: hidden;
             position: relative;
         }
-        #modal-image img {
+        #modal-image img,
+        #modal-image video {
             width: 100%;
             max-height: 68vh;
             object-fit: contain;
@@ -139,7 +161,8 @@
         @media (max-width: 640px) {
             #meme-modal { padding: 8px; }
             .modal-content { max-height: 96vh; border-radius: 20px; }
-            #modal-image img { max-height: 68vh !important; }
+            #modal-image img,
+            #modal-image video { max-height: 68vh !important; }
             #modal-buttons {
                 padding: 8px 6px !important;
                 gap: 6px !important;
@@ -439,7 +462,17 @@
         const data = memeData[id];
         if (!data) return;
         currentMemeId = id;
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+
+        const url = data.image.toLowerCase();
+        let mediaHTML = '';
+
+        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg')) {
+            mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
+        } else {
+            mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+        }
+
+        document.getElementById('modal-image').innerHTML = mediaHTML;
         document.getElementById('context-panel').style.display = 'none';
         document.getElementById('modal-buttons').style.display = 'flex';
         document.getElementById('meme-modal').style.display = 'flex';
