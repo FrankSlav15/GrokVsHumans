@@ -19,114 +19,114 @@
         gtag('config', 'G-M58E7KLM56');
         </script>
 
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        html { height: 100%; }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            flex-direction: column; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+                html { height: 100%; }
+                body { 
+                    font-family: 'Inter', system-ui, sans-serif; 
+                    background: #0a0a1f;
+                    position: relative;
+                    min-height: 100dvh;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column; }
+                .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
+                body::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(10,10,31,0.82);
+                    z-index: -1; }
 
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+                .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        .battle-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2); 
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 1.5rem; }
-        .battle-card:hover { 
-            transform: translateY(-8px);
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
-            border-color: rgb(168 85 247); }
-        .battle-card > img {
-            flex-shrink: 0;
-            height: 14rem;
-            width: 100%;
-            object-fit: cover;
-            border-top-left-radius: 1.5rem;
-            border-top-right-radius: 1.5rem; }
-        .battle-card .content {
-            flex: 1;
-            padding: 1.25rem;
-            background: #18181b;
-            display: flex;
-            flex-direction: column;
-            min-height: 9rem; }
-        .battle-card .title-area { min-height: 3.25rem; }
-        .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
-        .battle-card .buttons {
-            flex-shrink: 0;
-            border-top: 1px solid #27272a;
-            border-bottom-left-radius: 1.5rem;
-            border-bottom-right-radius: 1.5rem;
-            overflow: hidden; }
+                .battle-card {
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid rgba(168,85,247,0.2); 
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    overflow: hidden;
+                    border-radius: 1.5rem; }
+                .battle-card:hover { 
+                    transform: translateY(-8px);
+                    box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+                    border-color: rgb(168 85 247); }
+                .battle-card > img {
+                    flex-shrink: 0;
+                    height: 14rem;
+                    width: 100%;
+                    object-fit: cover;
+                    border-top-left-radius: 1.5rem;
+                    border-top-right-radius: 1.5rem; }
+                .battle-card .content {
+                    flex: 1;
+                    padding: 1.25rem;
+                    background: #18181b;
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 9rem; }
+                .battle-card .title-area { min-height: 3.25rem; }
+                .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
+                .battle-card .buttons {
+                    flex-shrink: 0;
+                    border-top: 1px solid #27272a;
+                    border-bottom-left-radius: 1.5rem;
+                    border-bottom-right-radius: 1.5rem;
+                    overflow: hidden; }
 
-        .tab {
-            padding: 0.75rem 1.25rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-        .tab-active {
-            border-bottom: 3px solid rgb(168 85 247);
-            color: white;
-        }
+                .tab {
+                    padding: 0.75rem 1.25rem;
+                    font-weight: 500;
+                    font-size: 0.875rem;
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                }
+                .tab-active {
+                    border-bottom: 3px solid rgb(168 85 247);
+                    color: white;
+                }
 
-        /* ULTRA-COMPACT MOBILE – matches memes + fixes your screenshot issues */
-        @media (max-width: 640px) {
-            #battle-modal { padding: 8px; }
-            .modal-content { 
-                max-height: 96vh !important; 
-                border-radius: 20px; 
-            }
-            #modal-image { height: 205px !important; }
-            .modal-content .p-8 { padding: 1.1rem !important; }
-            .modal-content .p-6 { 
-                padding: 12px 14px !important; 
-                gap: 9px !important; 
-            }
-            .modal-content .p-6 a,
-            .modal-content .p-6 button {
-                padding: 11px 12px !important;
-                font-size: 0.81rem !important;
-                min-height: 47px;
-                line-height: 1.2;
-                white-space: normal;
-            }
-            #modal-x-link span { font-size: 0.79rem !important; }
-            #modal-title { 
-                font-size: 1.52rem !important; 
-                line-height: 1.22 !important; 
-            }
-            .modal-content .buttons button {
-                padding: 11px !important;
-                font-size: 0.88rem !important;
-                min-height: 46px;
-            }
-            #modal-tags span {
-                font-size: 0.71rem !important;
-                padding: 3px 8px !important;
-            }
-        }
-    </style>
+                /* ULTRA-COMPACT MOBILE – even smaller buttons */
+                @media (max-width: 640px) {
+                    #battle-modal { padding: 8px; }
+                    .modal-content { 
+                        max-height: 96vh !important; 
+                        border-radius: 20px; 
+                    }
+                    #modal-image { height: 205px !important; }
+                    .modal-content .p-8 { padding: 1.05rem !important; }
+                    .modal-content .p-6 { 
+                        padding: 11px 13px !important; 
+                        gap: 8px !important; 
+                    }
+                    .modal-content .p-6 a,
+                    .modal-content .p-6 button {
+                        padding: 10px 12px !important;
+                        font-size: 0.80rem !important;
+                        min-height: 46px;
+                        line-height: 1.15;
+                        white-space: normal;
+                    }
+                    #modal-x-link span { font-size: 0.79rem !important; }
+                    #modal-title { 
+                        font-size: 1.52rem !important; 
+                        line-height: 1.22 !important; 
+                    }
+                    .modal-content .buttons button {
+                        padding: 9px !important;
+                        font-size: 0.85rem !important;
+                        min-height: 44px;
+                    }
+                    #modal-tags span {
+                        font-size: 0.71rem !important;
+                        padding: 3px 8px !important;
+                    }
+                }
+            </style>
 </head>
 <body class="text-white">
 
@@ -501,12 +501,12 @@
                 </div>
             </div>
 
-            <!-- Footer -->
+                        <!-- Footer -->
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
                 <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
+                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
-                    <span class="text-center">View & Participate in This Discussion on X</span>
+                    <span class="text-center">Participate</span>
                 </a>
                 <button onclick="showShareMenu()" 
                         class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
