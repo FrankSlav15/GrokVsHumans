@@ -19,7 +19,7 @@
       gtag('config', 'G-M58E7KLM56');
     </script>
     
-    <style>
+        <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         html { height: 100%; }
         body { 
@@ -72,7 +72,6 @@
         .category-card .title-area { min-height: 3.25rem; }
         .category-card .desc-area { flex: 1; min-height: 5.75rem; }
 
-        /* TAB STYLING – identical to memes.html */
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -85,35 +84,36 @@
             color: white;
         }
 
-        /* ULTRA-COMPACT MOBILE OPTIMIZATIONS – exact match to memes.html style */
+        /* ULTRA-COMPACT MOBILE – matches memes perfectly */
         @media (max-width: 640px) {
             #category-modal { padding: 8px; }
             .modal-content { 
                 max-height: 96vh !important; 
                 border-radius: 20px; 
             }
-            #modal-image { 
-                height: 260px !important; 
-            }
-            .modal-content .p-8 { padding: 1.25rem !important; }
+            #modal-image { height: 235px !important; }
+            .modal-content .p-8 { padding: 1.1rem !important; }
             .modal-content .p-6 { 
-                padding: 14px 16px !important; 
-                gap: 10px !important; 
+                padding: 12px 14px !important; 
+                gap: 9px !important; 
             }
             .modal-content .p-6 a,
             .modal-content .p-6 button {
-                padding: 13px 14px !important;
-                font-size: 0.875rem !important;
-                min-height: 50px;
-                gap: 8px;
+                padding: 11px 12px !important;
+                font-size: 0.82rem !important;
+                min-height: 48px;
+                line-height: 1.2;
+                white-space: normal;
+                text-align: center;
             }
-            #modal-title {
-                font-size: 1.6rem !important;
-                line-height: 1.25 !important;
+            #modal-x-link span { font-size: 0.8rem !important; }
+            #modal-title { 
+                font-size: 1.55rem !important; 
+                line-height: 1.25 !important; 
             }
             #modal-tags span {
-                font-size: 0.73rem !important;
-                padding: 4px 10px !important;
+                font-size: 0.72rem !important;
+                padding: 3px 9px !important;
             }
         }
     </style>
@@ -277,7 +277,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL – mobile-optimized -->
+        <!-- CATEGORY MODAL -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
