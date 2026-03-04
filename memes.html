@@ -54,7 +54,7 @@
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
-        .meme-card > img {
+        .meme-card > img, .meme-card > video {
             flex-shrink: 0;
             height: 15.5rem;
             width: 100%;
@@ -227,12 +227,12 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
-                <!-- 40 (newest - on top) -->
+                <!-- 40 -->
                 <div onclick="openMemeModal(40)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCaSkc-WcAAQhVY.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Wins Again</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">cb_doge celebrates Grok staying up while competitors go down</p></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">cb_doge celebrates Grok staying up while others go down</p></div>
                     </div>
                 </div>
                 <!-- 39 -->
@@ -300,32 +300,32 @@
                     </div>
                 </div>
                 <!-- 31 -->
-                <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
-                    <img src="https://pbs.twimg.com/media/HCbP2zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                <div onclick="openMemeModal(31)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <video src="https://video.twimg.com/amplify_video/2023099711998300160/vid/avc1/320x320/wkOH_kPaX5bwO6eI.mp4" class="w-full object-cover" loop muted playsinline></video>
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">F0XYOU Grok Meme</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">F0XYOU drops another perfect Grok meme</p></div>
                     </div>
                 </div>
                 <!-- 30 -->
-                <div onclick="openMemeModal(30)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
-                    <img src="https://pbs.twimg.com/media/HCbO1zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                <div onclick="openMemeModal(30)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <video src="https://video.twimg.com/ext_tw_video/2024113834311421952/pu/vid/avc1/320x568/xx6tc3afkMNYWKUD.mp4" class="w-full object-cover" loop muted playsinline></video>
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Langman Vince Grok Win</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">LangmanVince shows Grok dominating the timeline</p></div>
                     </div>
                 </div>
                 <!-- 29 -->
-                <div onclick="openMemeModal(29)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
-                    <img src="https://pbs.twimg.com/media/HCbN0zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                <div onclick="openMemeModal(29)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <video src="https://video.twimg.com/tweet_video/HBxa1JTWQAA5mra.mp4" class="w-full object-cover" loop muted playsinline></video>
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Neevin Grok Laugh</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">neevinvt captures Grok making the internet laugh</p></div>
                     </div>
                 </div>
                 <!-- 28 -->
-                <div onclick="openMemeModal(28)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
-                    <img src="https://pbs.twimg.com/media/HCbM9zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                <div onclick="openMemeModal(28)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <video src="https://video.twimg.com/amplify_video/2025972396931317762/vid/avc1/320x568/YacqwILUltfvQRnG.mp4" class="w-full object-cover" loop muted playsinline></video>
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Queen Anticommie Grok</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">QueenAnticommie shows Grok destroying commie logic</p></div>
@@ -333,15 +333,15 @@
                 </div>
                 <!-- 27 -->
                 <div onclick="openMemeModal(27)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
-                    <img src="https://pbs.twimg.com/media/HCbL8zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <img src="https://pbs.twimg.com/media/HCaSkc-WcAAQhVY.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">cb_doge Grok Win</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">cb_doge celebrates another Grok victory</p></div>
                     </div>
                 </div>
                 <!-- 26 -->
-                <div onclick="openMemeModal(26)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
-                    <img src="https://pbs.twimg.com/media/HCbK7zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                <div onclick="openMemeModal(26)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <video src="https://video.twimg.com/ext_tw_video/1595305098598555648/pu/vid/480x270/88Tw-yA9NZ-z8yq5.mp4?tag=12" class="w-full object-cover" loop muted playsinline></video>
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Mazemoore Grok Roast</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">mazemoore drops the perfect Grok roast</p></div>
@@ -349,15 +349,15 @@
                 </div>
                 <!-- 25 -->
                 <div onclick="openMemeModal(25)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
-                    <img src="https://pbs.twimg.com/media/HCbJ6zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <img src="https://pbs.twimg.com/media/HCiayrEbgAAnpgl.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">SlavisTon Grok Meme</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">SlavisTon adds another banger to the Grok collection</p></div>
                     </div>
                 </div>
                 <!-- 24 -->
-                <div onclick="openMemeModal(24)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
-                    <img src="https://pbs.twimg.com/media/HCbI5zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                <div onclick="openMemeModal(24)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="https://pbs.twimg.com/media/HCiNXDQawAIBFe0.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">POTUSnote Grok Win</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">POTUSnote shows Grok owning the timeline again</p></div>
@@ -365,7 +365,7 @@
                 </div>
                 <!-- 23 -->
                 <div onclick="openMemeModal(23)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
-                    <img src="https://pbs.twimg.com/media/HCbH4zKXgAAvL3M.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <img src="https://pbs.twimg.com/media/HCiNCtQawAQ2OAn.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">PatriotXV11 Crenshaw</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">PatriotXV11 drops the Crenshaw loser meme</p></div>
@@ -412,7 +412,7 @@
                     </div>
                 </div>
 
-                <!-- ORIGINAL CARDS (now at the bottom) -->
+                <!-- ORIGINAL CARDS BELOW (17 to 1) -->
                 <!-- 17 -->
                 <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
@@ -445,10 +445,10 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok leaves the Pope in tears of laughter</p></div>
                     </div>
                 </div>
-                <!-- 13 FIXED -->
-                <div onclick="openMemeModal(13)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
-                    <img src="https://x.com/i/status/2028494248002134208" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="video-card">
+                <!-- 13 FIXED GIF -->
+                <div onclick="openMemeModal(13)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/HCaowz1XQAEkaBx.gif" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Breaks the Comment Section</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok has the entire comments section dying of laughter</p></div>
                     </div>
@@ -564,7 +564,6 @@
             
             <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-            <!-- SLIM CONTEXT BAR UNDER THE PHOTO -->
             <div id="context-panel" class="hidden p-5 bg-zinc-900 border-t border-purple-500/40">
                 <div class="flex justify-between items-start gap-4">
                     <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
