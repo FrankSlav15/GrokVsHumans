@@ -19,7 +19,7 @@
         gtag('config', 'G-M58E7KLM56');
         </script>
 
-    <style>
+        <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         html { height: 100%; }
         body { 
@@ -78,7 +78,6 @@
             border-bottom-right-radius: 1.5rem;
             overflow: hidden; }
 
-        /* TAB STYLING – identical to memes.html */
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -91,41 +90,40 @@
             color: white;
         }
 
-        /* ULTRA-COMPACT MOBILE OPTIMIZATIONS – exact match to memes.html */
+        /* ULTRA-COMPACT MOBILE – matches memes + fixes your screenshot issues */
         @media (max-width: 640px) {
             #battle-modal { padding: 8px; }
             .modal-content { 
                 max-height: 96vh !important; 
                 border-radius: 20px; 
             }
-            #modal-image { 
-                height: 220px !important; 
-            }
-            .modal-content .p-8 { padding: 1.25rem !important; }
+            #modal-image { height: 205px !important; }
+            .modal-content .p-8 { padding: 1.1rem !important; }
             .modal-content .p-6 { 
-                padding: 14px 16px !important; 
-                gap: 10px !important; 
+                padding: 12px 14px !important; 
+                gap: 9px !important; 
             }
             .modal-content .p-6 a,
             .modal-content .p-6 button {
-                padding: 13px 14px !important;
-                font-size: 0.875rem !important;
-                min-height: 50px;
-                gap: 8px;
+                padding: 11px 12px !important;
+                font-size: 0.81rem !important;
+                min-height: 47px;
+                line-height: 1.2;
+                white-space: normal;
             }
-            #modal-title {
-                font-size: 1.6rem !important;
-                line-height: 1.25 !important;
+            #modal-x-link span { font-size: 0.79rem !important; }
+            #modal-title { 
+                font-size: 1.52rem !important; 
+                line-height: 1.22 !important; 
+            }
+            .modal-content .buttons button {
+                padding: 11px !important;
+                font-size: 0.88rem !important;
+                min-height: 46px;
             }
             #modal-tags span {
-                font-size: 0.73rem !important;
-                padding: 4px 10px !important;
-            }
-            /* Voting buttons in modal body */
-            .modal-content .buttons button {
-                padding: 12px 10px !important;
-                font-size: 0.9rem !important;
-                min-height: 48px;
+                font-size: 0.71rem !important;
+                padding: 3px 8px !important;
             }
         }
     </style>
@@ -462,7 +460,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL (mobile-optimized) -->
+        <!-- BATTLE MODAL (mobile-optimized) -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
