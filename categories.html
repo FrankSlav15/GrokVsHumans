@@ -69,19 +69,58 @@
             display: flex;
             flex-direction: column;
             min-height: 9rem; }
-        .category-card .title-area {
-            min-height: 3.25rem; /* exactly 2 lines reserved for title */ }
-        .category-card .desc-area {
-            flex: 1;
-            min-height: 5.75rem; /* exactly 4 lines reserved for description */ }
+        .category-card .title-area { min-height: 3.25rem; }
+        .category-card .desc-area { flex: 1; min-height: 5.75rem; }
+
+        /* TAB STYLING – identical to memes.html */
+        .tab {
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
         .tab-active {
             border-bottom: 3px solid rgb(168 85 247);
-            color: white; }
+            color: white;
+        }
+
+        /* ULTRA-COMPACT MOBILE OPTIMIZATIONS – exact match to memes.html style */
+        @media (max-width: 640px) {
+            #category-modal { padding: 8px; }
+            .modal-content { 
+                max-height: 96vh !important; 
+                border-radius: 20px; 
+            }
+            #modal-image { 
+                height: 260px !important; 
+            }
+            .modal-content .p-8 { padding: 1.25rem !important; }
+            .modal-content .p-6 { 
+                padding: 14px 16px !important; 
+                gap: 10px !important; 
+            }
+            .modal-content .p-6 a,
+            .modal-content .p-6 button {
+                padding: 13px 14px !important;
+                font-size: 0.875rem !important;
+                min-height: 50px;
+                gap: 8px;
+            }
+            #modal-title {
+                font-size: 1.6rem !important;
+                line-height: 1.25 !important;
+            }
+            #modal-tags span {
+                font-size: 0.73rem !important;
+                padding: 4px 10px !important;
+            }
+        }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (identical to memes.html) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -128,12 +167,8 @@
                 <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="avoids">
                     <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok goes on a tangent</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Classic avoidance</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok goes on a tangent</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Classic avoidance</p></div>
                     </div>
                 </div>
 
@@ -141,12 +176,8 @@
                 <div onclick="openCategoryModal(10)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
                     <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Who's from the future</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Grok chooses</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Who's from the future</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Grok chooses</p></div>
                     </div>
                 </div>
 
@@ -154,12 +185,8 @@
                 <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
                     <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok helps</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Grok offers positive vibes</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok helps</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Grok offers positive vibes</p></div>
                     </div>
                 </div>
 
@@ -167,12 +194,8 @@
                 <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
                     <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Put some clothes on</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">A digital dressing</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Put some clothes on</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">A digital dressing</p></div>
                     </div>
                 </div>
 
@@ -180,12 +203,8 @@
                 <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
                     <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Magic actors</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Bunnyfied</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Magic actors</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Bunnyfied</p></div>
                     </div>
                 </div>
 
@@ -193,12 +212,8 @@
                 <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
                     <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Potato brain</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">A potato gets new clothes</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Potato brain</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">A potato gets new clothes</p></div>
                     </div>
                 </div>
 
@@ -206,12 +221,8 @@
                 <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
                     <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, summarize this</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Lazy readers get roasted (then helped)</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, summarize this</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Lazy readers get roasted (then helped)</p></div>
                     </div>
                 </div>
 
@@ -219,12 +230,8 @@
                 <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
                     <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Is implanting a chip lazy?</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Grok calls it proactive futurism</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is implanting a chip lazy?</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Grok calls it proactive futurism</p></div>
                     </div>
                 </div>
 
@@ -232,12 +239,8 @@
                 <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
                     <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Is this impersonating Elon?</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Grok gives its honest take</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is this impersonating Elon?</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Grok gives its honest take</p></div>
                     </div>
                 </div>
 
@@ -245,12 +248,8 @@
                 <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
                     <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Break down US vs Iran</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Grok gives lazy-person summary</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Break down US vs Iran</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Grok gives lazy-person summary</p></div>
                     </div>
                 </div>
 
@@ -258,12 +257,8 @@
                 <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
                     <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area">
-                            <h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, is this true?</h4>
-                        </div>
-                        <div class="desc-area">
-                            <p class="text-gray-400 text-sm line-clamp-4">Oblivious satire victim</p>
-                        </div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, is this true?</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">Oblivious satire victim</p></div>
                     </div>
                 </div>
 
@@ -282,8 +277,8 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL – LARGE FULL-FORMAT IMAGE -->
-    <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
+    <!-- CATEGORY MODAL – mobile-optimized -->
+    <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <!-- Header -->
             <div class="relative flex-shrink-0">
@@ -409,10 +404,6 @@
         if (e.key === 'Escape') closeCategoryModal();
     }
 
-    document.getElementById('category-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeCategoryModal();
-    });
-
     function showCategoryShareMenu() {
         if (!currentCategoryId) return;
         const data = categoryData[currentCategoryId];
@@ -471,7 +462,6 @@
     });
 
     window.addEventListener('hashchange', checkDeepLink);
-
     </script>
 </body>
 </html>
