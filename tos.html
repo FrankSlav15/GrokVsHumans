@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Terms of Service / Nutzungsbedingungen - GrokVsHumans</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a1f; color: white; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+        .content { max-width: 720px; margin: 0 auto; padding: 2rem; }
+        .lang-btn { transition: all 0.2s; }
+        .lang-btn.active { background-color: rgb(168 85 247); color: white; }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- NAVBAR -->
+    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-center py-6 md:py-8">
+                <a href="index.html" class="flex items-center gap-4">
+                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
+                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-52 pb-16">
+        <div class="content">
+            <!-- Language Switcher -->
+            <div class="flex justify-end mb-6">
+                <div class="inline-flex bg-zinc-900 rounded-3xl p-1">
+                    <button onclick="switchLang('en')" id="btn-en" class="lang-btn active px-5 py-2 text-sm font-medium rounded-3xl">EN</button>
+                    <button onclick="switchLang('de')" id="btn-de" class="lang-btn px-5 py-2 text-sm font-medium rounded-3xl">DE</button>
+                </div>
+            </div>
+
+            <!-- ENGLISH -->
+            <div id="en-content">
+                <h1 class="text-5xl font-bold mb-8">Terms of Service</h1>
+                <div class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed">
+                    <p><strong>Effective: March 04, 2026</strong></p>
+                    <p>Welcome to GrokVsHumans.com – a private, non-commercial fan project by Travis Johnson.</p>
+                    <h3 class="text-purple-400 mt-8">1. Scope</h3>
+                    <p>These Terms of Service apply to the use of grokvshumans.com and all its subpages.</p>
+                    <h3 class="text-purple-400 mt-8">2. Non-commercial use</h3>
+                    <p>The site is for private and illustrative purposes only. Commercial use is not permitted.</p>
+                    <h3 class="text-purple-400 mt-8">3. User-generated content</h3>
+                    <p>When submitting battles or memes, you confirm that you own the rights or that the content is freely usable. We reserve the right to remove content that violates German law (insults, hate speech, copyright infringement, etc.).</p>
+                    <h3 class="text-purple-400 mt-8">4. Liability</h3>
+                    <p>We assume no liability for damages arising from the use of the site or linked content. All content is provided “as is”.</p>
+                    <h3 class="text-purple-400 mt-8">5. Privacy</h3>
+                    <p>No personal data is stored except for technically necessary processes. See our <a href="datenschutz.html" class="text-purple-400">Privacy Policy</a>.</p>
+                    <p class="text-xs text-gray-500 mt-12">Operator: Travis Johnson, Köpenicker Chaussee 24, 10317 Berlin, Germany</p>
+                </div>
+            </div>
+
+            <!-- GERMAN -->
+            <div id="de-content" class="hidden">
+                <h1 class="text-5xl font-bold mb-8">Nutzungsbedingungen</h1>
+                <div class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed">
+                    <p><strong>Stand: 04. März 2026</strong></p>
+                    <p>Willkommen bei GrokVsHumans.com – einem privaten, nicht-kommerziellen Fan-Projekt von Travis Johnson.</p>
+                    <h3 class="text-purple-400 mt-8">1. Geltungsbereich</h3>
+                    <p>Diese Nutzungsbedingungen gelten für die Nutzung der Website grokvshumans.com einschließlich aller Unterseiten.</p>
+                    <h3 class="text-purple-400 mt-8">2. Keine kommerzielle Nutzung</h3>
+                    <p>Die Seite dient rein privaten und illustrativen Zwecken. Eine kommerzielle Nutzung ist nicht gestattet.</p>
+                    <h3 class="text-purple-400 mt-8">3. Nutzergenerierte Inhalte</h3>
+                    <p>Beim Einreichen von Battles oder Memes versichern Sie, dass Sie die Rechte an den Inhalten besitzen oder diese frei nutzbar sind. Wir behalten uns vor, Inhalte zu entfernen, die gegen deutsches Recht verstoßen.</p>
+                    <h3 class="text-purple-400 mt-8">4. Haftung</h3>
+                    <p>Wir übernehmen keine Haftung für Schäden, die durch die Nutzung der Seite entstehen. Alle Inhalte werden „as is“ bereitgestellt.</p>
+                    <h3 class="text-purple-400 mt-8">5. Datenschutz</h3>
+                    <p>Es werden keine personenbezogenen Daten gespeichert, außer technisch notwendigen. Details siehe <a href="datenschutz.html" class="text-purple-400">Datenschutzerklärung</a>.</p>
+                    <p class="text-xs text-gray-500 mt-12">Betreiber: Travis Johnson, Köpenicker Chaussee 24, 10317 Berlin, Germany</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center text-gray-500 text-sm">
+        <a href="index.html" class="hover:text-purple-400">← Back to Home</a>
+    </footer>
+
+    <script>
+        function switchLang(lang) {
+            document.getElementById('en-content').classList.toggle('hidden', lang !== 'en');
+            document.getElementById('de-content').classList.toggle('hidden', lang !== 'de');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+        }
+    </script>
+</body>
+
+<footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
+    Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
+    <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
+    Launched Mar 01 2026
+
+    <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px]">
+        <a href="impressum.html" class="hover:text-purple-400">Imprint / Impressum</a>
+        <a href="tos.html" class="hover:text-purple-400">Terms / Nutzungsbedingungen</a>
+        <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
+    </div>
+</footer>
+
+</html>
