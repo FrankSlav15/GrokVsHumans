@@ -39,6 +39,14 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
+        .meme-card > img, .meme-card > video {
+            flex-shrink: 0;
+            height: 15.5rem;
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem; }
+
         .meme-card {
             transition: all 0.3s ease;
             cursor: pointer;
@@ -54,13 +62,6 @@
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
-        .meme-card > img {
-            flex-shrink: 0;
-            height: 15.5rem;
-            width: 100%;
-            object-fit: cover;
-            border-top-left-radius: 1.5rem;
-            border-top-right-radius: 1.5rem; }
         .meme-card .content {
             flex: 1;
             padding: 1.25rem;
@@ -83,6 +84,7 @@
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
+            z-index: 1;
         }
         .video-card:hover::after { opacity: 1; }
         .video-card::after i {
@@ -157,35 +159,16 @@
             text-align: center;
         }
 
-        /* ULTRA-COMPACT MOBILE BUTTONS */
         @media (max-width: 640px) {
             #meme-modal { padding: 8px; }
             .modal-content { max-height: 96vh; border-radius: 20px; }
-            #modal-image img,
-            #modal-image video { max-height: 68vh !important; }
-            #modal-buttons {
-                padding: 8px 6px !important;
-                gap: 6px !important;
-            }
-            #modal-buttons button {
-                padding: 9px 7px !important;
-                font-size: 0.74rem !important;
-                min-height: 42px;
-                gap: 4px;
-            }
-            #modal-buttons button span {
-                font-size: 0.71rem;
-                line-height: 1.1;
-            }
-            #context-panel { padding: 10px 12px; }
-            #context-text { font-size: 0.81rem; }
-            #context-x-link { padding: 9px; font-size: 0.83rem; }
+            #modal-image img, #modal-image video { max-height: 68vh !important; }
         }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (your exact one) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -227,6 +210,46 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
+                
+                <!-- 21 -->
+                <div onclick="openMemeModal(21)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
+                    <div class="aspect-video">
+                        <video src="https://files.catbox.moe/uzlnpj.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Imagine Meme Magic</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Of all the Grok imagines from my meme, this one is my favorite 💯🤣</p></div>
+                    </div>
+                </div>
+
+                <!-- 20 -->
+                <div onclick="openMemeModal(20)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HCiayrEbgAAnpgl.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">McCain's Eyepatch: Sympathy Scam Exposed?</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Butt-pirate McCain ripping off America with a fake eyepatch for sympathy?</p></div>
+                    </div>
+                </div>
+                <!-- 19 -->
+                <div onclick="openMemeModal(19)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="https://pbs.twimg.com/media/HCiNXDQawAIBFe0.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Insider Trading Consequences</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">POTUSnote drops the perfect visual on Dan Crenshaw's primary loss</p></div>
+                    </div>
+                </div>
+                <!-- 18 -->
+                <div onclick="openMemeModal(18)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="https://pbs.twimg.com/media/HCiNCtQawAQ2OAn.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Crenshaw Loser Laugh</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">GinnyM's perfect reaction meme to Dan Crenshaw</p></div>
+                    </div>
+                </div>
+
+                <!-- ORIGINAL CARDS (17-1) -->
                 <!-- 17 -->
                 <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
                     <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
@@ -259,9 +282,9 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok leaves the Pope in tears of laughter</p></div>
                     </div>
                 </div>
-                <!-- 13 -->
-                <div onclick="openMemeModal(13)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
-                    <img src="grokisthistrue.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                <!-- 13 FIXED GIF -->
+                <div onclick="openMemeModal(13)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://media1.tenor.com/m/SZZBv8lPglsAAAAd/grok-is-this-true.gif" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Breaks the Comment Section</h4></div>
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok has the entire comments section dying of laughter</p></div>
@@ -283,12 +306,12 @@
                         <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok completely takes over the ChatGPT Pope sermon thread</p></div>
                     </div>
                 </div>
-                <!-- 10 -->
+                <!-- 10 REPLACED -->
                 <div onclick="openMemeModal(10)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
-                    <img src="scooby.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <img src="https://pbs.twimg.com/media/HCiS7a_bgAAeykM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
                     <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">The Superior Grok Meme</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Pancake Grok OG delivers an even better version</p></div>
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Dan Crenshaw Loser</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">PatriotSteve64 nails the perfect visual roast of Dan Crenshaw</p></div>
                     </div>
                 </div>
                 <!-- 9 -->
@@ -378,7 +401,6 @@
             
             <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-            <!-- SLIM CONTEXT BAR UNDER THE PHOTO -->
             <div id="context-panel" class="hidden p-5 bg-zinc-900 border-t border-purple-500/40">
                 <div class="flex justify-between items-start gap-4">
                     <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
@@ -430,6 +452,7 @@
     let currentMemeId = null;
 
     const memeData = {
+        
         1: { title: "Grok is a High-Tech Rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", context: "CoreyJMahler nails Grok's unbreakable, rock-solid personality", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
         2: { title: "ClownWorld vs Grok", image: "kermit.webp", context: "When pure ClownWorld chaos meets Grok's razor-sharp wisdom", xLink: "https://x.com/ClownWorld/status/1952204779142484327" },
         3: { title: "Elon Personally Tags Grok", image: "milk.webp", context: "The boss himself jumps into the Grok meme tagging war", xLink: "https://x.com/elonmusk/status/1951794381650047135" },
@@ -439,14 +462,19 @@
         7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", context: "\"I asked ChatGPT\" vs \"I asked Grok\" — this murloc replied mrrrrrglrrrlgr", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
         8: { title: "Potato Flipping the Bird", image: "https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg", context: "Grok's glorious attempt at generating a middle-finger potato", xLink: "https://x.com/SnarkyPotatoes/status/1958251733190336870" },
         9: { title: "Gork = Elon's Alter Ego?", image: "https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg", context: "DogecoinNorway nails the Gork = Elon theory", xLink: "https://x.com/DogecoinNorway/status/2027313399185788979" },
-        10: { title: "The Superior Grok Meme", image: "scooby.webp", context: "Pancake Grok OG delivers an even better version", xLink: "https://x.com/Janknoester1962/status/2027361565511459042" },
+        10: { title: "Dan Crenshaw Loser", image: "https://pbs.twimg.com/media/HCiS7a_bgAAeykM.jpg", context: "PatriotSteve64 nails the perfect visual roast of Dan Crenshaw", xLink: "https://x.com/PatriotSteve64/status/2029033186592752009" },
         11: { title: "Grok Steals the Pope Debate", image: "https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg", context: "Grok completely takes over the ChatGPT Pope sermon thread", xLink: "https://x.com/giuseppe_maxims/status/2028491327529254950" },
         12: { title: "Grok Predicts the Next Pope", image: "https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg", context: "Grok's hilarious prediction for the next Pope", xLink: "https://x.com/Airte747/status/2028496525622391250" },
-        13: { title: "Grok Breaks the Comment Section", image: "grokisthistrue.webp", context: "Grok has the entire comments section dying of laughter", xLink: "https://x.com/omarvvvr/status/2028494248002134208" },
+        13: { title: "Grok Breaks the Comment Section", image: "https://media1.tenor.com/m/SZZBv8lPglsAAAAd/grok-is-this-true.gif", context: "Grok has the entire comments section dying of laughter", xLink: "https://x.com/omarvvvr/status/2028494248002134208" },
         14: { title: "Grok Makes Pope Cry Laughing", image: "https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png", context: "Grok leaves the Pope in tears of laughter", xLink: "https://x.com/Larrylurex86/status/2028495444548976716" },
         15: { title: "The Bear Always Chooses Grok", image: "https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg", context: "Even the bear knows to always pick Grok and the truth", xLink: "https://x.com/LamQuyenAnVn/status/2026673273195606079" },
         16: { title: "Grok 4.20 FTW", image: "https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg", context: "Grok 4.20 continues its unstoppable humor dominance", xLink: "https://x.com/Dogetothemoon/status/2026687908279885943" },
-        17: { title: "Grok Has the Best Humor", image: "https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg", context: "The side with the best sense of humor are the good guys — Grok ftw", xLink: "https://x.com/elonmusk/status/2026672975060377859" }
+        17: { title: "Grok Has the Best Humor", image: "https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg", context: "The side with the best sense of humor are the good guys — Grok ftw", xLink: "https://x.com/elonmusk/status/2026672975060377859" },
+        18: { title: "Crenshaw Loser Laugh", image: "https://pbs.twimg.com/media/HCiNCtQawAQ2OAn.jpg", context: "GinnyM's perfect reaction meme to Dan Crenshaw", xLink: "https://x.com/PatriotXV11/status/2029026713557250406" },
+        19: { title: "Insider Trading Consequences", image: "https://pbs.twimg.com/media/HCiNXDQawAIBFe0.jpg", context: "POTUSnote drops the perfect visual on Dan Crenshaw's primary loss", xLink: "https://x.com/POTUSnote/status/2029027065664540956" },
+        20: { title: "McCain's Eyepatch: Sympathy Scam Exposed?", image: "https://pbs.twimg.com/media/HCiayrEbgAAnpgl.jpg", context: "Butt-pirate McCain ripping off America with a fake eyepatch for sympathy?", xLink: "https://x.com/SlavisTon/status/2029041835717366135" },
+        21: { title: "Grok Imagine Meme Magic", image: "https://files.catbox.moe/uzlnpj.mp4", context: "Of all the Grok imagines from my meme, this one is my favorite 💯🤣", xLink: "https://x.com/TheRicanMemes/status/1987998428257739142" },
+        
     };
 
     function filterCategory(cat) {
@@ -459,25 +487,27 @@
     }
 
     function openMemeModal(id) {
-        const data = memeData[id];
-        if (!data) return;
-        currentMemeId = id;
+    const data = memeData[id];
+    if (!data) return;
+    currentMemeId = id;
 
-        const url = data.image.toLowerCase();
-        let mediaHTML = '';
+    const url = data.image.toLowerCase();
+    let mediaHTML = '';
 
-        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg')) {
-            mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
-        } else {
-            mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
-        }
-
-        document.getElementById('modal-image').innerHTML = mediaHTML;
-        document.getElementById('context-panel').style.display = 'none';
-        document.getElementById('modal-buttons').style.display = 'flex';
-        document.getElementById('meme-modal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+    if (url.endsWith('.gif')) {
+        mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+    } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
+        mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
+    } else {
+        mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
     }
+
+    document.getElementById('modal-image').innerHTML = mediaHTML;
+    document.getElementById('context-panel').style.display = 'none';
+    document.getElementById('modal-buttons').style.display = 'flex';
+    document.getElementById('meme-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
 
     function closeMemeModal() {
         document.getElementById('meme-modal').style.display = 'none';

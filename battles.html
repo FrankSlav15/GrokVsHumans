@@ -50,12 +50,13 @@
             flex-direction: column;
             height: 100%;
             overflow: hidden;
-            border-radius: 1.5rem; }
+            border-radius: 1.5rem;
+            position: relative; }
         .battle-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
-        .battle-card > img {
+        .battle-card > img, .battle-card > video {
             flex-shrink: 0;
             height: 14rem;
             width: 100%;
@@ -77,6 +78,26 @@
             border-bottom-left-radius: 1.5rem;
             border-bottom-right-radius: 1.5rem;
             overflow: hidden; }
+
+        /* VIDEO PLAY ICON ON GRID */
+        .video-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .video-card:hover::after { opacity: 1; }
+        .video-card::after i {
+            font-size: 3.8rem;
+            color: white;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
+        }
 
         .tab {
             padding: 0.75rem 1.25rem;
@@ -445,7 +466,7 @@
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-    // FIREBASE (unchanged)
+    // FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
       authDomain: "grokvshumans.firebaseapp.com",
@@ -550,8 +571,14 @@
         if (!data) return;
         currentBattleId = id;
 
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
-        document.getElementById('modal-title').textContent = data.title;
+        const url = data.image.toLowerCase();
+        let mediaHTML = '';
+        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
+            mediaHTML = `<video src="${data.image}" class="w-full h-full object-cover" autoplay loop muted controls playsinline></video>`;
+        } else {
+            mediaHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
+        }
+        document.getElementById('modal-image').innerHTML = mediaHTML;
 
         const tagDisplay = {
             nonsense: "Nonsense",
@@ -566,9 +593,9 @@
         ).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
+        document.getElementById('modal-title').textContent = data.title;
         document.getElementById('modal-human').textContent = data.human;
         document.getElementById('modal-grok').innerHTML = data.grok.replace(/\. /g, '.<br><br>');
-
         document.getElementById('modal-x-link').href = data.xLink;
 
         const grokBtn = document.getElementById('modal-grok-btn');
@@ -703,4 +730,5 @@
         </div>
     </footer>
 
+</body>
 </html>
