@@ -687,7 +687,7 @@
     const url = data.image.toLowerCase();
     let mediaHTML = '';
 
-        // FIXED: catches ALL video + GIF formats (including X tweet_video URLs)
+        // FIXED: catches every video + GIF (including Twitter/X ones)
         if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || 
         url.endsWith('.ogg') || url.endsWith('.gif') || url.includes('video.twimg.com')) {
         mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
