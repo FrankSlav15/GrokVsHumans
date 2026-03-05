@@ -50,12 +50,13 @@
             flex-direction: column;
             height: 100%;
             overflow: hidden;
-            border-radius: 1.5rem; }
+            border-radius: 1.5rem;
+            position: relative; }
         .category-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
-        .category-card > img {
+        .category-card > img, .category-card > video {
             flex-shrink: 0;
             height: 15.5rem;
             width: 100%;
@@ -71,6 +72,26 @@
             min-height: 9rem; }
         .category-card .title-area { min-height: 3.25rem; }
         .category-card .desc-area { flex: 1; min-height: 5.75rem; }
+
+        /* VIDEO PLAY ICON ON GRID */
+        .video-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .video-card:hover::after { opacity: 1; }
+        .video-card::after i {
+            font-size: 3.8rem;
+            color: white;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
+        }
 
         .tab {
             padding: 0.75rem 1.25rem;
@@ -361,8 +382,14 @@
         if (!data) return;
         currentCategoryId = id;
 
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full h-full object-contain" alt="${data.title}">`;
-        document.getElementById('modal-title').textContent = data.title;
+        const url = data.image.toLowerCase();
+        let mediaHTML = '';
+        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
+            mediaHTML = `<video src="${data.image}" class="w-full h-full object-cover" autoplay loop muted controls playsinline></video>`;
+        } else {
+            mediaHTML = `<img src="${data.image}" class="w-full h-full object-contain" alt="${data.title}">`;
+        }
+        document.getElementById('modal-image').innerHTML = mediaHTML;
 
         const displayMap = {
             'lazy': 'Grok, Think For Me',
@@ -373,6 +400,7 @@
         const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${displayMap[t] || t}</span>`).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
+        document.getElementById('modal-title').textContent = data.title;
         document.getElementById('modal-summary').textContent = data.summary;
         document.getElementById('modal-x-link').href = data.xLink;
 
