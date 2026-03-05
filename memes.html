@@ -39,6 +39,18 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
+        /* Ensure consistent media sizing & fit */
+        .meme-card > img, .meme-card > video,
+        .battle-card > img, .battle-card > video,
+        .category-card > img, .category-card > video {
+            flex-shrink: 0;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        /* Battles & Categories specific heights (memes already has 15.5rem) */
+        .meme-card > img, .meme-card > video { height: 15.5rem; }
+
         .meme-card {
             transition: all 0.3s ease;
             cursor: pointer;
@@ -83,7 +95,8 @@
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
-        }
+            z-index: 1;
+        }                                       
         .video-card:hover::after { opacity: 1; }
         .video-card::after i {
             font-size: 3.8rem;
@@ -667,16 +680,18 @@
     }
 
     function openMemeModal(id) {
-        const data = memeData[id];
+    const data = memeData[id];
         if (!data) return;
         currentMemeId = id;
 
-        const url = data.image.toLowerCase();
-        let mediaHTML = '';
+    const url = data.image.toLowerCase();
+    let mediaHTML = '';
 
-        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
-            mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
-        } else {
+        // FIXED: catches ALL video + GIF formats (including X tweet_video URLs)
+        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || 
+        url.endsWith('.ogg') || url.endsWith('.gif') || url.includes('video.twimg.com')) {
+        mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
+            } else {
             mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
         }
 
