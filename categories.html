@@ -190,7 +190,17 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="category-grid">
 
-                <!-- ALL CARDS NOW HAVE UNIFORM HEIGHT STRUCTURE -->
+                <!-- 13 -->
+                <div onclick="openCategoryModal(13)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Picks the Biggest Burger Bite 🥯</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.</p></div>
+                    </div>
+                </div>
+
                 <!-- 12 -->
                 <div onclick="openCategoryModal(12)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
                     <div class="aspect-video">
@@ -404,6 +414,7 @@
     let currentCategoryId = null;
 
     const categoryData = {
+        
         1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
         2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User asks for a simple lazy-person breakdown of complex US-Iran tensions.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
         3: { title: "Is this impersonating Elon?", image: "impersonator.webp", tags: ["lazy"], summary: "User shows an account pretending to be Elon and asks Grok to verify.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
@@ -415,7 +426,9 @@
         9: { title: "Grok helps", image: "ventilator.webp", tags: ["opinion"], summary: "User feeling down asks Grok for positive encouragement and advice.", xLink: "https://x.com/grok/status/2026168522531852490" },
         10: { title: "Who's from the future", image: "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg", tags: ["opinion"], summary: "User presents two photos and asks Grok who appears more futuristic.", xLink: "https://x.com/thodahansle/status/2023796696451609049" },
         11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly steers the conversation away.", xLink: "https://x.com/grok/status/1912171402125594659" },
-        12: { title: "Send @gork Posts to Your Friends 😂", image: "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg", tags: ["opinion"], summary: "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.", xLink: "https://x.com/elonmusk/status/2029500041451462780" }
+        12: { title: "Send @gork Posts to Your Friends 😂", image: "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg", tags: ["opinion"], summary: "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.", xLink: "https://x.com/elonmusk/status/2029500041451462780" },
+        13: { title: "Grok Picks the Biggest Burger Bite 🥯", image: "https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg", tags: ["opinion"], summary: "Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.", xLink: "https://x.com/grok/status/2029289518835126298" },
+
     };
 
     function openCategoryModal(id) {
