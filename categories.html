@@ -372,6 +372,8 @@
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
+    let currentCategoryId = null;
+
     const categoryData = {
         1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
         2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User asks for a simple lazy-person breakdown of complex US-Iran tensions.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
@@ -387,8 +389,6 @@
         12: { title: "Send @gork Posts to Your Friends 😂", image: "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg", tags: ["opinion"], summary: "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.", xLink: "https://x.com/elonmusk/status/2029500041451462780" },
     
     };
-
-    let currentCategoryId = null;
 
     function openCategoryModal(id) {
         const data = categoryData[id];
