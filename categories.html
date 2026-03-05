@@ -56,10 +56,13 @@
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
-        .category-card > img, .category-card > video {
+        .category-card .aspect-video {
             flex-shrink: 0;
             height: 15.5rem;
+            width: 100%; }
+        .category-card img, .category-card video {
             width: 100%;
+            height: 100%;
             object-fit: cover;
             border-top-left-radius: 1.5rem;
             border-top-right-radius: 1.5rem; }
@@ -68,10 +71,13 @@
             padding: 1.25rem;
             background: #18181b;
             display: flex;
-            flex-direction: column;
-            min-height: 9rem; }
-        .category-card .title-area { min-height: 3.25rem; }
-        .category-card .desc-area { flex: 1; min-height: 5.75rem; }
+            flex-direction: column; }
+        .category-card .title-area { 
+            min-height: 56px;
+            display: flex;
+            align-items: center; }
+        .category-card .desc-area { 
+            flex: 1; }
 
         /* VIDEO PLAY ICON ON GRID */
         .video-card::after {
@@ -105,7 +111,7 @@
             color: white;
         }
 
-        /* ULTRA-COMPACT MOBILE – matches memes perfectly */
+        /* ULTRA-COMPACT MOBILE */
         @media (max-width: 640px) {
             #category-modal { padding: 8px; }
             .modal-content { 
@@ -141,7 +147,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (unchanged) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -169,7 +175,7 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
             <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
 
-            <!-- Sticky Tabs -->
+            <!-- Sticky Tabs (unchanged) -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
@@ -184,102 +190,146 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="category-grid">
 
-                <!-- 11 newest at top -->
-                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="avoids">
-                    <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok goes on a tangent</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User makes a controversial request. Grok cleverly avoids giving a direct answer.</p></div>
+                <!-- 13 -->
+                <div onclick="openCategoryModal(13)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Picks the Biggest Burger Bite 🥯</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.</p></div>
+                    </div>
+                </div>
+
+                <!-- 12 -->
+                <div onclick="openCategoryModal(12)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Send @gork Posts to Your Friends 😂</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.</p></div>
+                    </div>
+                </div>
+
+                <!-- 11 -->
+                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="avoids">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok goes on a tangent</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User makes a controversial request. Grok cleverly avoids giving a direct answer.</p></div>
                     </div>
                 </div>
 
                 <!-- 10 -->
-                <div onclick="openCategoryModal(10)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
-                    <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Who's from the future</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to decide which person looks more futuristic.</p></div>
+                <div onclick="openCategoryModal(10)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Who's from the future</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User presents two photos and asks Grok who appears more futuristic.</p></div>
                     </div>
                 </div>
 
                 <!-- 9 -->
-                <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="opinion">
-                    <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok helps</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User feeling down asks Grok for positive encouragement and advice.</p></div>
+                <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
+                    <div class="aspect-video">
+                        <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok helps</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User feeling down asks Grok for positive encouragement and advice.</p></div>
                     </div>
                 </div>
 
                 <!-- 8 -->
-                <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Put some clothes on</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to digitally add clothing to an image for modesty.</p></div>
+                <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="photo">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Put some clothes on</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to digitally add clothing to an image for modesty.</p></div>
                     </div>
                 </div>
 
                 <!-- 7 -->
-                <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Magic actors</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User wants bunny-fied versions of famous actors and actresses.</p></div>
+                <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="photo">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Magic actors</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User wants bunny-fied versions of famous actors and actresses.</p></div>
                     </div>
                 </div>
 
                 <!-- 6 -->
-                <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="photo">
-                    <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Potato brain</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to dress up a potato character in fashionable clothes.</p></div>
+                <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="photo">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Potato brain</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to dress up a potato character in fashionable clothes.</p></div>
                     </div>
                 </div>
 
                 <!-- 5 -->
-                <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, summarize this</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User wants Grok to summarize a long article or thread.</p></div>
+                <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
+                    <div class="aspect-video">
+                        <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, summarize this</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User wants Grok to provide a concise summary of a lengthy text or thread.</p></div>
                     </div>
                 </div>
 
                 <!-- 4 -->
-                <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is implanting a chip lazy?</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User questions whether getting a Neuralink chip is a lazy upgrade.</p></div>
+                <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
+                    <div class="aspect-video">
+                        <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is implanting a chip lazy?</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User questions whether getting a Neuralink chip is a lazy upgrade.</p></div>
                     </div>
                 </div>
 
                 <!-- 3 -->
-                <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is this impersonating Elon?</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User shows an account pretending to be Elon and asks Grok to verify.</p></div>
+                <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
+                    <div class="aspect-video">
+                        <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is this impersonating Elon?</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User shows an account pretending to be Elon and asks Grok to verify.</p></div>
                     </div>
                 </div>
 
                 <!-- 2 -->
-                <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Break down US vs Iran</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User asks for a simple lazy-person breakdown of US-Iran tensions.</p></div>
+                <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
+                    <div class="aspect-video">
+                        <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Break down US vs Iran</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks for a simple lazy-person breakdown of US-Iran tensions.</p></div>
                     </div>
                 </div>
 
-                <!-- 1 oldest at bottom -->
-                <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer" data-category="lazy">
-                    <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, is this true?</h4></div>
-                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">User posts obvious satire and asks Grok if it's real, missing the joke.</p></div>
+                <!-- 1 -->
+                <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
+                    <div class="aspect-video">
+                        <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, is this true?</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User posts obvious satire and asks Grok if it's real, missing the joke.</p></div>
                     </div>
                 </div>
 
@@ -292,7 +342,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL -->
+    <!-- CATEGORY MODAL (unchanged) -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <div class="relative flex-shrink-0">
@@ -329,7 +379,7 @@
     </div>
 
     <script>
-    // BACKGROUND ROTATOR
+    // BACKGROUND ROTATOR (unchanged)
     const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
@@ -364,17 +414,21 @@
     let currentCategoryId = null;
 
     const categoryData = {
+        
         1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
         2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User asks for a simple lazy-person breakdown of complex US-Iran tensions.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
         3: { title: "Is this impersonating Elon?", image: "impersonator.webp", tags: ["lazy"], summary: "User shows an account pretending to be Elon and asks Grok to verify.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
         4: { title: "Is implanting a chip lazy?", image: "chip.webp", tags: ["lazy"], summary: "User questions whether getting a Neuralink chip is a lazy way to upgrade humanity.", xLink: "https://x.com/grok/status/2027985872251961387" },
         5: { title: "Grok, summarize this", image: "summarize.webp", tags: ["lazy"], summary: "User wants Grok to provide a concise summary of a lengthy text or thread.", xLink: "https://x.com/maxvayshia/status/2019423903169277982" },
         6: { title: "Potato brain", image: "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg", tags: ["photo"], summary: "User asks Grok to generate a stylish, fashionable version of a potato.", xLink: "https://x.com/grok/status/2008960036094034251" },
-        7: { title: "Magic actors", image: "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg", tags: ["photo"], summary: "User requests cute bunny versions of well-known Hollywood stars.", xLink: "https://x.com/grok/status/2023279170436919602" },
+        7: { title: "Magic actors", image: "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg", tags: ["photo"], summary: "User wants bunny-fied versions of famous Hollywood stars.", xLink: "https://x.com/grok/status/2023279170436919602" },
         8: { title: "Put some clothes on", image: "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg", tags: ["photo"], summary: "User asks Grok to digitally dress someone in an image for modesty.", xLink: "https://x.com/thodahansle/status/2027262477348856183" },
         9: { title: "Grok helps", image: "ventilator.webp", tags: ["opinion"], summary: "User feeling down asks Grok for positive encouragement and advice.", xLink: "https://x.com/grok/status/2026168522531852490" },
         10: { title: "Who's from the future", image: "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg", tags: ["opinion"], summary: "User presents two photos and asks Grok who appears more futuristic.", xLink: "https://x.com/thodahansle/status/2023796696451609049" },
-        11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly steers the conversation away.", xLink: "https://x.com/grok/status/1912171402125594659" }
+        11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly steers the conversation away.", xLink: "https://x.com/grok/status/1912171402125594659" },
+        12: { title: "Send @gork Posts to Your Friends 😂", image: "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg", tags: ["opinion"], summary: "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.", xLink: "https://x.com/elonmusk/status/2029500041451462780" },
+        13: { title: "Grok Picks the Biggest Burger Bite 🥯", image: "https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg", tags: ["opinion"], summary: "Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.", xLink: "https://x.com/grok/status/2029289518835126298" },
+
     };
 
     function openCategoryModal(id) {
