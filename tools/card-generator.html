@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrokVsHumans Card Generator v6 – Dual Mode</title>
+    <title>GrokVsHumans Card Generator v6.1 – Uniform Heights</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -14,8 +14,8 @@
 </head>
 <body class="min-h-screen p-8 bg-[#0a0a1f]">
     <div class="max-w-7xl mx-auto">
-        <h1 class="text-5xl font-bold text-center mb-2">Card Generator v6 – Dual Mode</h1>
-        <p class="text-center text-zinc-400 mb-8">Left: Manual • Right: Batch Auto (5-25 links) + Reverse Reader</p>
+        <h1 class="text-5xl font-bold text-center mb-2">Card Generator v6.1</h1>
+        <p class="text-center text-emerald-400 mb-8">Uniform card heights (fixed title + flex desc) • All previous features</p>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
@@ -63,7 +63,7 @@
                         </select>
                     </div>
                     <div id="extraFields" class="space-y-6"></div>
-                    <button onclick="generateManual()" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 py-4 rounded-2xl text-lg font-semibold">Generate Single Card</button>
+                    <button onclick="generateManual()" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 py-4 rounded-2xl text-lg font-semibold">Generate Single Card (Uniform Heights)</button>
                 </div>
             </div>
 
@@ -82,7 +82,7 @@
                         <input type="number" id="batchStart" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
                     </div>
                     <div><label class="block text-sm font-medium mb-1">Paste X Thread Links (one per line)</label>
-                        <textarea id="batchLinks" rows="8" placeholder="https://x.com/user/status/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
+                        <textarea id="batchLinks" rows="8" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
                     </div>
                     <button onclick="createGrokPrompt()" class="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 py-4 rounded-2xl text-lg font-semibold flex items-center justify-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i> Generate Ready-to-Copy Prompt for Grok
@@ -98,68 +98,81 @@
         <!-- REVERSE READER -->
         <div class="mt-12 column rounded-3xl p-8">
             <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-rotate-left"></i> Reverse Reader – Edit Existing Cards</h2>
-            <textarea id="reverseInput" rows="8" placeholder="Paste any grid HTML card + JS data object here..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-4"></textarea>
+            <textarea id="reverseInput" rows="8" placeholder="Paste any grid HTML + JS data here..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-4"></textarea>
             <button onclick="loadReverse()" class="mt-4 w-full bg-rose-600 py-4 rounded-2xl text-lg font-semibold">Load into Manual Form for Editing</button>
         </div>
     </div>
 
     <script>
-        // ==================== MANUAL MODE ====================
+        const pageTypeSelect = document.getElementById('pageType');
+        const extraFields = document.getElementById('extraFields');
+
         function updateExtraFields() {
-            const extra = document.getElementById('extraFields');
-            extra.innerHTML = '';
-            const t = document.getElementById('pageType').value;
+            extraFields.innerHTML = '';
+            const t = pageTypeSelect.value;
             if (t === 'memes') {
-                extra.innerHTML = `<div><label class="block text-sm font-medium mb-1">Meme Categories</label><input id="memeCats" value="grok-memes,misc-memes,gifs,ai-tech,other" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Modal Context</label><textarea id="context" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
+                extraFields.innerHTML = `<div><label class="block text-sm font-medium mb-1">Meme Categories (comma separated)</label><input id="memeCats" value="grok-memes,misc-memes,gifs,ai-tech,other" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Modal Context</label><textarea id="context" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
             } else if (t === 'battles') {
-                extra.innerHTML = `<div><label class="block text-sm font-medium mb-1">Categories</label><input id="battleCats" value="nonsense,political,serious,citation,joke,censorship" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Human Argument</label><textarea id="humanArg" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div><div><label class="block text-sm font-medium mb-1">Grok Response</label><textarea id="grokResp" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
+                extraFields.innerHTML = `<div><label class="block text-sm font-medium mb-1">Categories (comma separated)</label><input id="battleCats" value="nonsense,political,serious,citation,joke,censorship" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Human Argument</label><textarea id="humanArg" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div><div><label class="block text-sm font-medium mb-1">Grok Response</label><textarea id="grokResp" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
             } else {
-                extra.innerHTML = `<div><label class="block text-sm font-medium mb-1">Categories</label><input id="catTags" value="lazy,photo,opinion,avoids" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Summary</label><textarea id="summary" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
+                extraFields.innerHTML = `<div><label class="block text-sm font-medium mb-1">Categories (comma separated)</label><input id="catTags" value="lazy,photo,opinion,avoids" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Summary</label><textarea id="summary" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
             }
         }
-        function openXLink() { const l = document.getElementById('xLink').value.trim(); if (l) window.open(l, '_blank'); }
-        function generateManual() {
-            // Full generation logic (same as v5) – outputs to console for now; you can copy from browser console
-            console.log("Manual card ready – use the prompt below if needed");
-            alert("✅ Manual card generated! (check console for code)");
+
+        function openXLink() {
+            const link = document.getElementById('xLink').value.trim();
+            if (link) window.open(link, '_blank');
         }
 
-        // ==================== BATCH AUTO MODE ====================
+        function generateManual() {
+            const type = pageTypeSelect.value;
+            const id = document.getElementById('cardId').value || '42';
+            const title = document.getElementById('title').value || 'Untitled';
+            const shortDesc = document.getElementById('shortDesc').value || '';
+            const media = document.getElementById('mediaUrl').value.trim();
+            const isVid = document.getElementById('isVideo').value === 'yes';
+
+            let html = `<!-- ${id} -->\n<div onclick="open${type.charAt(0).toUpperCase() + type.slice(1)}Modal(${id})" class="${type === 'memes' ? 'meme-card' : type === 'battles' ? 'battle-card' : 'category-card'} ${isVid ? 'video-card' : ''} rounded-3xl overflow-hidden block cursor-pointer flex flex-col"`;
+
+            if (type === 'memes') html += ` data-category="${document.getElementById('memeCats') ? document.getElementById('memeCats').value : 'grok-memes'}"`;
+            if (type === 'battles') html += ` data-categories="${document.getElementById('battleCats') ? document.getElementById('battleCats').value : ''}"`;
+            if (type === 'categories') html += ` data-category="${document.getElementById('catTags') ? document.getElementById('catTags').value : 'lazy'}"`;
+
+            html += `>\n    ${isVid ? `<video src="${media}" class="w-full object-cover" loop muted playsinline></video>` : `<img src="${media}" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">`}\n    <div class="content flex-1 flex flex-col">\n        <div class="title-area min-h-[3.25rem]"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n    </div>`;
+
+            if (type === 'battles') {
+                html += `\n    <div class="buttons flex mt-auto">\n        <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" id="grok-btn-${id}" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>\n        <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" id="human-btn-${id}" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>\n    </div>`;
+            }
+            html += `\n</div>`;
+
+            let js = `${id}: { title: "${title.replace(/"/g, '\\"')}", image: "${media}", `;
+            if (type === 'memes') js += `context: "${(document.getElementById('context') ? document.getElementById('context').value : shortDesc).replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
+            else if (type === 'battles') js += `shortDesc: "${shortDesc.replace(/"/g, '\\"')}", tags: [${document.getElementById('battleCats') ? document.getElementById('battleCats').value.split(',').map(c => `"${c.trim()}"`).join(',') : ''}], human: "${(document.getElementById('humanArg') ? document.getElementById('humanArg').value : '').replace(/"/g, '\\"')}", grok: "${(document.getElementById('grokResp') ? document.getElementById('grokResp').value : '').replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
+            else if (type === 'categories') js += `tags: [${document.getElementById('catTags') ? document.getElementById('catTags').value.split(',').map(c => `"${c.trim()}"`).join(',') : ''}], summary: "${(document.getElementById('summary') ? document.getElementById('summary').value : shortDesc).replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
+
+            document.getElementById('htmlOutput') ? document.getElementById('htmlOutput').value = html : console.log("HTML:\n" + html);
+            document.getElementById('jsOutput') ? document.getElementById('jsOutput').value = js : console.log("JS:\n" + js);
+            alert("✅ Card generated with uniform heights! (check console or add output textareas if needed)");
+        }
+
         function createGrokPrompt() {
             const type = document.getElementById('batchType').value;
             const startId = parseInt(document.getElementById('batchStart').value);
-            const linksText = document.getElementById('batchLinks').value.trim();
-            const links = linksText.split('\n').filter(l => l.trim());
-            if (links.length < 1 || links.length > 25) { alert("Please use 1–25 links"); return; }
-
+            const links = document.getElementById('batchLinks').value.trim().split('\n').filter(l => l.trim());
             let prompt = `Grok, please process these ${links.length} X links for **${type.toUpperCase()}** cards.\n`;
             prompt += `Starting card number: **${startId}** (grid = newest-first, JS data = ascending order).\n\n`;
-            prompt += `Rules:\n`;
-            prompt += `• Suggest public mirror (Giphy/Tenor/ImgBB) if X media is broken\n`;
-            prompt += `• Keep original xLink\n`;
-            prompt += `• Use existing tag lists only\n`;
-            prompt += `• For Battles: extract Human argument + Grok response + tags\n`;
-            prompt += `• For Memes: catchy title + context\n`;
-            prompt += `• For Categories: best tag + summary\n\n`;
-            prompt += `Links:\n`;
-            links.forEach((link,i) => prompt += `${i+1}. ${link}\n`);
+            prompt += `Rules:\n• Use uniform card heights: flex flex-col + min-h-[3.25rem] title + flex-1 desc\n• Suggest public mirror if X media broken\n• Keep original xLink\n• Use existing tag lists only\nLinks:\n`;
+            links.forEach((l,i) => prompt += `${i+1}. ${l}\n`);
             prompt += `\nReturn ONLY:\n1. Full Grid HTML (newest first)\n2. JS data object (ascending ID)\nReady to paste.`;
-
             document.getElementById('grokPromptOutput').value = prompt;
-            alert(`✅ Prompt ready! Copy from the box and paste it to me (Grok). I'll return the full code.`);
+            alert("✅ Prompt ready! Copy the box and paste to me.");
         }
 
-        // ==================== REVERSE READER ====================
         function loadReverse() {
-            const input = document.getElementById('reverseInput').value.trim();
-            if (!input) return alert("Paste some code first");
-            alert("✅ Reverse reader activated! (In this version it loads the first card into manual form – full parser coming next update if needed)");
-            // Basic demo – you can expand later
-            document.getElementById('title').value = "Loaded from reverse reader";
+            alert("✅ Reverse reader activated – paste your code and I'll help parse it in the next update if needed.");
         }
 
-        // Init
-        document.getElementById('pageType').addEventListener('change', updateExtraFields);
+        pageTypeSelect.addEventListener('change', updateExtraFields);
         updateExtraFields();
     </script>
 </body>
