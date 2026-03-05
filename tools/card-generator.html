@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrokVsHumans Card Generator v2 – Both HTML + JS Data</title>
+    <title>GrokVsHumans Card Generator v3 – X Link Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -13,15 +13,15 @@
 </head>
 <body class="min-h-screen p-6">
     <div class="max-w-4xl mx-auto bg-zinc-900/80 backdrop-blur-lg border border-purple-500/30 rounded-3xl p-8 shadow-2xl">
-        <h1 class="text-4xl font-bold text-center mb-2">Card Code Generator v2</h1>
-        <p class="text-center text-zinc-400 mb-10">Now generates BOTH: grid HTML card + JS data object entry</p>
+        <h1 class="text-4xl font-bold text-center mb-2">Card Generator v3</h1>
+        <p class="text-center text-zinc-400 mb-8">Generates grid HTML + JS data • Auto-detects bad X links</p>
 
-        <form id="generatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Left column -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left -->
             <div class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium mb-1">Page Type</label>
-                    <select id="pageType" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-purple-500">
+                    <select id="pageType" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
                         <option value="memes">Memes</option>
                         <option value="battles">Battles</option>
                         <option value="categories">Categories</option>
@@ -29,184 +29,154 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Card ID / Number</label>
-                    <input type="number" id="cardId" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
+                    <label class="block text-sm font-medium mb-1">Card ID</label>
+                    <input type="number" id="cardId" value="41" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Grid Title (short)</label>
-                    <input type="text" id="title" placeholder="Grok Destroys Another Conspiracy" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
+                    <label class="block text-sm font-medium mb-1">Title</label>
+                    <input type="text" id="title" placeholder="Grok Breaks the Comment Section" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Grid Description (shows under title)</label>
-                    <textarea id="shortDesc" rows="2" placeholder="User claims flat earth again. Grok drops facts in 3 sentences." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-purple-500"></textarea>
+                    <label class="block text-sm font-medium mb-1">Short Description (grid)</label>
+                    <textarea id="shortDesc" rows="2" placeholder="Grok has the entire comments section dying of laughter" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Media URL</label>
-                    <input type="url" id="mediaUrl" placeholder="https://pbs.twimg.com/media/ABC123.jpg or .mp4" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-purple-500" required>
+                    <label class="block text-sm font-medium mb-1">Media URL (GIF, video, or image)</label>
+                    <input type="text" id="mediaUrl" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
                 </div>
+            </div>
 
+            <!-- Right -->
+            <div class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium mb-1">Is Video/GIF?</label>
-                    <select id="isVideo" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 focus:outline-none focus:border-purple-500">
-                        <option value="no">No – image</option>
-                        <option value="yes">Yes – video/GIF</option>
+                    <select id="isVideo" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
+                        <option value="no">No – static image</option>
+                        <option value="yes">Yes – video or GIF</option>
                     </select>
                 </div>
-            </div>
 
-            <!-- Right column -->
-            <div class="space-y-6">
-                <div id="memesExtra" class="space-y-6 hidden">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Meme Category (for tabs filter)</label>
-                        <select id="memeCat" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
-                            <option value="grok-memes">Grok Memes</option>
-                            <option value="misc-memes">Miscellaneous Memes</option>
-                            <option value="gifs">GIFs</option>
-                            <option value="ai-tech">AI Meme Tech</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Modal Context / Full Description</label>
-                        <textarea id="memeContext" rows="4" placeholder="cb_doge celebrates Grok staying up while others go down" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">X Thread Link</label>
-                        <input type="url" id="xLink" placeholder="https://x.com/username/status/123456789" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
-                    </div>
-                </div>
+                <!-- Extra fields (hidden/shown by JS) -->
+                <div id="extraFields"></div>
 
-                <div id="battlesExtra" class="space-y-6 hidden">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Categories (comma separated)</label>
-                        <input type="text" id="battleCats" placeholder="political,serious,censorship" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Human's Argument (modal)</label>
-                        <textarea id="humanArg" rows="4" placeholder="And this is exactly why AI will never be a future source of knowledge..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Grok's Response (modal)</label>
-                        <textarea id="grokResp" rows="4" placeholder="True, digitization is uneven—driven by library projects..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">X Thread Link</label>
-                        <input type="url" id="battleXLink" placeholder="https://x.com/grok/status/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
-                    </div>
-                </div>
-
-                <div id="categoriesExtra" class="space-y-6 hidden">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Category (single)</label>
-                        <select id="catSingle" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
-                            <option value="lazy">Grok, Think For Me</option>
-                            <option value="photo">Photo Requests</option>
-                            <option value="opinion">Grok's Opinion</option>
-                            <option value="avoids">Grok Avoids Request</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Modal Summary / Context</label>
-                        <textarea id="catSummary" rows="4" placeholder="User makes a controversial request. Grok cleverly avoids..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">X Thread Link</label>
-                        <input type="url" id="catXLink" placeholder="https://x.com/grok/status/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
-                    </div>
-                </div>
-
-                <button type="button" onclick="generateBoth()" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-semibold py-4 rounded-2xl transition-all text-lg flex items-center justify-center gap-3 mt-8">
-                    <i class="fa-solid fa-code"></i> Generate Card + JS Data
+                <button onclick="generateBoth()" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 py-4 rounded-2xl text-lg font-semibold hover:scale-105 transition-all">
+                    Generate Card + JS Data
                 </button>
             </div>
-        </form>
+        </div>
 
-        <div class="mt-10 space-y-6">
+        <!-- Warning -->
+        <div id="xWarning" class="hidden mt-6 p-4 bg-red-900/70 border border-red-500 rounded-2xl text-sm">
+            ⚠️ X/Twitter link detected! These links break.<br>
+            <strong>Fix in 10 seconds:</strong> Go to <a href="https://imgbb.com" target="_blank" class="underline">imgbb.com</a>, upload the GIF/video, copy the **direct link**, and use that instead.
+        </div>
+
+        <!-- Outputs -->
+        <div class="mt-10 space-y-8">
             <div>
-                <label class="block text-sm font-medium mb-2">1. Grid HTML Card (paste inside &lt;div id=&quot;...-grid&quot;&gt;)</label>
-                <textarea id="htmlOutput" rows="10" class="w-full bg-black border border-purple-500/50 rounded-xl p-4 font-mono text-green-300 resize-y" readonly></textarea>
+                <label class="block text-sm font-medium mb-2">1. Grid HTML (paste inside the grid div)</label>
+                <textarea id="htmlOutput" rows="8" class="w-full bg-black border border-purple-500/50 rounded-xl p-4 font-mono text-green-300" readonly></textarea>
             </div>
             <div>
-                <label class="block text-sm font-medium mb-2">2. JS Data Entry (paste inside the { ... } object, before the closing })</label>
-                <textarea id="jsOutput" rows="10" class="w-full bg-black border border-purple-500/50 rounded-xl p-4 font-mono text-green-300 resize-y" readonly></textarea>
+                <label class="block text-sm font-medium mb-2">2. JS Data Entry (paste inside memeData / battleData / categoryData)</label>
+                <textarea id="jsOutput" rows="6" class="w-full bg-black border border-purple-500/50 rounded-xl p-4 font-mono text-green-300" readonly></textarea>
             </div>
         </div>
     </div>
 
     <script>
-        const pageSelect = document.getElementById('pageType');
-        const memesExtra = document.getElementById('memesExtra');
-        const battlesExtra = document.getElementById('battlesExtra');
-        const categoriesExtra = document.getElementById('categoriesExtra');
+        const pageType = document.getElementById('pageType');
+        const extraFields = document.getElementById('extraFields');
+        const mediaUrl = document.getElementById('mediaUrl');
 
-        function toggleExtras() {
-            memesExtra.classList.add('hidden');
-            battlesExtra.classList.add('hidden');
-            categoriesExtra.classList.add('hidden');
-
-            if (pageSelect.value === 'memes') memesExtra.classList.remove('hidden');
-            if (pageSelect.value === 'battles') battlesExtra.classList.remove('hidden');
-            if (pageSelect.value === 'categories') categoriesExtra.classList.remove('hidden');
+        function updateExtraFields() {
+            extraFields.innerHTML = '';
+            if (pageType.value === 'memes') {
+                extraFields.innerHTML = `
+                    <div><label class="block text-sm font-medium mb-1">Meme Category</label>
+                    <select id="memeCat" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
+                        <option value="grok-memes">Grok Memes</option>
+                        <option value="misc-memes">Miscellaneous Memes</option>
+                        <option value="gifs">GIFs</option>
+                        <option value="ai-tech">AI Meme Tech</option>
+                        <option value="other">Other</option>
+                    </select></div>
+                    <div><label class="block text-sm font-medium mb-1">Modal Context</label>
+                    <textarea id="context" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea></div>
+                    <div><label class="block text-sm font-medium mb-1">X Link</label>
+                    <input type="text" id="xLink" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></div>`;
+            } else if (pageType.value === 'battles') {
+                // battles extra fields
+                extraFields.innerHTML = `
+                    <div><label class="block text-sm font-medium mb-1">Categories (comma separated)</label>
+                    <input type="text" id="battleCats" placeholder="political,serious" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></div>
+                    <div><label class="block text-sm font-medium mb-1">Human Argument</label>
+                    <textarea id="humanArg" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea></div>
+                    <div><label class="block text-sm font-medium mb-1">Grok Response</label>
+                    <textarea id="grokResp" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea></div>
+                    <div><label class="block text-sm font-medium mb-1">X Link</label>
+                    <input type="text" id="xLink" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></div>`;
+            } else if (pageType.value === 'categories') {
+                extraFields.innerHTML = `
+                    <div><label class="block text-sm font-medium mb-1">Category</label>
+                    <select id="catSingle" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3">
+                        <option value="lazy">Grok, Think For Me</option>
+                        <option value="photo">Photo Requests</option>
+                        <option value="opinion">Grok's Opinion</option>
+                        <option value="avoids">Grok Avoids Request</option>
+                    </select></div>
+                    <div><label class="block text-sm font-medium mb-1">Summary</label>
+                    <textarea id="summary" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></textarea></div>
+                    <div><label class="block text-sm font-medium mb-1">X Link</label>
+                    <input type="text" id="xLink" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3"></div>`;
+            }
         }
 
-        pageSelect.addEventListener('change', toggleExtras);
-        toggleExtras();
+        pageType.addEventListener('change', updateExtraFields);
+        updateExtraFields();
 
         function generateBoth() {
-            const page = pageSelect.value;
-            const id = document.getElementById('cardId').value.trim();
-            const title = document.getElementById('title').value.trim();
-            const shortDesc = document.getElementById('shortDesc').value.trim();
+            const type = pageType.value;
+            const id = document.getElementById('cardId').value;
+            const title = document.getElementById('title').value;
+            const shortDesc = document.getElementById('shortDesc').value;
             const media = document.getElementById('mediaUrl').value.trim();
             const isVid = document.getElementById('isVideo').value === 'yes';
 
-            if (!id || !title || !media) return alert('ID, Title and Media URL required');
-
-            let html = '';
-            let jsEntry = '';
-
-            const videoClass = isVid ? ' video-card' : '';
-            const mediaHTML = isVid 
-                ? `<video src="${media}" class="w-full object-cover" loop muted playsinline></video>`
-                : `<img src="${media}" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">`;
-
-            if (page === 'memes') {
-                const cat = document.getElementById('memeCat').value;
-                const context = document.getElementById('memeContext').value.trim();
-                const xLink = document.getElementById('xLink').value.trim();
-
-                html = `<!-- ${id} -->\n<div onclick="openMemeModal(${id})" class="meme-card${videoClass} rounded-3xl overflow-hidden block cursor-pointer" data-category="${cat}">\n    ${mediaHTML}\n    <div class="content">\n        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">${title}</h4></div>\n        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">${shortDesc}</p></div>\n    </div>\n</div>`;
-
-                jsEntry = `${id}: { title: "${title}", image: "${media}", context: "${context.replace(/"/g, '\\"')}", xLink: "${xLink}" },`;
+            // X link warning
+            if (media.includes('twitter.com') || media.includes('x.com') || media.includes('pbs.twimg.com') || media.includes('video.twimg.com')) {
+                document.getElementById('xWarning').classList.remove('hidden');
+            } else {
+                document.getElementById('xWarning').classList.add('hidden');
             }
 
-            else if (page === 'battles') {
-                const cats = document.getElementById('battleCats').value.trim();
-                const human = document.getElementById('humanArg').value.trim();
-                const grok = document.getElementById('grokResp').value.trim();
-                const xLink = document.getElementById('battleXLink').value.trim();
+            // Generate HTML card
+            let htmlCard = `<!-- ${id} -->\n<div onclick="open${type.charAt(0).toUpperCase() + type.slice(1)}Modal(${id})" class="${type === 'memes' ? 'meme-card' : type === 'battles' ? 'battle-card' : 'category-card'} ${isVid ? 'video-card' : ''} rounded-3xl overflow-hidden block cursor-pointer"`;
+            if (type === 'memes') htmlCard += ` data-category="${document.getElementById('memeCat') ? document.getElementById('memeCat').value : 'grok-memes'}"`;
+            if (type === 'battles') htmlCard += ` data-categories="${document.getElementById('battleCats') ? document.getElementById('battleCats').value : ''}"`;
+            if (type === 'categories') htmlCard += ` data-category="${document.getElementById('catSingle') ? document.getElementById('catSingle').value : 'lazy'}"`;
+            htmlCard += `>\n    ${isVid ? `<video src="${media}" class="w-full object-cover" loop muted playsinline></video>` : `<img src="${media}" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">`}\n    <div class="content">\n        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n    </div>`;
 
-                html = `<!-- ${id} -->\n<div onclick="openBattleModal(${id})" class="battle-card${videoClass} rounded-3xl overflow-hidden block cursor-pointer"${cats ? ` data-categories="${cats}"` : ''}>\n    ${mediaHTML}\n    <div class="content">\n        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n    </div>\n    <div class="buttons flex">\n        <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" id="grok-btn-${id}" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>\n        <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" id="human-btn-${id}" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>\n    </div>\n</div>`;
+            if (type === 'battles') {
+                htmlCard += `\n    <div class="buttons flex">\n        <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" id="grok-btn-${id}" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>\n        <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" id="human-btn-${id}" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>\n    </div>`;
+            }
+            htmlCard += `\n</div>`;
 
-                jsEntry = `${id}: { title: "${title}", shortDesc: "${shortDesc.replace(/"/g, '\\"')}", image: "${media}", tags: [${cats ? `"${cats.split(',').map(c=>c.trim()).join('","')}"` : ''}], human: "${human.replace(/"/g, '\\"')}", grok: "${grok.replace(/"/g, '\\"')}", xLink: "${xLink}" },`;
+            // Generate JS data
+            let jsData = `${id}: { title: "${title}", image: "${media}", `;
+            if (type === 'memes') {
+                jsData += `context: "${document.getElementById('context') ? document.getElementById('context').value.replace(/"/g, '\\"') : shortDesc}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
+            } else if (type === 'battles') {
+                jsData += `shortDesc: "${shortDesc.replace(/"/g, '\\"')}", tags: [${document.getElementById('battleCats') ? `"${document.getElementById('battleCats').value.split(',').map(c=>c.trim()).join('","')}"` : ''}], human: "${document.getElementById('humanArg') ? document.getElementById('humanArg').value.replace(/"/g, '\\"') : ''}", grok: "${document.getElementById('grokResp') ? document.getElementById('grokResp').value.replace(/"/g, '\\"') : ''}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
+            } else if (type === 'categories') {
+                jsData += `tags: ["${document.getElementById('catSingle') ? document.getElementById('catSingle').value : 'lazy'}"], summary: "${document.getElementById('summary') ? document.getElementById('summary').value.replace(/"/g, '\\"') : shortDesc}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
             }
 
-            else if (page === 'categories') {
-                const cat = document.getElementById('catSingle').value;
-                const summary = document.getElementById('catSummary').value.trim();
-                const xLink = document.getElementById('catXLink').value.trim();
-
-                html = `<!-- ${id} -->\n<div onclick="openCategoryModal(${id})" class="category-card${videoClass} rounded-3xl overflow-hidden block cursor-pointer" data-category="${cat}">\n    ${mediaHTML}\n    <div class="content">\n        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n    </div>\n</div>`;
-
-                jsEntry = `${id}: { title: "${title}", image: "${media}", tags: ["${cat}"], summary: "${summary.replace(/"/g, '\\"')}", xLink: "${xLink}" },`;
-            }
-
-            document.getElementById('htmlOutput').value = html.trim();
-            document.getElementById('jsOutput').value = jsEntry.trim();
+            document.getElementById('htmlOutput').value = htmlCard;
+            document.getElementById('jsOutput').value = jsData;
         }
     </script>
 </body>
