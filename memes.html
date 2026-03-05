@@ -650,26 +650,27 @@
     }
 
     function openMemeModal(id) {
-        const data = memeData[id];
-        if (!data) return;
-        currentMemeId = id;
+    const data = memeData[id];
+    if (!data) return;
+    currentMemeId = id;
 
-        const url = data.image.toLowerCase();
-        let mediaHTML = '';
+    const url = data.image.toLowerCase();
+    let mediaHTML = '';
 
-        if (url.endsWith('.gif') || url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || 
-            url.endsWith('.ogg') || url.includes('video.twimg.com')) {
-            mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
-        } else {
-            mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
-        }
-
-        document.getElementById('modal-image').innerHTML = mediaHTML;
-        document.getElementById('context-panel').style.display = 'none';
-        document.getElementById('modal-buttons').style.display = 'flex';
-        document.getElementById('meme-modal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+    if (url.endsWith('.gif')) {
+        mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+    } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
+        mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
+    } else {
+        mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
     }
+
+    document.getElementById('modal-image').innerHTML = mediaHTML;
+    document.getElementById('context-panel').style.display = 'none';
+    document.getElementById('modal-buttons').style.display = 'flex';
+    document.getElementById('meme-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
 
     function closeMemeModal() {
         document.getElementById('meme-modal').style.display = 'none';
