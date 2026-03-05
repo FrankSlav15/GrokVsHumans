@@ -14,7 +14,7 @@
 <body class="min-h-screen p-8 bg-[#0a0a1f]">
     <div class="max-w-4xl mx-auto bg-zinc-900 rounded-3xl p-8 border border-purple-500/30">
         <h1 class="text-4xl font-bold text-center mb-2">Card Generator v5</h1>
-        <p class="text-center text-zinc-400">One-click re-hosting • Pre-filled tags</p>
+        <p class="text-center text-zinc-400">Media URL + X Link + One-click re-hosting + Pre-filled tags</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
             <!-- Left -->
@@ -46,6 +46,14 @@
                 <div>
                     <label class="block text-sm font-medium mb-1">Media URL</label>
                     <input type="text" id="mediaUrl" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">X Post Link (optional)</label>
+                    <div class="flex gap-3">
+                        <input type="text" id="xLink" placeholder="https://x.com/..." class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg p-3">
+                        <button onclick="openXLink()" class="px-6 bg-purple-600 rounded-lg font-medium">Open Post</button>
+                    </div>
                 </div>
 
                 <!-- One-click re-hosting -->
@@ -100,43 +108,34 @@
 
             if (type === 'memes') {
                 extraFields.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Meme Categories (comma separated)</label>
-                        <input type="text" id="memeCats" value="grok-memes,misc-memes,gifs,ai-tech,other" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Modal Context</label>
-                        <textarea id="context" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
-                    </div>`;
+                    <div><label class="block text-sm font-medium mb-1">Meme Categories (comma separated)</label>
+                    <input type="text" id="memeCats" value="grok-memes,misc-memes,gifs,ai-tech,other" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div>
+                    <div><label class="block text-sm font-medium mb-1">Modal Context</label>
+                    <textarea id="context" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
             } else if (type === 'battles') {
                 extraFields.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Categories (comma separated)</label>
-                        <input type="text" id="battleCats" value="nonsense,political,serious,citation,joke,censorship" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Human Argument</label>
-                        <textarea id="humanArg" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Grok Response</label>
-                        <textarea id="grokResp" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
-                    </div>`;
+                    <div><label class="block text-sm font-medium mb-1">Categories (comma separated)</label>
+                    <input type="text" id="battleCats" value="nonsense,political,serious,citation,joke,censorship" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div>
+                    <div><label class="block text-sm font-medium mb-1">Human Argument</label>
+                    <textarea id="humanArg" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>
+                    <div><label class="block text-sm font-medium mb-1">Grok Response</label>
+                    <textarea id="grokResp" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
             } else if (type === 'categories') {
                 extraFields.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Categories (comma separated)</label>
-                        <input type="text" id="catTags" value="lazy,photo,opinion,avoids" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Summary</label>
-                        <textarea id="summary" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
-                    </div>`;
+                    <div><label class="block text-sm font-medium mb-1">Categories (comma separated)</label>
+                    <input type="text" id="catTags" value="lazy,photo,opinion,avoids" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div>
+                    <div><label class="block text-sm font-medium mb-1">Summary</label>
+                    <textarea id="summary" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
             }
         }
 
         pageTypeSelect.addEventListener('change', updateExtraFields);
         updateExtraFields();
+
+        function openXLink() {
+            const link = document.getElementById('xLink').value.trim();
+            if (link) window.open(link, '_blank');
+        }
 
         function generateBoth() {
             const type = pageTypeSelect.value;
@@ -159,7 +158,6 @@
             }
             html += `\n</div>`;
 
-            // JS data (same as before)
             let js = `${id}: { title: "${title.replace(/"/g, '\\"')}", image: "${media}", `;
             if (type === 'memes') js += `context: "${(document.getElementById('context') ? document.getElementById('context').value : shortDesc).replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
             else if (type === 'battles') js += `shortDesc: "${shortDesc.replace(/"/g, '\\"')}", tags: [${document.getElementById('battleCats').value.split(',').map(c => `"${c.trim()}"`).join(',')}], human: "${(document.getElementById('humanArg') ? document.getElementById('humanArg').value : '').replace(/"/g, '\\"')}", grok: "${(document.getElementById('grokResp') ? document.getElementById('grokResp').value : '').replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
