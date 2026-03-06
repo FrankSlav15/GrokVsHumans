@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Memes - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -159,41 +159,11 @@
             text-align: center;
         }
 
-        /* FIXED MODAL BUTTONS (for mobile) */
-        #modal-buttons {
-            position: fixed !important;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10001;
-            width: calc(100% - 48px);
-            max-width: 520px;
-            background: #17172a;
-            border: 1px solid rgba(168,85,247,0.4);
-            border-radius: 9999px;
-            padding: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
-
         @media (max-width: 640px) {
             #meme-modal { padding: 8px; }
             .modal-content { max-height: 96vh; border-radius: 20px; }
             #modal-image img, #modal-image video { max-height: 68vh !important; }
-            #modal-buttons { width: calc(100% - 32px); }
         }
-
-        /* Force portrait on phones only (tablets stay normal) */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-
     </style>
 </head>
 <body class="text-white">
@@ -285,7 +255,7 @@
                     </div>
                 </div>
 
-                <!-- 23 – ORIGINAL VIDEO (shows first frame as still shot on mobile) -->
+                <!-- 23 -->
                 <div onclick="openMemeModal(23)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
                     <div class="aspect-video">
                         <video src="https://files.catbox.moe/plxk87.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
@@ -296,7 +266,7 @@
                     </div>
                 </div>
                 
-                <!-- 22 – ORIGINAL VIDEO (shows first frame as still shot on mobile) -->
+                <!-- 22 -->
                 <div onclick="openMemeModal(22)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
                     <div class="aspect-video">
                         <video src="https://files.catbox.moe/534e9u.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
@@ -307,7 +277,7 @@
                     </div>
                 </div>
 
-                <!-- 21 – ORIGINAL VIDEO (shows first frame as still shot on mobile) -->
+                <!-- 21 -->
                 <div onclick="openMemeModal(21)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
                     <div class="aspect-video">
                         <video src="https://files.catbox.moe/uzlnpj.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
@@ -688,15 +658,12 @@
         }
     }
 
-    // AUTOMATIC PORTRAIT LOCK ON PHONES (added for reliability)
-    async function autoLockPortrait() {
-        if (!('screen' in window && 'orientation' in screen)) return;
-        if (window.innerWidth <= 767 && /Mobi|Android/i.test(navigator.userAgent)) {
-            try {
-                await screen.orientation.lock('portrait-primary');
-            } catch (e) {}
-        }
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkDeepLink, 300);
+        filterCategory('all');
+    });
+
+    window.addEventListener('hashchange', checkDeepLink);
 
     // ESCAPE KEY
     document.addEventListener('keydown', e => {
@@ -706,13 +673,6 @@
         }
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        autoLockPortrait();   // ← automatic lock on phones
-        setTimeout(checkDeepLink, 300);
-        filterCategory('all');
-    });
-
-    window.addEventListener('hashchange', checkDeepLink);
     </script>
 </body>
 
