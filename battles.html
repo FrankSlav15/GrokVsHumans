@@ -137,6 +137,19 @@
                 padding: 3px 8px !important;
             }
         }
+
+        /* Force portrait on phones only (tablets stay normal) */
+        @media (max-width: 767px) and (orientation: landscape) {
+        html, body {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
+        }
+
     </style>
 </head>
 <body class="text-white">

@@ -42,6 +42,19 @@
             z-index: -1; }
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
         .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+        /* Force portrait on phones only */
+        @media (max-width: 767px) and (orientation: landscape) {
+        html, body {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
+        }
+    
     </style>
 </head>
 <body class="text-white flex flex-col">

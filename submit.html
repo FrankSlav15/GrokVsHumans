@@ -39,6 +39,19 @@
             z-index: -1; }
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+
+        /* Force portrait on phones only (tablets stay normal) */
+        @media (max-width: 767px) and (orientation: landscape) {
+        html, body {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
+        }
+
     </style>
 </head>
 <body class="text-white">

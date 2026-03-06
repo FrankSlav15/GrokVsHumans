@@ -164,6 +164,19 @@
             .modal-content { max-height: 96vh; border-radius: 20px; }
             #modal-image img, #modal-image video { max-height: 68vh !important; }
         }
+
+        /* Force portrait on phones only (tablets stay normal) */
+        @media (max-width: 767px) and (orientation: landscape) {
+        html, body {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
+        }
+
     </style>
 </head>
 <body class="text-white">
