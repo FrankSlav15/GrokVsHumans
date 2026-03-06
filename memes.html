@@ -124,6 +124,7 @@
             max-height: 94vh;
             overflow: hidden;
             position: relative;
+            padding-bottom: 100px; /* space for fixed buttons */
         }
         #modal-image img,
         #modal-image video {
@@ -159,24 +160,28 @@
             text-align: center;
         }
 
+        /* FIXED MODAL BUTTONS (edited for mobile) */
+        #modal-buttons {
+            position: fixed !important;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            width: calc(100% - 48px);
+            max-width: 520px;
+            background: #17172a;
+            border: 1px solid rgba(168,85,247,0.4);
+            border-radius: 9999px;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
         @media (max-width: 640px) {
             #meme-modal { padding: 8px; }
             .modal-content { max-height: 96vh; border-radius: 20px; }
             #modal-image img, #modal-image video { max-height: 68vh !important; }
+            #modal-buttons { width: calc(100% - 32px); }
         }
-
-        /* Force portrait on phones only (tablets stay normal) */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-
     </style>
 </head>
 <body class="text-white">
@@ -268,10 +273,10 @@
                     </div>
                 </div>
 
-                <!-- 23 -->
+                <!-- 23 – STILL SHOT (static thumbnail) -->
                 <div onclick="openMemeModal(23)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
                     <div class="aspect-video">
-                        <video src="https://files.catbox.moe/plxk87.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
+                        <img src="https://picsum.photos/id/29/1200/675" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok's AI Video Masterpiece</h4></div>
@@ -279,10 +284,10 @@
                     </div>
                 </div>
                 
-                <!-- 22 -->
+                <!-- 22 – STILL SHOT (static thumbnail) -->
                 <div onclick="openMemeModal(22)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
                     <div class="aspect-video">
-                        <video src="https://files.catbox.moe/534e9u.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
+                        <img src="https://picsum.photos/id/201/1200/675" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">The Perfect AI Video Does Exist 🔥</h4></div>
@@ -290,10 +295,10 @@
                     </div>
                 </div>
 
-                <!-- 21 -->
+                <!-- 21 – STILL SHOT (static thumbnail) -->
                 <div onclick="openMemeModal(21)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
                     <div class="aspect-video">
-                        <video src="https://files.catbox.moe/uzlnpj.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
+                        <img src="https://picsum.photos/id/1015/1200/675" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Imagine Meme Magic</h4></div>
@@ -671,12 +676,17 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(checkDeepLink, 300);
-        filterCategory('all');
-    });
-
-    window.addEventListener('hashchange', checkDeepLink);
+    // AUTOMATIC PORTRAIT LOCK ON PHONES ONLY (no button)
+    async function autoLockPortrait() {
+        if (!('screen' in window && 'orientation' in screen)) return;
+        if (window.innerWidth <= 767 && /Mobi|Android/i.test(navigator.userAgent)) {
+            try {
+                await screen.orientation.lock('portrait-primary');
+            } catch (e) {
+                // silent fail on unsupported browsers
+            }
+        }
+    }
 
     // ESCAPE KEY
     document.addEventListener('keydown', e => {
@@ -686,6 +696,13 @@
         }
     });
 
+    document.addEventListener('DOMContentLoaded', () => {
+        autoLockPortrait();   // ← automatic lock on phones
+        setTimeout(checkDeepLink, 300);
+        filterCategory('all');
+    });
+
+    window.addEventListener('hashchange', checkDeepLink);
     </script>
 </body>
 
