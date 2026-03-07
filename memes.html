@@ -187,6 +187,35 @@
             text-overflow: ellipsis;
         }
         }
+
+        /* Phase 2 – CLEAN VIDEO MODAL OVERLAY (mute no longer touches Close X) */
+        @media (max-width: 768px) {
+        #memeModal .modal-content {
+            padding-top: 72px !important; /* extra safe space at top */
+        }
+
+        .video-container, .modal-video-wrapper {
+            position: relative !important;
+            margin-top: 12px !important;
+        }
+
+        /* Push mute button left & down so it never overlaps the top-right Close X */
+        .mute-btn, button[onclick*="toggleMute"], .video-mute-button {
+            position: absolute !important;
+            top: 24px !important;
+            right: 84px !important;
+            z-index: 50 !important;
+            background: rgba(0,0,0,0.75) !important;
+            border-radius: 9999px !important;
+            padding: 8px !important;
+        }
+
+        /* Make sure Close X always stays on top */
+        .close-modal {
+            z-index: 60 !important;
+        }
+        }
+        
     </style>
 </head>
 <body class="text-white">
