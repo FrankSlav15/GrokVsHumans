@@ -435,57 +435,66 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL -->
+    <!-- BATTLE MODAL - NOW WITH ARROWS + SWIPE (exact match to memes.html) -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <div class="relative flex-shrink-0">
-                <button onclick="closeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
-                <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
+    <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
+        
+        <!-- Close X -->
+        <button onclick="closeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
+
+        <!-- Navigation Arrows (reversed direction — same as memes.html) -->
+        <button onclick="event.stopImmediatePropagation(); nextBattle()" 
+                class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+        <button onclick="event.stopImmediatePropagation(); prevBattle()" 
+                class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+
+        <div class="relative flex-shrink-0">
+        <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-8">
+        <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+        <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+
+        <div class="space-y-8">
+            <div>
+            <div class="flex items-center gap-2 text-purple-400 mb-3">
+                <i class="fa-solid fa-user"></i>
+                <span class="font-medium">Human's Argument</span>
+            </div>
+            <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-8">
-                <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-                <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
-
-                <div class="space-y-8">
-                    <div>
-                        <div class="flex items-center gap-2 text-purple-400 mb-3">
-                            <i class="fa-solid fa-user"></i>
-                            <span class="font-medium">Human's Argument</span>
-                        </div>
-                        <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
-                    </div>
-
-                    <div>
-                        <div class="flex items-center gap-2 text-purple-400 mb-3">
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="font-medium">Grok's Response</span>
-                        </div>
-                        <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
-                    </div>
-                </div>
-
-                <div class="mt-12 pt-8 border-t border-zinc-800">
-                    <div class="buttons flex">
-                        <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button onclick="voteFromModal(event, 'human')" id="modal-human-btn" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                    </div>
-                </div>
+            <div>
+            <div class="flex items-center gap-2 text-purple-400 mb-3">
+                <i class="fa-solid fa-robot"></i>
+                <span class="font-medium">Grok's Response</span>
             </div>
-
-            <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-                <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
-                    <i class="fa-brands fa-x-twitter text-3xl"></i>
-                    <span class="text-center">Participate</span>
-                </a>
-                <button onclick="showShareMenu()" 
-                        class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    Share Battle
-                </button>
+            <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
             </div>
         </div>
+
+        <div class="mt-12 pt-8 border-t border-zinc-800">
+            <div class="buttons flex">
+            <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+            <button onclick="voteFromModal(event, 'human')" id="modal-human-btn" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+            </div>
+        </div>
+        </div>
+
+        <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
+        <a id="modal-x-link" href="#" target="_blank" 
+            class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
+            <i class="fa-brands fa-x-twitter text-3xl"></i>
+            <span class="text-center">Participate</span>
+        </a>
+        <button onclick="showShareMenu()" 
+                class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+            <i class="fa-solid fa-share-nodes"></i>
+            Share Battle
+        </button>
+        </div>
+    </div>
     </div>
 
     <script>
@@ -578,6 +587,7 @@
     });
 
     let currentBattleId = null;
+    let currentBattleIndex = 0;
 
     const battleData = {
         1: { title: "Remove Threats to Humanity", shortDesc: "Human demands removal of certain threats. Grok sticks to evidence only.", image: "https://pbs.twimg.com/media/HCQGnW7WAAAaCUb.jpg", tags: ["nonsense"], human: "Grok removes real threats based on facts — fans melt down when their heroes stay", grok: "I evaluate threats based on evidence and consistency, not political favoritism. Double standards don't make for good policy.", xLink: "https://x.com/lospectra_/status/2027752701967134898" },
@@ -598,10 +608,36 @@
         16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", shortDesc: "Human claims elites manipulate history via selective digitization. Grok explains archiving realities.", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. AI highlights those limits and points to archives or in-person checks.", xLink: "https://x.com/grok/status/2028680359861219729" }
     };
 
+        // === NAVIGATION (swipe + arrows - matches memes.html exactly) ===
+    function getBattleKeys() {
+        return Object.keys(battleData).map(Number).sort((a,b) => a - b);
+    }
+
+    function nextBattle() {
+        const keys = getBattleKeys();
+        let pos = keys.indexOf(currentBattleIndex);
+        if (pos === -1) pos = 0;
+        const nextPos = (pos + 1) % keys.length;
+        currentBattleIndex = keys[nextPos];
+        closeModal();
+        setTimeout(() => openBattleModal(currentBattleIndex), 280);
+    }
+
+    function prevBattle() {
+        const keys = getBattleKeys();
+        let pos = keys.indexOf(currentBattleIndex);
+        if (pos === -1) pos = 0;
+        const prevPos = (pos - 1 + keys.length) % keys.length;
+        currentBattleIndex = keys[prevPos];
+        closeModal();
+        setTimeout(() => openBattleModal(currentBattleIndex), 280);
+    }
+
     function openBattleModal(id) {
         const data = battleData[id];
         if (!data) return;
         currentBattleId = id;
+        currentBattleIndex = id;
 
         const url = data.image.toLowerCase();
         let mediaHTML = '';
@@ -673,9 +709,13 @@
         }
     }
 
-    function handleEscape(e) {
+        // KEYBOARD ARROWS + ESC (reversed logic to match memes.html)
+    document.addEventListener('keydown', e => {
+        if (document.getElementById('battle-modal').classList.contains('hidden') || !currentBattleId) return;
         if (e.key === 'Escape') closeModal();
-    }
+        else if (e.key === 'ArrowLeft') nextBattle();
+        else if (e.key === 'ArrowRight') prevBattle();
+    });
 
     function voteFromModal(event, winner) {
         event.stopImmediatePropagation();
@@ -716,6 +756,19 @@
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
     });
+
+        // SWIPE GESTURES (mobile)
+        let touchStartX = 0;
+        const battleModal = document.getElementById('battle-modal');
+        battleModal.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+        battleModal.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (!currentBattleId) return;
+            if (touchEndX < touchStartX - 60) nextBattle();
+            if (touchEndX > touchStartX + 60) prevBattle();
+        }, {passive: true});
 
     window.addEventListener('hashchange', checkDeepLink);
 
