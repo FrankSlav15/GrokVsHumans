@@ -508,38 +508,42 @@
     </div>
 
     
-        <!-- Close X -->
-        <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
+        <!-- MEME MODAL -->
+<div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4">
+  <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
 
-        <!-- Swipe arrows -->
-        <button onclick="event.stopImmediatePropagation(); prevMeme()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
-        <button onclick="event.stopImmediatePropagation(); nextMeme()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+    <!-- Close X -->
+    <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
 
-        <div id="modal-image" class="w-full bg-zinc-800"></div>
+    <!-- Swipe arrows -->
+    <button onclick="event.stopImmediatePropagation(); prevMeme()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+    <button onclick="event.stopImmediatePropagation(); nextMeme()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
 
-            <div id="context-panel" class="hidden p-5 bg-zinc-900 border-t border-purple-500/40">
-                <div class="flex justify-between items-start gap-4">
-                    <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
-                    <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">✕</button>
-                </div>
-                <a id="context-x-link" href="#" target="_blank" class="mt-4 block w-full bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-3">
-                    <i class="fa-brands fa-x-twitter"></i> View Original Thread on X
-                </a>
-            </div>
+    <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-            <div id="modal-buttons" class="border-t border-zinc-800 p-5 flex gap-3">
-                <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
-                    <i class="fa-solid fa-magnifying-glass"></i> Search
-                </button>
-                <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
-                    <i class="fa-solid fa-info-circle"></i> Info / Context
-                </button>
-                <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
-                    <i class="fa-solid fa-share-nodes"></i> Share Meme
-                </button>
-            </div>
-        </div>
+    <div id="context-panel" class="hidden p-5 bg-zinc-900 border-t border-purple-500/40">
+      <div class="flex justify-between items-start gap-4">
+        <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
+        <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">✕</button>
+      </div>
+      <a id="context-x-link" href="#" target="_blank" class="mt-4 block w-full bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-3">
+        <i class="fa-brands fa-x-twitter"></i> View Original Thread on X
+      </a>
     </div>
+
+    <div id="modal-buttons" class="border-t border-zinc-800 p-5 flex gap-3">
+      <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
+        <i class="fa-solid fa-magnifying-glass"></i> Search
+      </button>
+      <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
+        <i class="fa-solid fa-info-circle"></i> Info / Context
+      </button>
+      <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
+        <i class="fa-solid fa-share-nodes"></i> Share Meme
+      </button>
+    </div>
+  </div>
+</div>
 
     <script>
     // BACKGROUND ROTATOR
@@ -740,17 +744,23 @@
         }
     });
 
-    // === SWIPE NAVIGATION FOR MEMES (working version) ===
+    // === SWIPE NAVIGATION FOR MEMES (fixed for your object) ===
     let currentMemeIndex = 0;
 
     function nextMeme() {
-    currentMemeIndex = (currentMemeIndex + 1) % memeData.length;
+    const keys = Object.keys(memeData);
+    const currentPos = keys.indexOf(currentMemeIndex.toString());
+    const nextPos = (currentPos + 1) % keys.length;
+    currentMemeIndex = parseInt(keys[nextPos]);
     closeMemeModal();
     setTimeout(() => openMemeModal(currentMemeIndex), 300);
     }
 
     function prevMeme() {
-    currentMemeIndex = (currentMemeIndex - 1 + memeData.length) % memeData.length;
+    const keys = Object.keys(memeData);
+    const currentPos = keys.indexOf(currentMemeIndex.toString());
+    const prevPos = (currentPos - 1 + keys.length) % keys.length;
+    currentMemeIndex = parseInt(keys[prevPos]);
     closeMemeModal();
     setTimeout(() => openMemeModal(currentMemeIndex), 300);
     }
