@@ -381,51 +381,63 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL (unchanged) -->
-    <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <div class="relative flex-shrink-0">
-                <!-- Close X -->
-                <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
+    <!-- CATEGORY MODAL - NOW WITH ARROWS + SWIPE (exact match to memes.html) -->
+<div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
+  <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
 
-                <!-- Swipe arrows (reversed direction like memes) -->
-                <button onclick="event.stopImmediatePropagation(); nextCategory()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
-                <button onclick="event.stopImmediatePropagation(); prevCategory()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+    <!-- Close X -->
+    <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
 
-                <div id="modal-image" class="w-full bg-zinc-800"></div>
-            </div>
+    <!-- Navigation Arrows (same reversed style as memes.html) -->
+    <button onclick="event.stopImmediatePropagation(); nextCategory()" 
+            class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+    <button onclick="event.stopImmediatePropagation(); prevCategory()" 
+            class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
 
-            <div class="p-8 overflow-y-auto flex-1">
-                <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-                <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+    <div id="modal-image" class="w-full bg-zinc-800 h-80 md:h-96 overflow-hidden"></div>
 
-                <div>
-                    <div class="flex items-center gap-2 text-purple-400 mb-3">
-                        <i class="fa-solid fa-comment-dots"></i>
-                        <span class="font-medium">Brief Summary of the Thread</span>
-                    </div>
-                    <p id="modal-summary" class="text-gray-300 leading-relaxed"></p>
-                </div>
-            </div>
+    <div class="p-8 overflow-y-auto flex-1">
+      <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+      <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
-            <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-                <a id="modal-x-link" href="#" target="_blank" 
-                   class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
-                    <i class="fa-brands fa-x-twitter text-3xl"></i>
-                    <span class="text-center">View This Thread on X</span>
-                </a>
-                <button onclick="showCategoryShareMenu()" 
-                        class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    Share This Card
-                </button>
-            </div>
+      <div>
+        <div class="flex items-center gap-2 text-purple-400 mb-3">
+          <i class="fa-solid fa-comment-dots"></i>
+          <span class="font-medium">Brief Summary of the Thread</span>
         </div>
+        <p id="modal-summary" class="text-gray-300 leading-relaxed"></p>
+      </div>
     </div>
 
+    <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
+      <a id="modal-x-link" href="#" target="_blank" 
+         class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
+        <i class="fa-brands fa-x-twitter text-3xl"></i>
+        <span class="text-center">View This Thread on X</span>
+      </a>
+      <button onclick="showCategoryShareMenu()" 
+              class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+        <i class="fa-solid fa-share-nodes"></i>
+        Share This Card
+      </button>
+    </div>
+  </div>
+</div>
+
     <script>
-    // BACKGROUND ROTATOR (unchanged)
-    const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
+    // BACKGROUND ROTATOR - FIXED FOR NEW FOLDER STRUCTURE
+    const bgs = [
+        'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
+        'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
+        'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
+        'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
+        'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
+        'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
+        'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
+        'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
+        'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
+        'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
+    ];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
     document.body.style.backgroundPosition = '50% 35%';
@@ -457,7 +469,9 @@
     });
 
     let currentCategoryId = null;
+    let currentCategoryIndex = 0;
 
+    // ← KEEP YOUR ENTIRE categoryData OBJECT HERE EXACTLY AS IT IS NOW
     const categoryData = {
 
         1: { title: "Grok, is this true?", image: "assets/images/memes/skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
@@ -476,36 +490,47 @@
 
     };
 
+    function getCategoryKeys() {
+        return Object.keys(categoryData).map(Number).sort((a,b) => a - b);
+    }
+
+    function nextCategory() {
+        const keys = getCategoryKeys();
+        let pos = keys.indexOf(currentCategoryIndex);
+        if (pos === -1) pos = 0;
+        const nextPos = (pos + 1) % keys.length;
+        currentCategoryIndex = keys[nextPos];
+        closeCategoryModal();
+        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
+    }
+
+    function prevCategory() {
+        const keys = getCategoryKeys();
+        let pos = keys.indexOf(currentCategoryIndex);
+        if (pos === -1) pos = 0;
+        const prevPos = (pos - 1 + keys.length) % keys.length;
+        currentCategoryIndex = keys[prevPos];
+        closeCategoryModal();
+        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
+    }
+
     function openCategoryModal(id) {
-        currentCategoryIndex = id;
-        const data = categoryData[Number(id)];
+        const data = categoryData[id];
         if (!data) return;
+
         currentCategoryId = id;
+        currentCategoryIndex = id;
 
         const url = data.image.toLowerCase();
         let mediaHTML = '';
         if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
-            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full h-full object-cover" autoplay loop muted playsinline></video>`;
+            mediaHTML = `<video src="${data.image}" class="w-full h-full object-cover" autoplay loop muted controls playsinline></video>`;
         } else {
             mediaHTML = `<img src="${data.image}" class="w-full h-full object-contain" alt="${data.title}">`;
         }
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-        // Initialize Plyr for clean controls
-        if (document.getElementById('modal-video')) {
-        window.currentPlyr = new Plyr('#modal-video', {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-            settings: [],
-            tooltips: { controls: true, seek: true }
-        });
-        }
-
-        const displayMap = {
-            'lazy': 'Grok, Think For Me',
-            'photo': 'Photo Requests',
-            'opinion': "Grok's Opinion",
-            'avoids': 'Grok Avoids Request'
-        };
+        const displayMap = {'lazy': 'Grok, Think For Me','photo': 'Photo Requests','opinion': "Grok's Opinion",'avoids': 'Grok Avoids Request'};
         const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${displayMap[t] || t}</span>`).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
@@ -513,31 +538,40 @@
         document.getElementById('modal-summary').textContent = data.summary;
         document.getElementById('modal-x-link').href = data.xLink;
 
-        const modal = document.getElementById('category-modal');
-        modal.classList.remove('hidden');
+        document.getElementById('category-modal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-
-        document.addEventListener('keydown', handleCategoryEscape);
     }
 
     function closeCategoryModal() {
-        // Stop sound and clean up Plyr
-        if (window.currentPlyr) {
-            window.currentPlyr.pause();
-            window.currentPlyr.destroy();
-            window.currentPlyr = null;
-        }
-        const modal = document.getElementById('category-modal');
-        modal.classList.add('hidden');
+        document.getElementById('category-modal').classList.add('hidden');
         document.body.style.overflow = 'visible';
-        document.removeEventListener('keydown', handleCategoryEscape);
         currentCategoryId = null;
     }
 
-    function handleCategoryEscape(e) {
+    // KEYBOARD ARROWS + ESC (exact same reversed logic as memes.html)
+    document.addEventListener('keydown', e => {
+        if (document.getElementById('category-modal').classList.contains('hidden') || !currentCategoryId) return;
         if (e.key === 'Escape') closeCategoryModal();
-    }
+        else if (e.key === 'ArrowLeft') nextCategory();
+        else if (e.key === 'ArrowRight') prevCategory();
+    });
 
+    // SWIPE GESTURES (exact same as memes.html)
+    let touchStartX = 0;
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('category-modal');
+        modal.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+        modal.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (!currentCategoryId) return;
+            if (touchEndX < touchStartX - 60) nextCategory();
+            if (touchEndX > touchStartX + 60) prevCategory();
+        }, {passive: true});
+
+        setTimeout(checkDeepLink, 300);
+    });
+
+    // === PASTE YOUR EXISTING SHARE FUNCTIONS HERE (unchanged) ===
     function showCategoryShareMenu() {
         if (!currentCategoryId) return;
         const data = categoryData[currentCategoryId];
@@ -597,51 +631,7 @@
 
     window.addEventListener('hashchange', checkDeepLink);
 
-        // === SWIPE NAVIGATION FOR CATEGORIES (reversed direction) ===
-        let currentCategoryIndex = 0;
-
-        function nextCategory() {
-        const keys = Object.keys(categoryData).sort((a, b) => Number(a) - Number(b));
-        const currentPos = keys.indexOf(currentCategoryIndex.toString());
-        const nextPos = (currentPos + 1) % keys.length;
-        currentCategoryIndex = parseInt(keys[nextPos]);
-        closeCategoryModal();
-        setTimeout(() => openCategoryModal(currentCategoryIndex), 300);
-        }
-
-        function prevCategory() {
-        const keys = Object.keys(categoryData).sort((a, b) => Number(a) - Number(b));
-        const currentPos = keys.indexOf(currentCategoryIndex.toString());
-        const prevPos = (currentPos - 1 + keys.length) % keys.length;
-        currentCategoryIndex = parseInt(keys[prevPos]);
-        closeCategoryModal();
-        setTimeout(() => openCategoryModal(currentCategoryIndex), 300);
-        }
-
-        // Touch swipe on phone/tablet
-        let touchStartXCat = 0;
-        const categoryModalElement = document.getElementById('category-modal');
-
-        categoryModalElement.addEventListener('touchstart', e => {
-        touchStartXCat = e.changedTouches[0].screenX;
-        });
-
-        categoryModalElement.addEventListener('touchend', e => {
-        const touchEndX = e.changedTouches[0].screenX;
-        if (touchEndX < touchStartXCat - 50) nextCategory();
-        if (touchEndX > touchStartXCat + 50) prevCategory();
-        });
-
-        // Keyboard arrows on desktop
-        document.addEventListener('keydown', e => {
-        const modal = document.getElementById('category-modal');
-        if (!modal.classList.contains('hidden')) {
-            if (e.key === 'ArrowRight') prevCategory();
-            if (e.key === 'ArrowLeft') nextCategory();
-        }
-        });
-
-    </script>
+</script>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
