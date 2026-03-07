@@ -188,34 +188,41 @@
         }
         }
 
-        /* Phase 2 – CLEAN VIDEO MODAL OVERLAY (mute no longer touches Close X) */
+        /* Phase 2 – VIDEO MODAL CLEAN-UP (mute moved to bottom-right on mobile/tablet) */
         @media (max-width: 768px) {
         #memeModal .modal-content {
-            padding-top: 72px !important; /* extra safe space at top */
+            padding-top: 60px !important;
         }
 
-        .video-container, .modal-video-wrapper {
+        .video-container,
+        .modal-video-wrapper {
             position: relative !important;
-            margin-top: 12px !important;
         }
 
-        /* Push mute button left & down so it never overlaps the top-right Close X */
-        .mute-btn, button[onclick*="toggleMute"], .video-mute-button {
+        /* Move mute button to safe bottom-right corner inside video */
+        .mute-btn,
+        button[onclick*="toggleMute"],
+        button[onclick*="mute"],
+        .video-mute-button,
+        .mute-button {
             position: absolute !important;
-            top: 24px !important;
-            right: 84px !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            top: auto !important;
             z-index: 50 !important;
-            background: rgba(0,0,0,0.75) !important;
-            border-radius: 9999px !important;
-            padding: 8px !important;
+            background: rgba(0,0,0,0.85) !important;
+            border-radius: 50% !important;
+            padding: 10px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6) !important;
         }
 
-        /* Make sure Close X always stays on top */
-        .close-modal {
+        /* Close X stays top-right and always on top */
+        .close-modal,
+        .modal-close {
             z-index: 60 !important;
         }
         }
-        
+
     </style>
 </head>
 <body class="text-white">
