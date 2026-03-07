@@ -417,48 +417,50 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL - NOW WITH ARROWS + SWIPE (exact match to memes.html) -->
-<div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
-  <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
+    <!-- CATEGORY MODAL - UNIFIED + CLICK OUTSIDE TO CLOSE -->
+        <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+            
+            <!-- Close X -->
+            <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
 
-    <!-- Close X -->
-    <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
+            <!-- Arrows just outside the card -->
+            <button onclick="event.stopImmediatePropagation(); nextCategory()" 
+                    class="nav-arrow nav-arrow-left">‹</button>
+            <button onclick="event.stopImmediatePropagation(); prevCategory()" 
+                    class="nav-arrow nav-arrow-right">›</button>
 
-    <!-- Navigation Arrows (same reversed style as memes.html) -->
-    <button onclick="event.stopImmediatePropagation(); nextCategory()" 
-            class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
-    <button onclick="event.stopImmediatePropagation(); prevCategory()" 
-            class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+            <div class="relative flex-shrink-0">
+            <div id="modal-image" class="h-80 md:h-96 w-full bg-zinc-800 overflow-hidden"></div>
+            </div>
 
-    <div id="modal-image" class="w-full bg-zinc-800 h-80 md:h-96 overflow-hidden"></div>
+            <div class="p-8 overflow-y-auto flex-1">
+            <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+            <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
-    <div class="p-8 overflow-y-auto flex-1">
-      <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-      <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+            <div>
+                <div class="flex items-center gap-2 text-purple-400 mb-3">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span class="font-medium">Brief Summary of the Thread</span>
+                </div>
+                <p id="modal-summary" class="text-gray-300 leading-relaxed"></p>
+            </div>
+            </div>
 
-      <div>
-        <div class="flex items-center gap-2 text-purple-400 mb-3">
-          <i class="fa-solid fa-comment-dots"></i>
-          <span class="font-medium">Brief Summary of the Thread</span>
+            <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
+            <a id="modal-x-link" href="#" target="_blank" 
+                class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
+                <i class="fa-brands fa-x-twitter text-3xl"></i>
+                <span class="text-center">View This Thread on X</span>
+            </a>
+            <button onclick="showCategoryShareMenu()" 
+                    class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                <i class="fa-solid fa-share-nodes"></i>
+                Share This Card
+            </button>
+            </div>
         </div>
-        <p id="modal-summary" class="text-gray-300 leading-relaxed"></p>
-      </div>
-    </div>
-
-    <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-      <a id="modal-x-link" href="#" target="_blank" 
-         class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
-        <i class="fa-brands fa-x-twitter text-3xl"></i>
-        <span class="text-center">View This Thread on X</span>
-      </a>
-      <button onclick="showCategoryShareMenu()" 
-              class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-        <i class="fa-solid fa-share-nodes"></i>
-        Share This Card
-      </button>
-    </div>
-  </div>
-</div>
+        </div>
 
     <script>
     // BACKGROUND ROTATOR - FIXED FOR NEW FOLDER STRUCTURE
