@@ -593,13 +593,19 @@
         let currentCategoryIndex = 0;
 
         function nextCategory() {
-        currentCategoryIndex = (currentCategoryIndex + 1) % categoryData.length;
+        const keys = Object.keys(categoryData).sort((a, b) => Number(a) - Number(b));
+        const currentPos = keys.indexOf(currentCategoryIndex.toString());
+        const nextPos = (currentPos + 1) % keys.length;
+        currentCategoryIndex = parseInt(keys[nextPos]);
         closeCategoryModal();
         setTimeout(() => openCategoryModal(currentCategoryIndex), 300);
         }
 
         function prevCategory() {
-        currentCategoryIndex = (currentCategoryIndex - 1 + categoryData.length) % categoryData.length;
+        const keys = Object.keys(categoryData).sort((a, b) => Number(a) - Number(b));
+        const currentPos = keys.indexOf(currentCategoryIndex.toString());
+        const prevPos = (currentPos - 1 + keys.length) % keys.length;
+        currentCategoryIndex = parseInt(keys[prevPos]);
         closeCategoryModal();
         setTimeout(() => openCategoryModal(currentCategoryIndex), 300);
         }
@@ -620,7 +626,8 @@
 
         // Keyboard arrows on desktop
         document.addEventListener('keydown', e => {
-        if (document.getElementById('category-modal').style.display === 'flex') {
+        const modal = document.getElementById('category-modal');
+        if (!modal.classList.contains('hidden')) {
             if (e.key === 'ArrowRight') prevCategory();
             if (e.key === 'ArrowLeft') nextCategory();
         }
