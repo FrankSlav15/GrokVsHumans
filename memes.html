@@ -604,7 +604,9 @@
     if (url.endsWith('.gif')) {
         mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
     } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
-        mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
+    const isMobile = window.innerWidth <= 1024;
+    const controlsAttr = isMobile ? '' : 'controls';
+    mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline ${controlsAttr}></video>`;
     } else {
         mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
     }
