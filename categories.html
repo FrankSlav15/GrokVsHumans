@@ -377,8 +377,14 @@
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <div class="relative flex-shrink-0">
-                <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
-                <div id="modal-image" class="h-80 w-full bg-zinc-800 overflow-hidden"></div>
+                <!-- Close X -->
+                <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
+
+                <!-- Swipe arrows (reversed direction like memes) -->
+                <button onclick="event.stopImmediatePropagation(); nextCategory()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+                <button onclick="event.stopImmediatePropagation(); prevCategory()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+
+                <div id="modal-image" class="w-full bg-zinc-800"></div>
             </div>
 
             <div class="p-8 overflow-y-auto flex-1">
@@ -463,6 +469,7 @@
     };
 
     function openCategoryModal(id) {
+        currentCategoryIndex = id;
         const data = categoryData[id];
         if (!data) return;
         currentCategoryId = id;
@@ -581,6 +588,44 @@
     });
 
     window.addEventListener('hashchange', checkDeepLink);
+
+        // === SWIPE NAVIGATION FOR CATEGORIES (reversed direction) ===
+        let currentCategoryIndex = 0;
+
+        function nextCategory() {
+        currentCategoryIndex = (currentCategoryIndex + 1) % categoryData.length;
+        closeCategoryModal();
+        setTimeout(() => openCategoryModal(currentCategoryIndex), 300);
+        }
+
+        function prevCategory() {
+        currentCategoryIndex = (currentCategoryIndex - 1 + categoryData.length) % categoryData.length;
+        closeCategoryModal();
+        setTimeout(() => openCategoryModal(currentCategoryIndex), 300);
+        }
+
+        // Touch swipe
+        let touchStartXCat = 0;
+        const categoryModalElement = document.getElementById('category-modal'); // change ID if yours is different
+
+        categoryModalElement.addEventListener('touchstart', e => {
+        touchStartXCat = e.changedTouches[0].screenX;
+        });
+
+        categoryModalElement.addEventListener('touchend', e => {
+        const touchEndX = e.changedTouches[0].screenX;
+        if (touchEndX < touchStartXCat - 50) nextCategory();
+        if (touchEndX > touchStartXCat + 50) prevCategory();
+        });
+
+        // Keyboard arrows
+        document.addEventListener('keydown', e => {
+        if (document.getElementById('category-modal').style.display === 'flex') {
+            if (e.key === 'ArrowRight') prevCategory();
+            if (e.key === 'ArrowLeft') nextCategory();
+        }
+        });
+
     </script>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
