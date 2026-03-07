@@ -81,7 +81,6 @@
             border-bottom-right-radius: 1.5rem;
             overflow: hidden; }
 
-        /* VIDEO PLAY ICON ON GRID */
         .video-card::after {
             content: '';
             position: absolute;
@@ -117,63 +116,12 @@
             #battle-modal { padding: 8px; }
             .modal-content { max-height: 96vh !important; border-radius: 20px; }
             #modal-image { height: 205px !important; }
-            .modal-content .p-8 { padding: 1.05rem !important; }
-            .modal-content .p-6 { padding: 11px 13px !important; gap: 8px !important; }
-            .modal-content .p-6 a,
-            .modal-content .p-6 button {
-                padding: 10px 12px !important;
-                font-size: 0.80rem !important;
-                min-height: 46px;
-                line-height: 1.15;
-                white-space: normal;
-            }
-            #modal-x-link span { font-size: 0.79rem !important; }
-            #modal-title { font-size: 1.52rem !important; line-height: 1.22 !important; }
-            .modal-content .buttons button {
-                padding: 9px !important;
-                font-size: 0.85rem !important;
-                min-height: 44px;
-            }
-            #modal-tags span {
-                font-size: 0.71rem !important;
-                padding: 3px 8px !important;
-            }
         }
-
-        /* Force portrait on phones only (tablets stay normal) */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-
-        /* Compact mobile modal buttons – same as memes & categories */
-        @media (max-width: 640px) {
-        #battleModal .border-t.border-zinc-800,   /* or whatever the modal footer class is */
-        #modal-buttons {
-            padding: 12px 10px !important;
-            gap: 6px !important;
-        }
-        #battleModal button,
-        #battleModal a {
-            gap: 8px !important;
-            padding: 12px 10px !important;
-            font-size: 0.85rem !important;
-            min-height: 48px !important;
-            border-radius: 12px !important;
-        }
-        }
-
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (unchanged) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -435,66 +383,58 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL - NOW WITH ARROWS + SWIPE (exact match to memes.html) -->
+    <!-- BATTLE MODAL - FIXED (no accidental close) -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
-    <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
-        
-        <!-- Close X -->
+      <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
         <button onclick="closeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
 
-        <!-- Navigation Arrows (reversed direction — same as memes.html) -->
-        <button onclick="event.stopImmediatePropagation(); nextBattle()" 
-                class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
-        <button onclick="event.stopImmediatePropagation(); prevBattle()" 
-                class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+        <button onclick="event.stopImmediatePropagation(); nextBattle()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+        <button onclick="event.stopImmediatePropagation(); prevBattle()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
 
         <div class="relative flex-shrink-0">
-        <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
+          <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
         </div>
 
         <div class="flex-1 overflow-y-auto p-8">
-        <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-        <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+          <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+          <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
-        <div class="space-y-8">
+          <div class="space-y-8">
             <div>
-            <div class="flex items-center gap-2 text-purple-400 mb-3">
+              <div class="flex items-center gap-2 text-purple-400 mb-3">
                 <i class="fa-solid fa-user"></i>
                 <span class="font-medium">Human's Argument</span>
-            </div>
-            <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
+              </div>
+              <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
             </div>
 
             <div>
-            <div class="flex items-center gap-2 text-purple-400 mb-3">
+              <div class="flex items-center gap-2 text-purple-400 mb-3">
                 <i class="fa-solid fa-robot"></i>
                 <span class="font-medium">Grok's Response</span>
+              </div>
+              <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
             </div>
-            <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
-            </div>
-        </div>
+          </div>
 
-        <div class="mt-12 pt-8 border-t border-zinc-800">
+          <div class="mt-12 pt-8 border-t border-zinc-800">
             <div class="buttons flex">
-            <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-            <button onclick="voteFromModal(event, 'human')" id="modal-human-btn" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+              <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+              <button onclick="voteFromModal(event, 'human')" id="modal-human-btn" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
             </div>
-        </div>
+          </div>
         </div>
 
         <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-        <a id="modal-x-link" href="#" target="_blank" 
-            class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
+          <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
             <i class="fa-brands fa-x-twitter text-3xl"></i>
             <span class="text-center">Participate</span>
-        </a>
-        <button onclick="showShareMenu()" 
-                class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-            <i class="fa-solid fa-share-nodes"></i>
-            Share Battle
-        </button>
+          </a>
+          <button onclick="showShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+            <i class="fa-solid fa-share-nodes"></i> Share Battle
+          </button>
         </div>
-    </div>
+      </div>
     </div>
 
     <script>
@@ -608,7 +548,6 @@
         16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", shortDesc: "Human claims elites manipulate history via selective digitization. Grok explains archiving realities.", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. AI highlights those limits and points to archives or in-person checks.", xLink: "https://x.com/grok/status/2028680359861219729" }
     };
 
-        // === NAVIGATION (swipe + arrows - matches memes.html exactly) ===
     function getBattleKeys() {
         return Object.keys(battleData).map(Number).sort((a,b) => a - b);
     }
@@ -648,13 +587,12 @@
         }
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-        // Initialize Plyr for clean controls
         if (document.getElementById('modal-video')) {
-        window.currentPlyr = new Plyr('#modal-video', {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-            settings: [],
-            tooltips: { controls: true, seek: true }
-        });
+            window.currentPlyr = new Plyr('#modal-video', {
+                controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                settings: [],
+                tooltips: { controls: true, seek: true }
+            });
         }
 
         const tagDisplay = {
@@ -686,13 +624,10 @@
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        document.addEventListener('keydown', handleEscape);
-
         updateModalVoteUI();
     }
 
     function closeModal() {
-        // Stop sound and clean up Plyr
         if (window.currentPlyr) {
             window.currentPlyr.pause();
             window.currentPlyr.destroy();
@@ -701,21 +636,12 @@
         const modal = document.getElementById('battle-modal');
         modal.classList.add('hidden');
         document.body.style.overflow = 'visible';
-        document.removeEventListener('keydown', handleEscape);
 
         if (currentBattleId) {
             updateGridVoteUI(currentBattleId);
             currentBattleId = null;
         }
     }
-
-        // KEYBOARD ARROWS + ESC (reversed logic to match memes.html)
-    document.addEventListener('keydown', e => {
-        if (document.getElementById('battle-modal').classList.contains('hidden') || !currentBattleId) return;
-        if (e.key === 'Escape') closeModal();
-        else if (e.key === 'ArrowLeft') nextBattle();
-        else if (e.key === 'ArrowRight') prevBattle();
-    });
 
     function voteFromModal(event, winner) {
         event.stopImmediatePropagation();
@@ -745,6 +671,15 @@
         }
     }
 
+    // SINGLE CLEAN KEYBOARD LISTENER (ArrowLeft = next, ArrowRight = prev, matches memes.html)
+    document.addEventListener('keydown', e => {
+        const modal = document.getElementById('battle-modal');
+        if (modal.classList.contains('hidden') || !currentBattleId) return;
+        if (e.key === 'Escape') closeModal();
+        else if (e.key === 'ArrowLeft') nextBattle();
+        else if (e.key === 'ArrowRight') prevBattle();
+    });
+
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
@@ -753,11 +688,10 @@
         }
     }
 
+    // SWIPE + DEEP LINK (inside DOMContentLoaded)
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
-    });
 
-        // SWIPE GESTURES (mobile)
         let touchStartX = 0;
         const battleModal = document.getElementById('battle-modal');
         battleModal.addEventListener('touchstart', e => {
@@ -769,6 +703,7 @@
             if (touchEndX < touchStartX - 60) nextBattle();
             if (touchEndX > touchStartX + 60) prevBattle();
         }, {passive: true});
+    });
 
     window.addEventListener('hashchange', checkDeepLink);
 
