@@ -623,14 +623,14 @@
 
     document.getElementById('modal-image').innerHTML = mediaHTML;
 
-    // Initialize Plyr for clean controls
-    if (document.getElementById('modal-video')) {
-    const player = new Plyr('#modal-video', {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-        settings: [],
-        tooltips: { controls: true, seek: true }
-    });
-    }
+        // Initialize Plyr for clean controls
+        if (document.getElementById('modal-video')) {
+        window.currentPlyr = new Plyr('#modal-video', {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            settings: [],
+            tooltips: { controls: true, seek: true }
+        });
+        }
     document.getElementById('context-panel').style.display = 'none';
     document.getElementById('modal-buttons').style.display = 'flex';
     document.getElementById('meme-modal').style.display = 'flex';
@@ -638,6 +638,13 @@
 }
 
     function closeMemeModal() {
+        // Stop sound and clean up Plyr when modal closes
+        if (window.currentPlyr) {
+            window.currentPlyr.pause();
+            window.currentPlyr.destroy();
+            window.currentPlyr = null;
+        }
+
         document.getElementById('meme-modal').style.display = 'none';
         document.body.style.overflow = 'visible';
     }
