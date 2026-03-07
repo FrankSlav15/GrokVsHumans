@@ -738,48 +738,6 @@
         }
     });
 
-            // === SWIPE NAVIGATION FOR MEMES ===
-        let currentModalIndex = 0;
-
-        function openMemeModal(index) {
-        currentModalIndex = index;
-        // ... your existing openMemeModal code stays exactly the same ...
-        }
-
-            function nextItem() {
-        currentModalIndex = (currentModalIndex + 1) % memeData.length;
-        closeModal();
-        setTimeout(() => openMemeModal(currentModalIndex), 300);
-        }
-
-        function prevItem() {
-        currentModalIndex = (currentModalIndex - 1 + memeData.length) % memeData.length;
-        closeModal();
-        setTimeout(() => openMemeModal(currentModalIndex), 300);
-        }
-
-        // Touch swipe support
-        let touchStartX = 0;
-        const modalContent = document.getElementById('memeModal');
-
-        modalContent.addEventListener('touchstart', e => {
-        touchStartX = e.changedTouches[0].screenX;
-        });
-
-        modalContent.addEventListener('touchend', e => {
-        const touchEndX = e.changedTouches[0].screenX;
-        if (touchEndX < touchStartX - 50) nextItem();
-        if (touchEndX > touchStartX + 50) prevItem();
-        });
-
-        // Keyboard arrows (desktop)
-        document.addEventListener('keydown', e => {
-        if (document.getElementById('memeModal').style.display !== 'none') {
-            if (e.key === 'ArrowRight') nextItem();
-            if (e.key === 'ArrowLeft') prevItem();
-        }
-        });
-
     </script>
 </body>
 
