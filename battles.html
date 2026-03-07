@@ -43,6 +43,42 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
+        /* === UNIFIED ARROW STYLE (just outside modal) === */
+        .modal-content {
+            position: relative;
+            overflow: visible; /* allows arrows to stick out */
+        }
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            border-radius: 9999px;
+            z-index: 60;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .nav-arrow:hover {
+            background: rgba(0,0,0,0.95);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .nav-arrow-left  { left: -58px; }
+        .nav-arrow-right { right: -58px; }
+
+        /* mobile fallback - arrows move closer */
+        @media (max-width: 640px) {
+            .nav-arrow-left  { left: -42px; }
+            .nav-arrow-right { right: -42px; }
+            .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
+        }
+
         .battle-card {
             transition: all 0.3s ease;
             cursor: pointer;
@@ -383,13 +419,18 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL - FIXED (no accidental close) -->
+    <!-- BATTLE MODAL - UNIFIED "JUST OUTSIDE" ARROWS -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
       <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+        
+        <!-- Close X -->
         <button onclick="closeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
 
-        <button onclick="event.stopImmediatePropagation(); nextBattle()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
-        <button onclick="event.stopImmediatePropagation(); prevBattle()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+        <!-- NEW UNIFIED ARROWS - JUST OUTSIDE THE CARD -->
+        <button onclick="event.stopImmediatePropagation(); nextBattle()" 
+                class="nav-arrow nav-arrow-left">‹</button>
+        <button onclick="event.stopImmediatePropagation(); prevBattle()" 
+                class="nav-arrow nav-arrow-right">›</button>
 
         <div class="relative flex-shrink-0">
           <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
