@@ -512,9 +512,11 @@
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
 
-            <!-- NEW LEFT/RIGHT ARROW BUTTONS -->
+            <!-- Swipe arrows -->
+            <button onclick="prevMeme()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+            <button onclick="nextMeme()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
 
-            <div id="modal-image" class="w-full bg-zinc-800"></div>
+        <div id="modal-image" class="w-full bg-zinc-800"></div>
 
             <div id="context-panel" class="hidden p-5 bg-zinc-900 border-t border-purple-500/40">
                 <div class="flex justify-between items-start gap-4">
@@ -608,7 +610,8 @@
     }
 
     function openMemeModal(id) {
-    const data = memeData[id];
+        currentMemeIndex = id;
+        const data = memeData[id];
     if (!data) return;
     currentMemeId = id;
 
@@ -736,6 +739,43 @@
             const modal = document.getElementById('meme-modal');
             if (modal.style.display === 'flex') closeMemeModal();
         }
+    });
+
+    // === SWIPE NAVIGATION FOR MEMES (working version) ===
+    let currentMemeIndex = 0;
+
+    function nextMeme() {
+    currentMemeIndex = (currentMemeIndex + 1) % memeData.length;
+    closeMemeModal();
+    setTimeout(() => openMemeModal(currentMemeIndex), 300);
+    }
+
+    function prevMeme() {
+    currentMemeIndex = (currentMemeIndex - 1 + memeData.length) % memeData.length;
+    closeMemeModal();
+    setTimeout(() => openMemeModal(currentMemeIndex), 300);
+    }
+
+    // Touch swipe on phone/tablet
+    let touchStartX = 0;
+    const memeModalElement = document.getElementById('meme-modal');
+
+    memeModalElement.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    });
+
+    memeModalElement.addEventListener('touchend', e => {
+    const touchEndX = e.changedTouches[0].screenX;
+    if (touchEndX < touchStartX - 50) nextMeme();
+    if (touchEndX > touchStartX + 50) prevMeme();
+    });
+
+    // Keyboard arrows on desktop
+    document.addEventListener('keydown', e => {
+    if (document.getElementById('meme-modal').style.display === 'flex') {
+        if (e.key === 'ArrowRight') nextMeme();
+        if (e.key === 'ArrowLeft') prevMeme();
+    }
     });
 
     </script>
