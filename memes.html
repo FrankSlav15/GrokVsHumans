@@ -188,38 +188,44 @@
         }
         }
 
-        /* Phase 2 – VIDEO MODAL CLEAN-UP (mute moved to bottom-right on mobile/tablet) */
-        @media (max-width: 768px) {
+        /* Phase 2 – STRONGER VIDEO MUTE BUTTON FIX (bottom-right on iPhone/iPad) */
+        @media (max-width: 1024px) {
         #memeModal .modal-content {
-            padding-top: 60px !important;
+            padding-top: 80px !important;
         }
 
-        .video-container,
-        .modal-video-wrapper {
+        .video-container, 
+        .modal-video-wrapper,
+        #modalVideoContainer {
             position: relative !important;
         }
 
-        /* Move mute button to safe bottom-right corner inside video */
-        .mute-btn,
-        button[onclick*="toggleMute"],
-        button[onclick*="mute"],
-        .video-mute-button,
-        .mute-button {
+        /* Broad targeting for ANY mute button (catches all variations) */
+        button[class*="mute"], 
+        button[onclick*="mute"], 
+        button[onclick*="Mute"], 
+        button[onclick*="volume"], 
+        .mute-btn, 
+        .mute-button,
+        .video-mute,
+        [class*="Mute"],
+        [class*="mute"] {
             position: absolute !important;
-            bottom: 20px !important;
-            right: 20px !important;
+            bottom: 24px !important;
+            right: 24px !important;
             top: auto !important;
-            z-index: 50 !important;
-            background: rgba(0,0,0,0.85) !important;
+            z-index: 9999 !important;
+            background: rgba(0, 0, 0, 0.9) !important;
             border-radius: 50% !important;
-            padding: 10px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6) !important;
+            padding: 12px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
         }
 
-        /* Close X stays top-right and always on top */
-        .close-modal,
+        /* Close X always wins */
+        .close-modal, 
+        button[onclick*="closeModal"],
         .modal-close {
-            z-index: 60 !important;
+            z-index: 10000 !important;
         }
         }
 
