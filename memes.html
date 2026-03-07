@@ -515,9 +515,9 @@
     <!-- Close X -->
     <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
 
-    <!-- Swipe arrows -->
-    <button onclick="event.stopImmediatePropagation(); prevMeme()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
-    <button onclick="event.stopImmediatePropagation(); nextMeme()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+    <!-- Swipe arrows – REVERSED DIRECTION (right = backward) -->
+<button onclick="event.stopImmediatePropagation(); nextMeme()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+<button onclick="event.stopImmediatePropagation(); prevMeme()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
 
     <div id="modal-image" class="w-full bg-zinc-800"></div>
 
@@ -782,8 +782,8 @@
     // Keyboard arrows on desktop
     document.addEventListener('keydown', e => {
     if (document.getElementById('meme-modal').style.display === 'flex') {
-        if (e.key === 'ArrowRight') nextMeme();
-        if (e.key === 'ArrowLeft') prevMeme();
+        if (e.key === 'ArrowRight') prevMeme();   // right = backward (older)
+        if (e.key === 'ArrowLeft') nextMeme();    // left = forward (newer)
     }
     });
 
