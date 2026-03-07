@@ -470,7 +470,7 @@
 
     function openCategoryModal(id) {
         currentCategoryIndex = id;
-        const data = categoryData[id];
+        const data = categoryData[Number(id)];
         if (!data) return;
         currentCategoryId = id;
 
