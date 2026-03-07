@@ -9,6 +9,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
@@ -147,6 +149,23 @@
             height: 100vw;
             overflow: hidden;
             position: fixed;
+        }
+        }
+
+        /* Compact mobile modal buttons – same as memes & categories */
+        @media (max-width: 640px) {
+        #battleModal .border-t.border-zinc-800,   /* or whatever the modal footer class is */
+        #modal-buttons {
+            padding: 12px 10px !important;
+            gap: 6px !important;
+        }
+        #battleModal button,
+        #battleModal a {
+            gap: 8px !important;
+            padding: 12px 10px !important;
+            font-size: 0.85rem !important;
+            min-height: 48px !important;
+            border-radius: 12px !important;
         }
         }
 
@@ -587,11 +606,20 @@
         const url = data.image.toLowerCase();
         let mediaHTML = '';
         if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
-            mediaHTML = `<video src="${data.image}" class="w-full h-full object-cover" autoplay loop muted controls playsinline></video>`;
+            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full h-full object-cover" autoplay loop muted playsinline></video>`;
         } else {
             mediaHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
         }
         document.getElementById('modal-image').innerHTML = mediaHTML;
+
+        // Initialize Plyr for clean controls
+        if (document.getElementById('modal-video')) {
+        window.currentPlyr = new Plyr('#modal-video', {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            settings: [],
+            tooltips: { controls: true, seek: true }
+        });
+        }
 
         const tagDisplay = {
             nonsense: "Nonsense",
@@ -628,6 +656,12 @@
     }
 
     function closeModal() {
+        // Stop sound and clean up Plyr
+        if (window.currentPlyr) {
+            window.currentPlyr.pause();
+            window.currentPlyr.destroy();
+            window.currentPlyr = null;
+        }
         const modal = document.getElementById('battle-modal');
         modal.classList.add('hidden');
         document.body.style.overflow = 'visible';
