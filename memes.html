@@ -188,14 +188,10 @@
         }
         }
 
-        /* Phase 2 FINAL – Hide custom mute button on mobile (Brave/iOS) */
+        /* Phase 2 FINAL – Safe top padding so Close X never crowds video controls on mobile */
         @media (max-width: 1024px) {
-        #memeModal .mute-btn,
-        #memeModal button[onclick*="toggleMute"],
-        #memeModal button[onclick*="mute"],
-        #memeModal .video-mute-button,
-        #memeModal [class*="mute"] {
-            display: none !important;
+        #memeModal .modal-content {
+            padding-top: 90px !important;
         }
         }
 
@@ -604,9 +600,7 @@
     if (url.endsWith('.gif')) {
         mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
     } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
-    const isMobile = window.innerWidth <= 1024;
-    const controlsAttr = isMobile ? '' : 'controls';
-    mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline ${controlsAttr}></video>`;
+    mediaHTML = `<video src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted controls playsinline></video>`;
     } else {
         mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
     }
