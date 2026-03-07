@@ -165,20 +165,26 @@
             #modal-image img, #modal-image video { max-height: 68vh !important; }
         }
 
-        /* Phase 1 – CLEAN MOBILE MODAL BUTTONS (icons no longer touch edges) */
+        /* Phase 1 – COMPACT MOBILE MODAL BUTTONS (smaller + "Search" only) */
         @media (max-width: 640px) {
         #modal-buttons {
-            padding: 16px 12px !important;
-            gap: 8px !important;
+            padding: 12px 10px !important;
+            gap: 6px !important;
         }
         #modal-buttons button {
-            gap: 10px !important;
-            padding: 16px 14px !important;
-            font-size: 0.92rem !important;
-            min-height: 56px;
+            gap: 8px !important;
+            padding: 12px 10px !important;
+            font-size: 0.85rem !important;
+            min-height: 48px !important;
+            border-radius: 12px !important;
         }
         #modal-buttons i {
-            font-size: 1.3rem !important;
+            font-size: 1.25rem !important;
+        }
+        #modal-buttons span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         }
     </style>
@@ -496,7 +502,7 @@
 
             <div id="modal-buttons" class="border-t border-zinc-800 p-5 flex gap-3">
                 <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
-                    <i class="fa-solid fa-magnifying-glass"></i> Search for This MEME
+                    <i class="fa-solid fa-magnifying-glass"></i> Search
                 </button>
                 <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
                     <i class="fa-solid fa-info-circle"></i> Info / Context
