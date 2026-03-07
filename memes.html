@@ -164,6 +164,23 @@
             .modal-content { max-height: 96vh; border-radius: 20px; }
             #modal-image img, #modal-image video { max-height: 68vh !important; }
         }
+
+        /* Phase 1 – CLEAN MOBILE MODAL BUTTONS (icons no longer touch edges) */
+        @media (max-width: 640px) {
+        #modal-buttons {
+            padding: 16px 12px !important;
+            gap: 8px !important;
+        }
+        #modal-buttons button {
+            gap: 10px !important;
+            padding: 16px 14px !important;
+            font-size: 0.92rem !important;
+            min-height: 56px;
+        }
+        #modal-buttons i {
+            font-size: 1.3rem !important;
+        }
+        }
     </style>
 </head>
 <body class="text-white">
