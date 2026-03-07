@@ -188,10 +188,24 @@
         }
         }
 
-        /* Phase 2 FINAL – Safe top padding so Close X never crowds video controls on mobile */
+        /* Phase 2 FINAL – Generous top padding + bigger Close X on mobile (separates native mute icon) */
         @media (max-width: 1024px) {
         #memeModal .modal-content {
-            padding-top: 90px !important;
+            padding-top: 130px !important;
+        }
+        
+        #memeModal .modal-video-wrapper,
+        #memeModal .video-container {
+            margin-top: 10px !important;
+        }
+        
+        /* Bigger, clearer Close X on mobile */
+        #memeModal .close-modal {
+            top: 18px !important;
+            right: 18px !important;
+            font-size: 32px !important;
+            padding: 8px !important;
+            z-index: 10000 !important;
         }
         }
 
