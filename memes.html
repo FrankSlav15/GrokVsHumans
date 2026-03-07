@@ -510,8 +510,12 @@
     <!-- MODAL -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
-            <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-2xl transition-colors">✕</button>
-            
+            <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
+
+            <!-- NEW LEFT/RIGHT ARROW BUTTONS -->
+            <button onclick="prevItem()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+            <button onclick="nextItem()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+
             <div id="modal-image" class="w-full bg-zinc-800"></div>
 
             <div id="context-panel" class="hidden p-5 bg-zinc-900 border-t border-purple-500/40">
@@ -735,6 +739,48 @@
             if (modal.style.display === 'flex') closeMemeModal();
         }
     });
+
+            // === SWIPE NAVIGATION FOR MEMES ===
+        let currentModalIndex = 0;
+
+        function openMemeModal(index) {
+        currentModalIndex = index;
+        // ... your existing openMemeModal code stays exactly the same ...
+        }
+
+            function nextItem() {
+        currentModalIndex = (currentModalIndex + 1) % memeData.length;
+        closeModal();
+        setTimeout(() => openMemeModal(currentModalIndex), 300);
+        }
+
+        function prevItem() {
+        currentModalIndex = (currentModalIndex - 1 + memeData.length) % memeData.length;
+        closeModal();
+        setTimeout(() => openMemeModal(currentModalIndex), 300);
+        }
+
+        // Touch swipe support
+        let touchStartX = 0;
+        const modalContent = document.getElementById('memeModal');
+
+        modalContent.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+        });
+
+        modalContent.addEventListener('touchend', e => {
+        const touchEndX = e.changedTouches[0].screenX;
+        if (touchEndX < touchStartX - 50) nextItem();
+        if (touchEndX > touchStartX + 50) prevItem();
+        });
+
+        // Keyboard arrows (desktop)
+        document.addEventListener('keydown', e => {
+        if (document.getElementById('memeModal').style.display !== 'none') {
+            if (e.key === 'ArrowRight') nextItem();
+            if (e.key === 'ArrowLeft') prevItem();
+        }
+        });
 
     </script>
 </body>
