@@ -507,14 +507,13 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- MODAL -->
-        <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4">
-            <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl relative" onclick="event.stopImmediatePropagation()">
-            <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
+    
+        <!-- Close X -->
+        <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-full text-3xl transition-all">×</button>
 
-            <!-- Swipe arrows - FIXED (stops closing the modal) -->
-            <button onclick="event.stopImmediatePropagation(); prevMeme()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
-            <button onclick="event.stopImmediatePropagation(); nextMeme()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
+        <!-- Swipe arrows -->
+        <button onclick="event.stopImmediatePropagation(); prevMeme()" class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">‹</button>
+        <button onclick="event.stopImmediatePropagation(); nextMeme()" class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-11 h-11 rounded-full flex items-center justify-center text-4xl z-50 transition-all active:scale-90">›</button>
 
         <div id="modal-image" class="w-full bg-zinc-800"></div>
 
