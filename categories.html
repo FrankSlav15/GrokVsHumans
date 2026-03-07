@@ -250,7 +250,7 @@
                 <!-- 9 -->
                 <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
                     <div class="aspect-video">
-                        <img src="ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                        <img src="assets/images/memes/ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok helps</h4></div>
@@ -294,7 +294,7 @@
                 <!-- 5 -->
                 <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
                     <div class="aspect-video">
-                        <img src="summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                        <img src="assets/images/memes/summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, summarize this</h4></div>
@@ -305,7 +305,7 @@
                 <!-- 4 -->
                 <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
                     <div class="aspect-video">
-                        <img src="chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                        <img src="assets/images/memes/chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is implanting a chip lazy?</h4></div>
@@ -316,7 +316,7 @@
                 <!-- 3 -->
                 <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
                     <div class="aspect-video">
-                        <img src="impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                        <img src="assets/images/memes/impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is this impersonating Elon?</h4></div>
@@ -327,7 +327,7 @@
                 <!-- 2 -->
                 <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
                     <div class="aspect-video">
-                        <img src="iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                        <img src="assets/images/memes/iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Break down US vs Iran</h4></div>
@@ -338,7 +338,7 @@
                 <!-- 1 -->
                 <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
                     <div class="aspect-video">
-                        <img src="skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                        <img src="assets/images/memes/skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, is this true?</h4></div>
@@ -393,7 +393,7 @@
 
     <script>
     // BACKGROUND ROTATOR (unchanged)
-    const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
+    const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
     document.body.style.backgroundPosition = '50% 35%';
@@ -428,15 +428,15 @@
 
     const categoryData = {
 
-        1: { title: "Grok, is this true?", image: "skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
-        2: { title: "Break down US vs Iran", image: "iran-summary.webp", tags: ["lazy"], summary: "User asks for a simple lazy-person breakdown of complex US-Iran tensions.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
-        3: { title: "Is this impersonating Elon?", image: "impersonator.webp", tags: ["lazy"], summary: "User shows an account pretending to be Elon and asks Grok to verify.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
-        4: { title: "Is implanting a chip lazy?", image: "chip.webp", tags: ["lazy"], summary: "User questions whether getting a Neuralink chip is a lazy way to upgrade humanity.", xLink: "https://x.com/grok/status/2027985872251961387" },
-        5: { title: "Grok, summarize this", image: "summarize.webp", tags: ["lazy"], summary: "User wants Grok to provide a concise summary of a lengthy text or thread.", xLink: "https://x.com/maxvayshia/status/2019423903169277982" },
+        1: { title: "Grok, is this true?", image: "assets/images/memes/skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
+        2: { title: "Break down US vs Iran", image: "assets/images/memes/iran-summary.webp", tags: ["lazy"], summary: "User asks for a simple lazy-person breakdown of complex US-Iran tensions.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
+        3: { title: "Is this impersonating Elon?", image: "assets/images/memes/impersonator.webp", tags: ["lazy"], summary: "User shows an account pretending to be Elon and asks Grok to verify.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
+        4: { title: "Is implanting a chip lazy?", image: "assets/images/memes/chip.webp", tags: ["lazy"], summary: "User questions whether getting a Neuralink chip is a lazy way to upgrade humanity.", xLink: "https://x.com/grok/status/2027985872251961387" },
+        5: { title: "Grok, summarize this", image: "assets/images/memes/summarize.webp", tags: ["lazy"], summary: "User wants Grok to provide a concise summary of a lengthy text or thread.", xLink: "https://x.com/maxvayshia/status/2019423903169277982" },
         6: { title: "Potato brain", image: "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg", tags: ["photo"], summary: "User asks Grok to generate a stylish, fashionable version of a potato.", xLink: "https://x.com/grok/status/2008960036094034251" },
         7: { title: "Magic actors", image: "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg", tags: ["photo"], summary: "User wants bunny-fied versions of famous Hollywood stars.", xLink: "https://x.com/grok/status/2023279170436919602" },
         8: { title: "Put some clothes on", image: "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg", tags: ["photo"], summary: "User asks Grok to digitally dress someone in an image for modesty.", xLink: "https://x.com/thodahansle/status/2027262477348856183" },
-        9: { title: "Grok helps", image: "ventilator.webp", tags: ["opinion"], summary: "User feeling down asks Grok for positive encouragement and advice.", xLink: "https://x.com/grok/status/2026168522531852490" },
+        9: { title: "Grok helps", image: "assets/images/memes/ventilator.webp", tags: ["opinion"], summary: "User feeling down asks Grok for positive encouragement and advice.", xLink: "https://x.com/grok/status/2026168522531852490" },
         10: { title: "Who's from the future", image: "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg", tags: ["opinion"], summary: "User presents two photos and asks Grok who appears more futuristic.", xLink: "https://x.com/thodahansle/status/2023796696451609049" },
         11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly steers the conversation away.", xLink: "https://x.com/grok/status/1912171402125594659" },
         12: { title: "Send @gork Posts to Your Friends 😂", image: "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg", tags: ["opinion"], summary: "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.", xLink: "https://x.com/elonmusk/status/2029500041451462780" },
