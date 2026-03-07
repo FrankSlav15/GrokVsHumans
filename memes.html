@@ -188,44 +188,44 @@
         }
         }
 
-        /* Phase 2 – STRONGER VIDEO MUTE BUTTON FIX (bottom-right on iPhone/iPad) */
+        /* Phase 2 – AGGRESSIVE MUTE BUTTON FIX FOR iOS (bottom-right guaranteed) */
         @media (max-width: 1024px) {
         #memeModal .modal-content {
-            padding-top: 80px !important;
+            padding-top: 95px !important;
         }
 
-        .video-container, 
-        .modal-video-wrapper,
+        #memeModal .video-container,
+        #memeModal .modal-video-wrapper,
+        #memeModal video,
         #modalVideoContainer {
             position: relative !important;
         }
 
-        /* Broad targeting for ANY mute button (catches all variations) */
-        button[class*="mute"], 
-        button[onclick*="mute"], 
-        button[onclick*="Mute"], 
-        button[onclick*="volume"], 
-        .mute-btn, 
-        .mute-button,
-        .video-mute,
-        [class*="Mute"],
-        [class*="mute"] {
+        /* Ultra-broad targeting — catches whatever class the mute button has on iOS */
+        #memeModal button,
+        #memeModal [class*="mute"],
+        #memeModal [class*="Mute"],
+        #memeModal [onclick*="mute"],
+        #memeModal [onclick*="Mute"],
+        #memeModal [onclick*="volume"],
+        #memeModal .mute-btn,
+        #memeModal .video-mute-button {
             position: absolute !important;
-            bottom: 24px !important;
-            right: 24px !important;
+            bottom: 26px !important;
+            right: 26px !important;
             top: auto !important;
-            z-index: 9999 !important;
-            background: rgba(0, 0, 0, 0.9) !important;
+            z-index: 99999 !important;
+            background: rgba(0,0,0,0.9) !important;
             border-radius: 50% !important;
-            padding: 12px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
+            padding: 11px !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7) !important;
         }
 
-        /* Close X always wins */
-        .close-modal, 
-        button[onclick*="closeModal"],
-        .modal-close {
-            z-index: 10000 !important;
+        /* Close X always stays safely on top */
+        #memeModal .close-modal,
+        #memeModal button[onclick*="closeModal"],
+        #memeModal .modal-close {
+            z-index: 100000 !important;
         }
         }
 
