@@ -604,9 +604,9 @@
         setTimeout(() => openCategoryModal(currentCategoryIndex), 300);
         }
 
-        // Touch swipe
+        // Touch swipe on phone/tablet
         let touchStartXCat = 0;
-        const categoryModalElement = document.getElementById('category-modal'); // change ID if yours is different
+        const categoryModalElement = document.getElementById('category-modal');
 
         categoryModalElement.addEventListener('touchstart', e => {
         touchStartXCat = e.changedTouches[0].screenX;
@@ -618,7 +618,7 @@
         if (touchEndX > touchStartXCat + 50) prevCategory();
         });
 
-        // Keyboard arrows
+        // Keyboard arrows on desktop
         document.addEventListener('keydown', e => {
         if (document.getElementById('category-modal').style.display === 'flex') {
             if (e.key === 'ArrowRight') prevCategory();
