@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Imprint / Impressum - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,6 +24,19 @@
         .content { max-width: 720px; margin: 0 auto; padding: 2rem; }
         .lang-btn { transition: all 0.2s; }
         .lang-btn.active { background-color: rgb(168 85 247); color: white; }
+
+        /* Force portrait on phones only (tablets stay normal) */
+        @media (max-width: 767px) and (orientation: landscape) {
+        html, body {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
+        }
+
     </style>
 </head>
 <body class="text-white">

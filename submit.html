@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Submit Yours - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,6 +39,19 @@
             z-index: -1; }
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+
+        /* Force portrait on phones only (tablets stay normal) */
+        @media (max-width: 767px) and (orientation: landscape) {
+        html, body {
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
+        }
+
     </style>
 </head>
 <body class="text-white">
@@ -126,7 +139,7 @@
 
     <script>
         // RANDOM BACKGROUND ROTATOR (20 images)
-        const bgs = ['bg1.webp','bg2.webp','bg3.webp','bg4.webp','bg5.webp','bg6.webp','bg7.webp','bg8.webp','bg9.webp','bg10.webp','bg11.webp','bg12.webp','bg13.webp','bg14.webp','bg15.webp','bg16.webp','bg17.webp','bg18.webp','bg19.webp','bg20.webp'];
+        const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
         const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
         document.body.style.backgroundImage = `url('/${randomBg}')`;
         document.body.style.backgroundPosition = '50% 35%';
