@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card + Modal Generator v8.2 • Grok vs Humans</title>
+  <title>Card + Modal Generator v8.3 • Grok vs Humans</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
@@ -20,7 +20,7 @@
     .battle-card .buttons { flex-shrink: 0; border-top: 1px solid #27272a; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; overflow: hidden; }
     .video-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
     .video-card:hover::after { opacity: 1; }
-    .video-card::after i { font-size: 3.8rem; color: white; }
+    .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
     .preview-container { max-width: 380px; margin: 0 auto; }
     .tab-button { transition: all 0.3s; }
     .tab-button.active { border-bottom: 4px solid rgb(168 85 247); color: white; font-weight: 600; }
@@ -33,7 +33,7 @@
   <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="flex items-center gap-4 mb-8">
       <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
-      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.2</span></h1>
+      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.3</span></h1>
     </div>
 
     <!-- TABS -->
@@ -57,12 +57,12 @@
           </div>
           <div class="grid grid-cols-2 gap-6">
             <div><label class="block text-sm font-medium mb-2 text-zinc-400">Card ID</label><input id="cardId" type="number" value="29" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Media URL</label><input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Media URL (image or video)</label><input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
           </div>
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Title</label><input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label><textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
 
-          <!-- PAGE-SPECIFIC MULTI-CHECKBOX FILTER TAGS -->
+          <!-- PAGE-SPECIFIC MULTI-CHECKBOX FILTER TAGS (from your screenshots) -->
           <div id="filterSection">
             <label class="block text-sm font-medium mb-3 text-purple-400">Filter Tags (select all that apply)</label>
             <div id="checkboxGrid" class="checkbox-grid"></div>
@@ -104,7 +104,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div><label class="block text-sm font-medium mb-2">Card Type</label><select id="batchType" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"><option value="battle">Battles</option><option value="category">Categories</option><option value="meme">Memes</option></select></div>
-          <div><label class="block text-sm font-medium mb-2">Starting Card ID</label><input id="batchStartId" type="number" value="28" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+          <div><label class="block text-sm font-medium mb-2">Starting Card ID</label><input id="batchStartId" type="number" value="29" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
         </div>
         <div><label class="block text-sm font-medium mb-2">Paste X/Twitter Links (one per line)</label><textarea id="batchLinks" rows="8" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-6 py-5 text-lg font-mono"></textarea></div>
         <button onclick="generateBatchPrompt()" class="mt-8 w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 font-semibold py-6 rounded-3xl text-2xl transition flex items-center justify-center gap-3"><i class="fa-solid fa-paper-plane"></i> Generate Perfect Prompt for Grok</button>
@@ -113,7 +113,6 @@
           <pre id="promptText" class="bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 text-sm overflow-auto max-h-96 whitespace-pre-wrap font-mono"></pre>
           <button onclick="copyPrompt()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 px-8 py-4 rounded-3xl font-semibold">Copy Prompt</button>
         </div>
-        <!-- Paste Grok Response + Parse Results -->
         <div class="mt-16 border-t border-zinc-700 pt-10">
           <h2 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fa-solid fa-robot text-emerald-400"></i> Paste Grok’s Response</h2>
           <textarea id="grokResponse" rows="10" class="w-full bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 font-mono text-sm"></textarea>
@@ -153,7 +152,7 @@
       document.querySelectorAll('.tab-button').forEach((b,i) => b.classList.toggle('active', i===n));
     }
 
-    // EXACT FILTER TAGS FROM YOUR THREE SCREENSHOTS
+    // EXACT TAGS FROM YOUR SCREENSHOTS
     const tagOptions = {
       battle: ["nonsense", "political", "serious", "citation", "joke", "censorship"],
       category: ["lazy", "photo", "opinion", "avoids", "other"],
@@ -177,7 +176,6 @@
       }
       container.innerHTML = fields;
 
-      // Dynamic checkboxes from your screenshots
       const grid = document.getElementById('checkboxGrid');
       grid.innerHTML = '';
       const tags = tagOptions[type] || [];
@@ -190,7 +188,9 @@
       });
     }
 
-    function isVideo(url) { return url.match(/\.(mp4|webm|ogg|mov)$/i); }
+    function isVideo(url) {
+      return url.match(/\.(mp4|webm|ogg|mov)$/i);
+    }
 
     function generateAll() {
       const type = document.getElementById('cardType').value;
@@ -204,7 +204,9 @@
       const filterString = checkedTags.length ? checkedTags.join(',') : (type === 'meme' ? 'grok-memes' : 'political');
 
       const videoClass = isVideo(media) ? ' video-card' : '';
-      const mediaTag = isVideo(media) ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
+      const mediaTag = isVideo(media) 
+        ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` 
+        : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
 
       let html = '';
       let dataLine = '';
@@ -243,7 +245,7 @@
 
       let prompt = `You are Grok helping build www.grokvshumans.com. Reference the live site for uniform styling.\nProcess these ${links.length} X posts.\nStarting ID: ${startId}. Type: ${type}.\n\nLinks:\n`;
       links.forEach((l,i) => prompt += `${i+1}. ${l}\n`);
-      prompt += `\nReturn ONLY these blocks:\n=== CARD X ===\n<!-- ID -->\n[EXACT multi-line HTML]\n\nDATA: ID: { title: "...", image: "...", [other fields] }, ← SINGLE LINE\n\nRules:\n• Use multiple relevant filter tags from the page's exact tabs\n• HTML in REVERSE order at the end\n• DATA strictly single-line`;
+      prompt += `\nReturn ONLY these blocks:\n=== CARD X ===\n<!-- ID -->\n[EXACT multi-line HTML with video-card class and <video> tag if video URL]\n\nDATA: ID: { title: "...", image: "...", [other fields] }, ← SINGLE LINE\n\nRules:\n• Detect video URLs and use <video> + video-card class\n• HTML in REVERSE order at the end\n• DATA strictly single-line\n• Use multiple relevant filter tags`;
 
       document.getElementById('promptText').textContent = prompt;
       document.getElementById('batchPromptOutput').classList.remove('hidden');
