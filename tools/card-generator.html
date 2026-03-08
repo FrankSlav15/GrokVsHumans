@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card + Modal Generator v8.1 • Grok vs Humans</title>
+  <title>Card + Modal Generator v8.2 • Grok vs Humans</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
@@ -33,7 +33,7 @@
   <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="flex items-center gap-4 mb-8">
       <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
-      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.1</span></h1>
+      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.2</span></h1>
     </div>
 
     <!-- TABS -->
@@ -62,9 +62,9 @@
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Title</label><input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label><textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
 
-          <!-- MULTI-CHECKBOX FILTER TAGS -->
+          <!-- PAGE-SPECIFIC MULTI-CHECKBOX FILTER TAGS -->
           <div id="filterSection">
-            <label class="block text-sm font-medium mb-3 text-purple-400">Filter Tags (select multiple where allowed)</label>
+            <label class="block text-sm font-medium mb-3 text-purple-400">Filter Tags (select all that apply)</label>
             <div id="checkboxGrid" class="checkbox-grid"></div>
           </div>
 
@@ -153,18 +153,17 @@
       document.querySelectorAll('.tab-button').forEach((b,i) => b.classList.toggle('active', i===n));
     }
 
-    // PAGE-SPECIFIC TAGS
+    // EXACT FILTER TAGS FROM YOUR THREE SCREENSHOTS
     const tagOptions = {
-      battle: ["political", "serious", "funny", "tech", "space", "economy", "culture", "viral"],
-      category: ["general", "lazy", "ai-tech", "politics", "space", "economy"],
-      meme: ["grok-memes", "misc-memes", "gifs", "ai-tech", "other"]
+      battle: ["nonsense", "political", "serious", "citation", "joke", "censorship"],
+      category: ["lazy", "photo", "opinion", "avoids", "other"],
+      meme: ["grok-memes", "misc-memes", "gifs", "ai-tech", "videos", "other"]
     };
 
     function updateForm() {
       const type = document.getElementById('cardType').value;
       const container = document.getElementById('modalFields');
       let fields = '';
-
       if (type === 'battle') {
         fields = `<div><label class="block text-sm font-medium mb-2">Human Argument</label><textarea id="humanArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
                   <div><label class="block text-sm font-medium mb-2">Grok Argument</label><textarea id="grokArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
@@ -178,7 +177,7 @@
       }
       container.innerHTML = fields;
 
-      // Dynamic checkboxes
+      // Dynamic checkboxes from your screenshots
       const grid = document.getElementById('checkboxGrid');
       grid.innerHTML = '';
       const tags = tagOptions[type] || [];
@@ -201,7 +200,6 @@
       const shortDesc = document.getElementById('shortDesc').value || 'No description provided.';
       const xLink = document.getElementById('xLink') ? document.getElementById('xLink').value.trim() : '#';
 
-      // Collect checked tags
       const checkedTags = Array.from(document.querySelectorAll('#checkboxGrid input:checked')).map(cb => cb.value);
       const filterString = checkedTags.length ? checkedTags.join(',') : (type === 'meme' ? 'grok-memes' : 'political');
 
@@ -218,8 +216,8 @@
         dataLine = `${id}: { title: "${title}", image: "${media}", tags: ["${checkedTags.join('","')}"], human: "${human.replace(/"/g,'\\"')}", grok: "${grok.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
       } else if (type === 'category') {
         const summary = document.getElementById('summary')?.value || shortDesc;
-        html = `<!-- ${id} -->\n<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterString}">\n  <div class="aspect-video">${mediaTag}</div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
-        dataLine = `${id}: { title: "${title}", image: "${media}", tags: ["${filterString}"], summary: "${summary.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
+        html = `<!-- ${id} -->\n<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterString.split(',')[0]}">\n  <div class="aspect-video">${mediaTag}</div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
+        dataLine = `${id}: { title: "${title}", image: "${media}", tags: ["${filterString.split(',')[0]}"], summary: "${summary.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
       } else {
         const context = document.getElementById('context')?.value || shortDesc;
         html = `<!-- ${id} -->\n<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-categories="${filterString}">\n  <div class="aspect-video">${mediaTag}</div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
@@ -245,7 +243,7 @@
 
       let prompt = `You are Grok helping build www.grokvshumans.com. Reference the live site for uniform styling.\nProcess these ${links.length} X posts.\nStarting ID: ${startId}. Type: ${type}.\n\nLinks:\n`;
       links.forEach((l,i) => prompt += `${i+1}. ${l}\n`);
-      prompt += `\nReturn ONLY these blocks:\n=== CARD X ===\n<!-- ID -->\n[EXACT multi-line HTML]\n\nDATA: ID: { title: "...", image: "...", [other fields] }, ← SINGLE LINE\n\nRules:\n• Use multiple relevant filter tags when possible\n• HTML in REVERSE order at the end\n• DATA strictly single-line`;
+      prompt += `\nReturn ONLY these blocks:\n=== CARD X ===\n<!-- ID -->\n[EXACT multi-line HTML]\n\nDATA: ID: { title: "...", image: "...", [other fields] }, ← SINGLE LINE\n\nRules:\n• Use multiple relevant filter tags from the page's exact tabs\n• HTML in REVERSE order at the end\n• DATA strictly single-line`;
 
       document.getElementById('promptText').textContent = prompt;
       document.getElementById('batchPromptOutput').classList.remove('hidden');
