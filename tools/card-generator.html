@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card + Modal Generator v7.2 • Grok vs Humans</title>
+  <title>Card + Modal Generator v7.3 • Grok vs Humans</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     .battle-card, .category-card, .meme-card { transition: all 0.3s ease; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.2); display: flex; flex-direction: column; height: 100%; overflow: hidden; border-radius: 1.5rem; position: relative; }
-    .battle-card:hover, .category-card:hover, .meme-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); border-color: rgb(168 85 247); }
+    .battle-card:hover, .category-card:hover, .meme-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(168,85,247,0.5); border-color: rgb(168 85 247); }
     .battle-card > img, .battle-card > video, .meme-card > img, .meme-card > video { height: 14rem; object-fit: cover; }
     .category-card .aspect-video, .meme-card .aspect-video { height: 15.5rem; }
     .category-card img, .category-card video, .meme-card img, .meme-card video { width: 100%; height: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
@@ -24,14 +24,14 @@
     .preview-container { max-width: 380px; margin: 0 auto; }
     .tab-button { transition: all 0.3s; }
     .tab-button.active { border-bottom: 3px solid rgb(168 85 247); color: white; }
-    .result-card { border: 2px solid #27272a; }
+    .modal-box { background: #111113; }
   </style>
 </head>
 <body class="min-h-screen pb-12">
   <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="flex items-center gap-4 mb-8">
       <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
-      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v7.2</span></h1>
+      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v7.3</span></h1>
     </div>
 
     <!-- TABS -->
@@ -40,38 +40,67 @@
       <button onclick="switchTab(1)" class="tab-button px-8 py-4 font-semibold text-lg" id="tab1">Auto Grok Batch Creator</button>
     </div>
 
-    <!-- SINGLE MODE (unchanged from v7.1 – full code preserved) -->
+    <!-- SINGLE MODE (now 100% fixed) -->
     <div id="singlePanel">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- FORM -->
         <div class="bg-zinc-900 rounded-3xl p-8 space-y-6">
-          <!-- FULL SINGLE FORM (exact same as v7.1) -->
           <div>
-            <label class="block text-sm font-medium mb-2">Card Type</label>
-            <select id="cardType" onchange="updateForm()" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+            <label class="block text-sm font-medium mb-2 text-zinc-400">Card Type</label>
+            <select id="cardType" onchange="updateForm()" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg focus:border-purple-500">
               <option value="battle">Battles</option>
               <option value="category">Categories</option>
               <option value="meme">Memes</option>
             </select>
           </div>
+
           <div class="grid grid-cols-2 gap-6">
-            <div><label class="block text-sm font-medium mb-2">Card ID</label><input id="cardId" type="number" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-            <div><label class="block text-sm font-medium mb-2">Media URL</label><input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+            <div>
+              <label class="block text-sm font-medium mb-2 text-zinc-400">Card ID</label>
+              <input id="cardId" type="number" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2 text-zinc-400">Media URL</label>
+              <input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+            </div>
           </div>
-          <div><label class="block text-sm font-medium mb-2">Title</label><input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-          <div><label class="block text-sm font-medium mb-2">Short Description (for card)</label><textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-          <div class="bg-zinc-950 border border-purple-500/30 rounded-3xl p-6">
+
+          <div>
+            <label class="block text-sm font-medium mb-2 text-zinc-400">Title</label>
+            <input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label>
+            <textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea>
+          </div>
+
+          <!-- FIXED MODAL CONTENT -->
+          <div class="modal-box border border-purple-500/30 rounded-3xl p-6">
             <h3 class="font-semibold text-purple-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-window-restore"></i> MODAL CONTENT</h3>
             <div id="modalFields" class="space-y-6"></div>
           </div>
-          <div class="flex gap-4">
-            <button onclick="generateAll()" class="flex-1 bg-purple-600 hover:bg-purple-700 font-semibold py-5 rounded-3xl text-xl">Generate Card + Data</button>
-            <button onclick="copyAll()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 font-semibold py-5 rounded-3xl text-xl">Copy All</button>
+
+          <div class="flex gap-4 pt-4">
+            <button onclick="generateAll()" class="flex-1 bg-purple-600 hover:bg-purple-700 font-semibold py-5 rounded-3xl text-xl transition">Generate Card + Data</button>
+            <button onclick="copyAll()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 font-semibold py-5 rounded-3xl text-xl transition">Copy All</button>
           </div>
         </div>
+
+        <!-- PREVIEW + OUTPUT -->
         <div class="space-y-6">
-          <div><div class="mb-3 text-sm font-medium text-purple-400 flex items-center gap-2"><i class="fa-solid fa-eye"></i> LIVE CARD PREVIEW</div><div id="preview" class="preview-container bg-zinc-950 border border-zinc-800 rounded-3xl p-6 min-h-[520px]"></div></div>
-          <div><label class="block text-sm font-medium mb-2">Card HTML</label><textarea id="outputCard" readonly class="w-full h-52 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea></div>
-          <div><label class="block text-sm font-medium mb-2">Full Data Object</label><textarea id="outputData" readonly class="w-full h-80 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea></div>
+          <div>
+            <div class="mb-3 text-sm font-medium text-purple-400 flex items-center gap-2"><i class="fa-solid fa-eye"></i> LIVE CARD PREVIEW</div>
+            <div id="preview" class="preview-container bg-zinc-950 border border-zinc-800 rounded-3xl p-6 min-h-[520px]"></div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-zinc-400">Card HTML</label>
+            <textarea id="outputCard" readonly class="w-full h-52 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-zinc-400">Full Data Object</label>
+            <textarea id="outputData" readonly class="w-full h-80 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea>
+          </div>
         </div>
       </div>
     </div>
@@ -110,19 +139,105 @@
   </div>
 
   <script>
-    // ===================== SINGLE MODE (v7.1 code – unchanged) =====================
-    function updateForm() { /* full implementation from v7.1 */ 
-      const type = document.getElementById('cardType').value; const container = document.getElementById('modalFields');
-      let html = type === 'battle' ? `... (battle fields)` : type === 'category' ? `...` : `...`; // (full fields as before)
-      container.innerHTML = html;
-    }
-    function isVideo(u){return u.match(/\.(mp4|webm|ogg|mov)$/i);}
-    function generateAll(){ /* full generation logic from v7.1 */ 
-      // ... (keeps live preview + outputCard + outputData exactly as before)
-      const preview = document.getElementById('preview'); /* render */ }
-    function copyAll(){ navigator.clipboard.writeText(`CARD HTML:\n${document.getElementById('outputCard').value}\n\nDATA:\n${document.getElementById('outputData').value}`); alert('✅ Copied!'); }
+    // ==================== SINGLE MODE (FULLY FIXED) ====================
+    function updateForm() {
+      const type = document.getElementById('cardType').value;
+      const container = document.getElementById('modalFields');
+      let fields = '';
 
-    // ===================== BATCH MODE =====================
+      if (type === 'battle') {
+        fields = `
+          <div><label class="block text-sm font-medium mb-2">Human's Argument</label><textarea id="humanArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+          <div><label class="block text-sm font-medium mb-2">Grok's Response</label><textarea id="grokArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+          <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+          <div><label class="block text-sm font-medium mb-2">Tags (comma-separated)</label><input id="tags" type="text" value="political,serious" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
+      } else if (type === 'category') {
+        fields = `
+          <div><label class="block text-sm font-medium mb-2">Summary (for modal)</label><textarea id="summary" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+          <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+          <div><label class="block text-sm font-medium mb-2">Tag (single)</label><input id="tags" type="text" value="lazy" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
+      } else { // meme
+        fields = `
+          <div><label class="block text-sm font-medium mb-2">Context / Backstory</label><textarea id="context" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+          <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
+      }
+      container.innerHTML = fields;
+    }
+
+    function isVideo(url) { return url.match(/\.(mp4|webm|ogg|mov)$/i); }
+
+    function generateAll() {
+      const type = document.getElementById('cardType').value;
+      const id = document.getElementById('cardId').value || '99';
+      const media = document.getElementById('mediaUrl').value.trim() || 'https://picsum.photos/id/1015/1200/675';
+      const title = document.getElementById('title').value || 'Untitled';
+      const shortDesc = document.getElementById('shortDesc').value || 'No description provided.';
+      const xLink = document.getElementById('xLink') ? document.getElementById('xLink').value.trim() : '#';
+      let tagsInput = document.getElementById('tags') ? document.getElementById('tags').value.trim() : 'general';
+      const tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
+
+      const videoClass = isVideo(media) ? ' video-card' : '';
+      const mediaTag = isVideo(media) 
+        ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>`
+        : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
+
+      let cardHTML = '';
+      let dataObj = {};
+
+      if (type === 'battle') {
+        const human = document.getElementById('humanArg') ? document.getElementById('humanArg').value : shortDesc;
+        const grok = document.getElementById('grokArg') ? document.getElementById('grokArg').value : 'Grok response here...';
+        cardHTML = `<div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer${videoClass}" data-categories="${tags.join(',')}">
+  ${mediaTag}
+  <div class="content">
+    <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
+    <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
+  </div>
+  <div class="buttons flex">
+    <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+    <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+  </div>
+</div>`;
+        dataObj = { id: parseInt(id), title, image: media, tags, human, grok, xLink };
+      } 
+      else if (type === 'category') {
+        const summary = document.getElementById('summary') ? document.getElementById('summary').value : shortDesc;
+        cardHTML = `<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${tags[0] || 'general'}">
+  <div class="aspect-video">${mediaTag}</div>
+  <div class="content flex-1 flex flex-col">
+    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
+    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
+  </div>
+</div>`;
+        dataObj = { id: parseInt(id), title, image: media, tags, summary, xLink };
+      } 
+      else { // meme
+        const context = document.getElementById('context') ? document.getElementById('context').value : shortDesc;
+        cardHTML = `<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${tags[0] || 'misc-memes'}">
+  <div class="aspect-video">${mediaTag}</div>
+  <div class="content flex-1 flex flex-col">
+    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
+    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
+  </div>
+</div>`;
+        dataObj = { id: parseInt(id), title, image: media, context, xLink };
+      }
+
+      document.getElementById('outputCard').value = cardHTML.trim();
+      document.getElementById('outputData').value = JSON.stringify(dataObj, null, 2);
+
+      const preview = document.getElementById('preview');
+      preview.innerHTML = `<div class="preview-container">${cardHTML}</div>`;
+    }
+
+    function copyAll() {
+      const card = document.getElementById('outputCard').value;
+      const data = document.getElementById('outputData').value;
+      navigator.clipboard.writeText(`CARD HTML:\n${card}\n\nDATA OBJECT:\n${data}`);
+      alert('✅ Card HTML + Full Data Object copied!');
+    }
+
+     // ===================== BATCH MODE =====================
     function switchTab(n){ document.getElementById('singlePanel').classList.toggle('hidden', n!==0); document.getElementById('batchPanel').classList.toggle('hidden', n!==1); document.querySelectorAll('.tab-button').forEach((b,i)=>b.classList.toggle('active',i===n)); }
 
     function generateBatchPrompt(){ /* unchanged from v7.1 – generates prompt */ 
@@ -192,7 +307,8 @@
 
     // Init
     switchTab(0);
-    setTimeout(()=>{ if(typeof generateAll==='function') generateAll(); }, 400);
+    updateForm(); // ← THIS WAS MISSING — now modal always loads
+    setTimeout(() => generateAll(), 300);
   </script>
 </body>
 </html>
