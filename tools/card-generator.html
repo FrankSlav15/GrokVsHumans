@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card + Modal Generator v7.3 • Grok vs Humans</title>
+  <title>Card + Modal Generator v7.4 • Grok vs Humans</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
@@ -31,16 +31,16 @@
   <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="flex items-center gap-4 mb-8">
       <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
-      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v7.3</span></h1>
+      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v7.4</span></h1>
     </div>
 
     <!-- TABS -->
     <div class="flex border-b border-zinc-700 mb-8">
       <button onclick="switchTab(0)" class="tab-button active px-8 py-4 font-semibold text-lg" id="tab0">Single Card + Modal</button>
-      <button onclick="switchTab(1)" class="tab-button px-8 py-4 font-semibold text-lg" id="tab1">Auto Grok Batch Creator</button>
+      <button onclick="switchTab(1)" class="tab-button px-8 py-4 font-semibold text-lg" id="tab1">Auto Grok Batch Creator (1–25 cards)</button>
     </div>
 
-    <!-- SINGLE MODE (now 100% fixed) -->
+    <!-- SINGLE MODE – NOW WITH STICKY FILTER TAG -->
     <div id="singlePanel">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- FORM -->
@@ -55,27 +55,20 @@
           </div>
 
           <div class="grid grid-cols-2 gap-6">
-            <div>
-              <label class="block text-sm font-medium mb-2 text-zinc-400">Card ID</label>
-              <input id="cardId" type="number" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-2 text-zinc-400">Media URL</label>
-              <input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
-            </div>
+            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Card ID</label><input id="cardId" type="number" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Media URL</label><input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
           </div>
 
+          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Title</label><input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label><textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+
+          <!-- NEW STICKY FILTER TAG FIELD -->
           <div>
-            <label class="block text-sm font-medium mb-2 text-zinc-400">Title</label>
-            <input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+            <label class="block text-sm font-medium mb-2 text-purple-400">Sticky Filter Tag(s) / Category <span class="text-xs text-zinc-500">(used by page filters)</span></label>
+            <input id="filterTags" type="text" value="political" placeholder="Battles: political,serious — Others: single tag" class="w-full bg-zinc-800 border border-purple-500/50 rounded-2xl px-5 py-4 text-lg focus:border-purple-500">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label>
-            <textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea>
-          </div>
-
-          <!-- FIXED MODAL CONTENT -->
+          <!-- MODAL CONTENT -->
           <div class="modal-box border border-purple-500/30 rounded-3xl p-6">
             <h3 class="font-semibold text-purple-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-window-restore"></i> MODAL CONTENT</h3>
             <div id="modalFields" class="space-y-6"></div>
@@ -89,41 +82,33 @@
 
         <!-- PREVIEW + OUTPUT -->
         <div class="space-y-6">
-          <div>
-            <div class="mb-3 text-sm font-medium text-purple-400 flex items-center gap-2"><i class="fa-solid fa-eye"></i> LIVE CARD PREVIEW</div>
-            <div id="preview" class="preview-container bg-zinc-950 border border-zinc-800 rounded-3xl p-6 min-h-[520px]"></div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2 text-zinc-400">Card HTML</label>
-            <textarea id="outputCard" readonly class="w-full h-52 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2 text-zinc-400">Full Data Object</label>
-            <textarea id="outputData" readonly class="w-full h-80 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea>
-          </div>
+          <div><div class="mb-3 text-sm font-medium text-purple-400 flex items-center gap-2"><i class="fa-solid fa-eye"></i> LIVE CARD PREVIEW</div><div id="preview" class="preview-container bg-zinc-950 border border-zinc-800 rounded-3xl p-6 min-h-[520px]"></div></div>
+          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Card HTML</label><textarea id="outputCard" readonly class="w-full h-52 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea></div>
+          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Full Data Object</label><textarea id="outputData" readonly class="w-full h-80 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea></div>
         </div>
       </div>
     </div>
 
-    <!-- BATCH MODE – ENHANCED WITH FULL PARSING AUTOMATION -->
+    <!-- BATCH MODE – NOW WORKS FOR 1–25 CARDS -->
     <div id="batchPanel" class="hidden">
       <div class="bg-zinc-900 rounded-3xl p-8">
-        <!-- Prompt Generator (kept) -->
+        <div class="text-emerald-400 text-sm mb-2">✅ Works perfectly for 1–25 X links at once</div>
+        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div><label class="block text-sm font-medium mb-2">Card Type</label><select id="batchType" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"><option value="battle">Battles</option><option value="category">Categories</option><option value="meme">Memes</option></select></div>
           <div><label class="block text-sm font-medium mb-2">Starting Card ID</label><input id="batchStartId" type="number" value="100" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
         </div>
-        <div><label class="block text-sm font-medium mb-2">Paste X/Twitter Links (one per line)</label><textarea id="batchLinks" rows="6" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-6 py-5 text-lg font-mono"></textarea></div>
-        <button onclick="generateBatchPrompt()" class="mt-6 w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 font-semibold py-6 rounded-3xl text-2xl flex items-center justify-center gap-3"><i class="fa-solid fa-paper-plane"></i> Generate Prompt for Grok</button>
+        <div><label class="block text-sm font-medium mb-2">Paste X/Twitter Links (one per line)</label><textarea id="batchLinks" rows="8" placeholder="Paste 1 or up to 25 links..." class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-6 py-5 text-lg font-mono"></textarea></div>
+        <button onclick="generateBatchPrompt()" class="mt-8 w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 font-semibold py-6 rounded-3xl text-2xl transition flex items-center justify-center gap-3"><i class="fa-solid fa-paper-plane"></i> Generate Prompt for Grok</button>
 
-        <!-- NEW: Paste Grok Response + Parse -->
+        <!-- Paste Grok Response -->
         <div class="mt-16 border-t border-zinc-700 pt-10">
           <h2 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fa-solid fa-robot text-emerald-400"></i> Paste Grok’s Batch Response</h2>
-          <textarea id="grokResponse" rows="10" placeholder="Paste the entire reply I (Grok) give you here..." class="w-full bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 font-mono text-sm"></textarea>
+          <textarea id="grokResponse" rows="10" placeholder="Paste my entire reply here..." class="w-full bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 font-mono text-sm"></textarea>
           <button onclick="parseBatchResponse()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 font-semibold py-5 rounded-3xl text-xl">🚀 Parse Response & Show Results</button>
         </div>
 
-        <!-- RESULTS DASHBOARD -->
+        <!-- RESULTS -->
         <div id="parseResults" class="hidden mt-12">
           <div class="flex justify-between items-center mb-6">
             <h3 class="text-2xl font-bold text-emerald-400">✅ Parsed Cards (<span id="cardCount"></span>)</h3>
@@ -139,27 +124,21 @@
   </div>
 
   <script>
-    // ==================== SINGLE MODE (FULLY FIXED) ====================
+    // ==================== SINGLE MODE (with new Sticky Filter Tag) ====================
     function updateForm() {
       const type = document.getElementById('cardType').value;
       const container = document.getElementById('modalFields');
       let fields = '';
-
       if (type === 'battle') {
-        fields = `
-          <div><label class="block text-sm font-medium mb-2">Human's Argument</label><textarea id="humanArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-          <div><label class="block text-sm font-medium mb-2">Grok's Response</label><textarea id="grokArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-          <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-          <div><label class="block text-sm font-medium mb-2">Tags (comma-separated)</label><input id="tags" type="text" value="political,serious" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
+        fields = `<div><label class="block text-sm font-medium mb-2">Human's Argument</label><textarea id="humanArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+                  <div><label class="block text-sm font-medium mb-2">Grok's Response</label><textarea id="grokArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+                  <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
       } else if (type === 'category') {
-        fields = `
-          <div><label class="block text-sm font-medium mb-2">Summary (for modal)</label><textarea id="summary" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-          <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-          <div><label class="block text-sm font-medium mb-2">Tag (single)</label><input id="tags" type="text" value="lazy" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
-      } else { // meme
-        fields = `
-          <div><label class="block text-sm font-medium mb-2">Context / Backstory</label><textarea id="context" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-          <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
+        fields = `<div><label class="block text-sm font-medium mb-2">Summary (for modal)</label><textarea id="summary" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+                  <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
+      } else {
+        fields = `<div><label class="block text-sm font-medium mb-2">Context / Backstory</label><textarea id="context" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
+                  <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
       }
       container.innerHTML = fields;
     }
@@ -172,22 +151,19 @@
       const media = document.getElementById('mediaUrl').value.trim() || 'https://picsum.photos/id/1015/1200/675';
       const title = document.getElementById('title').value || 'Untitled';
       const shortDesc = document.getElementById('shortDesc').value || 'No description provided.';
+      const filterTags = document.getElementById('filterTags').value.trim() || (type === 'battle' ? 'political' : 'general');
       const xLink = document.getElementById('xLink') ? document.getElementById('xLink').value.trim() : '#';
-      let tagsInput = document.getElementById('tags') ? document.getElementById('tags').value.trim() : 'general';
-      const tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
 
       const videoClass = isVideo(media) ? ' video-card' : '';
-      const mediaTag = isVideo(media) 
-        ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>`
-        : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
+      const mediaTag = isVideo(media) ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
 
       let cardHTML = '';
       let dataObj = {};
 
       if (type === 'battle') {
-        const human = document.getElementById('humanArg') ? document.getElementById('humanArg').value : shortDesc;
-        const grok = document.getElementById('grokArg') ? document.getElementById('grokArg').value : 'Grok response here...';
-        cardHTML = `<div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer${videoClass}" data-categories="${tags.join(',')}">
+        const human = document.getElementById('humanArg')?.value || shortDesc;
+        const grok = document.getElementById('grokArg')?.value || 'Grok response here...';
+        cardHTML = `<div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer${videoClass}" data-categories="${filterTags}">
   ${mediaTag}
   <div class="content">
     <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
@@ -198,22 +174,20 @@
     <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
   </div>
 </div>`;
-        dataObj = { id: parseInt(id), title, image: media, tags, human, grok, xLink };
-      } 
-      else if (type === 'category') {
-        const summary = document.getElementById('summary') ? document.getElementById('summary').value : shortDesc;
-        cardHTML = `<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${tags[0] || 'general'}">
+        dataObj = { id: parseInt(id), title, image: media, tags: filterTags.split(',').map(t=>t.trim()), human, grok, xLink };
+      } else if (type === 'category') {
+        const summary = document.getElementById('summary')?.value || shortDesc;
+        cardHTML = `<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterTags}">
   <div class="aspect-video">${mediaTag}</div>
   <div class="content flex-1 flex flex-col">
     <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
     <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
   </div>
 </div>`;
-        dataObj = { id: parseInt(id), title, image: media, tags, summary, xLink };
-      } 
-      else { // meme
-        const context = document.getElementById('context') ? document.getElementById('context').value : shortDesc;
-        cardHTML = `<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${tags[0] || 'misc-memes'}">
+        dataObj = { id: parseInt(id), title, image: media, tags: [filterTags], summary, xLink };
+      } else { // meme
+        const context = document.getElementById('context')?.value || shortDesc;
+        cardHTML = `<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterTags}">
   <div class="aspect-video">${mediaTag}</div>
   <div class="content flex-1 flex flex-col">
     <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
@@ -225,64 +199,79 @@
 
       document.getElementById('outputCard').value = cardHTML.trim();
       document.getElementById('outputData').value = JSON.stringify(dataObj, null, 2);
-
-      const preview = document.getElementById('preview');
-      preview.innerHTML = `<div class="preview-container">${cardHTML}</div>`;
+      document.getElementById('preview').innerHTML = `<div class="preview-container">${cardHTML}</div>`;
     }
 
     function copyAll() {
-      const card = document.getElementById('outputCard').value;
-      const data = document.getElementById('outputData').value;
-      navigator.clipboard.writeText(`CARD HTML:\n${card}\n\nDATA OBJECT:\n${data}`);
-      alert('✅ Card HTML + Full Data Object copied!');
+      navigator.clipboard.writeText(`CARD HTML:\n${document.getElementById('outputCard').value}\n\nDATA OBJECT:\n${document.getElementById('outputData').value}`);
+      alert('✅ Copied!');
     }
 
-     // ===================== BATCH MODE =====================
-    function switchTab(n){ document.getElementById('singlePanel').classList.toggle('hidden', n!==0); document.getElementById('batchPanel').classList.toggle('hidden', n!==1); document.querySelectorAll('.tab-button').forEach((b,i)=>b.classList.toggle('active',i===n)); }
-
-    function generateBatchPrompt(){ /* unchanged from v7.1 – generates prompt */ 
-      // ... (same as before)
-      document.getElementById('promptText').textContent = prompt; /* etc. */
+    // ==================== BATCH MODE (1–25 cards) ====================
+    function switchTab(n) {
+      document.getElementById('singlePanel').classList.toggle('hidden', n !== 0);
+      document.getElementById('batchPanel').classList.toggle('hidden', n !== 1);
+      document.querySelectorAll('.tab-button').forEach((b,i) => b.classList.toggle('active', i===n));
     }
 
-    // === NEW PARSING AUTOMATION ===
+    function generateBatchPrompt() {
+      const type = document.getElementById('batchType').value;
+      const startId = parseInt(document.getElementById('batchStartId').value) || 100;
+      const links = document.getElementById('batchLinks').value.trim().split('\n').filter(l => l.trim());
+      if (links.length === 0) return alert("Paste at least one X link!");
+
+      let prompt = `You are helping build www.grokvshumans.com.\nProcess these ${links.length} X posts (works for 1 to 25).\nStarting ID: ${startId}. Card type: ${type}.\n\nLinks:\n`;
+      links.forEach((l,i) => prompt += `${i+1}. ${l}\n`);
+      prompt += `\nReturn EXACTLY in this format for EVERY card:\n=== CARD X ===\nHTML: [exact ready-to-paste card HTML with correct onclick and data-categories/data-category]\nDATA: {full JSON object exactly matching the page's data array}\n\nRules:\n• Card HTML in REVERSE order at the very end\n• Data objects in normal order\n• Use real image URLs\n• Fill sticky filter tags correctly\n• Output ONLY the === CARD X === blocks.`;
+
+      document.getElementById('promptText').textContent = prompt;
+      document.getElementById('batchPromptOutput').classList.remove('hidden');
+    }
+
+    // (Prompt output area – added for completeness)
+    <div id="batchPromptOutput" class="mt-8 hidden">
+      <label class="block text-sm font-medium mb-2 text-emerald-400">Copy this prompt and send it to me (Grok):</label>
+      <pre id="promptText" class="bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 text-sm overflow-auto max-h-96 whitespace-pre-wrap font-mono"></pre>
+      <button onclick="copyPrompt()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 px-8 py-4 rounded-3xl font-semibold">Copy Prompt</button>
+    </div>
+
+    function copyPrompt() {
+      navigator.clipboard.writeText(document.getElementById('promptText').textContent);
+      alert('✅ Prompt copied! Paste it to me — I’ll return perfect cards for 1–25 links.');
+    }
+
     let parsedCards = [];
-    function parseBatchResponse(){
+    function parseBatchResponse() {
       const raw = document.getElementById('grokResponse').value.trim();
-      if(!raw) return alert("Paste Grok's response first!");
-
-      // Robust parser for === CARD X === blocks
-      const blocks = raw.split(/=== CARD \d+ ===/gi).filter(b => b.trim().length > 20);
+      if (!raw) return alert("Paste my reply first!");
+      const blocks = raw.split(/=== CARD \d+ ===/i).filter(b => b.trim().length > 30);
       parsedCards = [];
-
       blocks.forEach(block => {
         const htmlMatch = block.match(/HTML:\s*([\s\S]*?)(?=DATA:|$)/i);
         const dataMatch = block.match(/DATA:\s*(\{[\s\S]*?\})/i);
-        if(htmlMatch && dataMatch){
+        if (htmlMatch && dataMatch) {
           const html = htmlMatch[1].trim();
-          let dataStr = dataMatch[1].trim();
-          try { 
-            const data = JSON.parse(dataStr.replace(/,\s*}/g,'}')); 
+          try {
+            const data = JSON.parse(dataMatch[1].trim());
             parsedCards.push({html, data});
-          } catch(e){ /* fallback */ parsedCards.push({html, data: dataStr}); }
+          } catch(e) {
+            parsedCards.push({html, data: dataMatch[1].trim()});
+          }
         }
       });
-
-      if(parsedCards.length === 0) return alert("No valid cards found. Make sure you pasted my full reply.");
-
+      if (parsedCards.length === 0) return alert("No cards detected — make sure you pasted my full reply.");
       document.getElementById('cardCount').textContent = parsedCards.length;
       renderResults();
       document.getElementById('parseResults').classList.remove('hidden');
     }
 
-    function renderResults(){
+    function renderResults() {
       const grid = document.getElementById('resultsGrid');
       grid.innerHTML = '';
       parsedCards.forEach((card, i) => {
         const div = document.createElement('div');
-        div.className = 'result-card bg-zinc-900 rounded-3xl overflow-hidden';
-        div.innerHTML = `
-          <div class="preview-container p-6 bg-zinc-950">${card.html}</div>
+        div.className = 'bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-700';
+        div.innerHTML = `<div class="p-6 bg-zinc-950">${card.html}</div>
           <div class="p-6 border-t border-zinc-700 flex gap-3">
             <button onclick="copySingleHtml(${i})" class="flex-1 bg-purple-600 hover:bg-purple-700 py-3 rounded-2xl text-sm font-semibold">Copy HTML</button>
             <button onclick="copySingleData(${i})" class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-2xl text-sm font-semibold">Copy Data</button>
@@ -291,23 +280,14 @@
       });
     }
 
-    function copySingleHtml(i){ navigator.clipboard.writeText(parsedCards[i].html); alert('✅ Card HTML copied!'); }
-    function copySingleData(i){ navigator.clipboard.writeText(JSON.stringify(parsedCards[i].data, null, 2)); alert('✅ Data Object copied!'); }
-
-    function copyAllHtml(){
-      const allHtml = parsedCards.slice().reverse().map(c => c.html).join('\n\n<!-- === NEXT CARD === -->\n\n');
-      navigator.clipboard.writeText(allHtml);
-      alert('✅ All Card HTML (reverse order) copied!');
-    }
-    function copyAllData(){
-      const allData = parsedCards.map(c => JSON.stringify(c.data, null, 2)).join(',\n');
-      navigator.clipboard.writeText(allData);
-      alert('✅ All Data Objects (normal order) copied!');
-    }
+    function copySingleHtml(i){ navigator.clipboard.writeText(parsedCards[i].html); alert('✅ HTML copied!'); }
+    function copySingleData(i){ navigator.clipboard.writeText(JSON.stringify(parsedCards[i].data, null, 2)); alert('✅ Data copied!'); }
+    function copyAllHtml(){ navigator.clipboard.writeText(parsedCards.slice().reverse().map(c=>c.html).join('\n\n')); alert('✅ All HTML (reverse) copied!'); }
+    function copyAllData(){ navigator.clipboard.writeText(parsedCards.map(c=>JSON.stringify(c.data,null,2)).join(',\n')); alert('✅ All Data copied!'); }
 
     // Init
     switchTab(0);
-    updateForm(); // ← THIS WAS MISSING — now modal always loads
+    updateForm();
     setTimeout(() => generateAll(), 300);
   </script>
 </body>
