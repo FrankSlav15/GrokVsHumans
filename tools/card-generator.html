@@ -1,186 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-zinc-950 text-white">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GrokVsHumans Card Generator v6.2 – Perfect Uniform Heights</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a1f; color: white; }
-        textarea, input { font-family: monospace; }
-        .column { background: #18181b; border: 1px solid #4f46e5; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card + Modal Generator • Grok vs Humans</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    .battle-card, .category-card, .meme-card {
+      transition: all 0.3s ease; cursor: pointer;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.2);
+      display: flex; flex-direction: column; height: 100%; overflow: hidden;
+      border-radius: 1.5rem; position: relative;
+    }
+    .battle-card:hover, .category-card:hover, .meme-card:hover {
+      transform: translateY(-8px); box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); border-color: rgb(168 85 247);
+    }
+    .battle-card > img, .battle-card > video, .meme-card > img, .meme-card > video { height: 14rem; object-fit: cover; }
+    .category-card .aspect-video, .meme-card .aspect-video { height: 15.5rem; }
+    .category-card img, .category-card video, .meme-card img, .meme-card video { width: 100%; height: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
+    .battle-card .content, .category-card .content, .meme-card .content { flex: 1; padding: 1.25rem; background: #18181b; display: flex; flex-direction: column; }
+    .battle-card .title-area { min-height: 3.25rem; }
+    .category-card .title-area, .meme-card .title-area { min-height: 56px; display: flex; align-items: center; }
+    .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
+    .category-card .desc-area, .meme-card .desc-area { flex: 1; }
+    .battle-card .buttons { flex-shrink: 0; border-top: 1px solid #27272a; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; overflow: hidden; }
+    .video-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+    .video-card:hover::after { opacity: 1; }
+    .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
+    .preview-container { max-width: 380px; margin: 0 auto; }
+  </style>
 </head>
-<body class="min-h-screen p-8 bg-[#0a0a1f]">
-    <div class="max-w-7xl mx-auto">
-        <h1 class="text-5xl font-bold text-center mb-2">Card Generator v6.2</h1>
-        <p class="text-center text-emerald-400 mb-8">Perfect uniform heights for Memes • Battles • Categories • Working reverse reader</p>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            <!-- LEFT: MANUAL MODE -->
-            <div class="column rounded-3xl p-8">
-                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2"><i class="fa-solid fa-pen"></i> Manual Entry</h2>
-                <div class="space-y-6">
-                    <div><label class="block text-sm font-medium mb-1">Page Type</label>
-                        <select id="pageType" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3" onchange="updateExtraFields()">
-                            <option value="memes">Memes</option>
-                            <option value="battles">Battles</option>
-                            <option value="categories">Categories</option>
-                        </select>
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">Card ID</label>
-                        <input type="number" id="cardId" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">Title</label>
-                        <input type="text" id="title" placeholder="Grok Breaks the Comment Section" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">Short Description</label>
-                        <textarea id="shortDesc" rows="2" placeholder="Grok has the entire comments section dying of laughter" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">Media URL</label>
-                        <input type="text" id="mediaUrl" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">X Post Link (optional)</label>
-                        <div class="flex gap-3">
-                            <input type="text" id="xLink" placeholder="https://x.com/..." class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg p-3">
-                            <button onclick="openXLink()" class="px-6 bg-purple-600 rounded-lg font-medium">Open Post</button>
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <button onclick="window.open('https://imgbb.com','_blank')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl font-medium flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-upload"></i> Re-host Image/GIF (ImgBB)
-                        </button>
-                        <button onclick="window.open('https://catbox.moe','_blank')" class="flex-1 bg-violet-600 hover:bg-violet-700 py-3 rounded-xl font-medium flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-upload"></i> Re-host Video (Catbox)
-                        </button>
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">Is Video/GIF?</label>
-                        <select id="isVideo" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                            <option value="no">No – static image</option>
-                            <option value="yes">Yes – video or GIF</option>
-                        </select>
-                    </div>
-                    <div id="extraFields" class="space-y-6"></div>
-                    <button onclick="generateManual()" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 py-4 rounded-2xl text-lg font-semibold">Generate Single Card (Uniform Heights)</button>
-                </div>
-            </div>
-
-            <!-- RIGHT: BATCH AUTO MODE -->
-            <div class="column rounded-3xl p-8">
-                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2"><i class="fa-solid fa-bolt"></i> Batch Auto (5-25 links)</h2>
-                <div class="space-y-6">
-                    <div><label class="block text-sm font-medium mb-1">Page Type</label>
-                        <select id="batchType" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                            <option value="memes">Memes</option>
-                            <option value="battles">Battles</option>
-                            <option value="categories">Categories</option>
-                        </select>
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">Starting Card Number (newest first)</label>
-                        <input type="number" id="batchStart" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3">
-                    </div>
-                    <div><label class="block text-sm font-medium mb-1">Paste X Thread Links (one per line)</label>
-                        <textarea id="batchLinks" rows="8" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea>
-                    </div>
-                    <button onclick="createGrokPrompt()" class="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 py-4 rounded-2xl text-lg font-semibold flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i> Generate Ready-to-Copy Prompt for Grok
-                    </button>
-                </div>
-                <div class="mt-8">
-                    <label class="block text-sm font-medium mb-2">Your Grok Prompt (copy & paste to me)</label>
-                    <textarea id="grokPromptOutput" rows="12" class="w-full bg-black border border-emerald-500 rounded-2xl p-4 font-mono text-emerald-300" readonly></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- REVERSE READER -->
-        <div class="mt-12 column rounded-3xl p-8">
-            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-rotate-left"></i> Reverse Reader – Edit Existing Cards</h2>
-            <textarea id="reverseInput" rows="8" placeholder="Paste any grid HTML card + JS data object here..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-4"></textarea>
-            <button onclick="loadReverse()" class="mt-4 w-full bg-rose-600 py-4 rounded-2xl text-lg font-semibold">Load into Manual Form for Editing</button>
-        </div>
+<body class="min-h-screen pb-12">
+  <div class="max-w-6xl mx-auto px-6 py-8">
+    <div class="flex items-center gap-4 mb-8">
+      <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
+      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator</h1>
     </div>
 
-    <script>
-        const pageTypeSelect = document.getElementById('pageType');
-        const extraFields = document.getElementById('extraFields');
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- FORM -->
+      <div class="bg-zinc-900 rounded-3xl p-8 space-y-6">
+        <div>
+          <label class="block text-sm font-medium mb-2">Card Type</label>
+          <select id="cardType" onchange="updateForm()" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg focus:outline-none focus:border-purple-500">
+            <option value="battle">Battles (battle card + modal)</option>
+            <option value="category">Categories (category card + modal)</option>
+            <option value="meme">Memes (meme card + modal)</option>
+          </select>
+        </div>
 
-        function updateExtraFields() {
-            extraFields.innerHTML = '';
-            const t = pageTypeSelect.value;
-            if (t === 'memes') extraFields.innerHTML = `<div><label class="block text-sm font-medium mb-1">Meme Categories (comma separated)</label><input id="memeCats" value="grok-memes,misc-memes,gifs,ai-tech,other" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Modal Context</label><textarea id="context" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
-            else if (t === 'battles') extraFields.innerHTML = `<div><label class="block text-sm font-medium mb-1">Categories (comma separated)</label><input id="battleCats" value="nonsense,political,serious,citation,joke,censorship" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Human Argument</label><textarea id="humanArg" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div><div><label class="block text-sm font-medium mb-1">Grok Response</label><textarea id="grokResp" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
-            else extraFields.innerHTML = `<div><label class="block text-sm font-medium mb-1">Categories (comma separated)</label><input id="catTags" value="lazy,photo,opinion,avoids" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></div><div><label class="block text-sm font-medium mb-1">Summary</label><textarea id="summary" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3"></textarea></div>`;
-        }
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">Card ID</label>
+            <input id="cardId" type="number" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Media URL</label>
+            <input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>
+        </div>
 
-        function openXLink() {
-            const link = document.getElementById('xLink').value.trim();
-            if (link) window.open(link, '_blank');
-        }
+        <div>
+          <label class="block text-sm font-medium mb-2">Title</label>
+          <input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+        </div>
 
-        function generateManual() {
-            const type = pageTypeSelect.value;
-            const id = document.getElementById('cardId').value || '42';
-            const title = document.getElementById('title').value || 'Untitled';
-            const shortDesc = document.getElementById('shortDesc').value || '';
-            const media = document.getElementById('mediaUrl').value.trim();
-            const isVid = document.getElementById('isVideo').value === 'yes';
+        <div>
+          <label class="block text-sm font-medium mb-2">Short Description (for card)</label>
+          <textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea>
+        </div>
 
-            let html = `<!-- ${id} -->\n<div onclick="open${type.charAt(0).toUpperCase() + type.slice(1)}Modal(${id})" class="${type === 'memes' ? 'meme-card' : type === 'battles' ? 'battle-card' : 'category-card'} ${isVid ? 'video-card' : ''} rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full"`;
+        <!-- MODAL FIELDS SECTION -->
+        <div class="bg-zinc-950 border border-purple-500/30 rounded-3xl p-6">
+          <h3 class="font-semibold text-purple-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-window-restore"></i> MODAL CONTENT</h3>
+          <div id="modalFields" class="space-y-6"></div>
+        </div>
 
-            if (type === 'memes') html += ` data-category="${document.getElementById('memeCats') ? document.getElementById('memeCats').value : 'grok-memes'}"`;
-            if (type === 'battles') html += ` data-categories="${document.getElementById('battleCats') ? document.getElementById('battleCats').value : ''}"`;
-            if (type === 'categories') html += ` data-category="${document.getElementById('catTags') ? document.getElementById('catTags').value : 'lazy'}"`;
+        <div class="flex gap-4">
+          <button onclick="generateAll()" class="flex-1 bg-purple-600 hover:bg-purple-700 font-semibold py-5 rounded-3xl text-xl transition">Generate Card + Data</button>
+          <button onclick="copyAll()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 font-semibold py-5 rounded-3xl text-xl transition">Copy All</button>
+        </div>
+      </div>
 
-            html += `>\n    <div class="aspect-video">\n        ${isVid ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` : `<img src="${media}" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">`}\n    </div>\n    <div class="content flex-1 flex flex-col">\n        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n    </div>`;
+      <!-- LIVE PREVIEW + OUTPUT -->
+      <div class="space-y-6">
+        <div>
+          <div class="mb-3 text-sm font-medium text-purple-400 flex items-center gap-2"><i class="fa-solid fa-eye"></i> LIVE CARD PREVIEW</div>
+          <div id="preview" class="preview-container bg-zinc-950 border border-zinc-800 rounded-3xl p-6 min-h-[520px]"></div>
+        </div>
 
-            if (type === 'battles') {
-                html += `\n    <div class="buttons flex mt-auto">\n        <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" id="grok-btn-${id}" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>\n        <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" id="human-btn-${id}" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>\n    </div>`;
-            }
-            html += `\n</div>`;
+        <div>
+          <label class="block text-sm font-medium mb-2">Card HTML (paste into page)</label>
+          <textarea id="outputCard" readonly class="w-full h-52 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea>
+        </div>
 
-            let js = `${id}: { title: "${title.replace(/"/g, '\\"')}", image: "${media}", `;
-            if (type === 'memes') js += `context: "${(document.getElementById('context') ? document.getElementById('context').value : shortDesc).replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
-            else if (type === 'battles') js += `shortDesc: "${shortDesc.replace(/"/g, '\\"')}", tags: [${document.getElementById('battleCats') ? document.getElementById('battleCats').value.split(',').map(c => `"${c.trim()}"`).join(',') : ''}], human: "${(document.getElementById('humanArg') ? document.getElementById('humanArg').value : '').replace(/"/g, '\\"')}", grok: "${(document.getElementById('grokResp') ? document.getElementById('grokResp').value : '').replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
-            else if (type === 'categories') js += `tags: [${document.getElementById('catTags') ? document.getElementById('catTags').value.split(',').map(c => `"${c.trim()}"`).join(',') : ''}], summary: "${(document.getElementById('summary') ? document.getElementById('summary').value : shortDesc).replace(/"/g, '\\"')}", xLink: "${document.getElementById('xLink') ? document.getElementById('xLink').value : ''}" },`;
+        <div>
+          <label class="block text-sm font-medium mb-2">Full Data Object (paste into JS array)</label>
+          <textarea id="outputData" readonly class="w-full h-80 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            console.log("HTML:\n" + html);
-            console.log("JS:\n" + js);
-            alert("✅ Card generated with perfect uniform heights! Check console for code.");
-        }
+  <script>
+    function updateForm() {
+      const type = document.getElementById('cardType').value;
+      const container = document.getElementById('modalFields');
+      let html = '';
 
-        function createGrokPrompt() {
-            const type = document.getElementById('batchType').value;
-            const startId = parseInt(document.getElementById('batchStart').value);
-            const links = document.getElementById('batchLinks').value.trim().split('\n').filter(l => l.trim());
-            let prompt = `Grok, please process these ${links.length} X links for **${type.toUpperCase()}** cards.\n`;
-            prompt += `Starting card number: **${startId}** (grid = newest-first, JS data = ascending order).\n\n`;
-            prompt += `Rules:\n• Use uniform card heights: flex flex-col h-full + aspect-video media + h-[56px] title-area + flex-1 desc-area\n• Suggest public mirror if X media broken\n• Keep original xLink\n• Use existing tag lists only\nLinks:\n`;
-            links.forEach((l,i) => prompt += `${i+1}. ${l}\n`);
-            prompt += `\nReturn ONLY:\n1. Full Grid HTML (newest first)\n2. JS data object (ascending ID)\nReady to paste.`;
-            document.getElementById('grokPromptOutput').value = prompt;
-            alert("✅ Prompt ready! Copy the box and paste to me.");
-        }
+      if (type === 'battle') {
+        html = `
+          <div>
+            <label class="block text-sm font-medium mb-2">Human's Argument</label>
+            <textarea id="humanArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Grok's Response</label>
+            <textarea id="grokArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">X/Twitter Link</label>
+            <input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Tags (comma-separated)</label>
+            <input id="tags" type="text" value="political,serious" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>`;
+      } else if (type === 'category') {
+        html = `
+          <div>
+            <label class="block text-sm font-medium mb-2">Summary (for modal)</label>
+            <textarea id="summary" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">X/Twitter Link</label>
+            <input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Tag (single)</label>
+            <input id="tags" type="text" value="lazy" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>`;
+      } else {
+        html = `
+          <div>
+            <label class="block text-sm font-medium mb-2">Context / Backstory</label>
+            <textarea id="context" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">X/Twitter Link</label>
+            <input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
+          </div>`;
+      }
+      container.innerHTML = html;
+    }
 
-        function loadReverse() {
-            const input = document.getElementById('reverseInput').value;
-            const titleMatch = input.match(/title:\s*"([^"]+)"/);
-            const imageMatch = input.match(/image:\s*"([^"]+)"/);
-            const xLinkMatch = input.match(/xLink:\s*"([^"]+)"/);
-            const shortDescMatch = input.match(/shortDesc:\s*"([^"]+)"/) || input.match(/context:\s*"([^"]+)"/) || input.match(/summary:\s*"([^"]+)"/);
+    function isVideo(url) {
+      return url.match(/\.(mp4|webm|ogg|mov)$/i);
+    }
 
-            if (titleMatch) document.getElementById('title').value = titleMatch[1];
-            if (imageMatch) document.getElementById('mediaUrl').value = imageMatch[1];
-            if (xLinkMatch) document.getElementById('xLink').value = xLinkMatch[1];
-            if (shortDescMatch) document.getElementById('shortDesc').value = shortDescMatch[1];
+    function generateAll() {
+      const type = document.getElementById('cardType').value;
+      const id = document.getElementById('cardId').value || '99';
+      const media = document.getElementById('mediaUrl').value.trim() || 'https://picsum.photos/id/1015/1200/675';
+      const title = document.getElementById('title').value || 'Untitled';
+      const shortDesc = document.getElementById('shortDesc').value || 'No description provided.';
+      const xLink = document.getElementById('xLink') ? document.getElementById('xLink').value.trim() : '#';
+      const tagsInput = document.getElementById('tags') ? document.getElementById('tags').value.trim() : 'general';
+      const tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
 
-            alert("✅ Loaded into manual form! Edit and click Generate.");
-        }
+      const videoClass = isVideo(media) ? ' video-card' : '';
+      const mediaTag = isVideo(media) 
+        ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>`
+        : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
 
-        pageTypeSelect.addEventListener('change', updateExtraFields);
-        updateExtraFields();
-    </script>
+      let cardHTML = '';
+      let dataObj = {};
+
+      if (type === 'battle') {
+        const human = document.getElementById('humanArg').value || shortDesc;
+        const grok = document.getElementById('grokArg').value || 'Grok response here...';
+
+        cardHTML = `<div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer${videoClass}" data-categories="${tags.join(',')}">
+  ${mediaTag}
+  <div class="content">
+    <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
+    <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
+  </div>
+  <div class="buttons flex">
+    <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+    <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+  </div>
+</div>`;
+
+        dataObj = { id: parseInt(id), title, image: media, tags, human, grok, xLink };
+      } 
+      else if (type === 'category') {
+        const summary = document.getElementById('summary').value || shortDesc;
+
+        cardHTML = `<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${tags[0]}">
+  <div class="aspect-video">${mediaTag}</div>
+  <div class="content flex-1 flex flex-col">
+    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
+    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
+  </div>
+</div>`;
+
+        dataObj = { id: parseInt(id), title, image: media, tags, summary, xLink };
+      } 
+      else { // meme
+        const context = document.getElementById('context').value || shortDesc;
+
+        cardHTML = `<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${tags[0] || 'misc-memes'}">
+  <div class="aspect-video">${mediaTag}</div>
+  <div class="content flex-1 flex flex-col">
+    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
+    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
+  </div>
+</div>`;
+
+        dataObj = { id: parseInt(id), title, image: media, context, xLink };
+      }
+
+      document.getElementById('outputCard').value = cardHTML.trim();
+      document.getElementById('outputData').value = JSON.stringify(dataObj, null, 2);
+
+      const preview = document.getElementById('preview');
+      preview.innerHTML = `<div class="preview-container">${cardHTML}</div>`;
+    }
+
+    function copyAll() {
+      const card = document.getElementById('outputCard').value;
+      const data = document.getElementById('outputData').value;
+      navigator.clipboard.writeText(`CARD HTML:\n${card}\n\nDATA OBJECT (paste into array):\n${data}`);
+      alert('✅ Card HTML + Full Data Object copied to clipboard!');
+    }
+
+    // Init
+    updateForm();
+    setTimeout(() => {
+      document.getElementById('title').value = "Demo: AI Takes All Jobs";
+      document.getElementById('shortDesc').value = "Humans vs Grok on the future of work.";
+      document.getElementById('mediaUrl').value = "https://picsum.photos/id/1015/1200/675";
+      generateAll();
+    }, 300);
+  </script>
 </body>
 </html>
