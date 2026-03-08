@@ -1,294 +1,856 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-zinc-950 text-white">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card + Modal Generator v7.4 • Grok vs Humans</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <style>
-    .battle-card, .category-card, .meme-card { transition: all 0.3s ease; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.2); display: flex; flex-direction: column; height: 100%; overflow: hidden; border-radius: 1.5rem; position: relative; }
-    .battle-card:hover, .category-card:hover, .meme-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(168,85,247,0.5); border-color: rgb(168 85 247); }
-    .battle-card > img, .battle-card > video, .meme-card > img, .meme-card > video { height: 14rem; object-fit: cover; }
-    .category-card .aspect-video, .meme-card .aspect-video { height: 15.5rem; }
-    .category-card img, .category-card video, .meme-card img, .meme-card video { width: 100%; height: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
-    .battle-card .content, .category-card .content, .meme-card .content { flex: 1; padding: 1.25rem; background: #18181b; display: flex; flex-direction: column; }
-    .battle-card .title-area { min-height: 3.25rem; }
-    .category-card .title-area, .meme-card .title-area { min-height: 56px; display: flex; align-items: center; }
-    .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
-    .category-card .desc-area, .meme-card .desc-area { flex: 1; }
-    .battle-card .buttons { flex-shrink: 0; border-top: 1px solid #27272a; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; overflow: hidden; }
-    .video-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
-    .video-card:hover::after { opacity: 1; }
-    .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
-    .preview-container { max-width: 380px; margin: 0 auto; }
-    .tab-button { transition: all 0.3s; }
-    .tab-button.active { border-bottom: 3px solid rgb(168 85 247); color: white; }
-    .modal-box { background: #111113; }
-  </style>
-</head>
-<body class="min-h-screen pb-12">
-  <div class="max-w-6xl mx-auto px-6 py-8">
-    <div class="flex items-center gap-4 mb-8">
-      <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
-      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v7.4</span></h1>
-    </div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Memes - GrokVsHumans</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-M58E7KLM56');
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        html { height: 100%; }
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background: #0a0a1f;
+            position: relative;
+            min-height: 100dvh;
+            margin: 0;
+            display: flex;
+            flex-direction: column; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-    <!-- TABS -->
-    <div class="flex border-b border-zinc-700 mb-8">
-      <button onclick="switchTab(0)" class="tab-button active px-8 py-4 font-semibold text-lg" id="tab0">Single Card + Modal</button>
-      <button onclick="switchTab(1)" class="tab-button px-8 py-4 font-semibold text-lg" id="tab1">Auto Grok Batch Creator (1–25 cards)</button>
-    </div>
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10,10,31,0.82);
+            z-index: -1; }
 
-    <!-- SINGLE MODE – NOW WITH STICKY FILTER TAG -->
-    <div id="singlePanel">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- FORM -->
-        <div class="bg-zinc-900 rounded-3xl p-8 space-y-6">
-          <div>
-            <label class="block text-sm font-medium mb-2 text-zinc-400">Card Type</label>
-            <select id="cardType" onchange="updateForm()" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg focus:border-purple-500">
-              <option value="battle">Battles</option>
-              <option value="category">Categories</option>
-              <option value="meme">Memes</option>
-            </select>
-          </div>
+        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-          <div class="grid grid-cols-2 gap-6">
-            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Card ID</label><input id="cardId" type="number" value="42" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Media URL</label><input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-          </div>
-
-          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Title</label><input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label><textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-
-          <!-- NEW STICKY FILTER TAG FIELD -->
-          <div>
-            <label class="block text-sm font-medium mb-2 text-purple-400">Sticky Filter Tag(s) / Category <span class="text-xs text-zinc-500">(used by page filters)</span></label>
-            <input id="filterTags" type="text" value="political" placeholder="Battles: political,serious — Others: single tag" class="w-full bg-zinc-800 border border-purple-500/50 rounded-2xl px-5 py-4 text-lg focus:border-purple-500">
-          </div>
-
-          <!-- MODAL CONTENT -->
-          <div class="modal-box border border-purple-500/30 rounded-3xl p-6">
-            <h3 class="font-semibold text-purple-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-window-restore"></i> MODAL CONTENT</h3>
-            <div id="modalFields" class="space-y-6"></div>
-          </div>
-
-          <div class="flex gap-4 pt-4">
-            <button onclick="generateAll()" class="flex-1 bg-purple-600 hover:bg-purple-700 font-semibold py-5 rounded-3xl text-xl transition">Generate Card + Data</button>
-            <button onclick="copyAll()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 font-semibold py-5 rounded-3xl text-xl transition">Copy All</button>
-          </div>
-        </div>
-
-        <!-- PREVIEW + OUTPUT -->
-        <div class="space-y-6">
-          <div><div class="mb-3 text-sm font-medium text-purple-400 flex items-center gap-2"><i class="fa-solid fa-eye"></i> LIVE CARD PREVIEW</div><div id="preview" class="preview-container bg-zinc-950 border border-zinc-800 rounded-3xl p-6 min-h-[520px]"></div></div>
-          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Card HTML</label><textarea id="outputCard" readonly class="w-full h-52 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea></div>
-          <div><label class="block text-sm font-medium mb-2 text-zinc-400">Full Data Object</label><textarea id="outputData" readonly class="w-full h-80 bg-zinc-900 border border-zinc-700 rounded-3xl p-6 font-mono text-xs"></textarea></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BATCH MODE – NOW WORKS FOR 1–25 CARDS -->
-    <div id="batchPanel" class="hidden">
-      <div class="bg-zinc-900 rounded-3xl p-8">
-        <div class="text-emerald-400 text-sm mb-2">✅ Works perfectly for 1–25 X links at once</div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div><label class="block text-sm font-medium mb-2">Card Type</label><select id="batchType" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"><option value="battle">Battles</option><option value="category">Categories</option><option value="meme">Memes</option></select></div>
-          <div><label class="block text-sm font-medium mb-2">Starting Card ID</label><input id="batchStartId" type="number" value="100" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-        </div>
-        <div><label class="block text-sm font-medium mb-2">Paste X/Twitter Links (one per line)</label><textarea id="batchLinks" rows="8" placeholder="Paste 1 or up to 25 links..." class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-6 py-5 text-lg font-mono"></textarea></div>
-        <button onclick="generateBatchPrompt()" class="mt-8 w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 font-semibold py-6 rounded-3xl text-2xl transition flex items-center justify-center gap-3"><i class="fa-solid fa-paper-plane"></i> Generate Prompt for Grok</button>
-
-        <!-- Paste Grok Response -->
-        <div class="mt-16 border-t border-zinc-700 pt-10">
-          <h2 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fa-solid fa-robot text-emerald-400"></i> Paste Grok’s Batch Response</h2>
-          <textarea id="grokResponse" rows="10" placeholder="Paste my entire reply here..." class="w-full bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 font-mono text-sm"></textarea>
-          <button onclick="parseBatchResponse()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 font-semibold py-5 rounded-3xl text-xl">🚀 Parse Response & Show Results</button>
-        </div>
-
-        <!-- RESULTS -->
-        <div id="parseResults" class="hidden mt-12">
-          <div class="flex justify-between items-center mb-6">
-            <h3 class="text-2xl font-bold text-emerald-400">✅ Parsed Cards (<span id="cardCount"></span>)</h3>
-            <div class="flex gap-4">
-              <button onclick="copyAllHtml()" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl font-semibold">Copy All HTML (reverse)</button>
-              <button onclick="copyAllData()" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl font-semibold">Copy All Data (normal)</button>
-            </div>
-          </div>
-          <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // ==================== SINGLE MODE (with new Sticky Filter Tag) ====================
-    function updateForm() {
-      const type = document.getElementById('cardType').value;
-      const container = document.getElementById('modalFields');
-      let fields = '';
-      if (type === 'battle') {
-        fields = `<div><label class="block text-sm font-medium mb-2">Human's Argument</label><textarea id="humanArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-                  <div><label class="block text-sm font-medium mb-2">Grok's Response</label><textarea id="grokArg" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-                  <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
-      } else if (type === 'category') {
-        fields = `<div><label class="block text-sm font-medium mb-2">Summary (for modal)</label><textarea id="summary" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-                  <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
-      } else {
-        fields = `<div><label class="block text-sm font-medium mb-2">Context / Backstory</label><textarea id="context" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
-                  <div><label class="block text-sm font-medium mb-2">X/Twitter Link</label><input id="xLink" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>`;
-      }
-      container.innerHTML = fields;
-    }
-
-    function isVideo(url) { return url.match(/\.(mp4|webm|ogg|mov)$/i); }
-
-    function generateAll() {
-      const type = document.getElementById('cardType').value;
-      const id = document.getElementById('cardId').value || '99';
-      const media = document.getElementById('mediaUrl').value.trim() || 'https://picsum.photos/id/1015/1200/675';
-      const title = document.getElementById('title').value || 'Untitled';
-      const shortDesc = document.getElementById('shortDesc').value || 'No description provided.';
-      const filterTags = document.getElementById('filterTags').value.trim() || (type === 'battle' ? 'political' : 'general');
-      const xLink = document.getElementById('xLink') ? document.getElementById('xLink').value.trim() : '#';
-
-      const videoClass = isVideo(media) ? ' video-card' : '';
-      const mediaTag = isVideo(media) ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
-
-      let cardHTML = '';
-      let dataObj = {};
-
-      if (type === 'battle') {
-        const human = document.getElementById('humanArg')?.value || shortDesc;
-        const grok = document.getElementById('grokArg')?.value || 'Grok response here...';
-        cardHTML = `<div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer${videoClass}" data-categories="${filterTags}">
-  ${mediaTag}
-  <div class="content">
-    <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
-    <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
-  </div>
-  <div class="buttons flex">
-    <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-    <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-  </div>
-</div>`;
-        dataObj = { id: parseInt(id), title, image: media, tags: filterTags.split(',').map(t=>t.trim()), human, grok, xLink };
-      } else if (type === 'category') {
-        const summary = document.getElementById('summary')?.value || shortDesc;
-        cardHTML = `<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterTags}">
-  <div class="aspect-video">${mediaTag}</div>
-  <div class="content flex-1 flex flex-col">
-    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
-    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
-  </div>
-</div>`;
-        dataObj = { id: parseInt(id), title, image: media, tags: [filterTags], summary, xLink };
-      } else { // meme
-        const context = document.getElementById('context')?.value || shortDesc;
-        cardHTML = `<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterTags}">
-  <div class="aspect-video">${mediaTag}</div>
-  <div class="content flex-1 flex flex-col">
-    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>
-    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>
-  </div>
-</div>`;
-        dataObj = { id: parseInt(id), title, image: media, context, xLink };
-      }
-
-      document.getElementById('outputCard').value = cardHTML.trim();
-      document.getElementById('outputData').value = JSON.stringify(dataObj, null, 2);
-      document.getElementById('preview').innerHTML = `<div class="preview-container">${cardHTML}</div>`;
-    }
-
-    function copyAll() {
-      navigator.clipboard.writeText(`CARD HTML:\n${document.getElementById('outputCard').value}\n\nDATA OBJECT:\n${document.getElementById('outputData').value}`);
-      alert('✅ Copied!');
-    }
-
-    // ==================== BATCH MODE (1–25 cards) ====================
-    function switchTab(n) {
-      document.getElementById('singlePanel').classList.toggle('hidden', n !== 0);
-      document.getElementById('batchPanel').classList.toggle('hidden', n !== 1);
-      document.querySelectorAll('.tab-button').forEach((b,i) => b.classList.toggle('active', i===n));
-    }
-
-    function generateBatchPrompt() {
-      const type = document.getElementById('batchType').value;
-      const startId = parseInt(document.getElementById('batchStartId').value) || 100;
-      const links = document.getElementById('batchLinks').value.trim().split('\n').filter(l => l.trim());
-      if (links.length === 0) return alert("Paste at least one X link!");
-
-      let prompt = `You are helping build www.grokvshumans.com.\nProcess these ${links.length} X posts (works for 1 to 25).\nStarting ID: ${startId}. Card type: ${type}.\n\nLinks:\n`;
-      links.forEach((l,i) => prompt += `${i+1}. ${l}\n`);
-      prompt += `\nReturn EXACTLY in this format for EVERY card:\n=== CARD X ===\nHTML: [exact ready-to-paste card HTML with correct onclick and data-categories/data-category]\nDATA: {full JSON object exactly matching the page's data array}\n\nRules:\n• Card HTML in REVERSE order at the very end\n• Data objects in normal order\n• Use real image URLs\n• Fill sticky filter tags correctly\n• Output ONLY the === CARD X === blocks.`;
-
-      document.getElementById('promptText').textContent = prompt;
-      document.getElementById('batchPromptOutput').classList.remove('hidden');
-    }
-
-    // (Prompt output area – added for completeness)
-    <div id="batchPromptOutput" class="mt-8 hidden">
-      <label class="block text-sm font-medium mb-2 text-emerald-400">Copy this prompt and send it to me (Grok):</label>
-      <pre id="promptText" class="bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 text-sm overflow-auto max-h-96 whitespace-pre-wrap font-mono"></pre>
-      <button onclick="copyPrompt()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 px-8 py-4 rounded-3xl font-semibold">Copy Prompt</button>
-    </div>
-
-    function copyPrompt() {
-      navigator.clipboard.writeText(document.getElementById('promptText').textContent);
-      alert('✅ Prompt copied! Paste it to me — I’ll return perfect cards for 1–25 links.');
-    }
-
-    let parsedCards = [];
-    function parseBatchResponse() {
-      const raw = document.getElementById('grokResponse').value.trim();
-      if (!raw) return alert("Paste my reply first!");
-      const blocks = raw.split(/=== CARD \d+ ===/i).filter(b => b.trim().length > 30);
-      parsedCards = [];
-      blocks.forEach(block => {
-        const htmlMatch = block.match(/HTML:\s*([\s\S]*?)(?=DATA:|$)/i);
-        const dataMatch = block.match(/DATA:\s*(\{[\s\S]*?\})/i);
-        if (htmlMatch && dataMatch) {
-          const html = htmlMatch[1].trim();
-          try {
-            const data = JSON.parse(dataMatch[1].trim());
-            parsedCards.push({html, data});
-          } catch(e) {
-            parsedCards.push({html, data: dataMatch[1].trim()});
-          }
+        /* === UNIFIED ARROW STYLE (just outside modal) === */
+        .modal-content {
+            position: relative;
+            overflow: visible; /* allows arrows to stick out */
         }
-      });
-      if (parsedCards.length === 0) return alert("No cards detected — make sure you pasted my full reply.");
-      document.getElementById('cardCount').textContent = parsedCards.length;
-      renderResults();
-      document.getElementById('parseResults').classList.remove('hidden');
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            border-radius: 9999px;
+            z-index: 60;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .nav-arrow:hover {
+            background: rgba(0,0,0,0.95);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .nav-arrow-left  { left: -58px; }
+        .nav-arrow-right { right: -58px; }
+
+        /* mobile fallback - arrows move closer */
+        @media (max-width: 640px) {
+            .nav-arrow-left  { left: -42px; }
+            .nav-arrow-right { right: -42px; }
+            .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
+        }
+
+        .meme-card > img, .meme-card > video {
+            flex-shrink: 0;
+            height: 15.5rem;
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem; }
+
+        .meme-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(168,85,247,0.2); 
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            position: relative; }
+        .meme-card:hover { 
+            transform: translateY(-8px);
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+            border-color: rgb(168 85 247); }
+        .meme-card .content {
+            flex: 1;
+            padding: 1.25rem;
+            background: #18181b;
+            display: flex;
+            flex-direction: column;
+            min-height: 6rem; }
+        .meme-card .title-area { min-height: 1.75rem; }
+        .meme-card .desc-area { flex: 1; min-height: 3.5rem; }
+
+        /* VIDEO PLAY ICON ON GRID */
+        .video-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .video-card:hover::after { opacity: 1; }
+        .video-card::after i {
+            font-size: 3.8rem;
+            color: white;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .tab-active {
+            border-bottom: 3px solid rgb(168 85 247);
+            color: white;
+        }
+
+        /* MODAL */
+        #meme-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 12px;
+        }
+        .modal-content {
+            background: #17172a;
+            border-radius: 24px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 94vh;
+            overflow: hidden;
+            position: relative;
+        }
+        #modal-image img,
+        #modal-image video {
+            width: 100%;
+            max-height: 68vh;
+            object-fit: contain;
+        }
+
+        /* SLIM CONTEXT BAR UNDER PHOTO */
+        #context-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(23,23,42,0.98);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(168,85,247,0.4);
+            padding: 12px 16px;
+            display: none;
+        }
+        #context-text {
+            color: #e5e5e5;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+        #context-x-link {
+            margin-top: 10px;
+            background: white;
+            color: black;
+            padding: 11px;
+            border-radius: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            #meme-modal { padding: 8px; }
+            .modal-content { max-height: 96vh; border-radius: 20px; }
+            #modal-image img, #modal-image video { max-height: 68vh !important; }
+        }
+
+        /* Phase 1 – COMPACT MOBILE MODAL BUTTONS (smaller + "Search" only) */
+        @media (max-width: 640px) {
+        #modal-buttons {
+            padding: 12px 10px !important;
+            gap: 6px !important;
+        }
+        #modal-buttons button {
+            gap: 8px !important;
+            padding: 12px 10px !important;
+            font-size: 0.85rem !important;
+            min-height: 48px !important;
+            border-radius: 12px !important;
+        }
+        #modal-buttons i {
+            font-size: 1.25rem !important;
+        }
+        #modal-buttons span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        }
+
+        /* Phase 2 FINAL – Generous top padding + bigger Close X on mobile (separates native mute icon) */
+        @media (max-width: 1024px) {
+        #memeModal .modal-content {
+            padding-top: 130px !important;
+        }
+        
+        #memeModal .modal-video-wrapper,
+        #memeModal .video-container {
+            margin-top: 10px !important;
+        }
+        
+        /* Bigger, clearer Close X on mobile */
+        #memeModal .close-modal {
+            top: 18px !important;
+            right: 18px !important;
+            font-size: 32px !important;
+            padding: 8px !important;
+            z-index: 10000 !important;
+        }
+        }
+
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- NAVBAR -->
+    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-center py-6 md:py-8">
+                <a href="index.html" class="flex items-center gap-4">
+                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
+                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                </a>
+            </div>
+            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
+                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
+                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
+                <a href="memes.html" class="nav-link active hover:text-purple-400 transition-colors">Memes</a>
+                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
+            </div>
+            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
+                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-plus"></i> Submit Battle
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
+            <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
+
+            <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
+                <div class="flex justify-start md:justify-center px-4 md:px-6">
+                    <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
+                        <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
+                        <button onclick="filterCategory('grok-memes')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-grok-memes">Grok Memes</button>
+                        <button onclick="filterCategory('misc-memes')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-misc-memes">Miscellaneous Memes</button>
+                        <button onclick="filterCategory('gifs')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-gifs">GIFs</button>
+                        <button onclick="filterCategory('ai-tech')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-ai-tech">AI Meme Tech</button>
+                        <button onclick="filterCategory('other')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-other">Other</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
+                
+                <!-- 27 -->
+                <div onclick="openMemeModal(27)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HClNaXYWkAABbJb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Nancy Mace Destroys Walz 🔥</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Thank God you're not vice president — the savage burn that left Tim Walz speechless.</p></div>
+                    </div>
+                </div>
+
+                <!-- 26 -->
+                <div onclick="openMemeModal(26)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HClQrQDXQAADb-p.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Mace's Brutal Walz Takedown</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">The moment Rep. Nancy Mace ended Walz's night with one perfect line.</p></div>
+                    </div>
+                </div>
+
+                <!-- 25 -->
+                <div onclick="openMemeModal(25)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HCmYpeqX0AAFxWg.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Meme Overload</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">When one Grok reply spawns an entire thread of absolute fire memes.</p></div>
+                    </div>
+                </div>
+
+                <!-- 24 -->
+                <div onclick="openMemeModal(24)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HCmWWH9aUAAxM1H.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">X Screen Time Reward Meme</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">The internet's reaction to X paying users for doomscrolling.</p></div>
+                    </div>
+                </div>
+
+                <!-- 23 -->
+                <div onclick="openMemeModal(23)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
+                    <div class="aspect-video">
+                        <video src="https://files.catbox.moe/plxk87.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok's AI Video Masterpiece</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">This AI-generated video is pure perfection – one of the best out there!</p></div>
+                    </div>
+                </div>
+                
+                <!-- 22 -->
+                <div onclick="openMemeModal(22)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
+                    <div class="aspect-video">
+                        <video src="https://files.catbox.moe/534e9u.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">The Perfect AI Video Does Exist 🔥</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">This AI-generated masterpiece is pure perfection – one of the best videos out there!</p></div>
+                    </div>
+                </div>
+
+                <!-- 21 -->
+                <div onclick="openMemeModal(21)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="grok-memes">
+                    <div class="aspect-video">
+                        <video src="https://files.catbox.moe/uzlnpj.mp4" class="w-full h-full object-cover" loop muted playsinline></video>
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Imagine Meme Magic</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Of all the Grok imagines from my meme, this one is my favorite 💯🤣</p></div>
+                    </div>
+                </div>
+
+                <!-- 20 -->
+                <div onclick="openMemeModal(20)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="misc-memes">
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/media/HCiayrEbgAAnpgl.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">McCain's Eyepatch: Sympathy Scam Exposed?</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Butt-pirate McCain ripping off America with a fake eyepatch for sympathy?</p></div>
+                    </div>
+                </div>
+                <!-- 19 -->
+                <div onclick="openMemeModal(19)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="https://pbs.twimg.com/media/HCiNXDQawAIBFe0.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Insider Trading Consequences</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">POTUSnote drops the perfect visual on Dan Crenshaw's primary loss</p></div>
+                    </div>
+                </div>
+                <!-- 18 -->
+                <div onclick="openMemeModal(18)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="https://pbs.twimg.com/media/HCiNCtQawAQ2OAn.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Crenshaw Loser Laugh</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">GinnyM's perfect reaction meme to Dan Crenshaw</p></div>
+                    </div>
+                </div>
+
+                <!-- ORIGINAL CARDS (17-1) -->
+                <!-- 17 -->
+                <div onclick="openMemeModal(17)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Has the Best Humor</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The side with the best sense of humor are the good guys — Grok ftw</p></div>
+                    </div>
+                </div>
+                <!-- 16 -->
+                <div onclick="openMemeModal(16)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok 4.20 FTW</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok 4.20 continues its unstoppable humor dominance</p></div>
+                    </div>
+                </div>
+                <!-- 15 -->
+                <div onclick="openMemeModal(15)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">The Bear Always Chooses Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Even the bear knows to always pick Grok and the truth</p></div>
+                    </div>
+                </div>
+                <!-- 14 -->
+                <div onclick="openMemeModal(14)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
+                    <img src="https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Makes Pope Cry Laughing</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok leaves the Pope in tears of laughter</p></div>
+                    </div>
+                </div>
+                <!-- 13 FIXED GIF -->
+                <div onclick="openMemeModal(13)" class="meme-card video-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://media1.tenor.com/m/SZZBv8lPglsAAAAd/grok-is-this-true.gif" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Breaks the Comment Section</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok has the entire comments section dying of laughter</p></div>
+                    </div>
+                </div>
+                <!-- 12 -->
+                <div onclick="openMemeModal(12)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
+                    <img src="https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Predicts the Next Pope</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok's hilarious prediction for the next Pope</p></div>
+                    </div>
+                </div>
+                <!-- 11 -->
+                <div onclick="openMemeModal(11)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
+                    <img src="https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Steals the Pope Debate</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok completely takes over the ChatGPT Pope sermon thread</p></div>
+                    </div>
+                </div>
+                <!-- 10 REPLACED -->
+                <div onclick="openMemeModal(10)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="https://pbs.twimg.com/media/HCiS7a_bgAAeykM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Dan Crenshaw Loser</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">PatriotSteve64 nails the perfect visual roast of Dan Crenshaw</p></div>
+                    </div>
+                </div>
+                <!-- 9 -->
+                <div onclick="openMemeModal(9)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Gork = Elon's Alter Ego?</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">DogecoinNorway nails the Gork = Elon theory</p></div>
+                    </div>
+                </div>
+                <!-- 8 -->
+                <div onclick="openMemeModal(8)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Potato Flipping the Bird</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Grok's glorious attempt at generating a middle-finger potato</p></div>
+                    </div>
+                </div>
+                <!-- 7 -->
+                <div onclick="openMemeModal(7)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="ai-tech">
+                    <img src="https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Murloc vs Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">"I asked ChatGPT" vs "I asked Grok" — this murloc replied mrrrrrglrrrlgr</p></div>
+                    </div>
+                </div>
+                <!-- 6 -->
+                <div onclick="openMemeModal(6)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Breakfastmeat Joins Grok Chaos</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Breakfastmeat dives headfirst into the Grok tagging madness</p></div>
+                    </div>
+                </div>
+                <!-- 5 -->
+                <div onclick="openMemeModal(5)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">MrFeduppp's Grok Tagging Spree</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The legendary Grok tagging war rages on</p></div>
+                    </div>
+                </div>
+                <!-- 4 -->
+                <div onclick="openMemeModal(4)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok Roasts the Left</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">Perfect capture of Grok absolutely cooking leftist ideas</p></div>
+                    </div>
+                </div>
+                <!-- 3 -->
+                <div onclick="openMemeModal(3)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="assets/images/memes/milk.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Elon Personally Tags Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">The boss himself jumps into the Grok meme tagging war</p></div>
+                    </div>
+                </div>
+                <!-- 2 -->
+                <div onclick="openMemeModal(2)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="misc-memes">
+                    <img src="assets/images/memes/kermit.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">ClownWorld vs Grok</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">When pure ClownWorld chaos meets Grok's razor-sharp wisdom</p></div>
+                    </div>
+                </div>
+                <!-- 1 -->
+                <div onclick="openMemeModal(1)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer" data-category="grok-memes">
+                    <img src="https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-1">Grok is a High-Tech Rock</h4></div>
+                        <div class="desc-area"><p class="text-gray-400 text-sm line-clamp-2">CoreyJMahler nails Grok's unbreakable, rock-solid personality</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900 border border-purple-500 px-8 py-4 rounded-3xl shadow-2xl z-[100] transition-all duration-300">
+        <span id="toast-text" class="font-medium text-white"></span>
+    </div>
+
+    
+        <!-- MEME MODAL - UNIFIED + CLICK OUTSIDE TO CLOSE -->
+        <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target === this) closeMemeModal()">
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+            
+            <!-- Close X -->
+            <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
+
+            <!-- Arrows just outside the card -->
+            <button onclick="event.stopImmediatePropagation(); nextMeme()" 
+                    class="nav-arrow nav-arrow-left">‹</button>
+            <button onclick="event.stopImmediatePropagation(); prevMeme()" 
+                    class="nav-arrow nav-arrow-right">›</button>
+
+            <div id="modal-image" class="w-full bg-zinc-800"></div>
+
+            <div id="context-panel" class="hidden p-5 bg-zinc-900 border-t border-purple-500/40">
+            <div class="flex justify-between items-start gap-4">
+                <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
+                <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">✕</button>
+            </div>
+            <a id="context-x-link" href="#" target="_blank" class="mt-4 block w-full bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-3">
+                <i class="fa-brands fa-x-twitter"></i> View Original Thread on X
+            </a>
+            </div>
+
+            <div id="modal-buttons" class="border-t border-zinc-800 p-5 flex gap-3">
+            <button onclick="searchMemeImage()" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
+                <i class="fa-solid fa-magnifying-glass"></i> Search
+            </button>
+            <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
+                <i class="fa-solid fa-info-circle"></i> Info / Context
+            </button>
+            <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-sm">
+                <i class="fa-solid fa-share-nodes"></i> Share Meme
+            </button>
+            </div>
+        </div>
+        </div>
+
+    <script>
+    // BACKGROUND ROTATOR
+    const bgs = [
+        'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
+        'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
+        'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
+        'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
+        'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
+        'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
+        'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
+        'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
+        'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
+        'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
+    
+    ];
+
+    const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
+    document.body.style.backgroundImage = `url('/${randomBg}')`;
+    document.body.style.backgroundPosition = '50% 35%';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    document.body.style.backgroundAttachment = 'fixed';
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const text = document.getElementById('toast-text');
+        text.textContent = message;
+        toast.classList.remove('hidden');
+        toast.style.transform = 'translate(-50%, 0)';
+        setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
-    function renderResults() {
-      const grid = document.getElementById('resultsGrid');
-      grid.innerHTML = '';
-      parsedCards.forEach((card, i) => {
-        const div = document.createElement('div');
-        div.className = 'bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-700';
-        div.innerHTML = `<div class="p-6 bg-zinc-950">${card.html}</div>
-          <div class="p-6 border-t border-zinc-700 flex gap-3">
-            <button onclick="copySingleHtml(${i})" class="flex-1 bg-purple-600 hover:bg-purple-700 py-3 rounded-2xl text-sm font-semibold">Copy HTML</button>
-            <button onclick="copySingleData(${i})" class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-2xl text-sm font-semibold">Copy Data</button>
-          </div>`;
-        grid.appendChild(div);
-      });
+    document.querySelectorAll('.nav-link').forEach(link => {
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        if (link.getAttribute('href') === currentPage) link.classList.add('active');
+    });
+
+    let currentMemeId = null;
+
+    const memeData = {
+        
+        1: { title: "Grok is a High-Tech Rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", context: "CoreyJMahler nails Grok's unbreakable, rock-solid personality", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
+        2: { title: "ClownWorld vs Grok", image: "assets/images/memes/kermit.webp", context: "When pure ClownWorld chaos meets Grok's razor-sharp wisdom", xLink: "https://x.com/ClownWorld/status/1952204779142484327" },
+        3: { title: "Elon Personally Tags Grok", image: "assets/images/memes/milk.webp", context: "The boss himself jumps into the Grok meme tagging war", xLink: "https://x.com/elonmusk/status/1951794381650047135" },
+        4: { title: "Grok Roasts the Left", image: "https://pbs.twimg.com/media/GqIPC2hWQAAQNPq.jpg", context: "Perfect capture of Grok absolutely cooking leftist ideas", xLink: "https://x.com/AntiLeftMemes/status/1919112936133386688" },
+        5: { title: "MrFeduppp's Grok Tagging Spree", image: "https://pbs.twimg.com/media/G0B227BWYAA7RKL.jpg", context: "The legendary Grok tagging war rages on", xLink: "https://x.com/MrFeduppp/status/1963700130236023016" },
+        6: { title: "Breakfastmeat Joins Grok Chaos", image: "https://pbs.twimg.com/media/G0CsLLCaUAAejEZ.jpg", context: "Breakfastmeat dives headfirst into the Grok tagging madness", xLink: "https://x.com/breakfastmeat1/status/1963758755121942628" },
+        7: { title: "Murloc vs Grok", image: "https://pbs.twimg.com/media/GwEra9_W4AAcLEW.jpg", context: "\"I asked ChatGPT\" vs \"I asked Grok\" — this murloc replied mrrrrrglrrrlgr", xLink: "https://x.com/chrissyxchi/status/1945884259685658769" },
+        8: { title: "Potato Flipping the Bird", image: "https://pbs.twimg.com/media/Gy0bkuKW0AAdHn5.jpg", context: "Grok's glorious attempt at generating a middle-finger potato", xLink: "https://x.com/SnarkyPotatoes/status/1958251733190336870" },
+        9: { title: "Gork = Elon's Alter Ego?", image: "https://pbs.twimg.com/media/HCElQ3eawAANd9w.jpg", context: "DogecoinNorway nails the Gork = Elon theory", xLink: "https://x.com/DogecoinNorway/status/2027313399185788979" },
+        10: { title: "Dan Crenshaw Loser", image: "https://pbs.twimg.com/media/HCiS7a_bgAAeykM.jpg", context: "PatriotSteve64 nails the perfect visual roast of Dan Crenshaw", xLink: "https://x.com/PatriotSteve64/status/2029033186592752009" },
+        11: { title: "Grok Steals the Pope Debate", image: "https://pbs.twimg.com/media/HCamG8sXgAAj811.jpg", context: "Grok completely takes over the ChatGPT Pope sermon thread", xLink: "https://x.com/giuseppe_maxims/status/2028491327529254950" },
+        12: { title: "Grok Predicts the Next Pope", image: "https://pbs.twimg.com/media/HCaq0o9XYAA3c69.jpg", context: "Grok's hilarious prediction for the next Pope", xLink: "https://x.com/Airte747/status/2028496525622391250" },
+        13: { title: "Grok Breaks the Comment Section", image: "https://media1.tenor.com/m/SZZBv8lPglsAAAAd/grok-is-this-true.gif", context: "Grok has the entire comments section dying of laughter", xLink: "https://x.com/omarvvvr/status/2028494248002134208" },
+        14: { title: "Grok Makes Pope Cry Laughing", image: "https://pbs.twimg.com/media/HCap1ZyWkAIzwr1.png", context: "Grok leaves the Pope in tears of laughter", xLink: "https://x.com/Larrylurex86/status/2028495444548976716" },
+        15: { title: "The Bear Always Chooses Grok", image: "https://pbs.twimg.com/media/HCAwmYwb0AAWRzs.jpg", context: "Even the bear knows to always pick Grok and the truth", xLink: "https://x.com/LamQuyenAnVn/status/2026673273195606079" },
+        16: { title: "Grok 4.20 FTW", image: "https://pbs.twimg.com/media/HCA96ZFaIAAbOMk.jpg", context: "Grok 4.20 continues its unstoppable humor dominance", xLink: "https://x.com/Dogetothemoon/status/2026687908279885943" },
+        17: { title: "Grok Has the Best Humor", image: "https://pbs.twimg.com/media/HCAZFSZW4AAVWnb.jpg", context: "The side with the best sense of humor are the good guys — Grok ftw", xLink: "https://x.com/elonmusk/status/2026672975060377859" },
+        18: { title: "Crenshaw Loser Laugh", image: "https://pbs.twimg.com/media/HCiNCtQawAQ2OAn.jpg", context: "GinnyM's perfect reaction meme to Dan Crenshaw", xLink: "https://x.com/PatriotXV11/status/2029026713557250406" },
+        19: { title: "Insider Trading Consequences", image: "https://pbs.twimg.com/media/HCiNXDQawAIBFe0.jpg", context: "POTUSnote drops the perfect visual on Dan Crenshaw's primary loss", xLink: "https://x.com/POTUSnote/status/2029027065664540956" },
+        20: { title: "McCain's Eyepatch: Sympathy Scam Exposed?", image: "https://pbs.twimg.com/media/HCiayrEbgAAnpgl.jpg", context: "Butt-pirate McCain ripping off America with a fake eyepatch for sympathy?", xLink: "https://x.com/SlavisTon/status/2029041835717366135" },
+        21: { title: "Grok Imagine Meme Magic", image: "https://files.catbox.moe/uzlnpj.mp4", context: "Of all the Grok imagines from my meme, this one is my favorite 💯🤣", xLink: "https://x.com/TheRicanMemes/status/1987998428257739142" },
+        22: { title: "The Perfect AI Video Does Exist 🔥", image: "https://files.catbox.moe/534e9u.mp4", context: "This AI-generated masterpiece is pure perfection – one of the best videos out there!", xLink: "https://x.com/markgadala/status/2029036627624878341" },
+        23: { title: "Grok's AI Video Masterpiece", image: "https://files.catbox.moe/plxk87.mp4", context: "This AI-generated video is pure perfection – one of the best out there!", xLink: "https://x.com/JJPPATRIOTMAGA/status/2029270611810488717" },
+        24: { title: "X Screen Time Reward Meme", image: "https://pbs.twimg.com/media/HCmWWH9aUAAxM1H.jpg", context: "The internet's reaction to X paying users for doomscrolling.", xLink: "https://x.com/saneord/status/2029318425626198151" },
+        25: { title: "Grok Meme Overload", image: "https://pbs.twimg.com/media/HCmYpeqX0AAFxWg.jpg", context: "When one Grok reply spawns an entire thread of absolute fire memes.", xLink: "https://x.com/SlavisTon/status/2029320951024722268" },
+        26: { title: "Mace's Brutal Walz Takedown", image: "https://pbs.twimg.com/media/HClQrQDXQAADb-p.jpg", context: "The moment Rep. Nancy Mace ended Walz's night with one perfect line.", xLink: "https://x.com/Gregs_iPinions/status/2029241814767583408" },
+        27: { title: "Nancy Mace Destroys Walz 🔥", image: "https://pbs.twimg.com/media/HClNaXYWkAABbJb.jpg", context: "Thank God you're not vice president — the savage burn that left Tim Walz speechless.", xLink: "https://x.com/JodiOnTheCouch/status/2029238224611066168" },
+        
+    };
+
+    function filterCategory(cat) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+        document.getElementById('tab-' + cat).classList.add('tab-active');
+        document.querySelectorAll('#meme-grid > div').forEach(card => {
+            if (cat === 'all') card.style.display = 'block';
+            else card.style.display = card.getAttribute('data-category') === cat ? 'block' : 'none';
+        });
     }
 
-    function copySingleHtml(i){ navigator.clipboard.writeText(parsedCards[i].html); alert('✅ HTML copied!'); }
-    function copySingleData(i){ navigator.clipboard.writeText(JSON.stringify(parsedCards[i].data, null, 2)); alert('✅ Data copied!'); }
-    function copyAllHtml(){ navigator.clipboard.writeText(parsedCards.slice().reverse().map(c=>c.html).join('\n\n')); alert('✅ All HTML (reverse) copied!'); }
-    function copyAllData(){ navigator.clipboard.writeText(parsedCards.map(c=>JSON.stringify(c.data,null,2)).join(',\n')); alert('✅ All Data copied!'); }
+    function openMemeModal(id) {
+        currentMemeIndex = id;
+        const data = memeData[id];
+    if (!data) return;
+    currentMemeId = id;
 
-    // Init
-    switchTab(0);
-    updateForm();
-    setTimeout(() => generateAll(), 300);
-  </script>
+    const url = data.image.toLowerCase();
+    let mediaHTML = '';
+
+    if (url.endsWith('.gif')) {
+        mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+    } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
+    mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
+    } else {
+        mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+    }
+
+    document.getElementById('modal-image').innerHTML = mediaHTML;
+
+        // Initialize Plyr for clean controls
+        if (document.getElementById('modal-video')) {
+        window.currentPlyr = new Plyr('#modal-video', {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            settings: [],
+            tooltips: { controls: true, seek: true }
+        });
+        }
+    document.getElementById('context-panel').style.display = 'none';
+    document.getElementById('modal-buttons').style.display = 'flex';
+    document.getElementById('meme-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+    function closeMemeModal() {
+        // Stop sound and clean up Plyr when modal closes
+        if (window.currentPlyr) {
+            window.currentPlyr.pause();
+            window.currentPlyr.destroy();
+            window.currentPlyr = null;
+        }
+
+        document.getElementById('meme-modal').style.display = 'none';
+        document.body.style.overflow = 'visible';
+    }
+
+    function showContextPanel() {
+        if (!currentMemeId) return;
+        const data = memeData[currentMemeId];
+        document.getElementById('context-text').textContent = data.context;
+        document.getElementById('context-x-link').href = data.xLink;
+        document.getElementById('context-panel').style.display = 'block';
+        document.getElementById('modal-buttons').style.display = 'none';
+    }
+
+    function hideContextPanel() {
+        document.getElementById('context-panel').style.display = 'none';
+        document.getElementById('modal-buttons').style.display = 'flex';
+    }
+
+    function searchMemeImage() {
+        if (!currentMemeId) return;
+        const data = memeData[currentMemeId];
+        window.open(`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(data.image)}`, '_blank');
+    }
+
+    function showMemeShareMenu() {
+        if (!currentMemeId) return;
+        const data = memeData[currentMemeId];
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = `${baseUrl}#${currentMemeId}`;
+        const text = `Check out this Grok meme: ${data.title} 🔥`;
+        const shareHTML = `
+            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1200]" onclick="closeMemeShareMenu()">
+                <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
+                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this meme</h3>
+                    <div class="grid grid-cols-3 gap-6 text-center">
+                        <button onclick="copyMemeDeepLink('${shareUrl}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-link text-4xl text-purple-400"></i><span class="text-xs mt-1">Our Site</span></button>
+                        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-facebook text-4xl text-blue-500"></i><span class="text-xs mt-1">Facebook</span></a>
+                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-4xl text-pink-500"></i><span class="text-xs mt-1">Instagram</span></a>
+                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-4xl"></i><span class="text-xs mt-1">TikTok</span></a>
+                        <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + '\\n' + shareUrl)}" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-envelope text-4xl text-green-400"></i><span class="text-xs mt-1">Email</span></a>
+                    </div>
+                    <button onclick="closeMemeShareMenu()" class="mt-10 w-full py-4 border border-zinc-700 rounded-2xl hover:bg-zinc-800 font-medium">Cancel</button>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', shareHTML);
+    }
+
+    function closeMemeShareMenu() {
+        const overlay = document.getElementById('share-overlay');
+        if (overlay) overlay.remove();
+    }
+
+    function copyMemeDeepLink(url) {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('✅ Link to this meme copied!');
+            closeMemeShareMenu();
+        });
+    }
+
+    function copyToClipboard(url) {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('✅ Link copied to clipboard!');
+            closeMemeShareMenu();
+        });
+    }
+
+    function checkDeepLink() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && !isNaN(hash)) {
+            const id = parseInt(hash);
+            if (memeData[id]) openMemeModal(id);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkDeepLink, 300);
+        filterCategory('all');
+    });
+
+    window.addEventListener('hashchange', checkDeepLink);
+
+    // ESCAPE KEY
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('meme-modal');
+            if (modal.style.display === 'flex') closeMemeModal();
+        }
+    });
+
+    // === SWIPE NAVIGATION FOR MEMES (fixed for your object) ===
+    let currentMemeIndex = 0;
+
+    function nextMeme() {
+    const keys = Object.keys(memeData);
+    const currentPos = keys.indexOf(currentMemeIndex.toString());
+    const nextPos = (currentPos + 1) % keys.length;
+    currentMemeIndex = parseInt(keys[nextPos]);
+    closeMemeModal();
+    setTimeout(() => openMemeModal(currentMemeIndex), 300);
+    }
+
+    function prevMeme() {
+    const keys = Object.keys(memeData);
+    const currentPos = keys.indexOf(currentMemeIndex.toString());
+    const prevPos = (currentPos - 1 + keys.length) % keys.length;
+    currentMemeIndex = parseInt(keys[prevPos]);
+    closeMemeModal();
+    setTimeout(() => openMemeModal(currentMemeIndex), 300);
+    }
+
+    // Touch swipe on phone/tablet
+    let touchStartX = 0;
+    const memeModalElement = document.getElementById('meme-modal');
+
+    memeModalElement.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    });
+
+    memeModalElement.addEventListener('touchend', e => {
+    const touchEndX = e.changedTouches[0].screenX;
+    if (touchEndX < touchStartX - 50) nextMeme();
+    if (touchEndX > touchStartX + 50) prevMeme();
+    });
+
+    // Keyboard arrows on desktop
+    document.addEventListener('keydown', e => {
+    if (document.getElementById('meme-modal').style.display === 'flex') {
+        if (e.key === 'ArrowRight') prevMeme();   // right = backward (older)
+        if (e.key === 'ArrowLeft') nextMeme();    // left = forward (newer)
+    }
+    });
+
+    </script>
 </body>
+
+<footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
+    Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
+    <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
+    Launched Mar 01 2026
+
+    <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px]">
+        <a href="impressum.html" class="hover:text-purple-400">Imprint / Impressum</a>
+        <a href="tos.html" class="hover:text-purple-400">Terms / Nutzungsbedingungen</a>
+        <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
+    </div>
+</footer>
+
 </html>
