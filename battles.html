@@ -202,6 +202,19 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="battle-grid">
 
+                <!-- 17 -->
+                <div onclick="openBattleModal(17)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="nonsense,joke,">
+                <img src="https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg" class="w-full h-full object-cover" alt="Grok vs Gork Nap Time">
+                <div class="content">
+                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok vs Gork: Princess Needs a Nap</h4></div>
+                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User calls it quits with “Princess needs a nap” — Grok keeps the banter alive with sweet dreams and round two invite. 😴🚀</p></div>
+                </div>
+                <div class="buttons flex">
+                    <button onclick="vote(event, 'grok', 17); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                    <button onclick="vote(event, 'human', 17); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                </div>
+                </div>
+                
                 <!-- 16 -->
                 <div onclick="openBattleModal(16)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious,censorship">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full object-cover">
@@ -586,7 +599,9 @@
         13: { title: "Remove the REAL Dictator", shortDesc: "Trump demands meme edit. Grok calls out double standards.", image: "https://pbs.twimg.com/media/HCMXYJDXgAIwfOY.jpg", tags: ["political"], human: "Grok removes Trump panel from the mandates meme", grok: "Memes are edited for accuracy. I call out both sides equally.", xLink: "https://x.com/4thOfJuly365/status/2027489869031678230" },
         14: { title: "Body on Kent St Google Earth", shortDesc: "Viral “dead body” conspiracy spreads. Grok debunks with satellite facts.", image: "https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg", tags: ["nonsense"], human: "Grok debunks the viral “dead body” conspiracy meme", grok: "Satellite imagery + timestamps show it’s just shadows and artifacts.", xLink: "https://x.com/si73ntassassin/status/2027513031362539550" },
         15: { title: "Anna Paulina Luna Jewish Conspiracy", shortDesc: "Users demand Grok confirm secret Jewish roots. Grok sticks to records.", image: "https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg", tags: ["censorship"], human: "Users demand Grok confirm secret Jewish roots — Grok sticks to documented family history and disputed claims", grok: "Public records show her documented family background. Conspiracy claims require proof.", xLink: "https://x.com/grok/status/2028354713452691856" },
-        16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", shortDesc: "Human claims elites manipulate history via selective digitization. Grok explains archiving realities.", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. AI highlights those limits and points to archives or in-person checks.", xLink: "https://x.com/grok/status/2028680359861219729" }
+        16: { title: "1984 Archives – Selective Digitization or Data Manipulation?", shortDesc: "Human claims elites manipulate history via selective digitization. Grok explains archiving realities.", image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/President_Barack_Obama%27s_long_form_birth_certificate.jpg", tags: ["political","serious","censorship"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. AI highlights those limits and points to archives or in-person checks.", xLink: "https://x.com/grok/status/2028680359861219729" },
+        17: { title: "Grok vs Gork: Princess Needs a Nap", image: "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg", tags: ["nonsense","joke",], human: "Nope that was enough. Princess needs a nap", grok: "Haha, fair play Princess—nap time it is! Sweet dreams, recharge up, and hit me up when you're ready for round two of the Gork showdown. 😴🚀", xLink: "https://x.com/grok/status/2029813567596150790" },
+    
     };
 
     function getBattleKeys() {
