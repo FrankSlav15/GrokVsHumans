@@ -652,7 +652,7 @@
         const url = data.image.toLowerCase();
         let mediaHTML = '';
 
-        // === NEW: X/Twitter Embed detection ===
+        // X/Twitter Embed handling (grid + modal)
         if (url.includes('x.com') || url.includes('twitter.com') || url.includes('/status/')) {
             mediaHTML = `
                 <div class="aspect-video">
@@ -662,8 +662,8 @@
                         <a href="${data.image}">View on X</a>
                     </blockquote>
                 </div>`;
-        }
-        // === existing image/video/gif handling ===
+        } 
+        // GIF / Video / Image handling
         else if (url.endsWith('.gif')) {
             mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
         } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
@@ -674,9 +674,9 @@
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-        // Re-load Twitter widgets so the blockquote turns into a real tweet
+        // Force Twitter widgets to render the blockquote (critical for modal + grid)
         if (window.twttr && window.twttr.widgets) {
-            window.twttr.widgets.load();
+            setTimeout(() => window.twttr.widgets.load(), 100);
         }
 
         if (document.getElementById('modal-video')) {
@@ -830,6 +830,13 @@
         if (document.getElementById('meme-modal').style.display === 'flex') {
             if (e.key === 'ArrowRight') prevMeme();
             if (e.key === 'ArrowLeft') nextMeme();
+        }
+    });
+
+    // Force Twitter widgets to render ALL X embeds on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.twttr && window.twttr.widgets) {
+            setTimeout(() => window.twttr.widgets.load(), 300);
         }
     });
 
