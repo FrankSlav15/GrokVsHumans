@@ -655,7 +655,7 @@
         // X/Twitter Embed (grid + modal)
         if (url.includes('x.com') || url.includes('twitter.com') || url.includes('/status/')) {
             mediaHTML = `
-                <div class="aspect-video">
+                <div class="aspect-video p-4 bg-zinc-900">
                     <blockquote class="twitter-tweet" data-media-max-width="560" data-theme="dark">
                         <p lang="en" dir="ltr">${data.context}</p>
                         &mdash; ${data.title} 
@@ -674,9 +674,11 @@
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-        // Force widgets.js to render the blockquote (this was the missing piece)
+        // STRONGER render (multiple timed loads on the exact container)
         if (window.twttr && window.twttr.widgets) {
-            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 300);
+            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 200);
+            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 600);
+            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 1200);
         }
 
         if (document.getElementById('modal-video')) {
@@ -833,10 +835,14 @@
         }
     });
 
-    // Render ALL X embeds on page load (grid cards)
     document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkDeepLink, 300);
+        filterCategory('all');
+
+        // Force render of ALL X embeds on page load (grid cards)
         if (window.twttr && window.twttr.widgets) {
-            setTimeout(() => window.twttr.widgets.load(), 500);
+            setTimeout(() => window.twttr.widgets.load(), 800);
+            setTimeout(() => window.twttr.widgets.load(), 1500);
         }
     });
 
