@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card + Modal Generator v8.4 • Grok vs Humans</title>
+  <title>Card + Modal Generator v8.5 • Grok vs Humans</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
@@ -33,7 +33,7 @@
   <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="flex items-center gap-4 mb-8">
       <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
-      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.4</span></h1>
+      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.5</span></h1>
     </div>
 
     <!-- TABS -->
@@ -57,12 +57,18 @@
           </div>
           <div class="grid grid-cols-2 gap-6">
             <div><label class="block text-sm font-medium mb-2 text-zinc-400">Card ID</label><input id="cardId" type="number" value="29" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
-            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Media URL (image or video)</label><input id="mediaUrl" type="text" placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
+            <div><label class="block text-sm font-medium mb-2 text-zinc-400">Media URL (X link or direct)</label><input id="mediaUrl" type="text" placeholder="https://x.com/..." class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
           </div>
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Title</label><input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label><textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
 
-          <!-- UPDATED FILTER TAGS FROM YOUR SCREENSHOTS -->
+          <!-- X EMBED CHECKBOX -->
+          <div class="flex items-center gap-3 bg-zinc-800 p-4 rounded-2xl">
+            <input type="checkbox" id="useXEmbed" class="w-5 h-5 accent-purple-500">
+            <label for="useXEmbed" class="text-sm cursor-pointer">Use Official X/Twitter Embed (for X videos/tweets we can't rehost)</label>
+          </div>
+
+          <!-- FILTER TAGS -->
           <div id="filterSection">
             <label class="block text-sm font-medium mb-3 text-purple-400">Filter Tags (select all that apply)</label>
             <div id="checkboxGrid" class="checkbox-grid"></div>
@@ -95,7 +101,7 @@
       </div>
     </div>
 
-    <!-- AUTO BATCH CREATOR -->
+    <!-- AUTO BATCH CREATOR (with updated prompt) -->
     <div id="batchPanel" class="hidden">
       <div class="bg-zinc-900 rounded-3xl p-8">
         <div class="flex items-center justify-between mb-6">
@@ -113,6 +119,7 @@
           <pre id="promptText" class="bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 text-sm overflow-auto max-h-96 whitespace-pre-wrap font-mono"></pre>
           <button onclick="copyPrompt()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 px-8 py-4 rounded-3xl font-semibold">Copy Prompt</button>
         </div>
+        <!-- Paste Grok Response + Parse Results (unchanged) -->
         <div class="mt-16 border-t border-zinc-700 pt-10">
           <h2 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fa-solid fa-robot text-emerald-400"></i> Paste Grok’s Response</h2>
           <textarea id="grokResponse" rows="10" class="w-full bg-zinc-950 border border-emerald-500/30 rounded-3xl p-6 font-mono text-sm"></textarea>
@@ -152,7 +159,7 @@
       document.querySelectorAll('.tab-button').forEach((b,i) => b.classList.toggle('active', i===n));
     }
 
-    // UPDATED TAGS FROM YOUR LATEST SCREENSHOTS
+    // EXACT TAGS FROM YOUR SCREENSHOTS
     const tagOptions = {
       battle: ["nonsense", "political", "serious", "citation", "joke", "censorship"],
       category: ["lazy", "photo", "opinion", "avoids", "other"],
@@ -188,40 +195,52 @@
       });
     }
 
-    function isVideo(url) { return url.match(/\.(mp4|webm|ogg|mov)$/i); }
+    function isVideo(url) {
+      return url.match(/\.(mp4|webm|ogg|mov)$/i);
+    }
+
+    function isXLink(url) {
+      return url.includes('x.com') || url.includes('twitter.com');
+    }
 
     function generateAll() {
       const type = document.getElementById('cardType').value;
       const id = document.getElementById('cardId').value || '29';
-      const media = document.getElementById('mediaUrl').value.trim() || 'https://picsum.photos/id/1015/1200/675';
+      let media = document.getElementById('mediaUrl').value.trim() || 'https://picsum.photos/id/1015/1200/675';
       const title = document.getElementById('title').value || 'Untitled';
       const shortDesc = document.getElementById('shortDesc').value || 'No description provided.';
       const xLink = document.getElementById('xLink') ? document.getElementById('xLink').value.trim() : '#';
+      const useEmbed = document.getElementById('useXEmbed') && document.getElementById('useXEmbed').checked;
 
       const checkedTags = Array.from(document.querySelectorAll('#checkboxGrid input:checked')).map(cb => cb.value);
       const filterString = checkedTags.length ? checkedTags.join(',') : (type === 'meme' ? 'grok-memes' : 'political');
 
-      const videoClass = isVideo(media) ? ' video-card' : '';
-      const mediaTag = isVideo(media) 
-        ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` 
-        : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
-
       let html = '';
       let dataLine = '';
 
-      if (type === 'battle') {
-        const human = document.getElementById('humanArg')?.value || shortDesc;
-        const grok = document.getElementById('grokArg')?.value || 'Grok response here...';
-        html = `<!-- ${id} -->\n<div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer${videoClass}" data-categories="${filterString}">\n  ${mediaTag}\n  <div class="content">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n  <div class="buttons flex">\n    <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>\n    <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>\n  </div>\n</div>`;
-        dataLine = `${id}: { title: "${title}", image: "${media}", tags: ["${checkedTags.join('","')}"], human: "${human.replace(/"/g,'\\"')}", grok: "${grok.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
-      } else if (type === 'category') {
-        const summary = document.getElementById('summary')?.value || shortDesc;
-        html = `<!-- ${id} -->\n<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterString.split(',')[0]}">\n  <div class="aspect-video">${mediaTag}</div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
-        dataLine = `${id}: { title: "${title}", image: "${media}", tags: ["${filterString.split(',')[0]}"], summary: "${summary.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
+      if (useEmbed && isXLink(media)) {
+        // Official X Embed
+        html = `<!-- ${id} -->\n<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="${filterString}">\n  <div class="aspect-video">\n    <blockquote class="twitter-tweet" data-media-max-width="560"><p lang="en" dir="ltr">${shortDesc}</p>&mdash; ${title} <a href="${media}">View on X</a></blockquote>\n  </div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
       } else {
-        const context = document.getElementById('context')?.value || shortDesc;
-        html = `<!-- ${id} -->\n<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-categories="${filterString}">\n  <div class="aspect-video">${mediaTag}</div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
-        dataLine = `${id}: { title: "${title}", image: "${media}", context: "${context.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
+        const videoClass = isVideo(media) ? ' video-card' : '';
+        const mediaTag = isVideo(media) 
+          ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` 
+          : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
+
+        if (type === 'battle') {
+          const human = document.getElementById('humanArg')?.value || shortDesc;
+          const grok = document.getElementById('grokArg')?.value || 'Grok response here...';
+          html = `<!-- ${id} -->\n<div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer${videoClass}" data-categories="${filterString}">\n  ${mediaTag}\n  <div class="content">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n  <div class="buttons flex">\n    <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>\n    <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>\n  </div>\n</div>`;
+          dataLine = `${id}: { title: "${title}", image: "${media}", tags: ["${checkedTags.join('","')}"], human: "${human.replace(/"/g,'\\"')}", grok: "${grok.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
+        } else if (type === 'category') {
+          const summary = document.getElementById('summary')?.value || shortDesc;
+          html = `<!-- ${id} -->\n<div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-category="${filterString.split(',')[0]}">\n  <div class="aspect-video">${mediaTag}</div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
+          dataLine = `${id}: { title: "${title}", image: "${media}", tags: ["${filterString.split(',')[0]}"], summary: "${summary.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
+        } else {
+          const context = document.getElementById('context')?.value || shortDesc;
+          html = `<!-- ${id} -->\n<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full${videoClass}" data-categories="${filterString}">\n  <div class="aspect-video">${mediaTag}</div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
+          dataLine = `${id}: { title: "${title}", image: "${media}", context: "${context.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
+        }
       }
 
       document.getElementById('outputCard').value = html;
@@ -250,12 +269,13 @@ Links:
       prompt += `
 Return ONLY these blocks:
 <!-- ID -->
-[EXACT multi-line HTML with video-card class and <video> tag if video URL]
+[EXACT multi-line HTML with video-card class and <video> tag if video URL OR full X blockquote embed if X link]
 DATA: ID: { title: "...", image: "...", [other fields] }, ← SINGLE LINE
 Rules:
-• Detect video URLs and use <video> + video-card class
-• Group all HTML outputs together in REVERSE order at the end
-• Group all DATA outputs together in one block strictly single-line per ID
+• If media is an X link and video, prefer official X blockquote embed
+• Detect video URLs and use <video> + video-card class as needed
+• HTML in REVERSE order at the end
+• DATA strictly single-line
 • Use multiple relevant filter tags`;
 
       document.getElementById('promptText').textContent = prompt;
