@@ -637,17 +637,15 @@
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-            // ROBUST X widget loading with retry (fixes blank embed once and for all)
+            // STRONG X widget loading with multiple retries + debug (final fix)
         if (window.twttr && window.twttr.widgets) {
             const container = document.getElementById('modal-image');
-            const tryLoad = (delay) => setTimeout(() => {
-                window.twttr.widgets.load(container);
-                window.twttr.widgets.load();
-            }, delay);
-            tryLoad(80);
-            tryLoad(350);
-            tryLoad(850);
-            tryLoad(1500);
+            console.log('🚀 X widget load triggered for meme', id);
+            setTimeout(() => window.twttr.widgets.load(container), 50);
+            setTimeout(() => window.twttr.widgets.load(container), 300);
+            setTimeout(() => window.twttr.widgets.load(container), 700);
+            setTimeout(() => window.twttr.widgets.load(container), 1300);
+            setTimeout(() => window.twttr.widgets.load(), 2000);
         }
 
         if (document.getElementById('modal-video')) {
