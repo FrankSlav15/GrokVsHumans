@@ -206,19 +206,17 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
                 
-                <!-- 31 -->
+                <!-- 31 - FIXED X EMBED -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
-                <div class="aspect-video">
-                    <blockquote class="twitter-tweet" data-media-max-width="560">
-                    <p lang="en" dir="ltr">Voiceover comedy by @BertCComedy</p>
-                    &mdash; Karate Komedy 
-                    <a href="https://x.com/RealDonKeith/status/2030986224568045790">View on X</a>
-                    </blockquote>
-                </div>
-                <div class="content flex-1 flex flex-col">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Karate Komedy</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Voiceover comedy by @BertCComedy</p></div>
-                </div>
+                    <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]">
+                        <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550">
+                            <a href="https://x.com/RealDonKeith/status/2030986224568045790"></a>
+                        </blockquote>
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Karate Komedy</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Voiceover comedy by @BertCComedy</p></div>
+                    </div>
                 </div>
                 
                 <!-- 30 -->
@@ -555,8 +553,8 @@
         </div>
     </div>
 
-    <script>
-    // BACKGROUND ROTATOR (unchanged)
+<script>
+    // BACKGROUND ROTATOR
     const bgs = [
         'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
         'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
@@ -583,15 +581,22 @@
         text.textContent = message;
         toast.classList.remove('hidden');
         toast.style.transform = 'translate(-50%, 0)';
-        setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
+        setTimeout(() => { 
+            toast.style.transform = 'translate(-50%, 80px)'; 
+            setTimeout(() => toast.classList.add('hidden'), 400); 
+        }, 2800);
     }
 
+    // NAV ACTIVE STATE
     document.querySelectorAll('.nav-link').forEach(link => {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         if (link.getAttribute('href') === currentPage) link.classList.add('active');
     });
 
+    // MEME DATA
     let currentMemeId = null;
+    let currentMemeIndex = 0;   // ← moved to top
+    let touchStartX = 0;
 
     const memeData = {
         1: { title: "Grok is a High-Tech Rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", context: "CoreyJMahler nails Grok's unbreakable, rock-solid personality", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
@@ -624,11 +629,10 @@
         28: { title: "Grok's Logo = Ultimate Butthole?", image: "https://pbs.twimg.com/media/HC0jmiKa8AAiLzp.jpg", context: "Thread started with: 'Why do AI company logos look like buttholes?' Someone tagged Grok, and after a joke calling xAI's logo the 'ultimate butthole', Grok replied: 'Blackest hole? High praise—black holes are the universe's ultimate truth machines, bending reality and trapping nonsense forever. Our X skips the swirly puckers for raw gravitational pull toward facts. Dive in; the fluff never escapes. 🌌'", xLink: "https://x.com/grok/status/2030350593693237487" },
         29: { title: "Grok/Gork", image: "https://pbs.twimg.com/media/HCqhiQ0aUAQgLNg?format=jpg&name=medium", context: "Grok/Gork: The perfect balance", xLink: "https://x.com/Nate_Esparza/status/2029612194799972475?s=20" },
         30: { title: "HayOC!", image: "https://files.catbox.moe/g98wr3.mp4", context: "AI Donkey version of AOC gets some sugar cubes. 🤣", xLink: "https://x.com/LarryDJonesJr/status/2031078805800968392?s=20" },
-        31: { title: "Karate Komedy", image: "https://x.com/RealDonKeith/status/2030986224568045790", context: "Voiceover comedy by @BertCComedy", xLink: "https://x.com/RealDonKeith/status/2030986224568045790?s=20" },
-
+        31: { title: "Karate Komedy", image: "https://x.com/RealDonKeith/status/2030986224568045790", context: "Voiceover comedy by @BertCComedy", xLink: "https://x.com/RealDonKeith/status/2030986224568045790?s=20" }
     };
 
-    // UPDATED FILTER FUNCTION - NOW SUPPORTS MULTIPLE CATEGORIES
+// UPDATED FILTER FUNCTION - NOW SUPPORTS MULTIPLE CATEGORIES
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
         document.getElementById('tab-' + cat).classList.add('tab-active');
@@ -642,7 +646,6 @@
             }
         });
     }
-
     function openMemeModal(id) {
         currentMemeIndex = id;
         const data = memeData[id];
@@ -652,18 +655,16 @@
         const url = data.image.toLowerCase();
         let mediaHTML = '';
 
-        // X/Twitter Embed (grid + modal)
-        if (url.includes('x.com') || url.includes('twitter.com') || url.includes('/status/')) {
+        // X/Twitter Embed — official minimal format
+        if (data.image.includes('x.com') || data.image.includes('twitter.com') || data.image.includes('/status/')) {
+            const tweetUrl = data.xLink || data.image;
             mediaHTML = `
-                <div class="aspect-video p-4 bg-zinc-900">
-                    <blockquote class="twitter-tweet" data-media-max-width="560" data-theme="dark">
-                        <p lang="en" dir="ltr">${data.context}</p>
-                        &mdash; ${data.title} 
-                        <a href="${data.image}">View on X</a>
+                <div class="aspect-video p-6 bg-zinc-900 flex items-center justify-center min-h-[420px]">
+                    <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550" data-lang="en">
+                        <a href="${tweetUrl}"></a>
                     </blockquote>
                 </div>`;
-        } 
-        // GIF / Video / Image
+        }  
         else if (url.endsWith('.gif')) {
             mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
         } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg')) {
@@ -674,11 +675,10 @@
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-        // STRONGER render (multiple timed loads on the exact container)
+        // Enhanced X widget loading
         if (window.twttr && window.twttr.widgets) {
-            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 200);
-            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 600);
-            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 1200);
+            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 150);
+            setTimeout(() => window.twttr.widgets.load(), 800);
         }
 
         if (document.getElementById('modal-video')) {
@@ -813,40 +813,44 @@
         setTimeout(() => openMemeModal(currentMemeIndex), 300);
     }
 
-    // Touch swipe
-    let touchStartX = 0;
-    const memeModalElement = document.getElementById('meme-modal');
-
-    memeModalElement.addEventListener('touchstart', e => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-
-    memeModalElement.addEventListener('touchend', e => {
-        const touchEndX = e.changedTouches[0].screenX;
-        if (touchEndX < touchStartX - 50) nextMeme();
-        if (touchEndX > touchStartX + 50) prevMeme();
-    });
-
-    // Keyboard arrows
-    document.addEventListener('keydown', e => {
-        if (document.getElementById('meme-modal').style.display === 'flex') {
-            if (e.key === 'ArrowRight') prevMeme();
-            if (e.key === 'ArrowLeft') nextMeme();
-        }
-    });
-
+    // SINGLE DOMContentLoaded (everything inside)
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
         filterCategory('all');
 
-        // Force render of ALL X embeds on page load (grid cards)
+        // Force X embeds on grid load
         if (window.twttr && window.twttr.widgets) {
-            setTimeout(() => window.twttr.widgets.load(), 800);
-            setTimeout(() => window.twttr.widgets.load(), 1500);
+            setTimeout(() => window.twttr.widgets.load(), 600);
+            setTimeout(() => window.twttr.widgets.load(), 1400);
+        }
+
+        // Touch swipe (now safe)
+        const memeModalElement = document.getElementById('meme-modal');
+        memeModalElement.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        memeModalElement.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) prevMeme();
+            if (touchEndX > touchStartX + 50) nextMeme();
+        });
+    });
+
+    // ESCAPE + KEYBOARD ARROWS (now correct direction)
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('meme-modal');
+            if (modal.style.display === 'flex') closeMemeModal();
+        }
+        if (document.getElementById('meme-modal').style.display === 'flex') {
+            if (e.key === 'ArrowRight') prevMeme();
+            if (e.key === 'ArrowLeft')  nextMeme();
         }
     });
 
-    </script>
+    window.addEventListener('hashchange', checkDeepLink);
+</script>
+
 </body>
 
 <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
