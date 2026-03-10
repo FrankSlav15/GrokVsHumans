@@ -652,7 +652,19 @@
         const url = data.image.toLowerCase();
         let mediaHTML = '';
 
-        if (url.endsWith('.gif')) {
+        // === NEW: X/Twitter Embed detection ===
+        if (url.includes('x.com') || url.includes('twitter.com') || url.includes('/status/')) {
+            mediaHTML = `
+                <div class="aspect-video">
+                    <blockquote class="twitter-tweet" data-media-max-width="560">
+                        <p lang="en" dir="ltr">${data.context}</p>
+                        &mdash; ${data.title} 
+                        <a href="${data.image}">View on X</a>
+                    </blockquote>
+                </div>`;
+        }
+        // === existing image/video/gif handling ===
+        else if (url.endsWith('.gif')) {
             mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
         } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
             mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
@@ -661,6 +673,11 @@
         }
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
+
+        // Re-load Twitter widgets so the blockquote turns into a real tweet
+        if (window.twttr && window.twttr.widgets) {
+            window.twttr.widgets.load();
+        }
 
         if (document.getElementById('modal-video')) {
             window.currentPlyr = new Plyr('#modal-video', {
