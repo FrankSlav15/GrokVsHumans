@@ -209,7 +209,7 @@
       const filterString = checkedTags.length ? checkedTags.join(',') : (type === 'meme' ? 'misc-memes' : 'political');
 
       let html = '';
-      let dataLine = `${id}: { title: "${title}", image: "${media}", context: "${shortDesc.replace(/"/g,'\\"')}", xLink: "${xLink}" },`; // Always generate DATA
+      let dataLine = `${id}: { title: "${title}", image: "${media}", context: "${shortDesc.replace(/"/g,'\\"')}", xLink: "${xLink}" },`;
 
       if (useEmbed && isXLink(media)) {
         html = `<!-- ${id} -->\n<div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="${filterString}">\n  <div class="aspect-video">\n    <blockquote class="twitter-tweet" data-media-max-width="560"><p lang="en" dir="ltr">${shortDesc}</p>&mdash; ${title} <a href="${media}">View on X</a></blockquote>\n  </div>\n  <div class="content flex-1 flex flex-col">\n    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${title}</h4></div>\n    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p></div>\n  </div>\n</div>`;
@@ -319,7 +319,6 @@ Rules:
     function copyAllHtml() { navigator.clipboard.writeText(parsedCards.slice().reverse().map(c => c.html).join('\n\n')); showToast('All HTML copied!'); }
     function copyAllData() { navigator.clipboard.writeText(parsedCards.map(c => c.data).join('\n')); showToast('All single-line Data copied!'); }
 
-    // Live link counter
     document.getElementById('batchLinks').addEventListener('input', () => {
       const count = document.getElementById('batchLinks').value.trim().split('\n').filter(l => l.trim()).length;
       document.getElementById('linkCount').textContent = `${count} links detected`;
