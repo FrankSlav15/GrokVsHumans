@@ -143,19 +143,22 @@
             white-space: nowrap;
         }
 
-        /* Perfect X/Twitter video sizing in modal (matches Plyr videos, no overlap with buttons) */
+            /* X embed sizing - bigger modal, no side margins, perfect fit */
         #modal-image {
-            max-height: 65vh;
+            max-height: 72vh;
+            width: 100%;
+            padding: 0;
             overflow: hidden;
         }
         #modal-image .twitter-tweet {
             width: 100% !important;
             max-width: 100% !important;
+            margin: 0;
         }
         #modal-image .twitter-tweet video {
             width: 100% !important;
             height: auto !important;
-            max-height: 65vh;
+            max-height: 72vh;
             object-fit: contain;
             border-radius: 12px;
         }
@@ -504,7 +507,7 @@
 
     <!-- MEME MODAL -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target === this) closeMemeModal()">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-3xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
 
             <button onclick="event.stopImmediatePropagation(); prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
@@ -700,6 +703,7 @@
             window.currentPlyr.destroy();
             window.currentPlyr = null;
         }
+        document.getElementById('modal-image').innerHTML = '';
         document.getElementById('meme-modal').style.display = 'none';
         document.body.style.overflow = 'visible';
     }
