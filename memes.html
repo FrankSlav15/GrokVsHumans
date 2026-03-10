@@ -198,7 +198,7 @@
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
                     <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]">
-                        <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550">
+                        <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550" data-lang="en">
                             <a href="https://x.com/RealDonKeith/status/2030986224568045790"></a>
                         </blockquote>
                     </div>
@@ -593,7 +593,7 @@
         29: { title: "Grok/Gork", image: "https://pbs.twimg.com/media/HCqhiQ0aUAQgLNg?format=jpg&name=medium", context: "Grok/Gork: The perfect balance", xLink: "https://x.com/Nate_Esparza/status/2029612194799972475?s=20" },
         30: { title: "HayOC!", image: "https://files.catbox.moe/g98wr3.mp4", context: "AI Donkey version of AOC gets some sugar cubes. 🤣", xLink: "https://x.com/LarryDJonesJr/status/2031078805800968392?s=20" },
         31: { title: "Karate Komedy", image: "https://x.com/RealDonKeith/status/2030986224568045790", context: "Voiceover comedy by @BertCComedy", xLink: "https://x.com/RealDonKeith/status/2030986224568045790?s=20" }
-        
+
     };
 
     function filterCategory(cat) {
@@ -637,9 +637,13 @@
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
+                // ROBUST X widget loading (fixes blank embed)
         if (window.twttr && window.twttr.widgets) {
-            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 150);
-            setTimeout(() => window.twttr.widgets.load(), 800);
+            const container = document.getElementById('modal-image');
+            setTimeout(() => window.twttr.widgets.load(container), 100);
+            setTimeout(() => window.twttr.widgets.load(container), 400);
+            setTimeout(() => window.twttr.widgets.load(container), 900);
+            setTimeout(() => window.twttr.widgets.load(), 1600);
         }
 
         if (document.getElementById('modal-video')) {
