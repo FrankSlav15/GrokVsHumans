@@ -98,7 +98,8 @@
             overflow: hidden;
         }
         .meme-card .aspect-video img,
-        .meme-card .aspect-video video {
+        .meme-card .aspect-video video,
+        .meme-card .aspect-video blockquote {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -193,7 +194,7 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
-                
+
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
                     <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]">
@@ -487,7 +488,6 @@
     <!-- MEME MODAL -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
 
             <button onclick="event.stopImmediatePropagation(); prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
@@ -522,17 +522,19 @@
     <script>
     // BACKGROUND ROTATOR
     const bgs = [
-        'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
-        'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
-        'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
-        'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
-        'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
-        'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
-        'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
-        'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
-        'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
-        'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
-    ];
+
+            'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
+            'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
+            'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
+            'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
+            'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
+            'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
+            'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
+            'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
+            'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
+            'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
+        
+        ];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
     document.body.style.backgroundPosition = '50% 35%';
@@ -559,6 +561,7 @@
     let touchStartX = 0;
 
     const memeData = {
+
         1: { title: "Grok is a High-Tech Rock", image: "https://pbs.twimg.com/media/G0Bzz3mWYAAyl_Z.jpg", context: "CoreyJMahler nails Grok's unbreakable, rock-solid personality", xLink: "https://x.com/CoreyJMahler/status/1963696808536027638" },
         2: { title: "ClownWorld vs Grok", image: "assets/images/memes/kermit.webp", context: "When pure ClownWorld chaos meets Grok's razor-sharp wisdom", xLink: "https://x.com/ClownWorld/status/1952204779142484327" },
         3: { title: "Elon Personally Tags Grok", image: "assets/images/memes/milk.webp", context: "The boss himself jumps into the Grok meme tagging war", xLink: "https://x.com/elonmusk/status/1951794381650047135" },
@@ -590,6 +593,7 @@
         29: { title: "Grok/Gork", image: "https://pbs.twimg.com/media/HCqhiQ0aUAQgLNg?format=jpg&name=medium", context: "Grok/Gork: The perfect balance", xLink: "https://x.com/Nate_Esparza/status/2029612194799972475?s=20" },
         30: { title: "HayOC!", image: "https://files.catbox.moe/g98wr3.mp4", context: "AI Donkey version of AOC gets some sugar cubes. 🤣", xLink: "https://x.com/LarryDJonesJr/status/2031078805800968392?s=20" },
         31: { title: "Karate Komedy", image: "https://x.com/RealDonKeith/status/2030986224568045790", context: "Voiceover comedy by @BertCComedy", xLink: "https://x.com/RealDonKeith/status/2030986224568045790?s=20" }
+        
     };
 
     function filterCategory(cat) {
@@ -752,7 +756,6 @@
         setTimeout(() => openMemeModal(currentMemeIndex), 300);
     }
 
-    // SINGLE CLEAN DOMCONTENTLOADED
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
         filterCategory('all');
@@ -763,13 +766,11 @@
         }
 
         const memeModalElement = document.getElementById('meme-modal');
-        memeModalElement.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
+        memeModalElement.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
         memeModalElement.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX < touchStartX - 50) nextMeme();
-            if (touchEndX > touchStartX + 50) prevMeme();
+            if (touchEndX < touchStartX - 50) nextMeme();   // left swipe = newer
+            if (touchEndX > touchStartX + 50) prevMeme();   // right swipe = older
         });
     });
 
@@ -781,7 +782,7 @@
             if (modal.style.display === 'flex') closeMemeModal();
         }
         if (document.getElementById('meme-modal').style.display === 'flex') {
-            if (e.key === 'ArrowRight') prevMeme();   // RIGHT = older (back)
+            if (e.key === 'ArrowRight') prevMeme();  // RIGHT = older (back through most recent)
             if (e.key === 'ArrowLeft') nextMeme();
         }
     });
