@@ -143,7 +143,11 @@
             white-space: nowrap;
         }
 
-                /* Perfect X/Twitter video sizing in modal (matches Plyr) */
+        /* Perfect X/Twitter video sizing in modal (matches Plyr videos, no overlap with buttons) */
+        #modal-image {
+            max-height: 65vh;
+            overflow: hidden;
+        }
         #modal-image .twitter-tweet {
             width: 100% !important;
             max-width: 100% !important;
@@ -212,10 +216,8 @@
 
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
-                    <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]">
-                        <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550" data-lang="en">
-                            <a href="https://x.com/RealDonKeith/status/2030986224568045790"></a>
-                        </blockquote>
+                    <div class="aspect-video">
+                        <img src="assets/images/memes/karate.webp" class="w-full h-full object-cover" alt="Karate Komedy">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Karate Komedy</h4></div>
