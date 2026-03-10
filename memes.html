@@ -197,10 +197,8 @@
 
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
-                    <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]">
-                        <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550" data-lang="en" data-dnt="true">
-                            <a href="https://x.com/RealDonKeith/status/2030986224568045790"></a>
-                        </blockquote>
+                    <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]" id="tweet-grid-31">
+                        <!-- X embed will be injected here -->
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Karate Komedy</h4></div>
@@ -619,13 +617,13 @@
         const url = data.image.toLowerCase();
         let mediaHTML = '';
 
+                // X/Twitter Embed — using official createTweet() for dynamic content (this is the reliable 2026 method)
         if (data.image.includes('x.com') || data.image.includes('twitter.com') || data.image.includes('/status/')) {
             const tweetUrl = data.xLink || data.image;
+            const tweetId = tweetUrl.match(/status\/(\d+)/)[1];
             mediaHTML = `
-                <div class="aspect-video p-6 bg-zinc-900 flex items-center justify-center min-h-[420px]">
-                    <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550" data-lang="en">
-                        <a href="${tweetUrl}"></a>
-                    </blockquote>
+                <div class="aspect-video p-6 bg-zinc-900 flex items-center justify-center min-h-[420px]" id="tweet-modal-${id}">
+                    <!-- X embed injected here by createTweet -->
                 </div>`;
         } else if (url.endsWith('.gif')) {
             mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
@@ -636,6 +634,22 @@
         }
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
+
+                // Create the actual X tweet (replaces the old load() method)
+        if (data.image.includes('x.com') || data.image.includes('twitter.com') || data.image.includes('/status/')) {
+            const tweetUrl = data.xLink || data.image;
+            const tweetId = tweetUrl.match(/status\/(\d+)/)[1];
+            const container = document.getElementById(`tweet-modal-${id}`);
+            if (window.twttr && window.twttr.widgets && tweetId) {
+                setTimeout(() => {
+                    window.twttr.widgets.createTweet(tweetId, container, {
+                        theme: 'dark',
+                        dnt: true,
+                        width: '100%'
+                    });
+                }, 200);
+            }
+        }
 
             // STRONG X widget loading with multiple retries + debug (final fix)
         if (window.twttr && window.twttr.widgets) {
