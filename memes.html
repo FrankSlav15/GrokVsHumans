@@ -146,6 +146,15 @@
             border-bottom: 3px solid rgb(168 85 247);
             color: white;
         }
+
+        #modal-image .twitter-tweet,
+        #modal-image .twitter-tweet video {
+            max-width: 100% !important;
+            width: 100% !important;
+            height: auto !important;
+            object-fit: contain;
+        }
+
     </style>
 </head>
 <body class="text-white">
@@ -197,8 +206,8 @@
 
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
-                    <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]" id="tweet-grid-31">
-                        <!-- X embed will be injected here -->
+                    <div class="aspect-video">
+                        <img src="https://pbs.twimg.com/ext_tw_video_thumb/2030986224568045790/pu/img/2030986224568045790.jpg" class="w-full h-full object-cover" alt="Karate Komedy">
                     </div>
                     <div class="content flex-1 flex flex-col">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Karate Komedy</h4></div>
