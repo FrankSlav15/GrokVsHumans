@@ -198,7 +198,7 @@
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
                     <div class="aspect-video p-4 bg-zinc-900 flex items-center justify-center min-h-[240px]">
-                        <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550" data-lang="en">
+                        <blockquote class="twitter-tweet" data-theme="dark" data-media-max-width="550" data-lang="en" data-dnt="true">
                             <a href="https://x.com/RealDonKeith/status/2030986224568045790"></a>
                         </blockquote>
                     </div>
@@ -637,13 +637,17 @@
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-                // ROBUST X widget loading (fixes blank embed)
+            // ROBUST X widget loading with retry (fixes blank embed once and for all)
         if (window.twttr && window.twttr.widgets) {
             const container = document.getElementById('modal-image');
-            setTimeout(() => window.twttr.widgets.load(container), 100);
-            setTimeout(() => window.twttr.widgets.load(container), 400);
-            setTimeout(() => window.twttr.widgets.load(container), 900);
-            setTimeout(() => window.twttr.widgets.load(), 1600);
+            const tryLoad = (delay) => setTimeout(() => {
+                window.twttr.widgets.load(container);
+                window.twttr.widgets.load();
+            }, delay);
+            tryLoad(80);
+            tryLoad(350);
+            tryLoad(850);
+            tryLoad(1500);
         }
 
         if (document.getElementById('modal-video')) {
