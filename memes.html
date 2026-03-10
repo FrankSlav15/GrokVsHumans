@@ -639,13 +639,18 @@
         const url = data.image.toLowerCase();
         let mediaHTML = '';
 
-                // X/Twitter Embed — using official createTweet() for dynamic content (this is the reliable 2026 method)
-        if (data.image.includes('x.com') || data.image.includes('twitter.com') || data.image.includes('/status/')) {
-            const tweetUrl = data.xLink || data.image;
-            const tweetId = tweetUrl.match(/status\/(\d+)/)[1];
+                // Special case for #31: static screenshot + "Watch on X" button (no flaky widget)
+        if (id === 31) {
             mediaHTML = `
-                <div class="aspect-video p-6 bg-zinc-900 flex items-center justify-center min-h-[420px]" id="tweet-modal-${id}">
-                    <!-- X embed injected here by createTweet -->
+                <div class="aspect-video flex items-center justify-center bg-black">
+                    <img src="assets/images/memes/karate.webp" class="max-h-[65vh] w-auto object-contain" alt="Karate Komedy">
+                </div>
+                <div class="p-6 bg-zinc-900 text-center">
+                    <a href="https://x.com/RealDonKeith/status/2030986224568045790" target="_blank" 
+                       class="inline-flex items-center gap-3 bg-white hover:bg-gray-100 text-black font-semibold px-8 py-4 rounded-2xl transition-all">
+                        <i class="fa-brands fa-x-twitter text-xl"></i>
+                        Watch full video on X
+                    </a>
                 </div>`;
         } else if (url.endsWith('.gif')) {
             mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
