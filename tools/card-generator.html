@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card + Modal Generator v8.3 • Grok vs Humans</title>
+  <title>Card + Modal Generator v8.4 • Grok vs Humans</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
@@ -33,7 +33,7 @@
   <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="flex items-center gap-4 mb-8">
       <i class="fa-solid fa-layer-group text-purple-400 text-4xl"></i>
-      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.3</span></h1>
+      <h1 class="text-4xl font-bold tracking-tight">Card + Modal Generator <span class="text-purple-400 text-2xl">v8.4</span></h1>
     </div>
 
     <!-- TABS -->
@@ -62,7 +62,7 @@
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Title</label><input id="title" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg"></div>
           <div><label class="block text-sm font-medium mb-2 text-zinc-400">Short Description (for card)</label><textarea id="shortDesc" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg"></textarea></div>
 
-          <!-- PAGE-SPECIFIC MULTI-CHECKBOX FILTER TAGS (from your screenshots) -->
+          <!-- UPDATED FILTER TAGS FROM YOUR SCREENSHOTS -->
           <div id="filterSection">
             <label class="block text-sm font-medium mb-3 text-purple-400">Filter Tags (select all that apply)</label>
             <div id="checkboxGrid" class="checkbox-grid"></div>
@@ -152,11 +152,11 @@
       document.querySelectorAll('.tab-button').forEach((b,i) => b.classList.toggle('active', i===n));
     }
 
-    // EXACT TAGS FROM YOUR SCREENSHOTS
+    // UPDATED TAGS FROM YOUR LATEST SCREENSHOTS
     const tagOptions = {
       battle: ["nonsense", "political", "serious", "citation", "joke", "censorship"],
       category: ["lazy", "photo", "opinion", "avoids", "other"],
-      meme: ["grok-memes", "misc-memes", "gifs", "ai-tech", "videos", "other"]
+      meme: ["grok-memes", "political-memes", "misc-memes", "gifs", "ai-tech", "videos", "other"]
     };
 
     function updateForm() {
@@ -188,9 +188,7 @@
       });
     }
 
-    function isVideo(url) {
-      return url.match(/\.(mp4|webm|ogg|mov)$/i);
-    }
+    function isVideo(url) { return url.match(/\.(mp4|webm|ogg|mov)$/i); }
 
     function generateAll() {
       const type = document.getElementById('cardType').value;
@@ -243,9 +241,22 @@
       const startId = parseInt(document.getElementById('batchStartId').value) || 29;
       const links = document.getElementById('batchLinks').value.trim().split('\n').filter(l => l.trim());
 
-      let prompt = `You are Grok helping build www.grokvshumans.com. Reference the live site for uniform styling.\nProcess these ${links.length} X posts.\nStarting ID: ${startId}. Type: ${type}.\n\nLinks:\n`;
+      let prompt = `You are Grok helping build www.grokvshumans.com. Reference the live site for uniform styling.
+Process these ${links.length} X posts.
+Starting ID: ${startId}. Type: ${type}.
+Links:
+`;
       links.forEach((l,i) => prompt += `${i+1}. ${l}\n`);
-      prompt += `\nReturn ONLY these blocks:\n=== CARD X ===\n<!-- ID -->\n[EXACT multi-line HTML with video-card class and <video> tag if video URL]\n\nDATA: ID: { title: "...", image: "...", [other fields] }, ← SINGLE LINE\n\nRules:\n• Detect video URLs and use <video> + video-card class\n• HTML in REVERSE order at the end\n• DATA strictly single-line\n• Use multiple relevant filter tags`;
+      prompt += `
+Return ONLY these blocks:
+<!-- ID -->
+[EXACT multi-line HTML with video-card class and <video> tag if video URL]
+DATA: ID: { title: "...", image: "...", [other fields] }, ← SINGLE LINE
+Rules:
+• Detect video URLs and use <video> + video-card class
+• Group all HTML outputs together in REVERSE order at the end
+• Group all DATA outputs together in one block strictly single-line per ID
+• Use multiple relevant filter tags`;
 
       document.getElementById('promptText').textContent = prompt;
       document.getElementById('batchPromptOutput').classList.remove('hidden');
