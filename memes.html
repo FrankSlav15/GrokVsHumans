@@ -652,21 +652,21 @@
         const url = data.image.toLowerCase();
         let mediaHTML = '';
 
-        // X/Twitter Embed handling (grid + modal)
+        // X/Twitter Embed (grid + modal)
         if (url.includes('x.com') || url.includes('twitter.com') || url.includes('/status/')) {
             mediaHTML = `
                 <div class="aspect-video">
-                    <blockquote class="twitter-tweet" data-media-max-width="560">
+                    <blockquote class="twitter-tweet" data-media-max-width="560" data-theme="dark">
                         <p lang="en" dir="ltr">${data.context}</p>
                         &mdash; ${data.title} 
                         <a href="${data.image}">View on X</a>
                     </blockquote>
                 </div>`;
         } 
-        // GIF / Video / Image handling
+        // GIF / Video / Image
         else if (url.endsWith('.gif')) {
             mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
-        } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.includes('video.twimg.com')) {
+        } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg')) {
             mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
         } else {
             mediaHTML = `<img src="${data.image}" class="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
@@ -674,9 +674,9 @@
 
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
-        // Force Twitter widgets to render the blockquote (critical for modal + grid)
+        // Force widgets.js to render the blockquote (this was the missing piece)
         if (window.twttr && window.twttr.widgets) {
-            setTimeout(() => window.twttr.widgets.load(), 100);
+            setTimeout(() => window.twttr.widgets.load(document.getElementById('modal-image')), 300);
         }
 
         if (document.getElementById('modal-video')) {
@@ -833,10 +833,10 @@
         }
     });
 
-    // Force Twitter widgets to render ALL X embeds on page load
+    // Render ALL X embeds on page load (grid cards)
     document.addEventListener('DOMContentLoaded', () => {
         if (window.twttr && window.twttr.widgets) {
-            setTimeout(() => window.twttr.widgets.load(), 300);
+            setTimeout(() => window.twttr.widgets.load(), 500);
         }
     });
 
