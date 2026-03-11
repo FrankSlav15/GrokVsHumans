@@ -88,7 +88,6 @@
             border-bottom: 3px solid rgb(168 85 247);
             color: white;
         }
-
     </style>
 </head>
 <body class="text-white">
@@ -238,14 +237,15 @@
     function renderGrid() {
         const grid = document.getElementById('battle-grid');
         grid.innerHTML = '';
-        Object.keys(allBattles).sort((a,b) => (allBattles[a].order || 0) - (allBattles[b].order || 0)).forEach(id => {
+        // MOST RECENT AT TOP (highest order first)
+        Object.keys(allBattles).sort((a,b) => (allBattles[b].order || 0) - (allBattles[a].order || 0)).forEach(id => {
             const b = allBattles[id];
             const cardHTML = `
                 <div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="${(b.tags || '').split(',').join(',')}">
                     <img src="${b.image}" class="w-full h-full object-cover" alt="${b.title}">
                     <div class="content">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${b.title}</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(b.grok || '').substring(0,130)}...</p></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(b.description || b.grok || '').substring(0,130)}...</p></div>
                     </div>
                     <div class="buttons flex">
                         <button id="grok-btn-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
