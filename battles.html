@@ -403,7 +403,6 @@
         }
     }
 
-    // Keyboard & swipe support
     document.addEventListener('keydown', e => {
         const modal = document.getElementById('battle-modal');
         if (modal.classList.contains('hidden') || !currentBattleId) return;
@@ -412,7 +411,6 @@
         else if (e.key === 'ArrowRight') prevBattle();
     });
 
-    // Deep link & swipe
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
@@ -428,7 +426,6 @@
 
     window.addEventListener('hashchange', checkDeepLink);
 
-    // Share menu (unchanged)
     function showShareMenu() {
         if (!currentBattleId) return;
         const data = allBattles[currentBattleId];
