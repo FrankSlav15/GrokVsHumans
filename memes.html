@@ -21,170 +21,191 @@
     </script>
     
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        html { height: 100%; }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            flex-direction: column; 
-        }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+            html { height: 100%; }
+            body { 
+                font-family: 'Inter', system-ui, sans-serif; 
+                background: #0a0a1f;
+                position: relative;
+                min-height: 100dvh;
+                margin: 0;
+                display: flex;
+                flex-direction: column; 
+            }
+            .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; 
-        }
+            body::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: rgba(10,10,31,0.82);
+                z-index: -1; 
+            }
 
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+            .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        .modal-content {
-            position: relative;
-            overflow: visible; 
-        }
-        .nav-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.75);
-            color: white;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            border-radius: 9999px;
-            z-index: 60;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
-        .nav-arrow:hover {
-            background: rgba(0,0,0,0.95);
-            transform: translateY(-50%) scale(1.1);
-        }
-        .nav-arrow-left  { left: -58px; }
-        .nav-arrow-right { right: -58px; }
+            .modal-content {
+                position: relative;
+                overflow: visible; 
+            }
+            .nav-arrow {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(0,0,0,0.75);
+                color: white;
+                width: 52px;
+                height: 52px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 42px;
+                border-radius: 9999px;
+                z-index: 60;
+                transition: all 0.2s ease;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            }
+            .nav-arrow:hover {
+                background: rgba(0,0,0,0.95);
+                transform: translateY(-50%) scale(1.1);
+            }
+            .nav-arrow-left  { left: -58px; }
+            .nav-arrow-right { right: -58px; }
 
-        @media (max-width: 640px) {
-            .nav-arrow-left  { left: -42px; }
-            .nav-arrow-right { right: -42px; }
-            .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
-        }
+            @media (max-width: 640px) {
+                .nav-arrow-left  { left: -42px; }
+                .nav-arrow-right { right: -42px; }
+                .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
+            }
 
-        .meme-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2); 
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 1.5rem;
-            position: relative; 
-        }
-        .meme-card:hover { 
-            transform: translateY(-8px);
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
-            border-color: rgb(168 85 247); 
-        }
+            .meme-card {
+                transition: all 0.3s ease;
+                cursor: pointer;
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(168,85,247,0.2); 
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                overflow: hidden;
+                border-radius: 1.5rem;
+                position: relative; 
+            }
+            .meme-card:hover { 
+                transform: translateY(-8px);
+                box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+                border-color: rgb(168 85 247); 
+            }
 
-        .meme-card .aspect-video {
-            flex-shrink: 0;
-            width: 100%;
-            overflow: hidden;
-            /* Removed fixed height: 15.5rem; to allow responsive scaling based on width */
-            max-height: 18rem; /* Added max-height to prevent overly tall cards on wide screens */
-        }
-        .meme-card .aspect-video img,
-        .meme-card .aspect-video video,
-        .meme-card .aspect-video blockquote {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+            .meme-card .aspect-video {
+                flex-shrink: 0;
+                width: 100%;
+                overflow: hidden;
+                max-height: 16rem; /* Reduced max-height to fit better on small screens without scrunching */
+                min-height: 12rem; /* Added min-height for uniformity */
+            }
+            .meme-card .aspect-video img,
+            .meme-card .aspect-video video,
+            .meme-card .aspect-video blockquote {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
 
-        .meme-card .content {
-            flex: 1;
-            padding: 1rem sm:p-1.25rem; /* Responsive padding */
-            background: #18181b;
-            display: flex;
-            flex-direction: column;
-            min-height: 5rem; /* Reduced min-height for better fit on small screens */
-        }
-        .meme-card .title-area { min-height: 1.5rem; /* Adjusted for flexibility */ }
-        .meme-card .desc-area { flex: 1; min-height: 3rem; }
+            .meme-card .content {
+                flex: 1;
+                padding: 0.75rem sm:p-1rem md:p-1.25rem; /* More granular responsive padding */
+                background: #18181b;
+                display: flex;
+                flex-direction: column;
+                height: 8rem; /* Fixed height for entire content area to enforce uniformity */
+                overflow: hidden;
+            }
+            .meme-card .title-area { 
+                height: 2.5rem; /* Fixed height for title */
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .meme-card .desc-area { 
+                height: 4rem; /* Fixed height for description */
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
 
-        .video-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .video-card:hover::after { opacity: 1; }
-        .video-card::after i {
-            font-size: 3rem md:3.8rem; /* Responsive icon size */
-            color: white;
-            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
-        }
+            .video-card::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: rgba(0,0,0,0.45);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s;
+                pointer-events: none;
+                z-index: 1;
+            }
+            .video-card:hover::after { opacity: 1; }
+            .video-card::after i {
+                font-size: 2.5rem sm:3rem md:3.5rem; /* Responsive icon size */
+                color: white;
+                filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
+            }
 
-        .tab {
-            padding: 0.5rem 0.75rem sm:0.75rem 1.25rem; /* Smaller padding on mobile */
-            font-weight: 500;
-            font-size: 0.75rem sm:0.875rem; /* Responsive font size */
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
+            .tab {
+                padding: 0.4rem 0.6rem xs:0.5rem 0.75rem sm:0.6rem 1rem; /* Smaller on very small screens */
+                font-weight: 500;
+                font-size: 0.7rem xs:0.75rem sm:0.85rem md:0.875rem; /* More steps for font scaling */
+                transition: all 0.2s ease;
+                white-space: nowrap;
+            }
 
-        /* X embed - bigger modal, no side margins, perfect fit */
-        #modal-image {
-            max-height: 72vh;
-            width: 100%;
-            padding: 0;
-            overflow: hidden;
-        }
-        #modal-image .twitter-tweet {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0;
-        }
-        #modal-image .twitter-tweet video {
-            width: 100% !important;
-            height: auto !important;
-            max-height: 72vh;
-            object-fit: contain;
-            border-radius: 12px;
-        }
+            /* X embed - bigger modal, no side margins, perfect fit */
+            #modal-image {
+                max-height: 72vh;
+                width: 100%;
+                padding: 0;
+                overflow: hidden;
+            }
+            #modal-image .twitter-tweet {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0;
+            }
+            #modal-image .twitter-tweet video {
+                width: 100% !important;
+                height: auto !important;
+                max-height: 72vh;
+                object-fit: contain;
+                border-radius: 12px;
+            }
 
-        .tab-active {
-            border-bottom: 3px solid rgb(168 85 247);
-            color: white;
-        }
+            .tab-active {
+                border-bottom: 3px solid rgb(168 85 247);
+                color: white;
+            }
 
-        /* Additional media queries for finer resolution control */
-        @media (min-width: 1536px) { /* 2xl screens */
-            .meme-card .aspect-video { max-height: 20rem; }
-            .meme-card .content { padding: 1.5rem; }
-        }
-        @media (max-width: 768px) { /* Adjust fonts/gaps for mid-small screens */
-            h1 { font-size: 3rem; } /* Smaller headings */
-            p.text-lg { font-size: 1rem; }
-        }
-    </style>
+            /* Additional media queries for header and tabs */
+            @media (max-width: 640px) { /* Small screens: Shrink header/nav */
+                h1.logo-font { font-size: 2rem; } /* Smaller logo */
+                .submit-button { padding: 0.5rem 1rem; font-size: 0.875rem; } /* Smaller button if present */
+                nav { padding: 0.5rem; } /* Tighter nav */
+                .tab-bar { max-height: 2.5rem; overflow-y: hidden; } /* Cap tab bar height */
+            }
+            @media (min-width: 641px) and (max-width: 1024px) { /* Medium screens: Moderate shrink */
+                h1.logo-font { font-size: 3rem; }
+                .submit-button { padding: 0.75rem 1.25rem; font-size: 1rem; }
+                nav { padding: 0.75rem; }
+                .tab-bar { max-height: 3rem; }
+            }
+            @media (min-width: 1025px) { /* Large screens: Full size */
+                h1.logo-font { font-size: 4rem; }
+                .submit-button { padding: 1rem 1.5rem; font-size: 1.125rem; }
+                nav { padding: 1rem; }
+            }
+            @media (max-width: 768px) {
+                p.text-lg { font-size: 1rem; }
+            }
+        </style>
 </head>
 <body class="text-white">
 
@@ -231,7 +252,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 pt-8 sm:pt-10 items-stretch" id="meme-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 md:gap-7 lg:gap-8 pt-6 xs:pt-8 sm:pt-10 items-stretch" id="meme-grid">
 
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
