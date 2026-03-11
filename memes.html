@@ -20,7 +20,7 @@
       gtag('config', 'G-M58E7KLM56');
     </script>
     
-    <style>
+        <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         html { height: 100%; }
         body { 
@@ -30,7 +30,8 @@
             min-height: 100dvh;
             margin: 0;
             display: flex;
-            flex-direction: column; }
+            flex-direction: column; 
+        }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
         body::after {
@@ -38,13 +39,15 @@
             position: absolute;
             inset: 0;
             background: rgba(10,10,31,0.82);
-            z-index: -1; }
+            z-index: -1; 
+        }
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
         .modal-content {
             position: relative;
-            overflow: visible; }
+            overflow: visible; 
+        }
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -85,17 +88,20 @@
             height: 100%;
             overflow: hidden;
             border-radius: 1.5rem;
-            position: relative; }
+            position: relative; 
+        }
         .meme-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
-            border-color: rgb(168 85 247); }
+            border-color: rgb(168 85 247); 
+        }
 
         .meme-card .aspect-video {
             flex-shrink: 0;
-            height: 15.5rem;
             width: 100%;
             overflow: hidden;
+            /* Removed fixed height: 15.5rem; to allow responsive scaling based on width */
+            max-height: 18rem; /* Added max-height to prevent overly tall cards on wide screens */
         }
         .meme-card .aspect-video img,
         .meme-card .aspect-video video,
@@ -107,13 +113,14 @@
 
         .meme-card .content {
             flex: 1;
-            padding: 1.25rem;
+            padding: 1rem sm:p-1.25rem; /* Responsive padding */
             background: #18181b;
             display: flex;
             flex-direction: column;
-            min-height: 6rem; }
-        .meme-card .title-area { min-height: 1.75rem; }
-        .meme-card .desc-area { flex: 1; min-height: 3.5rem; }
+            min-height: 5rem; /* Reduced min-height for better fit on small screens */
+        }
+        .meme-card .title-area { min-height: 1.5rem; /* Adjusted for flexibility */ }
+        .meme-card .desc-area { flex: 1; min-height: 3rem; }
 
         .video-card::after {
             content: '';
@@ -130,20 +137,20 @@
         }
         .video-card:hover::after { opacity: 1; }
         .video-card::after i {
-            font-size: 3.8rem;
+            font-size: 3rem md:3.8rem; /* Responsive icon size */
             color: white;
             filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
         }
 
         .tab {
-            padding: 0.75rem 1.25rem;
+            padding: 0.5rem 0.75rem sm:0.75rem 1.25rem; /* Smaller padding on mobile */
             font-weight: 500;
-            font-size: 0.875rem;
+            font-size: 0.75rem sm:0.875rem; /* Responsive font size */
             transition: all 0.2s ease;
             white-space: nowrap;
         }
 
-            /* X embed - bigger modal, no side margins, perfect fit */
+        /* X embed - bigger modal, no side margins, perfect fit */
         #modal-image {
             max-height: 72vh;
             width: 100%;
@@ -168,6 +175,15 @@
             color: white;
         }
 
+        /* Additional media queries for finer resolution control */
+        @media (min-width: 1536px) { /* 2xl screens */
+            .meme-card .aspect-video { max-height: 20rem; }
+            .meme-card .content { padding: 1.5rem; }
+        }
+        @media (max-width: 768px) { /* Adjust fonts/gaps for mid-small screens */
+            h1 { font-size: 3rem; } /* Smaller headings */
+            p.text-lg { font-size: 1rem; }
+        }
     </style>
 </head>
 <body class="text-white">
@@ -215,7 +231,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 pt-8 sm:pt-10 items-stretch" id="meme-grid">
 
                 <!-- 31 -->
                 <div onclick="openMemeModal(31)" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="misc-memes,videos">
