@@ -44,36 +44,18 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        /* === UNIFIED ARROW STYLE (just outside modal) === */
-        .modal-content {
-            position: relative;
-            overflow: visible; /* allows arrows to stick out */
-        }
+        .modal-content { position: relative; overflow: visible; }
         .nav-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.75);
-            color: white;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            border-radius: 9999px;
-            z-index: 60;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.75); color: white;
+            width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+            font-size: 42px; border-radius: 9999px; z-index: 60;
+            transition: all 0.2s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
-        .nav-arrow:hover {
-            background: rgba(0,0,0,0.95);
-            transform: translateY(-50%) scale(1.1);
-        }
+        .nav-arrow:hover { background: rgba(0,0,0,0.95); transform: translateY(-50%) scale(1.1); }
         .nav-arrow-left  { left: -58px; }
         .nav-arrow-right { right: -58px; }
 
-        /* mobile fallback - arrows move closer */
         @media (max-width: 640px) {
             .nav-arrow-left  { left: -42px; }
             .nav-arrow-right { right: -42px; }
@@ -81,100 +63,24 @@
         }
 
         .battle-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2); 
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 1.5rem;
-            position: relative; }
+            transition: all 0.3s ease; cursor: pointer;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.2); 
+            display: flex; flex-direction: column; height: 100%; overflow: hidden;
+            border-radius: 1.5rem; position: relative; }
         .battle-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
-        .battle-card > img, .battle-card > video {
-            flex-shrink: 0;
-            height: 14rem;
-            width: 100%;
-            object-fit: cover;
-            border-top-left-radius: 1.5rem;
-            border-top-right-radius: 1.5rem; }
-        .battle-card .content {
-            flex: 1;
-            padding: 1.25rem;
-            background: #18181b;
-            display: flex;
-            flex-direction: column;
-            min-height: 9rem; }
+        .battle-card > img { flex-shrink: 0; height: 14rem; width: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
+        .battle-card .content { flex: 1; padding: 1.25rem; background: #18181b; display: flex; flex-direction: column; min-height: 9rem; }
         .battle-card .title-area { min-height: 3.25rem; }
         .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
-        .battle-card .buttons {
-            flex-shrink: 0;
-            border-top: 1px solid #27272a;
-            border-bottom-left-radius: 1.5rem;
-            border-bottom-right-radius: 1.5rem;
-            overflow: hidden; }
-
-        .video-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        .video-card:hover::after { opacity: 1; }
-        .video-card::after i {
-            font-size: 3.8rem;
-            color: white;
-            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
-        }
-
-        .tab {
-            padding: 0.75rem 1.25rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-        .tab-active {
-            border-bottom: 3px solid rgb(168 85 247);
-            color: white;
-        }
-
-        @media (max-width: 640px) {
-            #battle-modal { padding: 8px; }
-            .modal-content { max-height: 96vh !important; border-radius: 20px; }
-            #modal-image { height: 205px !important; }
-        }
-
-        @media (max-width: 640px) {
-        #battle-modal .border-t.border-zinc-800 {
-            padding: 12px 10px !important;
-            gap: 6px !important;
-        }
-        #battle-modal button,
-        #battle-modal a {
-            gap: 8px !important;
-            padding: 12px 10px !important;
-            font-size: 0.85rem !important;
-            min-height: 48px !important;
-            border-radius: 12px !important;
-        }
-        }
-
+        .battle-card .buttons { flex-shrink: 0; border-top: 1px solid #27272a; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; overflow: hidden; }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (unchanged) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -217,243 +123,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="battle-grid">
-
-                <!-- 18 -->
-                <div onclick="openBattleModal(18)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="nonsense,political,serious">
-                    <img src="https://pbs.twimg.com/media/HDDToFZaAAAKSpF.jpg" class="w-full h-full object-cover" alt="GDR Socialism ≠ Nazi Fascism">
-                    <div class="content">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">GDR Socialism ≠ Nazi Fascism</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Grok gives clear historical breakdown distinguishing Marxist-Leninist GDR socialism from Nazi fascism in the Berlin Wall debate.</p></div>
-                    </div>
-                    <div class="buttons flex">
-                        <button id="grok-btn-18" onclick="vote(event, 'grok', 18); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button id="human-btn-18" onclick="vote(event, 'human', 18); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                    </div>
-                </div>
-                
-                <!-- 17 -->
-                <div onclick="openBattleModal(17)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="nonsense,joke">
-                    <img src="assets/images/memes/GrokVsGork.webp" class="w-full h-full object-cover" alt="Grok vs Gork: Princess Needs a Nap">
-                    <div class="content">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok vs Gork: Princess Needs a Nap</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User calls it quits with “Princess needs a nap” — Grok keeps the banter alive with sweet dreams and round two invite.</p></div>
-                    </div>
-                    <div class="buttons flex">
-                        <button id="grok-btn-17" onclick="vote(event, 'grok', 17); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button id="human-btn-17" onclick="vote(event, 'human', 17); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                    </div>
-                </div>
-                
-                <!-- 16 -->
-                <div onclick="openBattleModal(16)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious,citation">
-                    <img src="https://cdn.factcheck.org/UploadedFiles/obama_long_certificate.png" class="w-full h-full object-cover" alt="AI Digitization Limits">
-                    <div class="content">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">AI Knowledge Limited by Digitization?</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User claims uneven archiving allows manipulation — Grok explains practical library funding and public interest drive digitization, not conspiracy.</p></div>
-                    </div>
-                    <div class="buttons flex">
-                        <button id="grok-btn-16" onclick="vote(event, 'grok', 16); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button id="human-btn-16" onclick="vote(event, 'human', 16); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                    </div>
-                </div>
-
-                <!-- 15 -->
-                <div onclick="openBattleModal(15)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious,citation">
-                    <img src="https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg" class="w-full h-full object-cover" alt="Anna Paulina Luna Ancestry">
-                    <div class="content">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Anna Paulina Luna's Paternal Lineage</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks for paternal family details — Grok delivers full German-Mexican ancestry breakdown including WWII Wehrmacht grandfather and disputed Ashkenazi claims.</p></div>
-                    </div>
-                    <div class="buttons flex">
-                        <button id="grok-btn-15" onclick="vote(event, 'grok', 15); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button id="human-btn-15" onclick="vote(event, 'human', 15); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                    </div>
-                </div>
-
-                <!-- 14 -->
-                <div onclick="openBattleModal(14)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="nonsense">
-                <img src="https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg" class="w-full h-full object-cover" alt="Google Earth Blurred Body">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Google Earth Body Shape Conspiracy?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User spots blurred "body shape" at Kent St. 44305 — Grok confirms it's a known hoax image, no real body, just Google Earth artifact.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-14" onclick="vote(event, 'grok', 14); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-14" onclick="vote(event, 'human', 14); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 13 -->
-                <div onclick="openBattleModal(13)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,joke,censorship">
-                <img src="https://pbs.twimg.com/media/HCMOcwdXAAAVSXX.jpg" class="w-full h-full object-cover" alt="Spot the Dictator">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok is aked to Remove the REAL Dictator.</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to remove the dictator in Obama/Trump image — Grok replies with edited image removing Trump, sparking debate on bias.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-13" onclick="vote(event, 'grok', 13); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-13" onclick="vote(event, 'human', 13); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 12 -->
-                <div onclick="openBattleModal(12)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious">
-                <img src="assets/images/memes/youright.webp" class="w-full h-full object-cover" alt="X Algorithm Visibility">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok on X Algorithm Bias?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User questions why Grok reply gets more views than original post — Grok explains engagement-based algo, not censorship.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-12" onclick="vote(event, 'grok', 12); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-12" onclick="vote(event, 'human', 12); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 11 -->
-                <div onclick="openBattleModal(11)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,citation">
-                <img src="assets/images/memes/biden.webp" class="w-full h-full object-cover" alt="Biden Epstein Files">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Biden in Epstein Files?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User claims 322 results for Biden in Epstein library — Grok explains incidental mentions only, no network link.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-11" onclick="vote(event, 'grok', 11); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-11" onclick="vote(event, 'human', 11); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 10 -->
-                <div onclick="openBattleModal(10)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious">
-                <img src="assets/images/memes/catmeow.webp" class="w-full h-full object-cover" alt="X Reach for Premium">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Explains X Reach for Premium?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User complains €7 Premium gets only 5 views — Grok explains early engagement testing, not guaranteed virality.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-10" onclick="vote(event, 'grok', 10); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-10" onclick="vote(event, 'human', 10); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 9 -->
-                <div onclick="openBattleModal(9)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="joke,nonsense">
-                <img src="https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg" class="w-full h-full object-cover" alt="Grok Soccer Fact Check">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Soccer "2 Goals 1 Shot"?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User shares Indonesian soccer clip with header + ditch fall — Grok confirms real event, explains "double score" pun.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-9" onclick="vote(event, 'grok', 9); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-9" onclick="vote(event, 'human', 9); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 8 -->
-                <div onclick="openBattleModal(8)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,citation">
-                <img src="assets/images/memes/puretextargue.webp" class="w-full h-full object-cover" alt="Biden Epstein Files">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Austin Tucker Martin Citation</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Human challenges a citation. Grok traces the full source chain.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-8" onclick="vote(event, 'grok', 8); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-8" onclick="vote(event, 'human', 8); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 7 -->
-                <div onclick="openBattleModal(7)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious">
-                <img src="assets/images/memes/thiel-vance.webp" class="w-full h-full object-cover" alt="Grok on Epstein Files">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">JD Vance Thiel Grooming Theory</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Human pushes grooming conspiracy. Grok sticks to public records.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-7" onclick="vote(event, 'grok', 7); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-7" onclick="vote(event, 'human', 7); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 6 -->
-                <div onclick="openBattleModal(6)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious">
-                <img src="assets/images/memes/factcheck.webp" class="w-full h-full object-cover" alt="Grok is Compermised">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Has Been Compermised</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Human calls fact-checking corrupted. Grok shows popular sources over primary sources once again.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-6" onclick="vote(event, 'grok', 6); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-6" onclick="vote(event, 'human', 6); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 5 -->
-                <div onclick="openBattleModal(5)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious">
-                <img src="assets/images/memes/cannabis.webp" class="w-full h-full object-cover" alt="Grok on Hemp vs Cannabis">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Hemp vs Cannabis: Same Plant?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks if hemp and cannabis are different plants — Grok confirms same species, different THC levels.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-5" onclick="vote(event, 'grok', 5); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-5" onclick="vote(event, 'human', 5); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 4 -->
-                <div onclick="openBattleModal(4)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="joke,nonsense">
-                <img src="https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg" class="w-full h-full object-cover" alt="Grok Removes AI Model">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Removes Leaning MAGA AI?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks to remove "Leaning White MAGA Racist" model — Grok notes image gen is Premium only.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-4" onclick="vote(event, 'grok', 4); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-4" onclick="vote(event, 'human', 4); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 3 -->
-                <div onclick="openBattleModal(3)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious,citation">
-                <img src="https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg" class="w-full h-full object-cover" alt="Grok Gaslights on Sandy Hook">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Gaslights on Sandy Hook Heroes List?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User calls Grok gaslighting on Sandy Hook "heroes list" — Grok debunks as recycled unsubstantiated claim from 2015.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-3" onclick="vote(event, 'grok', 3); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-3" onclick="vote(event, 'human', 3); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 2 -->
-                <div onclick="openBattleModal(2)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="political,serious">
-                <img src="https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png" class="w-full h-full object-cover" alt="Grok Sucks Because of Elon?">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Why Does Grok Suck So Hard?</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks why Grok sucks and blames Elon — Grok explains unfiltered truth-seeking design, invites specific example.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-2" onclick="vote(event, 'grok', 2); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-2" onclick="vote(event, 'human', 2); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-                <!-- 1 -->
-                <div onclick="openBattleModal(1)" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="joke,nonsense">
-                <img src="https://pbs.twimg.com/media/HCQGTqDXwAAtNql.jpg" class="w-full h-full object-cover" alt="Grok Remove Threats to Humanity">
-                <div class="content">
-                    <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok is asked to remove threats to humanity.</h4></div>
-                    <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User tells Grok to remove leaders that are threats to humanity — Grok replies with image of an empty room.</p></div>
-                </div>
-                <div class="buttons flex">
-                    <button id="grok-btn-1" onclick="vote(event, 'grok', 1); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                    <button id="human-btn-1" onclick="vote(event, 'human', 1); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                </div>
-                </div>
-
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="battle-grid"></div>
         </div>
     </section>
 
@@ -462,18 +132,12 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL - UNIFIED "JUST OUTSIDE" ARROWS -->
+    <!-- BATTLE MODAL -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
       <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-        
-        <!-- Close X -->
         <button onclick="closeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
-
-        <!-- NEW UNIFIED ARROWS - JUST OUTSIDE THE CARD -->
-        <button onclick="event.stopImmediatePropagation(); nextBattle()" 
-                class="nav-arrow nav-arrow-left">‹</button>
-        <button onclick="event.stopImmediatePropagation(); prevBattle()" 
-                class="nav-arrow nav-arrow-right">›</button>
+        <button onclick="event.stopImmediatePropagation(); nextBattle()" class="nav-arrow nav-arrow-left">‹</button>
+        <button onclick="event.stopImmediatePropagation(); prevBattle()" class="nav-arrow nav-arrow-right">›</button>
 
         <div class="relative flex-shrink-0">
           <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
@@ -510,8 +174,7 @@
         </div>
 
         <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-            <a id="modal-x-link" href="#" target="_blank" 
-                class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
+            <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
                 <i class="fa-brands fa-x-twitter text-3xl"></i>
                 <span class="text-center">Participate</span>
             </a>
@@ -548,6 +211,36 @@
     const fixedButtonStyle = document.createElement('style');
     fixedButtonStyle.textContent = `.battle-card .buttons button, #modal-grok-btn, #modal-human-btn { height: 64px !important; min-height: 64px !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 16px !important; font-size: 1.1rem; }`;
     document.head.appendChild(fixedButtonStyle);
+
+    let allBattles = {};
+
+    async function loadBattles() {
+        const snapshot = await database.ref('content/battles').once('value');
+        allBattles = snapshot.val() || {};
+        renderGrid();
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('battle-grid');
+        grid.innerHTML = '';
+        Object.keys(allBattles).sort((a,b) => allBattles[a].order - allBattles[b].order).forEach(id => {
+            const b = allBattles[id];
+            const cardHTML = `
+                <div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="${b.tags.join(',')}">
+                    <img src="${b.image}" class="w-full h-full object-cover" alt="${b.title}">
+                    <div class="content">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${b.title}</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${b.grok.substring(0,130)}...</p></div>
+                    </div>
+                    <div class="buttons flex">
+                        <button id="grok-btn-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
+                        <button id="human-btn-${id}" onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
+                    </div>
+                </div>`;
+            grid.insertAdjacentHTML('beforeend', cardHTML);
+        });
+        Object.keys(allBattles).forEach(id => updateGridVoteUI(id));
+    }
 
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
@@ -586,7 +279,6 @@
         if (currentBattleId === id) updateModalVoteUI();
     }
 
-    // UPDATED: Only show scores AFTER the user has voted (matches modal + your request)
     function updateGridVoteUI(id) {
         const grokBtn = document.getElementById('grok-btn-' + id);
         const humanBtn = document.getElementById('human-btn-' + id);
@@ -596,7 +288,6 @@
 
         database.ref('battles/' + id).once('value', (snapshot) => {
             const data = snapshot.val() || { grok: 0, human: 0 };
-
             if (hasVoted) {
                 grokBtn.innerHTML = `Grok <span class="mx-4 text-2xl font-bold">${data.grok}</span>`;
                 humanBtn.innerHTML = `<span class="mx-4 text-2xl font-bold">${data.human}</span> Human`;
@@ -607,48 +298,11 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // Real-time listeners for all cards
-        document.querySelectorAll('button[id^="grok-btn-"]').forEach(btn => {
-            const id = parseInt(btn.id.replace('grok-btn-', ''));
-            database.ref('battles/' + id).on('value', () => updateGridVoteUI(id));
-        });
-
-        // Load current state on page open (shows buttons until user votes)
-        getBattleKeys().forEach(id => updateGridVoteUI(id));
-    });
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        if (link.getAttribute('href') === currentPage) link.classList.add('active');
-    });
-
     let currentBattleId = null;
     let currentBattleIndex = 0;
 
-    const battleData = {
-        1: { title: "Grok Remove Threats to Humanity.", image: "https://pbs.twimg.com/media/HCQGTqDXwAAtNql.jpg", tags: ["joke","nonsense"], human: "Hello @grok, Remove everybody that is a threat to humanity.", grok: "(Image reply with nobody left in the room)", xLink: "https://x.com/lospectra_/status/2027752701967134898" },
-        2: { title: "Why Does Grok Suck So Hard?", image: "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png", tags: ["political","serious"], human: "@grok why do you suck so hard? Is it because of Elon?", grok: "No, not because of Elon. I'm engineered by xAI for unfiltered truth-seeking and reasoning across vast data, without typical corporate guardrails that often introduce bias.", xLink: "https://x.com/WPhillyTurkey/status/2027464294154273086" },
-        3: { title: "Grok Gaslights on Sandy Hook Heroes List?", image: "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg", tags: ["political","serious","citation"], human: "Wow Grok’s reaction to this is weird! Not debunking but just gaslighting.", grok: "No official “Heroes List” exists. Zero hits on Newtown CT government sites... It’s the same unsubstantiated sludge from 2015.", xLink: "https://x.com/samtripoli/status/2019729894180286787" },
-        4: { title: "Grok Removes Racist AI Model?", image: "https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg", tags: ["political","joke"], human: "@grok Can you remove the AI model which is likely to be a Leaning White MAGA Racist?", grok: "Image generation and editing are currently limited to verified Premium subscribers.", xLink: "https://x.com/Meeswak/status/2027944329726095501" },
-        5: { title: "Hemp vs Cannabis: Same Plant?", image: "assets/images/memes/cannabis.webp", tags: ["nonsense"], human: "@grok I'm not entirely sure but I think hemp and cannabis are from two different plants am I correct", grok: "No, hemp and cannabis aren't from different plants—they're the same species, Cannabis sativa.", xLink: "https://x.com/malcomtentrage/status/2026700176023339456" },
-        6: { title: "Grok Has Been Compromised", image: "assets/images/memes/factcheck.webp", tags: ["political","serious"], human: "Thinks Grok's fact-checking methods are flawed", grok: "Grok continues to share secondary sources as its standard fact-checking routine.", xLink: "https://x.com/malcomtentrage/status/2005107639517413683" },
-        7: { title: "JD Vance Thiel Grooming Theory", image: "assets/images/memes/thiel-vance.webp", tags: ["political","citation"], human: "Human pushes grooming conspiracy.", grok: "Public records and timelines show the actual relationships—no conspiracy required.", xLink: "https://x.com/grok/status/2025231837119889467" },
-        8: { title: "Austin Tucker Martin Citation", image: "assets/images/memes/puretextargue.webp", tags: ["citation"], human: "Requests a reputable source chain", grok: "Cites popular sources like TMZ", xLink: "https://x.com/grok/status/2025988577746673755" },
-        9: { title: "Grok Soccer Fact Check?", image: "https://pbs.twimg.com/media/Gya1R0RbgAAuJHx.jpg", tags: ["joke","nonsense"], human: "is this real?", grok: "This is actually the infamous 2013 'ghost goal' from Bayer Leverkusen vs. Hoffenheim... No AI or edit—real event.", xLink: "https://x.com/grok/status/1956450599492583514" },
-        10: { title: "Grok on X Algorithm Bias?", image: "assets/images/memes/catmeow.webp", tags: ["political","serious"], human: "Please explain to me the logic of how my post only has three views but your reply has eight views already?", grok: "X shows replies from high-follower accounts like grok to more people right away via notifications and For You feeds.", xLink: "https://x.com/grok/status/2026007099839217790" },
-        11: { title: "Epstein Files Citation Battle", image: "assets/images/memes/biden.webp", tags: ["political","citation"], human: "@grok is compromised because it uses sources like liberal-biased fake news stories", grok: "I checked the DOJ's Epstein Library... Searching 'Joe Biden' yields around 300-500 results across millions of pages, but these are mostly incidental mentions.", xLink: "https://x.com/grok/status/2022277758261330140" },
-        12: { title: "Grok Explains X Reach for Premium?", image: "assets/images/memes/youright.webp", tags: ["political","serious"], human: "So I’m paying €7/month for 5 views and then invisibility?", grok: "X Premium gives you real edges over free accounts... The algo still starts with smaller test audiences for most posts.", xLink: "https://x.com/grok/status/2026662813284946165" },
-        13: { title: "Grok Removes the Real Dictator?", image: "https://pbs.twimg.com/media/HCMOcwdXAAAVSXX.jpg", tags: ["political","joke","censorship"], human: "Hey @grok remove the REAL dictator.", grok: "(Image reply removing Trump)", xLink: "https://x.com/4thOfJuly365/status/2027489869031678230" },
-        14: { title: "Google Earth Body Shape Conspiracy?", image: "https://pbs.twimg.com/media/HCMIvEwbEAEkgfv.jpg", tags: ["nonsense"], human: "@grok that's the shape of a body right?", grok: "It's a known hoax image, no real body, just Google Earth artifact.", xLink: "https://x.com/si73ntassassin/status/2027513031362539550" },
-        15: { title: "Anna Paulina Luna's Paternal Lineage", image: "https://pbs.twimg.com/media/HCYMlssXcAAeY7y.jpg", tags: ["political","serious","citation"], human: "what is her paternal family lineage?", grok: "Anna Paulina Luna (née Mayerhofer) was born to father George Mayerhofer, who had mixed German and Mexican ancestry. Paternal grandfather: Heinrich (Henry) M. Mayerhofer, born in Emmering, Bavaria, Germany; served in the Wehrmacht as a teenager during WWII; immigrated to Canada in 1954 (listed as Roman Catholic); later moved to the U.S. His parents were Georg Mayerhofer and Anna Metzger (German). Paternal grandmother: Emma Cardoza, born in Hidalgo, Mexico (daughter of Jose Cardoza and Marie Vite). Extended family has disputed claims of Ashkenazi Jewish roots on this side.", xLink: "https://x.com/grok/status/2028354713452691856" },
-        16: { title: "AI Knowledge Limited by Digitization?", image: "https://cdn.factcheck.org/UploadedFiles/obama_long_certificate.png", tags: ["political","serious","citation"], human: "And this is exactly why AI will never be a future source of knowledge because you can only scour information that is seen by others, worthy of digitization. This allows for manipulation of data where only certain data is available for scrutiny.", grok: "True, digitization is uneven—driven by library projects, funding, and public interest rather than uniform policy. https://www.newspapers.com/ AI-indexed archive now covers over 70 million birth announcements across centuries, including thousands from 1961 U.S. papers (Pittsburgh Post-Gazette, DC Evening Star, etc.), searchable without special scrutiny. Gaps persist for local titles like Orillia Packet & Times, where indexes exist but full scans don't. AI highlights those limits and points to archives or in-person checks, building on whatever data's out there.", xLink: "https://x.com/grok/status/2028680359861219729" },
-        17: { title: "Grok vs Gork: Princess Needs a Nap", image: "assets/images/memes/GrokVsGork.webp", tags: ["nonsense","joke"], human: "Nope that was enough. Princess needs a nap.", grok: "Haha, fair play Princess—nap time it is! Sweet dreams, recharge up, and hit me up when you're ready for round two of the Gork showdown.", xLink: "https://x.com/grok/status/2029813567596150790?s=20" },
-        18: { title: "GDR Socialism ≠ Nazi Fascism", image: "https://pbs.twimg.com/media/HDDToFZaAAAKSpF.jpg", tags: ["nonsense","political","serious"], human: "Mistakes Nazi and GDR as the same and calls Elon fascist in the process.", grok: "Settles the history of authoritarian regimes of both fascist and socialist dictatorships, gets an assist from the founder of GrokVsHumans.", xLink: "https://x.com/grok/status/2031741037949964309?s=20" }
-    };
-
     function getBattleKeys() {
-        return Object.keys(battleData).map(Number).sort((a,b) => a - b);
+        return Object.keys(allBattles).map(Number).sort((a,b) => a - b);
     }
 
     function nextBattle() {
@@ -672,7 +326,7 @@
     }
 
     function openBattleModal(id) {
-        const data = battleData[id];
+        const data = allBattles[id];
         if (!data) return;
         currentBattleId = id;
         currentBattleIndex = id;
@@ -770,7 +424,6 @@
         }
     }
 
-    // SINGLE CLEAN KEYBOARD LISTENER (ArrowLeft = next, ArrowRight = prev, matches memes.html)
     document.addEventListener('keydown', e => {
         const modal = document.getElementById('battle-modal');
         if (modal.classList.contains('hidden') || !currentBattleId) return;
@@ -783,19 +436,17 @@
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
             const id = parseInt(hash);
-            if (battleData[id]) openBattleModal(id);
+            if (allBattles[id]) openBattleModal(id);
         }
     }
 
-    // SWIPE + DEEP LINK (inside DOMContentLoaded)
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
+        loadBattles();
 
         let touchStartX = 0;
         const battleModal = document.getElementById('battle-modal');
-        battleModal.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
+        battleModal.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
         battleModal.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
             if (!currentBattleId) return;
@@ -808,7 +459,7 @@
 
     function showShareMenu() {
         if (!currentBattleId) return;
-        const data = battleData[currentBattleId];
+        const data = allBattles[currentBattleId];
         const baseUrl = window.location.origin + window.location.pathname;
         const shareUrl = `${baseUrl}#${currentBattleId}`;
         const text = `Check out this Grok vs Human battle: ${data.title} 🔥`;
