@@ -213,6 +213,8 @@
     document.head.appendChild(fixedButtonStyle);
 
     let allBattles = {};
+    let currentBattleId = null;
+    let currentBattleIndex = 0;
 
     async function loadBattles() {
         const snapshot = await database.ref('content/battles').once('value');
@@ -223,14 +225,14 @@
     function renderGrid() {
         const grid = document.getElementById('battle-grid');
         grid.innerHTML = '';
-        Object.keys(allBattles).sort((a,b) => allBattles[a].order - allBattles[b].order).forEach(id => {
+        Object.keys(allBattles).sort((a,b) => (allBattles[a].order || 0) - (allBattles[b].order || 0)).forEach(id => {
             const b = allBattles[id];
             const cardHTML = `
-                <div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="${b.tags.join(',')}">
+                <div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="${(b.tags || '').split(',').join(',')}">
                     <img src="${b.image}" class="w-full h-full object-cover" alt="${b.title}">
                     <div class="content">
                         <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${b.title}</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${b.grok.substring(0,130)}...</p></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(b.grok || '').substring(0,130)}...</p></div>
                     </div>
                     <div class="buttons flex">
                         <button id="grok-btn-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
@@ -298,9 +300,6 @@
         });
     }
 
-    let currentBattleId = null;
-    let currentBattleIndex = 0;
-
     function getBattleKeys() {
         return Object.keys(allBattles).map(Number).sort((a,b) => a - b);
     }
@@ -331,7 +330,7 @@
         currentBattleId = id;
         currentBattleIndex = id;
 
-        const url = data.image.toLowerCase();
+        const url = (data.image || '').toLowerCase();
         let mediaHTML = '';
         if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
             mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full h-full object-cover" autoplay loop muted playsinline></video>`;
@@ -341,30 +340,17 @@
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
         if (document.getElementById('modal-video')) {
-            window.currentPlyr = new Plyr('#modal-video', {
-                controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-                settings: [],
-                tooltips: { controls: true, seek: true }
-            });
+            window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
         }
 
-        const tagDisplay = {
-            nonsense: "Nonsense",
-            political: "Political",
-            serious: "Now, In All Seriousness",
-            citation: "(UN)Popular Citations",
-            joke: "Joke Battles",
-            censorship: "Conspiracy 1984"
-        };
-        const tagsHTML = data.tags.map(t => 
-            `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t] || t}</span>`
-        ).join('');
+        const tagDisplay = { nonsense: "Nonsense", political: "Political", serious: "Now, In All Seriousness", citation: "(UN)Popular Citations", joke: "Joke Battles", censorship: "Conspiracy 1984" };
+        const tagsHTML = (data.tags || '').split(',').map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t.trim()] || t.trim()}</span>`).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
-        document.getElementById('modal-title').textContent = data.title;
-        document.getElementById('modal-human').textContent = data.human;
-        document.getElementById('modal-grok').innerHTML = data.grok.replace(/\. /g, '.<br><br>');
-        document.getElementById('modal-x-link').href = data.xLink;
+        document.getElementById('modal-title').textContent = data.title || '';
+        document.getElementById('modal-human').textContent = data.human || '';
+        document.getElementById('modal-grok').innerHTML = (data.grok || '').replace(/\. /g, '.<br><br>');
+        document.getElementById('modal-x-link').href = data.xLink || '#';
 
         const grokBtn = document.getElementById('modal-grok-btn');
         const humanBtn = document.getElementById('modal-human-btn');
@@ -381,19 +367,12 @@
     }
 
     function closeModal() {
-        if (window.currentPlyr) {
-            window.currentPlyr.pause();
-            window.currentPlyr.destroy();
-            window.currentPlyr = null;
-        }
+        if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
         const modal = document.getElementById('battle-modal');
         modal.classList.add('hidden');
         document.body.style.overflow = 'visible';
-
-        if (currentBattleId) {
-            updateGridVoteUI(currentBattleId);
-            currentBattleId = null;
-        }
+        if (currentBattleId) updateGridVoteUI(currentBattleId);
+        currentBattleId = null;
     }
 
     function voteFromModal(event, winner) {
@@ -424,6 +403,7 @@
         }
     }
 
+    // Keyboard & swipe support
     document.addEventListener('keydown', e => {
         const modal = document.getElementById('battle-modal');
         if (modal.classList.contains('hidden') || !currentBattleId) return;
@@ -432,6 +412,7 @@
         else if (e.key === 'ArrowRight') prevBattle();
     });
 
+    // Deep link & swipe
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
@@ -443,20 +424,11 @@
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
         loadBattles();
-
-        let touchStartX = 0;
-        const battleModal = document.getElementById('battle-modal');
-        battleModal.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-        battleModal.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].screenX;
-            if (!currentBattleId) return;
-            if (touchEndX < touchStartX - 60) nextBattle();
-            if (touchEndX > touchStartX + 60) prevBattle();
-        }, {passive: true});
     });
 
     window.addEventListener('hashchange', checkDeepLink);
 
+    // Share menu (unchanged)
     function showShareMenu() {
         if (!currentBattleId) return;
         const data = allBattles[currentBattleId];
