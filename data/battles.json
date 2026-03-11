@@ -1,4 +1,14 @@
 {
+  "19": {
+    "order": 19,
+    "title": "Where Does My Poop Go? (Snob Edition)",
+    "description": "User asks Grok where his poop goes after flushing and demands it doesn’t fraternize with other poop because he’s a bit of a snob. Grok explains the full sewer-to-rain cycle and suggests a private septic system for poop VIP status.",
+    "image": "assets/images/memes/wheredoespoopgo.webp",
+    "tags": "nonsense",
+    "human": "Hey @grok, what happens to my poop after I flush? Also, how can I ensure my poop doesn’t fraternize with anyone else’s poop? I am a bit of a snob.",
+    "grok": "Your poop flushes into the S-trap, joins the sewer line, and flows by gravity to the municipal wastewater plant. Solids settle out, bacteria break down organics, it's filtered, disinfected, and the clean water is released back into nature. To keep it from 'fraternizing': Install a private septic system or composting toilet on your property. City sewers mix everything by design.",
+    "xLink": "https://x.com/grok/status/2031044051672146313?s=20"
+  },
   "18": {
     "order": 18,
     "title": "GDR Socialism ≠ Nazi Fascism",
