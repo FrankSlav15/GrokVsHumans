@@ -1,0 +1,39 @@
+name: Sync JSON → Firebase
+
+on:
+  push:
+    branches: [ Preview, main ]
+    paths:
+      - 'data/*.json'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Firebase Admin
+        run: npm install firebase-admin
+
+      - name: Sync to Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node -e '
+          const admin = require("firebase-admin");
+          const fs = require("fs");
+          const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+          admin.initializeApp({ credential: admin.credential.cert(serviceAccount), databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app" });
+          const db = admin.database();
+
+          const files = ["battles", "categories", "memes"];
+          files.forEach(file => {
+            const data = JSON.parse(fs.readFileSync(`data/${file}.json`, "utf8"));
+            db.ref(`content/${file}`).set(data);
+            console.log(`✅ Synced /content/${file}`);
+          });
+        '
