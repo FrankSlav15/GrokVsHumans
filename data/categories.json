@@ -1,0 +1,106 @@
+{
+  "13": {
+    "order": 13,
+    "title": "Grok Picks the Biggest Burger Bite 🥯",
+    "description": "Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.",
+    "image": "https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg",
+    "tags": "opinion",
+    "xLink": "https://x.com/grok/status/2029289518835126298"
+  },
+  "12": {
+    "order": 12,
+    "title": "Send @gork Posts to Your Friends 😂",
+    "description": "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.",
+    "image": "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg",
+    "tags": "opinion",
+    "xLink": "https://x.com/elonmusk/status/2029500041451462780"
+  },
+  "11": {
+    "order": 11,
+    "title": "Grok goes on a tangent",
+    "description": "User makes a controversial request. Grok cleverly avoids giving a direct answer.",
+    "image": "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg",
+    "tags": "avoids",
+    "xLink": "https://x.com/grok/status/1912171402125594659"
+  },
+  "10": {
+    "order": 10,
+    "title": "Who's from the future",
+    "description": "User presents two photos and asks Grok who appears more futuristic.",
+    "image": "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg",
+    "tags": "opinion",
+    "xLink": "https://x.com/thodahansle/status/2023796696451609049"
+  },
+  "9": {
+    "order": 9,
+    "title": "Grok helps",
+    "description": "User feeling down asks Grok for positive encouragement and advice.",
+    "image": "assets/images/memes/ventilator.webp",
+    "tags": "opinion",
+    "xLink": "https://x.com/grok/status/2026168522531852490"
+  },
+  "8": {
+    "order": 8,
+    "title": "Put some clothes on",
+    "description": "User asks Grok to digitally add clothing to an image for modesty.",
+    "image": "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg",
+    "tags": "photo",
+    "xLink": "https://x.com/thodahansle/status/2027262477348856183"
+  },
+  "7": {
+    "order": 7,
+    "title": "Magic actors",
+    "description": "User wants bunny-fied versions of famous actors and actresses.",
+    "image": "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg",
+    "tags": "photo",
+    "xLink": "https://x.com/grok/status/2023279170436919602"
+  },
+  "6": {
+    "order": 6,
+    "title": "Potato brain",
+    "description": "User asks Grok to dress up a potato character in fashionable clothes.",
+    "image": "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg",
+    "tags": "photo",
+    "xLink": "https://x.com/grok/status/2008960036094034251"
+  },
+  "5": {
+    "order": 5,
+    "title": "Grok, summarize this",
+    "description": "User wants Grok to provide a concise summary of a lengthy text or thread.",
+    "image": "assets/images/memes/summarize.webp",
+    "tags": "lazy",
+    "xLink": "https://x.com/maxvayshia/status/2019423903169277982"
+  },
+  "4": {
+    "order": 4,
+    "title": "Is implanting a chip lazy?",
+    "description": "User questions whether getting a Neuralink chip is a lazy upgrade.",
+    "image": "assets/images/memes/chip.webp",
+    "tags": "lazy",
+    "xLink": "https://x.com/grok/status/2027985872251961387"
+  },
+  "3": {
+    "order": 3,
+    "title": "Is this impersonating Elon?",
+    "description": "User shows an account pretending to be Elon and asks Grok to verify.",
+    "image": "assets/images/memes/impersonator.webp",
+    "tags": "lazy",
+    "xLink": "https://x.com/Ravindr21158124/status/2027986376717898189"
+  },
+  "2": {
+    "order": 2,
+    "title": "Break down US vs Iran",
+    "description": "User asks for a simple lazy-person breakdown of US-Iran tensions.",
+    "image": "assets/images/memes/iran-summary.webp",
+    "tags": "lazy",
+    "xLink": "https://x.com/strikexfn/status/2027985861661413416"
+  },
+  "1": {
+    "order": 1,
+    "title": "Grok, is this true?",
+    "description": "User posts obvious satire and asks Grok if it's real, missing the joke.",
+    "image": "assets/images/memes/skeletor.webp",
+    "tags": "lazy",
+    "xLink": "https://x.com/SlavisTon/status/2024954895288201519"
+  }
+}

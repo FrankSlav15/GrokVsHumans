@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    
+
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
@@ -21,7 +21,7 @@
       gtag('js', new Date());
       gtag('config', 'G-M58E7KLM56');
     </script>
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         html { height: 100%; }
@@ -44,36 +44,18 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        /* === UNIFIED ARROW STYLE (just outside modal) === */
-        .modal-content {
-            position: relative;
-            overflow: visible; /* allows arrows to stick out */
-        }
+        .modal-content { position: relative; overflow: visible; }
         .nav-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.75);
-            color: white;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            border-radius: 9999px;
-            z-index: 60;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.75); color: white;
+            width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+            font-size: 42px; border-radius: 9999px; z-index: 60;
+            transition: all 0.2s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
-        .nav-arrow:hover {
-            background: rgba(0,0,0,0.95);
-            transform: translateY(-50%) scale(1.1);
-        }
+        .nav-arrow:hover { background: rgba(0,0,0,0.95); transform: translateY(-50%) scale(1.1); }
         .nav-arrow-left  { left: -58px; }
         .nav-arrow-right { right: -58px; }
 
-        /* mobile fallback - arrows move closer */
         @media (max-width: 640px) {
             .nav-arrow-left  { left: -42px; }
             .nav-arrow-right { right: -42px; }
@@ -81,62 +63,18 @@
         }
 
         .category-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(168,85,247,0.2); 
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 1.5rem;
-            position: relative; }
+            transition: all 0.3s ease; cursor: pointer;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.2); 
+            display: flex; flex-direction: column; height: 100%; overflow: hidden;
+            border-radius: 1.5rem; position: relative; }
         .category-card:hover { 
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
-        .category-card .aspect-video {
-            flex-shrink: 0;
-            height: 15.5rem;
-            width: 100%; }
-        .category-card img, .category-card video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-top-left-radius: 1.5rem;
-            border-top-right-radius: 1.5rem; }
-        .category-card .content {
-            flex: 1;
-            padding: 1.25rem;
-            background: #18181b;
-            display: flex;
-            flex-direction: column; }
-        .category-card .title-area { 
-            min-height: 56px;
-            display: flex;
-            align-items: center; }
-        .category-card .desc-area { 
-            flex: 1; }
-
-        /* VIDEO PLAY ICON ON GRID */
-        .video-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        .video-card:hover::after { opacity: 1; }
-        .video-card::after i {
-            font-size: 3.8rem;
-            color: white;
-            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7));
-        }
+        .category-card > img, .category-card > video { flex-shrink: 0; height: 15.5rem; width: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
+        .category-card .content { flex: 1; padding: 1.25rem; background: #18181b; display: flex; flex-direction: column; }
+        .category-card .title-area { min-height: 56px; display: flex; align-items: center; }
+        .category-card .desc-area { flex: 1; min-height: 4rem; }
 
         .tab {
             padding: 0.75rem 1.25rem;
@@ -149,81 +87,11 @@
             border-bottom: 3px solid rgb(168 85 247);
             color: white;
         }
-
-        /* ULTRA-COMPACT MOBILE */
-        @media (max-width: 640px) {
-            #category-modal { padding: 8px; }
-            .modal-content { 
-                max-height: 96vh !important; 
-                border-radius: 20px; 
-            }
-            #modal-image { height: 235px !important; }
-            .modal-content .p-8 { padding: 1.1rem !important; }
-            .modal-content .p-6 { 
-                padding: 12px 14px !important; 
-                gap: 9px !important; 
-            }
-            .modal-content .p-6 a,
-            .modal-content .p-6 button {
-                padding: 11px 12px !important;
-                font-size: 0.82rem !important;
-                min-height: 48px;
-                line-height: 1.2;
-                white-space: normal;
-                text-align: center;
-            }
-            #modal-x-link span { font-size: 0.8rem !important; }
-            #modal-title { 
-                font-size: 1.55rem !important; 
-                line-height: 1.25 !important; 
-            }
-            #modal-tags span {
-                font-size: 0.72rem !important;
-                padding: 3px 9px !important;
-            }
-        }
-
-        /* Force portrait on phones only (tablets stay normal) */
-        @media (max-width: 767px) and (orientation: landscape) {
-            html, body {
-                transform: rotate(-90deg);
-                transform-origin: left top;
-                width: 100vh;
-                height: 100vw;
-                overflow: hidden;
-                position: fixed;
-            }
-        }
-
-        /* Compact mobile modal buttons (same as memes.html) */
-        @media (max-width: 640px) {
-        #category-modal .border-t.border-zinc-800 {
-            padding: 12px 10px !important;
-            gap: 6px !important;
-        }
-        #category-modal button,
-        #category-modal a {
-            gap: 8px !important;
-            padding: 12px 10px !important;
-            font-size: 0.85rem !important;
-            min-height: 48px !important;
-            border-radius: 12px !important;
-        }
-        }
-
-        /* Fix card 8 data + modal scrolling */
-        #modal-summary {
-        max-height: 260px;
-        overflow-y: auto;
-        padding-right: 10px;
-        scrollbar-width: thin;
-        }
-
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (unchanged) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -251,7 +119,7 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
             <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
 
-            <!-- Sticky Tabs (unchanged) -->
+            <!-- Sticky Tabs -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
@@ -266,152 +134,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="category-grid">
-
-                <!-- 13 -->
-                <div onclick="openCategoryModal(13)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
-                    <div class="aspect-video">
-                        <img src="https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok Picks the Biggest Burger Bite 🥯</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.</p></div>
-                    </div>
-                </div>
-
-                <!-- 12 -->
-                <div onclick="openCategoryModal(12)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
-                    <div class="aspect-video">
-                        <img src="https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Send @gork Posts to Your Friends 😂</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.</p></div>
-                    </div>
-                </div>
-
-                <!-- 11 -->
-                <div onclick="openCategoryModal(11)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="avoids">
-                    <div class="aspect-video">
-                        <img src="https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok goes on a tangent</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User makes a controversial request. Grok cleverly avoids giving a direct answer.</p></div>
-                    </div>
-                </div>
-
-                <!-- 10 -->
-                <div onclick="openCategoryModal(10)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
-                    <div class="aspect-video">
-                        <img src="https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Who's from the future</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User presents two photos and asks Grok who appears more futuristic.</p></div>
-                    </div>
-                </div>
-
-                <!-- 9 -->
-                <div onclick="openCategoryModal(9)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="opinion">
-                    <div class="aspect-video">
-                        <img src="assets/images/memes/ventilator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok helps</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User feeling down asks Grok for positive encouragement and advice.</p></div>
-                    </div>
-                </div>
-
-                <!-- 8 -->
-                <div onclick="openCategoryModal(8)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="photo">
-                    <div class="aspect-video">
-                        <img src="https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Put some clothes on</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to digitally add clothing to an image for modesty.</p></div>
-                    </div>
-                </div>
-
-                <!-- 7 -->
-                <div onclick="openCategoryModal(7)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="photo">
-                    <div class="aspect-video">
-                        <img src="https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Magic actors</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User wants bunny-fied versions of famous actors and actresses.</p></div>
-                    </div>
-                </div>
-
-                <!-- 6 -->
-                <div onclick="openCategoryModal(6)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="photo">
-                    <div class="aspect-video">
-                        <img src="https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Potato brain</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks Grok to dress up a potato character in fashionable clothes.</p></div>
-                    </div>
-                </div>
-
-                <!-- 5 -->
-                <div onclick="openCategoryModal(5)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
-                    <div class="aspect-video">
-                        <img src="assets/images/memes/summarize.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, summarize this</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User wants Grok to provide a concise summary of a lengthy text or thread.</p></div>
-                    </div>
-                </div>
-
-                <!-- 4 -->
-                <div onclick="openCategoryModal(4)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
-                    <div class="aspect-video">
-                        <img src="assets/images/memes/chip.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is implanting a chip lazy?</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User questions whether getting a Neuralink chip is a lazy upgrade.</p></div>
-                    </div>
-                </div>
-
-                <!-- 3 -->
-                <div onclick="openCategoryModal(3)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
-                    <div class="aspect-video">
-                        <img src="assets/images/memes/impersonator.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Is this impersonating Elon?</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User shows an account pretending to be Elon and asks Grok to verify.</p></div>
-                    </div>
-                </div>
-
-                <!-- 2 -->
-                <div onclick="openCategoryModal(2)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
-                    <div class="aspect-video">
-                        <img src="assets/images/memes/iran-summary.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Break down US vs Iran</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User asks for a simple lazy-person breakdown of US-Iran tensions.</p></div>
-                    </div>
-                </div>
-
-                <!-- 1 -->
-                <div onclick="openCategoryModal(1)" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-category="lazy">
-                    <div class="aspect-video">
-                        <img src="assets/images/memes/skeletor.webp" loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover">
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">Grok, is this true?</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">User posts obvious satire and asks Grok if it's real, missing the joke.</p></div>
-                    </div>
-                </div>
-
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="category-grid"></div>
         </div>
     </section>
 
@@ -420,65 +143,36 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL - UNIFIED + CLICK OUTSIDE TO CLOSE -->
-        <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
+    <!-- CATEGORY MODAL (simplified - no grok/human fields) -->
+    <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            
-            <!-- Close X -->
             <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
+            <button onclick="event.stopImmediatePropagation(); prevCategory()" class="nav-arrow nav-arrow-left">‹</button>
+            <button onclick="event.stopImmediatePropagation(); nextCategory()" class="nav-arrow nav-arrow-right">›</button>
 
-            <!-- Arrows just outside the card -->
-            <button onclick="event.stopImmediatePropagation(); nextCategory()" 
-                    class="nav-arrow nav-arrow-left">‹</button>
-            <button onclick="event.stopImmediatePropagation(); prevCategory()" 
-                    class="nav-arrow nav-arrow-right">›</button>
+            <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-            <div class="relative flex-shrink-0">
-            <div id="modal-image" class="h-80 md:h-96 w-full bg-zinc-800 overflow-hidden"></div>
-            </div>
-
-            <div class="p-8 overflow-y-auto flex-1">
-            <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-            <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
-
-            <div>
-                <div class="flex items-center gap-2 text-purple-400 mb-3">
-                <i class="fa-solid fa-comment-dots"></i>
-                <span class="font-medium">Brief Summary of the Thread</span>
-                </div>
-                <p id="modal-summary" class="text-gray-300 leading-relaxed"></p>
-            </div>
+            <div class="flex-1 overflow-y-auto p-8">
+                <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+                <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+                <p id="modal-description" class="text-gray-300 leading-relaxed"></p>
             </div>
 
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-            <a id="modal-x-link" href="#" target="_blank" 
-                class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all text-base">
-                <i class="fa-brands fa-x-twitter text-3xl"></i>
-                <span class="text-center">View This Thread on X</span>
-            </a>
-            <button onclick="showCategoryShareMenu()" 
-                    class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-                <i class="fa-solid fa-share-nodes"></i>
-                Share This Card
-            </button>
+                <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
+                    <i class="fa-brands fa-x-twitter text-3xl"></i>
+                    <span class="text-center">View on X</span>
+                </a>
+                <button onclick="showCategoryShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-share-nodes"></i> Share Category
+                </button>
             </div>
         </div>
-        </div>
+    </div>
 
     <script>
-    // BACKGROUND ROTATOR - FIXED FOR NEW FOLDER STRUCTURE
-    const bgs = [
-        'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
-        'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
-        'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
-        'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
-        'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
-        'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
-        'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
-        'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
-        'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
-        'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
-    ];
+    // BACKGROUND ROTATOR
+    const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
     document.body.style.backgroundPosition = '50% 35%';
@@ -486,12 +180,53 @@
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
+    // FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
+      authDomain: "grokvshumans.firebaseapp.com",
+      databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "grokvshumans",
+      storageBucket: "grokvshumans.firebasestorage.app",
+      messagingSenderId: "483683492125",
+      appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let allCategories = {};
+    let currentCategoryId = null;
+    let currentCategoryIndex = 0;
+
+    async function loadCategories() {
+        const snapshot = await database.ref('content/categories').once('value');
+        allCategories = snapshot.val() || {};
+        renderGrid();
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('category-grid');
+        grid.innerHTML = '';
+        // MOST RECENT AT TOP
+        Object.keys(allCategories).sort((a,b) => (allCategories[b].order || 0) - (allCategories[a].order || 0)).forEach(id => {
+            const c = allCategories[id];
+            const cardHTML = `
+                <div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="${(c.tags || '').split(',').join(',')}">
+                    <img src="${c.image}" class="w-full h-full object-cover" alt="${c.title}">
+                    <div class="content">
+                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${c.title}</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(c.description || '').substring(0,130)}...</p></div>
+                    </div>
+                </div>`;
+            grid.insertAdjacentHTML('beforeend', cardHTML);
+        });
+    }
+
     function filterCategory(cat) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
         document.getElementById('tab-' + cat).classList.add('tab-active');
         document.querySelectorAll('#category-grid > div').forEach(card => {
-            const c = card.getAttribute('data-category');
-            card.style.display = (cat === 'all' || c === cat) ? 'block' : 'none';
+            const cats = (card.getAttribute('data-categories') || '').split(',').map(c => c.trim());
+            card.style.display = (cat === 'all' || cats.includes(cat)) ? 'block' : 'none';
         });
     }
 
@@ -504,126 +239,42 @@
         setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        if (link.getAttribute('href') === currentPage) link.classList.add('active');
-    });
-
-    let currentCategoryId = null;
-    let currentCategoryIndex = 0;
-
-    // ← KEEP YOUR ENTIRE categoryData OBJECT HERE EXACTLY AS IT IS NOW
-    const categoryData = {
-
-        1: { title: "Grok, is this true?", image: "assets/images/memes/skeletor.webp", tags: ["lazy"], summary: "User posts obvious satire and asks Grok if it's real, completely missing the joke.", xLink: "https://x.com/SlavisTon/status/2024954895288201519" },
-        2: { title: "Break down US vs Iran", image: "assets/images/memes/iran-summary.webp", tags: ["lazy"], summary: "User asks for a simple lazy-person breakdown of complex US-Iran tensions.", xLink: "https://x.com/strikexfn/status/2027985861661413416" },
-        3: { title: "Is this impersonating Elon?", image: "assets/images/memes/impersonator.webp", tags: ["lazy"], summary: "User shows an account pretending to be Elon and asks Grok to verify.", xLink: "https://x.com/Ravindr21158124/status/2027986376717898189" },
-        4: { title: "Is implanting a chip lazy?", image: "assets/images/memes/chip.webp", tags: ["lazy"], summary: "User questions whether getting a Neuralink chip is a lazy way to upgrade humanity.", xLink: "https://x.com/grok/status/2027985872251961387" },
-        5: { title: "Grok, summarize this", image: "assets/images/memes/summarize.webp", tags: ["lazy"], summary: "User wants Grok to provide a concise summary of a lengthy text or thread.", xLink: "https://x.com/maxvayshia/status/2019423903169277982" },
-        6: { title: "Potato brain", image: "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg", tags: ["photo"], summary: "User asks Grok to generate a stylish, fashionable version of a potato.", xLink: "https://x.com/grok/status/2008960036094034251" },
-        7: { title: "Magic actors", image: "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg", tags: ["photo"], summary: "User wants bunny-fied versions of famous Hollywood stars.", xLink: "https://x.com/grok/status/2023279170436919602" },
-        8: { title: "Put some clothes on", image: "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg", tags: ["photo"], summary: "User asks Grok to digitally dress someone in an image for modesty.", xLink: "https://x.com/thodahansle/status/2027262477348856183" },
-        9: { title: "Grok helps", image: "assets/images/memes/ventilator.webp", tags: ["opinion"], summary: "User feeling down asks Grok for positive encouragement and advice.", xLink: "https://x.com/grok/status/2026168522531852490" },
-        10: { title: "Who's from the future", image: "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg", tags: ["opinion"], summary: "User presents two photos and asks Grok who appears more futuristic.", xLink: "https://x.com/thodahansle/status/2023796696451609049" },
-        11: { title: "Grok goes on a tangent", image: "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg", tags: ["avoids"], summary: "User makes a controversial request and Grok cleverly steers the conversation away.", xLink: "https://x.com/grok/status/1912171402125594659" },
-        12: { title: "Send @gork Posts to Your Friends 😂", image: "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg", tags: ["opinion"], summary: "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.", xLink: "https://x.com/elonmusk/status/2029500041451462780" },
-        13: { title: "Grok Picks the Biggest Burger Bite 🥯", image: "https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg", tags: ["opinion"], summary: "Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.", xLink: "https://x.com/grok/status/2029289518835126298" },
-
-    };
-
-    function getCategoryKeys() {
-        return Object.keys(categoryData).map(Number).sort((a,b) => a - b);
-    }
-
-    function nextCategory() {
-        const keys = getCategoryKeys();
-        let pos = keys.indexOf(currentCategoryIndex);
-        if (pos === -1) pos = 0;
-        const nextPos = (pos + 1) % keys.length;
-        currentCategoryIndex = keys[nextPos];
-        closeCategoryModal();
-        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
-    }
-
-    function prevCategory() {
-        const keys = getCategoryKeys();
-        let pos = keys.indexOf(currentCategoryIndex);
-        if (pos === -1) pos = 0;
-        const prevPos = (pos - 1 + keys.length) % keys.length;
-        currentCategoryIndex = keys[prevPos];
-        closeCategoryModal();
-        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
-    }
-
     function openCategoryModal(id) {
-        const data = categoryData[id];
+        const data = allCategories[id];
         if (!data) return;
-
         currentCategoryId = id;
         currentCategoryIndex = id;
 
-        const url = data.image.toLowerCase();
-        let mediaHTML = '';
-        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
-            mediaHTML = `<video src="${data.image}" class="w-full h-full object-cover" autoplay loop muted controls playsinline></video>`;
-        } else {
-            mediaHTML = `<img src="${data.image}" class="w-full h-full object-contain" alt="${data.title}">`;
-        }
-        document.getElementById('modal-image').innerHTML = mediaHTML;
+        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
 
-        const displayMap = {'lazy': 'Grok, Think For Me','photo': 'Photo Requests','opinion': "Grok's Opinion",'avoids': 'Grok Avoids Request'};
-        const tagsHTML = data.tags.map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${displayMap[t] || t}</span>`).join('');
+        const tagDisplay = { lazy: "Grok, Think For Me", politics: "Politics", photo: "Photo Requests", opinion: "Grok's Opinion", avoids: "Grok Avoids Request", other: "Miscellaneous" };
+        const tagsHTML = (data.tags || '').split(',').map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t.trim()] || t.trim()}</span>`).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
-        document.getElementById('modal-title').textContent = data.title;
-        document.getElementById('modal-summary').textContent = data.summary;
-        document.getElementById('modal-x-link').href = data.xLink;
+        document.getElementById('modal-title').textContent = data.title || '';
+        document.getElementById('modal-description').textContent = data.description || '';
+        document.getElementById('modal-x-link').href = data.xLink || '#';
 
-        document.getElementById('category-modal').classList.remove('hidden');
+        const modal = document.getElementById('category-modal');
+        modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
 
     function closeCategoryModal() {
         document.getElementById('category-modal').classList.add('hidden');
         document.body.style.overflow = 'visible';
-        currentCategoryId = null;
     }
 
-    // KEYBOARD ARROWS + ESC (exact same reversed logic as memes.html)
-    document.addEventListener('keydown', e => {
-        if (document.getElementById('category-modal').classList.contains('hidden') || !currentCategoryId) return;
-        if (e.key === 'Escape') closeCategoryModal();
-        else if (e.key === 'ArrowLeft') nextCategory();
-        else if (e.key === 'ArrowRight') prevCategory();
-    });
-
-    // SWIPE GESTURES (exact same as memes.html)
-    let touchStartX = 0;
-    document.addEventListener('DOMContentLoaded', () => {
-        const modal = document.getElementById('category-modal');
-        modal.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-        modal.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].screenX;
-            if (!currentCategoryId) return;
-            if (touchEndX < touchStartX - 60) nextCategory();
-            if (touchEndX > touchStartX + 60) prevCategory();
-        }, {passive: true});
-
-        setTimeout(checkDeepLink, 300);
-    });
-
-    // === PASTE YOUR EXISTING SHARE FUNCTIONS HERE (unchanged) ===
     function showCategoryShareMenu() {
         if (!currentCategoryId) return;
-        const data = categoryData[currentCategoryId];
+        const data = allCategories[currentCategoryId];
         const baseUrl = window.location.origin + window.location.pathname;
         const shareUrl = `${baseUrl}#${currentCategoryId}`;
-        const text = `Check out this Grok category: ${data.title} 🔥`;
-
+        const text = `Check out this category on GrokVsHumans: ${data.title} 🔥`;
         const shareHTML = `
-            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[1100]" onclick="closeCategoryShareMenu()">
+            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[99999]" onclick="closeCategoryShareMenu()">
                 <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
-                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this card</h3>
+                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this category</h3>
                     <div class="grid grid-cols-3 gap-6 text-center">
                         <button onclick="copyCategoryDeepLink('${shareUrl}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-link text-4xl text-purple-400"></i><span class="text-xs mt-1">Our Site</span></button>
                         <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
@@ -646,7 +297,7 @@
 
     function copyCategoryDeepLink(url) {
         navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link to this card copied!');
+            showToast('✅ Link to this category copied!');
             closeCategoryShareMenu();
         });
     }
@@ -658,21 +309,53 @@
         });
     }
 
+    function getCategoryKeys() {
+        return Object.keys(allCategories).map(Number).sort((a,b) => a - b);
+    }
+
+    function nextCategory() {
+        const keys = getCategoryKeys();
+        let pos = keys.indexOf(currentCategoryIndex);
+        if (pos === -1) pos = 0;
+        const nextPos = (pos + 1) % keys.length;
+        currentCategoryIndex = keys[nextPos];
+        closeCategoryModal();
+        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
+    }
+
+    function prevCategory() {
+        const keys = getCategoryKeys();
+        let pos = keys.indexOf(currentCategoryIndex);
+        if (pos === -1) pos = 0;
+        const prevPos = (pos - 1 + keys.length) % keys.length;
+        currentCategoryIndex = keys[prevPos];
+        closeCategoryModal();
+        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
+    }
+
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
             const id = parseInt(hash);
-            if (categoryData[id]) openCategoryModal(id);
+            if (allCategories[id]) openCategoryModal(id);
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(checkDeepLink, 300);
+        loadCategories();
     });
 
     window.addEventListener('hashchange', checkDeepLink);
 
-</script>
+    document.addEventListener('keydown', e => {
+        const modal = document.getElementById('category-modal');
+        if (modal.classList.contains('hidden') || !currentCategoryId) return;
+        if (e.key === 'Escape') closeCategoryModal();
+        if (e.key === 'ArrowLeft') nextCategory();
+        if (e.key === 'ArrowRight') prevCategory();
+    });
+    </script>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
         Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
@@ -685,5 +368,6 @@
             <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
         </div>
     </footer>
+
 </body>
 </html>
