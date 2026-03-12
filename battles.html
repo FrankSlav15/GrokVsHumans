@@ -77,16 +77,24 @@
         .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
         .battle-card .buttons { flex-shrink: 0; border-top: 1px solid #27272a; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; overflow: hidden; }
 
-        /* UNIFIED MOBILE MODAL BUTTON FIX */
-        .modal .buttons button, #modal-buttons button {
-            padding: 1rem 1.25rem !important;
+        /* IMPROVED MOBILE MODAL BUTTONS v2 - fixes edge icons + 3-button layout */
+        .modal-content .buttons button,
+        #modal-buttons button {
+            padding: 1rem 1.5rem !important;
             font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            min-height: 56px;
+            gap: 0.75rem;
+            min-height: 58px;
+            flex: 1;
         }
+        .modal-content .buttons button i,
+        #modal-buttons button i {
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+        
         @media (max-width: 640px) {
             .modal .buttons button, #modal-buttons button {
                 padding: 0.85rem 1rem !important;
