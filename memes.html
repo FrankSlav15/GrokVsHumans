@@ -337,13 +337,13 @@
         }
 
         // Thread button on base modal
-    document.getElementById('base-x-link').href = data.xLink || '#';
+        document.getElementById('base-x-link').href = data.xLink || '#';
 
-    document.getElementById('context-panel').style.display = 'none';
-    document.getElementById('modal-buttons').style.display = 'flex';
-    document.getElementById('meme-modal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
+        document.getElementById('context-panel').style.display = 'none';
+        document.getElementById('modal-buttons').style.display = 'flex';
+        document.getElementById('meme-modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 
     function closeMemeModal() {
         if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
