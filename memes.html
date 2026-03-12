@@ -46,7 +46,7 @@
 
         .modal-content { 
             position: relative; 
-            overflow: hidden; /* FINAL fix - nothing escapes */
+            overflow: hidden; 
         }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
@@ -91,7 +91,7 @@
         .video-card:hover::after { opacity: 1; }
         .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
 
-        /* FINAL MOBILE MODAL BUTTONS v4 - no overflow ever again on memes */
+        /* ULTIMATE MOBILE MODAL BUTTONS v5 - perfectly centered + no overflow ever */
         #meme-modal .modal-content .buttons button,
         #meme-modal #modal-buttons button {
             padding: 1rem 1.5rem !important;
@@ -109,10 +109,14 @@
             flex-shrink: 0;
         }
         @media (max-width: 640px) {
+            #meme-modal #modal-buttons {
+                padding: 0.75rem 1rem !important;   /* tighter container padding */
+                gap: 0.5rem;
+            }
             #meme-modal .modal-content .buttons button,
             #meme-modal #modal-buttons button {
-                padding: 0.6rem 0.9rem !important;
-                font-size: 0.88rem;
+                padding: 0.55rem 0.85rem !important;
+                font-size: 0.87rem;
                 gap: 0.35rem;
                 min-height: 50px;
             }
