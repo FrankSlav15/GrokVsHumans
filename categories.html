@@ -44,7 +44,10 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        .modal-content { position: relative; overflow: visible; }
+        .modal-content { 
+            position: relative; 
+            overflow: hidden; /* contains scrolling */
+        }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.75); color: white;
@@ -76,9 +79,10 @@
         .category-card .title-area { min-height: 56px; display: flex; align-items: center; }
         .category-card .desc-area { flex: 1; min-height: 4rem; }
 
-        /* IMPROVED MOBILE MODAL BUTTONS v2 - fixes edge icons + 3-button layout */
-        .modal-content .buttons button,
-        #modal-buttons button {
+        /* FINAL MOBILE MODAL BUTTONS v3 - perfect spacing on categories (View on X + Share) */
+        #category-modal .modal-content .buttons button,
+        #category-modal .border-t.border-zinc-800 a,
+        #category-modal .border-t.border-zinc-800 button {
             padding: 1rem 1.5rem !important;
             font-size: 1rem;
             display: flex;
@@ -88,18 +92,25 @@
             min-height: 58px;
             flex: 1;
         }
-        .modal-content .buttons button i,
-        #modal-buttons button i {
+        #category-modal .modal-content .buttons button i,
+        #category-modal .border-t.border-zinc-800 a i,
+        #category-modal .border-t.border-zinc-800 button i {
             font-size: 1.35rem;
             flex-shrink: 0;
         }
-        
         @media (max-width: 640px) {
-            .modal-content .buttons button,
-            #modal-buttons button {
-                padding: 0.85rem 1rem !important;
-                font-size: 0.95rem;
-                min-height: 52px;
+            #category-modal .modal-content .buttons button,
+            #category-modal .border-t.border-zinc-800 a,
+            #category-modal .border-t.border-zinc-800 button {
+                padding: 0.75rem 1.25rem !important;
+                font-size: 0.93rem;
+                gap: 0.5rem;
+                min-height: 54px;
+            }
+            #category-modal .modal-content .buttons button i,
+            #category-modal .border-t.border-zinc-800 a i,
+            #category-modal .border-t.border-zinc-800 button i {
+                font-size: 1.25rem;
             }
         }
 
@@ -172,14 +183,14 @@
 
     <!-- CATEGORY MODAL -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
             <button onclick="event.stopImmediatePropagation(); prevCategory()" class="nav-arrow nav-arrow-left">‹</button>
             <button onclick="event.stopImmediatePropagation(); nextCategory()" class="nav-arrow nav-arrow-right">›</button>
 
             <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-            <div class="flex-1 overflow-y-auto p-8">
+            <div class="flex-1 min-h-0 overflow-y-auto p-8"> <!-- FIXED: clean scrolling -->
                 <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                 <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
                 <p id="modal-description" class="text-gray-300 leading-relaxed"></p>
@@ -191,7 +202,7 @@
                     <span class="text-center">View on X</span>
                 </a>
                 <button onclick="showCategoryShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-share-nodes"></i> Share Category
+                    <i class="fa-solid fa-share-nodes"></i> Share
                 </button>
             </div>
         </div>
@@ -228,7 +239,7 @@
         const snapshot = await database.ref('content/categories').once('value');
         allCategories = snapshot.val() || {};
         renderGrid();
-        setTimeout(checkDeepLink, 400);  // FIXED: deep links now work
+        setTimeout(checkDeepLink, 400);
     }
 
     function renderGrid() {
