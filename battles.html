@@ -77,6 +77,24 @@
         .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
         .battle-card .buttons { flex-shrink: 0; border-top: 1px solid #27272a; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; overflow: hidden; }
 
+        /* UNIFIED MOBILE MODAL BUTTON FIX */
+        .modal .buttons button, #modal-buttons button {
+            padding: 1rem 1.25rem !important;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 56px;
+        }
+        @media (max-width: 640px) {
+            .modal .buttons button, #modal-buttons button {
+                padding: 0.85rem 1rem !important;
+                font-size: 0.95rem;
+                min-height: 52px;
+            }
+        }
+
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -88,6 +106,7 @@
             border-bottom: 3px solid rgb(168 85 247);
             color: white;
         }
+
     </style>
 </head>
 <body class="text-white">
@@ -229,10 +248,11 @@
     let currentBattleIndex = 0;
 
     async function loadBattles() {
-        const snapshot = await database.ref('content/battles').once('value');
-        allBattles = snapshot.val() || {};
-        renderGrid();
-    }
+            const snapshot = await database.ref('content/battles').once('value');
+            allBattles = snapshot.val() || {};
+            renderGrid();
+            setTimeout(checkDeepLink, 400);  // FIXED: run after render
+        }
 
     function renderGrid() {
         const grid = document.getElementById('battle-grid');

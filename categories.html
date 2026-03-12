@@ -76,6 +76,26 @@
         .category-card .title-area { min-height: 56px; display: flex; align-items: center; }
         .category-card .desc-area { flex: 1; min-height: 4rem; }
 
+        /* UNIFIED MOBILE MODAL BUTTON FIX */
+        .modal-content .buttons button,
+        #modal-buttons button {
+            padding: 1rem 1.25rem !important;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 56px;
+        }
+        @media (max-width: 640px) {
+            .modal-content .buttons button,
+            #modal-buttons button {
+                padding: 0.85rem 1rem !important;
+                font-size: 0.95rem;
+                min-height: 52px;
+            }
+        }
+
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -143,7 +163,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL (simplified - no grok/human fields) -->
+    <!-- CATEGORY MODAL -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
@@ -201,12 +221,12 @@
         const snapshot = await database.ref('content/categories').once('value');
         allCategories = snapshot.val() || {};
         renderGrid();
+        setTimeout(checkDeepLink, 400);  // FIXED: deep links now work
     }
 
     function renderGrid() {
         const grid = document.getElementById('category-grid');
         grid.innerHTML = '';
-        // MOST RECENT AT TOP
         Object.keys(allCategories).sort((a,b) => (allCategories[b].order || 0) - (allCategories[a].order || 0)).forEach(id => {
             const c = allCategories[id];
             const cardHTML = `
@@ -342,7 +362,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(checkDeepLink, 300);
         loadCategories();
     });
 
