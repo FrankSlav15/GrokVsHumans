@@ -46,7 +46,7 @@
 
         .modal-content { 
             position: relative; 
-            overflow: hidden; /* FIXED: contains everything */
+            overflow: hidden; 
         }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
@@ -75,12 +75,19 @@
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             border-color: rgb(168 85 247); }
         .battle-card > img { flex-shrink: 0; height: 14rem; width: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
-        .battle-card .content { flex: 1; padding: 1.25rem; background: #18181b; display: flex; flex-direction: column; min-height: 9rem; }
+        .battle-card .content { flex: 1; padding: 1.25rem; background: #18181b; display: flex; flex-direction: column; }
         .battle-card .title-area { min-height: 3.25rem; }
         .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
-        .battle-card .buttons { flex-shrink: 0; border-top: 1px solid #27272a; border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; overflow: hidden; }
+        .battle-card .buttons { 
+            flex-shrink: 0; 
+            border-top: 1px solid #27272a; 
+            border-bottom-left-radius: 1.5rem; 
+            border-bottom-right-radius: 1.5rem; 
+            overflow: hidden;
+            min-height: 64px; /* FIXED: forces buttons to bottom of every card */
+        }
 
-        /* FINAL MOBILE MODAL BUTTONS v3 - perfect spacing on battles (Participate + Share) */
+        /* FINAL MOBILE MODAL BUTTONS v3 - perfect spacing */
         #battle-modal .modal-content .buttons button,
         #battle-modal .border-t.border-zinc-800 a,
         #battle-modal .border-t.border-zinc-800 button {
@@ -115,6 +122,20 @@
             }
         }
 
+        /* FIXED: mobile grid voting buttons no longer thin */
+        .battle-card .buttons button {
+            min-height: 64px !important;
+            padding: 0 1rem !important;
+            font-size: 1rem;
+        }
+        @media (max-width: 640px) {
+            .battle-card .buttons button {
+                min-height: 56px !important;
+                padding: 0 0.75rem !important;
+                font-size: 0.95rem;
+            }
+        }
+
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -130,7 +151,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (unchanged) -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -182,7 +203,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL -->
+    <!-- BATTLE MODAL (unchanged - already perfect) -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
       <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
         <button onclick="closeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
@@ -193,7 +214,7 @@
           <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
         </div>
 
-        <div class="flex-1 min-h-0 overflow-y-auto p-8"> <!-- FIXED: min-h-0 stops wild scrolling -->
+        <div class="flex-1 min-h-0 overflow-y-auto p-8">
           <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
           <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
