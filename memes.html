@@ -315,7 +315,7 @@
 
     function openMemeModal(id) {
         currentMemeIndex = id;
-        const data = memeData[id];
+        const data = allMemes[id];
         if (!data) return;
         currentMemeId = id;
 
@@ -336,13 +336,14 @@
             window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
         }
 
-        // NEW: Set thread link on base modal
-        document.getElementById('base-x-link').href = data.xLink;
-        document.getElementById('context-panel').style.display = 'none';
-        document.getElementById('modal-buttons').style.display = 'flex';
-        document.getElementById('meme-modal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
+        // Thread button on base modal
+    document.getElementById('base-x-link').href = data.xLink || '#';
+
+    document.getElementById('context-panel').style.display = 'none';
+    document.getElementById('modal-buttons').style.display = 'flex';
+    document.getElementById('meme-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
 
     function closeMemeModal() {
         if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
