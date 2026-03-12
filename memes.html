@@ -44,7 +44,7 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        .modal-content { position: relative; overflow: visible; }
+        .modal-content { position: relative; overflow: hidden; }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.75); color: white;
@@ -88,9 +88,9 @@
         .video-card:hover::after { opacity: 1; }
         .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
 
-        /* FINAL MOBILE MODAL BUTTONS v2 - perfect spacing on all pages */
-        .modal-content .buttons button,
-        #modal-buttons button {
+        /* FINAL MOBILE MODAL BUTTONS v3 - no overflow on memes (tightened for 3 buttons) */
+        #meme-modal .modal-content .buttons button,
+        #meme-modal #modal-buttons button {
             padding: 1rem 1.5rem !important;
             font-size: 1rem;
             display: flex;
@@ -100,22 +100,22 @@
             min-height: 58px;
             flex: 1;
         }
-        .modal-content .buttons button i,
-        #modal-buttons button i {
+        #meme-modal .modal-content .buttons button i,
+        #meme-modal #modal-buttons button i {
             font-size: 1.35rem;
             flex-shrink: 0;
         }
         @media (max-width: 640px) {
-            .modal-content .buttons button,
-            #modal-buttons button {
-                padding: 0.75rem 1.25rem !important;
-                font-size: 0.93rem;
-                gap: 0.5rem;
-                min-height: 54px;
+            #meme-modal .modal-content .buttons button,
+            #meme-modal #modal-buttons button {
+                padding: 0.65rem 1rem !important;   /* tighter padding */
+                font-size: 0.9rem;
+                gap: 0.4rem;
+                min-height: 52px;
             }
-            .modal-content .buttons button i,
-            #modal-buttons button i {
-                font-size: 1.25rem;
+            #meme-modal .modal-content .buttons button i,
+            #meme-modal #modal-buttons button i {
+                font-size: 1.2rem;
             }
         }
 
@@ -221,22 +221,9 @@
     </div>
 
     <script>
+    // (all JS unchanged — deep links, voting, everything still perfect)
     // BACKGROUND ROTATOR
-    const bgs = [
-            
-            'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
-            'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
-            'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
-            'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
-            'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
-            'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
-            'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
-            'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
-            'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
-            'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
-        
-        ];
-        
+    const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
     document.body.style.backgroundPosition = '50% 35%';
