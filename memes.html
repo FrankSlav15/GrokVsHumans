@@ -88,6 +88,26 @@
         .video-card:hover::after { opacity: 1; }
         .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
 
+        /* UNIFIED MOBILE MODAL BUTTON FIX (all pages) */
+        .modal-content .buttons button,
+        #modal-buttons button {
+            padding: 1rem 1.25rem !important;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 56px;
+        }
+        @media (max-width: 640px) {
+            .modal-content .buttons button,
+            #modal-buttons button {
+                padding: 0.85rem 1rem !important;
+                font-size: 0.95rem;
+                min-height: 52px;
+            }
+        }
+
         .tab {
             padding: 0.75rem 1.25rem;
             font-weight: 500;
@@ -103,7 +123,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (same as live site) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -220,12 +240,12 @@
         const snapshot = await database.ref('content/memes').once('value');
         allMemes = snapshot.val() || {};
         renderGrid();
+        setTimeout(checkDeepLink, 400);   // FIXED: deep links now work after data loads
     }
 
     function renderGrid() {
         const grid = document.getElementById('meme-grid');
         grid.innerHTML = '';
-        // MOST RECENT AT TOP (highest order first)
         Object.keys(allMemes).sort((a,b) => (allMemes[b].order || 0) - (allMemes[a].order || 0)).forEach(id => {
             const m = allMemes[id];
             const cardHTML = `
@@ -391,7 +411,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(checkDeepLink, 300);
         loadMemes();
     });
 
