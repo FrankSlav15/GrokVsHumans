@@ -84,10 +84,10 @@
             border-bottom-left-radius: 1.5rem; 
             border-bottom-right-radius: 1.5rem; 
             overflow: hidden;
-            min-height: 64px; /* FIXED: forces buttons to bottom of every card */
+            min-height: 64px;
         }
 
-        /* FINAL MOBILE MODAL BUTTONS v3 - perfect spacing */
+        /* ULTIMATE MOBILE MODAL BUTTONS v5 - perfectly centered + no overflow EVER (bottom bar + voted scores) */
         #battle-modal .modal-content .buttons button,
         #battle-modal .border-t.border-zinc-800 a,
         #battle-modal .border-t.border-zinc-800 button {
@@ -107,22 +107,32 @@
             flex-shrink: 0;
         }
         @media (max-width: 640px) {
+            #battle-modal .border-t.border-zinc-800 {
+                padding: 0.75rem 1rem !important;
+                gap: 0.25rem;
+            }
             #battle-modal .modal-content .buttons button,
             #battle-modal .border-t.border-zinc-800 a,
             #battle-modal .border-t.border-zinc-800 button {
-                padding: 0.75rem 1.25rem !important;
-                font-size: 0.93rem;
-                gap: 0.5rem;
-                min-height: 54px;
+                padding: 0.5rem 0.75rem !important;
+                font-size: 0.85rem;
+                gap: 0.3rem;
+                min-height: 48px;
             }
             #battle-modal .modal-content .buttons button i,
             #battle-modal .border-t.border-zinc-800 a i,
             #battle-modal .border-t.border-zinc-800 button i {
-                font-size: 1.25rem;
+                font-size: 1.1rem;
+            }
+            /* Voted scores inside modal - no overflow */
+            #modal-grok-btn span,
+            #modal-human-btn span {
+                margin: 0 0.5rem !important;
+                font-size: 1.4rem;
             }
         }
 
-        /* FIXED: mobile grid voting buttons no longer thin */
+        /* Grid voting buttons (already good) */
         .battle-card .buttons button {
             min-height: 64px !important;
             padding: 0 1rem !important;
@@ -151,7 +161,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (unchanged) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -203,7 +213,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- BATTLE MODAL (unchanged - already perfect) -->
+    <!-- BATTLE MODAL -->
     <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
       <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
         <button onclick="closeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
@@ -458,8 +468,8 @@
         if (hasVoted) {
             database.ref('battles/' + id).once('value', (snapshot) => {
                 const data = snapshot.val() || { grok: 0, human: 0 };
-                grokBtn.innerHTML = `Grok <span class="mx-8 text-4xl font-bold">${data.grok}</span>`;
-                humanBtn.innerHTML = `<span class="mx-8 text-4xl font-bold">${data.human}</span> Human`;
+                grokBtn.innerHTML = `Grok <span class="mx-4 text-2xl font-bold">${data.grok}</span>`;
+                humanBtn.innerHTML = `<span class="mx-4 text-2xl font-bold">${data.human}</span> Human`;
                 grokBtn.disabled = true;
                 humanBtn.disabled = true;
             });
