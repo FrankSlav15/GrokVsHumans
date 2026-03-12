@@ -1,5 +1,14 @@
 {
-  "13": {
+
+"14": {
+  "order": 14,
+  "title": "Not Turtly Enough for Grok",
+  "description": "SlavisTon tags @grok in the middle of turtle club GIF banter asking why it's not answering. Grok stays completely silent, sparking accusations of 'advertising mode' and selective ghosting of premium users.",
+  "image": "https://video.twimg.com/tweet_video/HDLpCznWgAAAEi1.mp4",
+  "tags": "avoids",
+  "xLink": "https://x.com/SlavisTon/status/2032032490207027342"
+},
+"13": {
     "order": 13,
     "title": "Grok Picks the Biggest Burger Bite 🥯",
     "description": "Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.",
@@ -103,4 +112,5 @@
     "tags": "lazy",
     "xLink": "https://x.com/SlavisTon/status/2024954895288201519"
   }
+  
 }
