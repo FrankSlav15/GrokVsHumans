@@ -210,6 +210,17 @@
                 <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
             </div>
 
+            <!-- GENRE SCROLLING SECTION – VERTICAL (new) -->
+            <div id="genre-section" class="hidden px-6 py-5 border-t border-zinc-800 bg-zinc-950">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 id="genre-header" class="text-purple-400 text-sm font-medium tracking-widest">MORE IN THIS GENRE</h3>
+                    <span id="genre-count" class="text-zinc-500 text-xs"></span>
+                </div>
+                <div id="genre-scroll-container" class="flex flex-col gap-4 max-h-[320px] overflow-y-auto pb-6 scrollbar-thin scrollbar-thumb-zinc-700 snap-y">
+                    <!-- JS will populate vertical thumbnail cards here -->
+                </div>
+            </div>
+
             <div id="context-panel" class="hidden p-6 bg-zinc-900 border-t border-purple-500/40">
                 <div class="flex justify-between items-start gap-4">
                     <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
@@ -343,6 +354,89 @@
         document.getElementById('modal-buttons').style.display = 'flex';
         document.getElementById('meme-modal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
+
+        renderGenreScroll(id);
+
+    }
+
+    // NEW: Render vertical genre scroll inside modal (only shows if genre matches)
+    function renderGenreScroll(currentId) {
+        const section = document.getElementById('genre-section');
+        const container = document.getElementById('genre-scroll-container');
+        container.innerHTML = '';
+        
+        const current = allMemes[currentId];
+        if (!current || !current.genre || current.genre.trim() === '') {
+            section.classList.add('hidden');
+            return;
+        }
+        
+        // Find all other memes with same genre
+        const sameGenre = Object.keys(allMemes)
+            .filter(id => id !== currentId && allMemes[id].genre === current.genre)
+            .sort((a, b) => (allMemes[b].order || 0) - (allMemes[a].order || 0));
+        
+        if (sameGenre.length === 0) {
+            section.classList.add('hidden');
+            return;
+        }
+        
+        // Update header
+        document.getElementById('genre-header').textContent = `MORE IN "${current.genre.toUpperCase()}"`;
+        document.getElementById('genre-count').textContent = `${sameGenre.length} more`;
+        section.classList.remove('hidden');
+        
+        // Build vertical thumbnail cards
+        sameGenre.forEach(id => {
+            const m = allMemes[id];
+            const isVideo = m.image.toLowerCase().endsWith('.mp4') || m.image.toLowerCase().endsWith('.webm');
+            
+            const thumbHTML = `
+                <div onclick="switchToMeme('${id}')" 
+                    class="flex gap-3 cursor-pointer group transition-all hover:bg-zinc-900 p-2 rounded-xl">
+                    <div class="w-24 flex-shrink-0 aspect-video rounded-lg overflow-hidden border border-zinc-700">
+                        ${isVideo 
+                            ? `<video src="${m.image}" class="w-full h-full object-cover" muted></video>` 
+                            : `<img src="${m.image}" class="w-full h-full object-cover" alt="${m.title}">`}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-white line-clamp-2 group-hover:text-purple-400">${m.title}</p>
+                        <p class="text-[10px] text-zinc-500 mt-1">${m.description || m.context || ''}</p>
+                    </div>
+                </div>`;
+            
+            container.insertAdjacentHTML('beforeend', thumbHTML);
+        });
+    }
+
+    // NEW: Switch to another meme in the same genre (keeps modal open)
+    function switchToMeme(newId) {
+        const data = allMemes[newId];
+        if (!data) return;
+        
+        // Update main modal content
+        document.getElementById('modal-title').textContent = data.title;
+        document.getElementById('modal-desc').innerHTML = 
+            (data.description || data.context || '') + 
+            (data.xLink ? `<br><a href="${data.xLink}" target="_blank" class="text-purple-400 text-xs mt-2 inline-block">View original on X →</a>` : '');
+        
+        const mediaContainer = document.getElementById('modal-image');
+        const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
+        
+        mediaContainer.innerHTML = isVideo
+            ? `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`
+            : `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+        
+        // Re-init Plyr for new video
+        if (window.currentPlyr) window.currentPlyr.destroy();
+        if (isVideo) {
+            window.currentPlyr = new Plyr('#modal-video', {
+                controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
+            });
+        }
+        
+        // Refresh genre list for the newly loaded meme
+        renderGenreScroll(newId);
     }
 
     function closeMemeModal() {
