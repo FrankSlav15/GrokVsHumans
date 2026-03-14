@@ -94,7 +94,6 @@
         .video-card:hover::after { opacity: 1; }
         .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
 
-        /* ULTIMATE MOBILE MODAL BUTTONS v5 */
         #meme-modal .modal-content .buttons button,
         #meme-modal #modal-buttons button {
             padding: 1rem 1.5rem !important;
@@ -278,25 +277,48 @@
         setTimeout(checkDeepLink, 400);
     }
 
+    // NEW: Only show the MOST RECENT meme per genre on the main grid
     function renderGrid() {
         const grid = document.getElementById('meme-grid');
         grid.innerHTML = '';
-        Object.keys(allMemes).sort((a,b) => (allMemes[b].order || 0) - (allMemes[a].order || 0)).forEach(id => {
+
+        // Group by genre and keep only the highest order (most recent) per genre
+        const visibleIds = new Set();
+        const genreMap = new Map();
+
+        Object.keys(allMemes).forEach(id => {
             const m = allMemes[id];
-            const cardHTML = `
-                <div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full ${m.image.toLowerCase().endsWith('.mp4') ? 'video-card' : ''}" data-categories="${(m.tags || '').split(',').join(',')}">
-                    <div class="aspect-video">
-                        ${m.image.toLowerCase().endsWith('.mp4') || m.image.toLowerCase().endsWith('.webm') ? 
-                            `<video src="${m.image}" class="w-full h-full object-cover" loop muted playsinline></video>` : 
-                            `<img src="${m.image}" class="w-full h-full object-cover" alt="${m.title}">`}
-                    </div>
-                    <div class="content flex-1 flex flex-col">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${m.title}</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(m.description || '').substring(0,130)}...</p></div>
-                    </div>
-                </div>`;
-            grid.insertAdjacentHTML('beforeend', cardHTML);
+            if (!m.genre || m.genre.trim() === '') {
+                visibleIds.add(id); // unique memes always show
+            } else {
+                if (!genreMap.has(m.genre) || (allMemes[genreMap.get(m.genre)].order || 0) < (m.order || 0)) {
+                    genreMap.set(m.genre, id);
+                }
+            }
         });
+
+        // Add the most recent one from each genre
+        genreMap.forEach(id => visibleIds.add(id));
+
+        // Render only visible ones (sorted newest first)
+        Array.from(visibleIds)
+            .sort((a,b) => (allMemes[b].order || 0) - (allMemes[a].order || 0))
+            .forEach(id => {
+                const m = allMemes[id];
+                const cardHTML = `
+                    <div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full ${m.image.toLowerCase().endsWith('.mp4') ? 'video-card' : ''}" data-categories="${(m.tags || '').split(',').join(',')}">
+                        <div class="aspect-video">
+                            ${m.image.toLowerCase().endsWith('.mp4') || m.image.toLowerCase().endsWith('.webm') ? 
+                                `<video src="${m.image}" class="w-full h-full object-cover" loop muted playsinline></video>` : 
+                                `<img src="${m.image}" class="w-full h-full object-cover" alt="${m.title}">`}
+                        </div>
+                        <div class="content flex-1 flex flex-col">
+                            <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${m.title}</h4></div>
+                            <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(m.description || '').substring(0,130)}...</p></div>
+                        </div>
+                    </div>`;
+                grid.insertAdjacentHTML('beforeend', cardHTML);
+            });
     }
 
     function filterCategory(cat) {
@@ -542,11 +564,6 @@
         if (e.key === 'ArrowUp') prevGenreMeme();
         if (e.key === 'ArrowDown') nextGenreMeme();
     });
-
-    function showMemeShareMenu() { /* existing function */ }
-    function closeMemeShareMenu() { /* existing */ }
-    function copyMemeDeepLink(url) { /* existing */ }
-    function copyToClipboard(url) { /* existing */ }
     </script>
 
     <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
