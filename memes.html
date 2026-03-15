@@ -470,42 +470,25 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
+    // FIXED: Simple sequential navigation (no genre skipping)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex]?.genre || '';
-
-        for (let i = 0; i < keys.length; i++) {
-            pos = (pos + 1) % keys.length;
-            const nextId = keys[pos];
-            const nextGenre = allMemes[nextId]?.genre || '';
-            if (nextGenre !== currentGenre) {
-                currentMemeIndex = nextId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-        }
+        const nextPos = (pos + 1) % keys.length;
+        currentMemeIndex = keys[nextPos];
+        closeMemeModal();
+        setTimeout(() => openMemeModal(currentMemeIndex), 280);
     }
 
     function prevMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex]?.genre || '';
-
-        for (let i = 0; i < keys.length; i++) {
-            pos = (pos - 1 + keys.length) % keys.length;
-            const prevId = keys[pos];
-            const prevGenre = allMemes[prevId]?.genre || '';
-            if (prevGenre !== currentGenre) {
-                currentMemeIndex = prevId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-        }
+        const prevPos = (pos - 1 + keys.length) % keys.length;
+        currentMemeIndex = keys[prevPos];
+        closeMemeModal();
+        setTimeout(() => openMemeModal(currentMemeIndex), 280);
     }
 
     function closeMemeModal() {
