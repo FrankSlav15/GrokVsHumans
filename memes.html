@@ -69,12 +69,12 @@
 
         #modal-image {
             flex: 0 0 auto;
-            max-height: 40vh; /* stops exactly above red line */
+            max-height: 35vh; /* image strictly stops above red line / text window */
             display: flex;
             align-items: center;
             justify-content: center;
             background: #18181b;
-            padding: 20px 20px 95px; /* extra padding so image NEVER reaches text */
+            padding: 20px 20px 120px; /* massive bottom padding — image NEVER intersects text div */
             overscroll-behavior: contain;
             touch-action: pan-y;
         }
@@ -103,7 +103,7 @@
             .nav-arrow-left  { left: -42px; }
             .nav-arrow-right { right: -42px; }
             .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
-            #modal-image { padding: 10px 10px 80px; }
+            #modal-image { padding: 10px 10px 100px; }
         }
 
         .meme-card {
@@ -234,7 +234,7 @@
             <div class="flex-1 overflow-y-auto" id="modal-scroll-area">
                 <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-                <!-- Title + Description - SOLID BLACK BACKGROUND -->
+                <!-- Title + Description - SOLID BLACK BACKGROUND (exactly like main branch) -->
                 <div class="px-6 pt-5 pb-3 border-t border-zinc-800 bg-zinc-950">
                     <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
                     <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
