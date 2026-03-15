@@ -68,21 +68,23 @@
         #modal-scroll-area::-webkit-scrollbar { display: none; }
 
         #modal-image {
-            height: 460px;
-            max-height: 70vh;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #18181b;
+            padding: 20px;
+            max-height: 70vh;
             overscroll-behavior: contain;
             touch-action: pan-y;
         }
         #modal-image img,
         #modal-image video {
+            max-width: 100%;
             max-height: 100%;
-            width: 100%;
             object-fit: contain;
             display: block;
+            border-radius: 8px;
         }
 
         .nav-arrow {
@@ -101,6 +103,7 @@
             .nav-arrow-left  { left: -42px; }
             .nav-arrow-right { right: -42px; }
             .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
+            #modal-image { padding: 10px; }
         }
 
         .meme-card {
@@ -470,14 +473,15 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
-    // FINAL ROBUST GENRE-SKIPPING (no dead-end, no bounce)
+    // ROBUST GENRE-SKIPPING (no dead-end, no bounce)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos + 1) % keys.length;
             const nextId = keys[pos];
             const nextGenre = allMemes[nextId]?.genre || '';
@@ -487,6 +491,7 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
@@ -496,7 +501,8 @@
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos - 1 + keys.length) % keys.length;
             const prevId = keys[pos];
             const prevGenre = allMemes[prevId]?.genre || '';
@@ -506,6 +512,7 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
