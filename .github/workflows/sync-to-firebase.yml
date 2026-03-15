@@ -2,9 +2,12 @@ name: Sync JSON → Firebase
 
 on:
   push:
-    branches: [ Preview, main ]
+    branches: [ main, preview ]
     paths:
       - 'data/*.json'
+      - 'memes.html'
+      - 'categories.html'
+      - 'battles.html'
 
 jobs:
   sync:
