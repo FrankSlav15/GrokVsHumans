@@ -157,6 +157,21 @@
             background: #3f3f46;
             color: white;
         }
+        .permanent-x-button {
+            background: #1d9bf0;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            margin-top: 12px;
+        }
+        .permanent-x-button:hover {
+            background: #1a8cd8;
+        }
     </style>
 </head>
 <body class="text-white">
@@ -316,6 +331,9 @@
     function embedXThread(xLink) {
         currentXLink = xLink || '';
         const embedDiv = document.getElementById('tweet-embed');
+        const tweetIdMatch = xLink.match(/status\/(\d+)/);
+        const tweetId = tweetIdMatch ? tweetIdMatch[1] : '';
+
         embedDiv.innerHTML = `
             <div class="tweet-embed-header">
                 <i class="fa-brands fa-x-twitter text-purple-400"></i>
@@ -331,7 +349,7 @@
 
         if (!xLink) return;
 
-        const cleanLink = xLink.split('?')[0];
+        const cleanLink = xLink.replace('x.com', 'twitter.com').split('?')[0];
 
         const renderEmbed = () => {
             embedDiv.innerHTML = `
@@ -344,7 +362,8 @@
                             data-conversation="all"
                             data-media-max-width="560"
                             data-dnt="true"
-                            data-align="center">
+                            data-align="center"
+                            data-tweet-id="${tweetId}">
                     <a href="${cleanLink}"></a>
                 </blockquote>`;
         };
@@ -379,8 +398,8 @@
                         <button onclick="forceReloadEmbed()" class="embed-retry-btn flex items-center gap-2 mx-auto">
                             <i class="fa-solid fa-rotate"></i> Force Reload Thread
                         </button>
-                        <a href="${cleanLink}" target="_blank" class="mt-6 inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm">
-                            <i class="fa-brands fa-x-twitter"></i> Open full thread on X →
+                        <a href="${cleanLink}" target="_blank" class="permanent-x-button mt-6">
+                            <i class="fa-brands fa-x-twitter"></i> Open Full Thread on X
                         </a>
                     </div>`;
             }
