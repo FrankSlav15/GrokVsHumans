@@ -26,6 +26,13 @@
             flex-direction: column; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10,10,31,0.82);
+            z-index: -1; }
+
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
         .nav-arrow {
@@ -156,10 +163,14 @@
 
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-center py-6 md:py-8">
+            <div class="flex justify-between items-center py-6 md:py-8">
+                <div></div>
                 <a href="index.html" class="flex items-center gap-4">
                     <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
                     <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
+                </a>
+                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-plus"></i> Submit Battle
                 </a>
             </div>
             <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
@@ -167,11 +178,6 @@
                 <a href="categories.html" class="nav-link active hover:text-purple-400 transition-colors">Categories</a>
                 <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
                 <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
-            </div>
-            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
-                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-plus"></i> Submit Battle
-                </a>
             </div>
         </div>
     </nav>
@@ -204,7 +210,7 @@
     </div>
 
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+        <div class="bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
             <button onclick="event.stopImmediatePropagation(); prevCategory()" class="nav-arrow nav-arrow-left">‹</button>
             <button onclick="event.stopImmediatePropagation(); nextCategory()" class="nav-arrow nav-arrow-right">›</button>
