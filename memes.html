@@ -69,12 +69,12 @@
 
         #modal-image {
             flex: 0 0 auto;
-            max-height: 65vh;
+            max-height: 55vh; /* reduced so text never gets covered */
             display: flex;
             align-items: center;
             justify-content: center;
             background: #18181b;
-            padding: 20px;
+            padding: 20px 20px 30px; /* extra bottom padding for text */
             overscroll-behavior: contain;
             touch-action: pan-y;
         }
@@ -103,7 +103,7 @@
             .nav-arrow-left  { left: -42px; }
             .nav-arrow-right { right: -42px; }
             .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
-            #modal-image { padding: 10px; }
+            #modal-image { padding: 10px 10px 20px; }
         }
 
         .meme-card {
