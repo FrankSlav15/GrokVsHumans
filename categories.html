@@ -46,8 +46,7 @@
 
         .modal-content { 
             position: relative; 
-            overflow: hidden; /* contains scrolling */
-        }
+            overflow: hidden; }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.75); color: white;
@@ -190,7 +189,7 @@
 
             <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-            <div class="flex-1 min-h-0 overflow-y-auto p-8"> <!-- FIXED: clean scrolling -->
+            <div class="flex-1 min-h-0 overflow-y-auto p-8">
                 <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                 <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
                 <p id="modal-description" class="text-gray-300 leading-relaxed"></p>
@@ -234,6 +233,7 @@
     let allCategories = {};
     let currentCategoryId = null;
     let currentCategoryIndex = 0;
+    let currentPlyr = null; // ← NEW: Plyr instance for videos
 
     async function loadCategories() {
         const snapshot = await database.ref('content/categories').once('value');
@@ -247,9 +247,13 @@
         grid.innerHTML = '';
         Object.keys(allCategories).sort((a,b) => (allCategories[b].order || 0) - (allCategories[a].order || 0)).forEach(id => {
             const c = allCategories[id];
+            const isVideo = c.image.toLowerCase().endsWith('.mp4') || c.image.toLowerCase().endsWith('.webm') || c.image.toLowerCase().endsWith('.mov');
+            const mediaHTML = isVideo 
+                ? `<video src="${c.image}" class="w-full h-full object-cover" loop muted playsinline></video>` 
+                : `<img src="${c.image}" class="w-full h-full object-cover" alt="${c.title}">`;
             const cardHTML = `
                 <div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="${(c.tags || '').split(',').join(',')}">
-                    <img src="${c.image}" class="w-full h-full object-cover" alt="${c.title}">
+                    ${mediaHTML}
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${c.title}</h4></div>
                         <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(c.description || '').substring(0,130)}...</p></div>
@@ -283,7 +287,21 @@
         currentCategoryId = id;
         currentCategoryIndex = id;
 
-        document.getElementById('modal-image').innerHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+        const url = data.image.toLowerCase();
+        const isVideo = url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov');
+
+        let mediaHTML = '';
+        if (isVideo) {
+            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
+        } else {
+            mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+        }
+        document.getElementById('modal-image').innerHTML = mediaHTML;
+
+        if (isVideo) {
+            if (currentPlyr) currentPlyr.destroy();
+            currentPlyr = new Plyr('#modal-video', { controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
+        }
 
         const tagDisplay = { lazy: "Grok, Think For Me", politics: "Politics", photo: "Photo Requests", opinion: "Grok's Opinion", avoids: "Grok Avoids Request", other: "Miscellaneous" };
         const tagsHTML = (data.tags || '').split(',').map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t.trim()] || t.trim()}</span>`).join('');
@@ -299,6 +317,11 @@
     }
 
     function closeCategoryModal() {
+        if (currentPlyr) {
+            currentPlyr.pause();
+            currentPlyr.destroy();
+            currentPlyr = null;
+        }
         document.getElementById('category-modal').classList.add('hidden');
         document.body.style.overflow = 'visible';
     }
