@@ -457,23 +457,27 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
-    // ROBUST HORIZONTAL SKIP: skips entire same-genre block (no bounce, no dead-end)
+    // FIXED: blank genre = unique (horizontal skips entire same-genre block, blanks jump to next card)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos + 1) % keys.length;
             const nextId = keys[pos];
             const nextGenre = allMemes[nextId]?.genre || '';
-            if (nextGenre !== currentGenre) {
+            
+            // If current is blank OR next is different genre → jump
+            if (currentGenre === '' || nextGenre !== currentGenre) {
                 currentMemeIndex = nextId;
                 closeMemeModal();
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
@@ -483,16 +487,20 @@
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos - 1 + keys.length) % keys.length;
             const prevId = keys[pos];
             const prevGenre = allMemes[prevId]?.genre || '';
-            if (prevGenre !== currentGenre) {
+            
+            // If current is blank OR prev is different genre → jump
+            if (currentGenre === '' || prevGenre !== currentGenre) {
                 currentMemeIndex = prevId;
                 closeMemeModal();
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
