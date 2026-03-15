@@ -470,14 +470,15 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
-    // FIXED genre-skipping logic (no bounce back)
+    // ROBUST GENRE-SKIPPING (exactly what you wanted — no bounce back)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos + 1) % keys.length;
             const nextId = keys[pos];
             const nextGenre = allMemes[nextId]?.genre || '';
@@ -487,6 +488,7 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
@@ -496,7 +498,8 @@
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos - 1 + keys.length) % keys.length;
             const prevId = keys[pos];
             const prevGenre = allMemes[prevId]?.genre || '';
@@ -506,6 +509,7 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
