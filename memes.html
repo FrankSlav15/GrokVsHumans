@@ -457,47 +457,25 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
-    // FIXED HORIZONTAL NAVIGATION (no bounce, no dead-end)
+    // SIMPLE SEQUENTIAL NAVIGATION THROUGH ALL CARDS (no genre skip, no bounce)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex]?.genre || '';
-
-        let attempts = 0;
-        while (attempts < keys.length) {
-            pos = (pos + 1) % keys.length;
-            const nextId = keys[pos];
-            const nextGenre = allMemes[nextId]?.genre || '';
-            if (nextGenre !== currentGenre) {
-                currentMemeIndex = nextId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-            attempts++;
-        }
+        const nextPos = (pos + 1) % keys.length;
+        currentMemeIndex = keys[nextPos];
+        closeMemeModal();
+        setTimeout(() => openMemeModal(currentMemeIndex), 280);
     }
 
     function prevMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex]?.genre || '';
-
-        let attempts = 0;
-        while (attempts < keys.length) {
-            pos = (pos - 1 + keys.length) % keys.length;
-            const prevId = keys[pos];
-            const prevGenre = allMemes[prevId]?.genre || '';
-            if (prevGenre !== currentGenre) {
-                currentMemeIndex = prevId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-            attempts++;
-        }
+        const prevPos = (pos - 1 + keys.length) % keys.length;
+        currentMemeIndex = keys[prevPos];
+        closeMemeModal();
+        setTimeout(() => openMemeModal(currentMemeIndex), 280);
     }
 
     function closeMemeModal() {
