@@ -299,7 +299,6 @@
         setTimeout(checkDeepLink, 400);
     }
 
-    // ONLY MOST RECENT PER GENRE IN GRID
     function renderGrid() {
         const grid = document.getElementById('meme-grid');
         grid.innerHTML = '';
@@ -458,13 +457,15 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
+    // FIXED HORIZONTAL NAVIGATION (no bounce, no dead-end)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos + 1) % keys.length;
             const nextId = keys[pos];
             const nextGenre = allMemes[nextId]?.genre || '';
@@ -474,6 +475,7 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
@@ -483,7 +485,8 @@
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos - 1 + keys.length) % keys.length;
             const prevId = keys[pos];
             const prevGenre = allMemes[prevId]?.genre || '';
@@ -493,6 +496,7 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
@@ -578,13 +582,28 @@
         loadMemes();
 
         const modalImage = document.getElementById('modal-image');
+        let touchStartX = 0;
         let touchStartY = 0;
-        modalImage.addEventListener('touchstart', e => { touchStartY = e.changedTouches[0].screenY; });
+
+        modalImage.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
         modalImage.addEventListener('touchend', e => {
-            if (!currentGenreList.length) return;
+            if (!currentMemeId) return;
+            const touchEndX = e.changedTouches[0].screenX;
             const touchEndY = e.changedTouches[0].screenY;
-            if (touchEndY < touchStartY - 50) nextGenreMeme();
-            if (touchEndY > touchStartY + 50) prevGenreMeme();
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) nextMeme();
+                else prevMeme();
+            } else if (currentGenreList.length && Math.abs(diffY) > 50) {
+                if (diffY > 0) nextGenreMeme();
+                else prevGenreMeme();
+            }
         });
     });
 
