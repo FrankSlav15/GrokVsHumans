@@ -192,7 +192,10 @@
             <div class="flex-1 min-h-0 overflow-y-auto p-8">
                 <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                 <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
-                <p id="modal-description" class="text-gray-300 leading-relaxed"></p>
+                <p id="modal-description" class="text-gray-300 leading-relaxed mb-8"></p>
+                
+                <!-- FULL X THREAD EMBED -->
+                <div id="tweet-embed" class="twitter-embed border border-zinc-700 rounded-2xl overflow-hidden"></div>
             </div>
 
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
@@ -233,7 +236,7 @@
     let allCategories = {};
     let currentCategoryId = null;
     let currentCategoryIndex = 0;
-    let currentPlyr = null; // ← NEW: Plyr instance for videos
+    let currentPlyr = null;
 
     async function loadCategories() {
         const snapshot = await database.ref('content/categories').once('value');
@@ -310,6 +313,13 @@
         document.getElementById('modal-title').textContent = data.title || '';
         document.getElementById('modal-description').textContent = data.description || '';
         document.getElementById('modal-x-link').href = data.xLink || '#';
+
+        // FULL X THREAD EMBED
+        const embedDiv = document.getElementById('tweet-embed');
+        embedDiv.innerHTML = `<blockquote class="twitter-tweet" data-theme="dark" data-conversation="all"><a href="${data.xLink}"></a></blockquote>`;
+        if (window.twttr && window.twttr.widgets) {
+            window.twttr.widgets.load(embedDiv);
+        }
 
         const modal = document.getElementById('category-modal');
         modal.classList.remove('hidden');
