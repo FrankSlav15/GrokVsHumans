@@ -46,10 +46,7 @@
 
         .modal-content { 
             position: relative; 
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            max-h: 94vh;
+            overflow: hidden; 
         }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
@@ -94,6 +91,7 @@
         .video-card:hover::after { opacity: 1; }
         .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
 
+        /* ULTIMATE MOBILE MODAL BUTTONS v5 - perfectly centered + no overflow ever */
         #meme-modal .modal-content .buttons button,
         #meme-modal #modal-buttons button {
             padding: 1rem 1.5rem !important;
@@ -105,14 +103,26 @@
             min-height: 58px;
             flex: 1;
         }
+        #meme-modal .modal-content .buttons button i,
+        #meme-modal #modal-buttons button i {
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
         @media (max-width: 640px) {
-            #meme-modal #modal-buttons { padding: 0.75rem 1rem !important; gap: 0.5rem; }
+            #meme-modal #modal-buttons {
+                padding: 0.75rem 1rem !important;   /* tighter container padding */
+                gap: 0.5rem;
+            }
             #meme-modal .modal-content .buttons button,
             #meme-modal #modal-buttons button {
                 padding: 0.55rem 0.85rem !important;
                 font-size: 0.87rem;
                 gap: 0.35rem;
                 min-height: 50px;
+            }
+            #meme-modal .modal-content .buttons button i,
+            #meme-modal #modal-buttons button i {
+                font-size: 1.15rem;
             }
         }
 
@@ -186,34 +196,18 @@
 
     <!-- MEME MODAL -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target === this) closeMemeModal()">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-4xl w-full overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+        <div class="modal-content bg-zinc-950 rounded-3xl max-w-4xl w-full max-h-[94vh] overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">X</button>
 
             <button onclick="event.stopImmediatePropagation(); prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
-            <!-- Scrollable middle area -->
-            <div class="flex-1 overflow-y-auto" id="modal-scroll-area">
-                <div id="modal-image" class="w-full bg-zinc-800"></div>
+            <div id="modal-image" class="w-full bg-zinc-800"></div>
 
-                <!-- Title + Description -->
-                <div class="px-6 pt-5 pb-3 border-t border-zinc-800">
-                    <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
-                    <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
-                </div>
-
-                <!-- CLEAN ↑ ↓ ARROWS (genre only) -->
-                <div id="genre-section" class="hidden px-6 py-5 border-t border-zinc-800 bg-zinc-950">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 id="genre-header" class="text-purple-400 text-sm font-medium tracking-widest">SEE OTHER VARIATIONS OF</h3>
-                        <span id="genre-count" class="text-zinc-500 text-xs"></span>
-                    </div>
-                    <div class="flex justify-center items-center gap-8 py-2">
-                        <button onclick="prevGenreMeme()" class="text-5xl text-purple-400 hover:text-white transition-all">↑</button>
-                        <div class="text-center"><span id="genre-name" class="text-white font-medium text-base"></span></div>
-                        <button onclick="nextGenreMeme()" class="text-5xl text-purple-400 hover:text-white transition-all">↓</button>
-                    </div>
-                </div>
+            <!-- NEW: Title + Description (small, visible on open) -->
+            <div class="px-6 pt-5 pb-3 border-t border-zinc-800">
+                <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
+                <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
             </div>
 
             <div id="context-panel" class="hidden p-6 bg-zinc-900 border-t border-purple-500/40">
@@ -221,19 +215,24 @@
                     <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
                     <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">X</button>
                 </div>
+                
+                <!-- Google Search now INSIDE context panel -->
                 <button onclick="searchMemeImage()" class="mt-5 w-full bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
                     <i class="fa-solid fa-magnifying-glass"></i> Google Image Search
                 </button>
             </div>
 
-            <!-- Buttons always pinned at bottom -->
             <div id="modal-buttons" class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-                <a id="base-x-link" href="#" target="_blank" class="flex-1 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
+                <!-- Thread button now on BASE modal -->
+                <a id="base-x-link" href="#" target="_blank" 
+                class="flex-1 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
                     <i class="fa-brands fa-x-twitter"></i> View Thread on X
                 </a>
+                
                 <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
                     <i class="fa-solid fa-info-circle"></i> Context
                 </button>
+                
                 <button onclick="showMemeShareMenu()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
                     <i class="fa-solid fa-share-nodes"></i> Share
                 </button>
@@ -267,8 +266,6 @@
     let allMemes = {};
     let currentMemeId = null;
     let currentMemeIndex = 0;
-    let currentGenreList = [];
-    let currentGenreIndex = 0;
 
     async function loadMemes() {
         const snapshot = await database.ref('content/memes').once('value');
@@ -277,45 +274,25 @@
         setTimeout(checkDeepLink, 400);
     }
 
-    // ONLY MOST RECENT PER GENRE IN GRID
     function renderGrid() {
         const grid = document.getElementById('meme-grid');
         grid.innerHTML = '';
-
-        const visibleIds = new Set();
-        const genreMap = new Map();
-
-        Object.keys(allMemes).forEach(id => {
+        Object.keys(allMemes).sort((a,b) => (allMemes[b].order || 0) - (allMemes[a].order || 0)).forEach(id => {
             const m = allMemes[id];
-            if (!m.genre || m.genre.trim() === '') {
-                visibleIds.add(id);
-            } else {
-                if (!genreMap.has(m.genre) || (allMemes[genreMap.get(m.genre)].order || 0) < (m.order || 0)) {
-                    genreMap.set(m.genre, id);
-                }
-            }
+            const cardHTML = `
+                <div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full ${m.image.toLowerCase().endsWith('.mp4') ? 'video-card' : ''}" data-categories="${(m.tags || '').split(',').join(',')}">
+                    <div class="aspect-video">
+                        ${m.image.toLowerCase().endsWith('.mp4') || m.image.toLowerCase().endsWith('.webm') ? 
+                            `<video src="${m.image}" class="w-full h-full object-cover" loop muted playsinline></video>` : 
+                            `<img src="${m.image}" class="w-full h-full object-cover" alt="${m.title}">`}
+                    </div>
+                    <div class="content flex-1 flex flex-col">
+                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${m.title}</h4></div>
+                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(m.description || '').substring(0,130)}...</p></div>
+                    </div>
+                </div>`;
+            grid.insertAdjacentHTML('beforeend', cardHTML);
         });
-
-        genreMap.forEach(id => visibleIds.add(id));
-
-        Array.from(visibleIds)
-            .sort((a,b) => (allMemes[b].order || 0) - (allMemes[a].order || 0))
-            .forEach(id => {
-                const m = allMemes[id];
-                const cardHTML = `
-                    <div onclick="openMemeModal(${id})" class="meme-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full ${m.image.toLowerCase().endsWith('.mp4') ? 'video-card' : ''}" data-categories="${(m.tags || '').split(',').join(',')}">
-                        <div class="aspect-video">
-                            ${m.image.toLowerCase().endsWith('.mp4') || m.image.toLowerCase().endsWith('.webm') ? 
-                                `<video src="${m.image}" class="w-full h-full object-cover" loop muted playsinline></video>` : 
-                                `<img src="${m.image}" class="w-full h-full object-cover" alt="${m.title}">`}
-                        </div>
-                        <div class="content flex-1 flex flex-col">
-                            <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${m.title}</h4></div>
-                            <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(m.description || '').substring(0,130)}...</p></div>
-                        </div>
-                    </div>`;
-                grid.insertAdjacentHTML('beforeend', cardHTML);
-            });
     }
 
     function filterCategory(cat) {
@@ -342,6 +319,7 @@
         if (!data) return;
         currentMemeId = id;
 
+        // NEW: Show title + description immediately
         document.getElementById('modal-title').textContent = data.title;
         document.getElementById('modal-desc').textContent = data.description || data.context || '';
 
@@ -358,122 +336,13 @@
             window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
         }
 
+        // Thread button on base modal
         document.getElementById('base-x-link').href = data.xLink || '#';
+
         document.getElementById('context-panel').style.display = 'none';
         document.getElementById('modal-buttons').style.display = 'flex';
         document.getElementById('meme-modal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-
-        renderGenreNav(id);
-    }
-
-    // GENRE NAVIGATION (vertical only)
-    function renderGenreNav(currentId) {
-        const section = document.getElementById('genre-section');
-        const current = allMemes[currentId];
-        if (!current || !current.genre || current.genre.trim() === '') {
-            section.classList.add('hidden');
-            currentGenreList = [];
-            return;
-        }
-        
-        currentGenreList = Object.keys(allMemes)
-            .filter(id => allMemes[id].genre === current.genre)
-            .sort((a, b) => (allMemes[b].order || 0) - (allMemes[a].order || 0));
-        
-        if (currentGenreList.length <= 1) {
-            section.classList.add('hidden');
-            return;
-        }
-        
-        currentGenreIndex = currentGenreList.indexOf(currentId);
-        
-        document.getElementById('genre-header').textContent = `SEE OTHER VARIATIONS OF`;
-        document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
-        document.getElementById('genre-count').textContent = `${currentGenreList.length} total`;
-        section.classList.remove('hidden');
-    }
-
-    function switchGenreMeme(newId) {
-        const data = allMemes[newId];
-        if (!data) return;
-        
-        document.getElementById('modal-title').textContent = data.title;
-        document.getElementById('modal-desc').innerHTML = 
-            (data.description || data.context || '') + 
-            (data.xLink ? `<br><a href="${data.xLink}" target="_blank" class="text-purple-400 text-xs mt-2 inline-block">View original on X →</a>` : '');
-        
-        const mediaContainer = document.getElementById('modal-image');
-        const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
-        
-        mediaContainer.innerHTML = isVideo
-            ? `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`
-            : `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
-        
-        if (window.currentPlyr) window.currentPlyr.destroy();
-        if (isVideo) {
-            window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'] });
-        }
-        
-        document.getElementById('base-x-link').href = data.xLink || '#';
-        currentMemeId = newId;
-        currentMemeIndex = newId;
-        renderGenreNav(newId);
-    }
-
-    function prevGenreMeme() {
-        if (currentGenreList.length === 0) return;
-        currentGenreIndex = (currentGenreIndex - 1 + currentGenreList.length) % currentGenreList.length;
-        switchGenreMeme(currentGenreList[currentGenreIndex]);
-    }
-
-    function nextGenreMeme() {
-        if (currentGenreList.length === 0) return;
-        currentGenreIndex = (currentGenreIndex + 1) % currentGenreList.length;
-        switchGenreMeme(currentGenreList[currentGenreIndex]);
-    }
-
-    // HORIZONTAL NAVIGATION – SKIP ENTIRE GENRE GROUPS
-    function getMemeKeys() {
-        return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
-    }
-
-    function nextMeme() {
-        const keys = getMemeKeys();
-        let pos = keys.indexOf(currentMemeIndex);
-        if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex].genre || '';
-
-        do {
-            pos = (pos + 1) % keys.length;
-            const nextId = keys[pos];
-            const nextGenre = allMemes[nextId].genre || '';
-            if (nextGenre !== currentGenre) {
-                currentMemeIndex = nextId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-        } while (pos !== keys.indexOf(currentMemeIndex)); // safety loop
-    }
-
-    function prevMeme() {
-        const keys = getMemeKeys();
-        let pos = keys.indexOf(currentMemeIndex);
-        if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex].genre || '';
-
-        do {
-            pos = (pos - 1 + keys.length) % keys.length;
-            const prevId = keys[pos];
-            const prevGenre = allMemes[prevId].genre || '';
-            if (prevGenre !== currentGenre) {
-                currentMemeIndex = prevId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-        } while (pos !== keys.indexOf(currentMemeIndex));
     }
 
     function closeMemeModal() {
@@ -546,6 +415,30 @@
         });
     }
 
+    function getMemeKeys() {
+        return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
+    }
+
+    function nextMeme() {
+        const keys = getMemeKeys();
+        let pos = keys.indexOf(currentMemeIndex);
+        if (pos === -1) pos = 0;
+        const nextPos = (pos + 1) % keys.length;
+        currentMemeIndex = keys[nextPos];
+        closeMemeModal();
+        setTimeout(() => openMemeModal(currentMemeIndex), 280);
+    }
+
+    function prevMeme() {
+        const keys = getMemeKeys();
+        let pos = keys.indexOf(currentMemeIndex);
+        if (pos === -1) pos = 0;
+        const prevPos = (pos - 1 + keys.length) % keys.length;
+        currentMemeIndex = keys[prevPos];
+        closeMemeModal();
+        setTimeout(() => openMemeModal(currentMemeIndex), 280);
+    }
+
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
@@ -556,17 +449,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         loadMemes();
-
-        // Vertical swipe support
-        const modalImage = document.getElementById('modal-image');
-        let touchStartY = 0;
-        modalImage.addEventListener('touchstart', e => { touchStartY = e.changedTouches[0].screenY; });
-        modalImage.addEventListener('touchend', e => {
-            if (!currentGenreList.length) return;
-            const touchEndY = e.changedTouches[0].screenY;
-            if (touchEndY < touchStartY - 50) nextGenreMeme();
-            if (touchEndY > touchStartY + 50) prevGenreMeme();
-        });
     });
 
     window.addEventListener('hashchange', checkDeepLink);
@@ -577,8 +459,6 @@
         if (e.key === 'Escape') closeMemeModal();
         if (e.key === 'ArrowLeft') nextMeme();
         if (e.key === 'ArrowRight') prevMeme();
-        if (e.key === 'ArrowUp') prevGenreMeme();
-        if (e.key === 'ArrowDown') nextGenreMeme();
     });
     </script>
 
