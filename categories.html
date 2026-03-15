@@ -127,7 +127,7 @@
             border: 1px solid #27272a;
             border-radius: 1rem;
             overflow: hidden;
-            min-height: 280px;
+            min-height: 340px;
         }
         .tweet-embed-header {
             background: #27272a;
@@ -169,9 +169,7 @@
             text-decoration: none;
             margin-top: 12px;
         }
-        .permanent-x-button:hover {
-            background: #1a8cd8;
-        }
+        .permanent-x-button:hover { background: #1a8cd8; }
     </style>
 </head>
 <body class="text-white">
@@ -328,10 +326,10 @@
         setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
-    function embedXThread(xLink) {
-        currentXLink = xLink || '';
+    function embedXThread(embedUrl) {
+        currentXLink = embedUrl || '';
         const embedDiv = document.getElementById('tweet-embed');
-        const tweetIdMatch = xLink.match(/status\/(\d+)/);
+        const tweetIdMatch = embedUrl.match(/status\/(\d+)/);
         const tweetId = tweetIdMatch ? tweetIdMatch[1] : '';
 
         embedDiv.innerHTML = `
@@ -344,12 +342,12 @@
                     <div class="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
                     <span class="text-purple-400 text-sm">Loading full thread...</span>
                 </div>
-                <a href="${xLink}" target="_blank" class="text-purple-400 hover:underline text-xs">Open directly on X</a>
+                <a href="${embedUrl}" target="_blank" class="text-purple-400 hover:underline text-xs">Open directly on X</a>
             </div>`;
 
-        if (!xLink) return;
+        if (!embedUrl) return;
 
-        const cleanLink = xLink.replace('x.com', 'twitter.com').split('?')[0];
+        const cleanLink = embedUrl.replace('x.com', 'twitter.com').split('?')[0];
 
         const renderEmbed = () => {
             embedDiv.innerHTML = `
@@ -440,7 +438,9 @@
         document.getElementById('modal-description').textContent = data.description || '';
         document.getElementById('modal-x-link').href = data.xLink || '#';
 
-        embedXThread(data.xLink);
+        // NEW: Use conversationUrl if it exists (exact lineage control)
+        const embedUrl = data.conversationUrl || data.xLink;
+        embedXThread(embedUrl);
 
         const modal = document.getElementById('category-modal');
         modal.classList.remove('hidden');
