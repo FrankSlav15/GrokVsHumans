@@ -51,6 +51,15 @@
             flex-direction: column;
             max-height: 94vh;
         }
+
+        #modal-scroll-area {
+            scrollbar-width: none;          /* Firefox */
+            -ms-overflow-style: none;       /* IE/Edge */
+        }
+        #modal-scroll-area::-webkit-scrollbar {
+            display: none;                  /* Chrome/Safari */
+        }
+
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.75); color: white;
