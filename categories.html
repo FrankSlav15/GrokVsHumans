@@ -44,9 +44,6 @@
 
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        .modal-content { 
-            position: relative; 
-            overflow: hidden; }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.75); color: white;
@@ -78,8 +75,7 @@
         .category-card .title-area { min-height: 56px; display: flex; align-items: center; }
         .category-card .desc-area { flex: 1; min-height: 4rem; }
 
-        /* FINAL MOBILE MODAL BUTTONS v3 */
-        #category-modal .modal-content .buttons button,
+        /* MODAL BUTTONS */
         #category-modal .border-t.border-zinc-800 a,
         #category-modal .border-t.border-zinc-800 button {
             padding: 1rem 1.5rem !important;
@@ -92,7 +88,6 @@
             flex: 1;
         }
         @media (max-width: 640px) {
-            #category-modal .modal-content .buttons button,
             #category-modal .border-t.border-zinc-800 a,
             #category-modal .border-t.border-zinc-800 button {
                 padding: 0.75rem 1.25rem !important;
@@ -114,7 +109,31 @@
             color: white;
         }
 
-        /* STRONGER X EMBED STYLING */
+        /* HIDDEN SCROLLBAR + NEW SCROLL EFFECT */
+        #modal-scroll-area {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #modal-scroll-area::-webkit-scrollbar {
+            display: none;
+        }
+        .modal-image-container {
+            max-height: 38vh;
+            position: relative;
+        }
+        .modal-image-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, #18181b, transparent);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* EMBED STYLING */
         .tweet-embed-wrapper {
             background: #18181b;
             border: 1px solid #27272a;
@@ -154,7 +173,7 @@
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR (unchanged) -->
+    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -182,7 +201,7 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
             <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
 
-            <!-- Sticky Tabs (unchanged) -->
+            <!-- Sticky Tabs -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
@@ -213,15 +232,18 @@
             <button onclick="event.stopImmediatePropagation(); prevCategory()" class="nav-arrow nav-arrow-left">‹</button>
             <button onclick="event.stopImmediatePropagation(); nextCategory()" class="nav-arrow nav-arrow-right">›</button>
 
-            <div id="modal-image" class="w-full bg-zinc-800"></div>
-
-            <div class="flex-1 min-h-0 overflow-y-auto p-8">
-                <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-                <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
-                <p id="modal-description" class="text-gray-300 leading-relaxed mb-8"></p>
+            <!-- SINGLE SCROLLABLE AREA – image at top, content scrolls up and covers it -->
+            <div id="modal-scroll-area" class="flex-1 min-h-0 overflow-y-auto">
+                <div id="modal-image" class="modal-image-container w-full bg-zinc-800"></div>
                 
-                <!-- SUPER ROBUST X THREAD EMBED -->
-                <div id="tweet-embed" class="tweet-embed-wrapper"></div>
+                <div class="p-8">
+                    <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+                    <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+                    <p id="modal-description" class="text-gray-300 leading-relaxed mb-8"></p>
+                    
+                    <!-- X THREAD EMBED -->
+                    <div id="tweet-embed" class="tweet-embed-wrapper"></div>
+                </div>
             </div>
 
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
@@ -262,7 +284,7 @@
     let allCategories = {};
     let currentCategoryId = null;
     let currentCategoryIndex = 0;
-    let currentXLink = '';           // ← NEW for retry button
+    let currentXLink = '';
     let currentPlyr = null;
 
     async function loadCategories() {
@@ -313,7 +335,7 @@
         setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
-    // SUPER ROBUST X THREAD EMBED (fixed the fallback you saw)
+    // SUPER ROBUST EMBED – more retries + Force Reload
     function embedXThread(xLink) {
         currentXLink = xLink || '';
         const embedDiv = document.getElementById('tweet-embed');
@@ -362,14 +384,15 @@
         renderEmbed();
         attemptLoad();
 
-        // Aggressive retries (exactly what was missing)
-        setTimeout(attemptLoad, 600);
-        setTimeout(attemptLoad, 1200);
-        setTimeout(attemptLoad, 2200);
-        setTimeout(attemptLoad, 3500);
-        setTimeout(attemptLoad, 5000);
+        // Even more aggressive retries
+        setTimeout(attemptLoad, 700);
+        setTimeout(attemptLoad, 1400);
+        setTimeout(attemptLoad, 2400);
+        setTimeout(attemptLoad, 3800);
+        setTimeout(attemptLoad, 5200);
+        setTimeout(attemptLoad, 7000);
 
-        // Final fallback with RETRY button
+        // Final fallback with Force Reload
         setTimeout(() => {
             if (!embedDiv.querySelector('iframe')) {
                 embedDiv.innerHTML = `
@@ -379,19 +402,18 @@
                     </div>
                     <div class="embed-fallback">
                         <p class="text-amber-400 text-sm mb-3">X embed took too long</p>
-                        <button onclick="retryEmbed()" class="embed-retry-btn flex items-center gap-2 mx-auto">
-                            <i class="fa-solid fa-rotate"></i> Retry Loading Thread
+                        <button onclick="forceReloadEmbed()" class="embed-retry-btn flex items-center gap-2 mx-auto">
+                            <i class="fa-solid fa-rotate"></i> Force Reload Thread
                         </button>
                         <a href="${cleanLink}" target="_blank" class="mt-4 inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm">
                             <i class="fa-brands fa-x-twitter"></i> Open full thread on X →
                         </a>
                     </div>`;
             }
-        }, 6200);
+        }, 7500);
     }
 
-    // NEW: Manual retry (click the button in fallback)
-    function retryEmbed() {
+    function forceReloadEmbed() {
         if (currentXLink) {
             embedXThread(currentXLink);
         }
@@ -408,9 +430,9 @@
 
         let mediaHTML = '';
         if (isVideo) {
-            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
+            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[38vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
         } else {
-            mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+            mediaHTML = `<img src="${data.image}" class="w-full max-h-[38vh] object-contain mx-auto" alt="${data.title}">`;
         }
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
@@ -427,7 +449,7 @@
         document.getElementById('modal-description').textContent = data.description || '';
         document.getElementById('modal-x-link').href = data.xLink || '#';
 
-        embedXThread(data.xLink);   // ← now super robust
+        embedXThread(data.xLink);
 
         const modal = document.getElementById('category-modal');
         modal.classList.remove('hidden');
