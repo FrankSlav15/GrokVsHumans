@@ -9,11 +9,17 @@ on:
       - 'categories.html'
       - 'battles.html'
 
+concurrency:
+  group: firebase-sync-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup Node
         uses: actions/setup-node@v4
