@@ -127,7 +127,7 @@
             border: 1px solid #27272a;
             border-radius: 1rem;
             overflow: hidden;
-            min-height: 340px;
+            min-height: 520px;
         }
         .tweet-embed-header {
             background: #27272a;
@@ -438,7 +438,6 @@
         document.getElementById('modal-description').textContent = data.description || '';
         document.getElementById('modal-x-link').href = data.xLink || '#';
 
-        // NEW: Use conversationUrl if it exists (exact lineage control)
         const embedUrl = data.conversationUrl || data.xLink;
         embedXThread(embedUrl);
 
