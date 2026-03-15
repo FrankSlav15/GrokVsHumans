@@ -116,25 +116,26 @@
         .video-card:hover::after { opacity: 1; }
         .video-card::after i { font-size: 3.8rem; color: white; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.7)); }
 
-        #meme-modal .modal-content .buttons button,
-        #meme-modal #modal-buttons button {
-            padding: 1rem 1.5rem !important;
-            font-size: 1rem;
+        /* MOBILE BUTTONS — EXACTLY LIKE CATEGORIES.HTML */
+        #meme-modal #modal-buttons {
+            border-top: 1px solid #27272a;
+            padding: 24px 24px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            min-height: 58px;
-            flex: 1;
+            gap: 12px;
+            flex-shrink: 0;
         }
         @media (max-width: 640px) {
-            #meme-modal #modal-buttons { padding: 0.75rem 1rem !important; gap: 0.5rem; }
-            #meme-modal .modal-content .buttons button,
+            #meme-modal #modal-buttons {
+                padding: 16px 16px !important;
+                gap: 8px;
+            }
+            #meme-modal #modal-buttons a,
             #meme-modal #modal-buttons button {
-                padding: 0.55rem 0.85rem !important;
-                font-size: 0.87rem;
-                gap: 0.35rem;
-                min-height: 50px;
+                padding: 14px 16px !important;
+                font-size: 14px !important;
+                min-height: 52px;
+                flex: 1;
+                border-radius: 16px;
             }
         }
 
@@ -248,10 +249,10 @@
                 </button>
             </div>
 
-            <!-- Buttons always pinned at bottom -->
+            <!-- MOBILE-OPTIMIZED BUTTONS (exactly like categories.html) -->
             <div id="modal-buttons" class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
                 <a id="base-x-link" href="#" target="_blank" class="flex-1 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
-                    <i class="fa-brands fa-x-twitter"></i> View Thread on X
+                    <i class="fa-brands fa-x-twitter"></i> View on X
                 </a>
                 <button onclick="showContextPanel()" class="flex-1 border border-purple-500 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
                     <i class="fa-solid fa-info-circle"></i> Context
@@ -299,7 +300,6 @@
         setTimeout(checkDeepLink, 400);
     }
 
-    // ONLY MOST RECENT PER GENRE IN GRID
     function renderGrid() {
         const grid = document.getElementById('meme-grid');
         grid.innerHTML = '';
@@ -458,22 +458,25 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
+    // WORKING NAVIGATION (blank genre = unique, skips same-genre blocks)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos + 1) % keys.length;
             const nextId = keys[pos];
             const nextGenre = allMemes[nextId]?.genre || '';
-            if (nextGenre !== currentGenre) {
+            if (currentGenre === '' || nextGenre !== currentGenre) {
                 currentMemeIndex = nextId;
                 closeMemeModal();
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
@@ -483,16 +486,18 @@
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        for (let i = 0; i < keys.length; i++) {
+        let attempts = 0;
+        while (attempts < keys.length) {
             pos = (pos - 1 + keys.length) % keys.length;
             const prevId = keys[pos];
             const prevGenre = allMemes[prevId]?.genre || '';
-            if (prevGenre !== currentGenre) {
+            if (currentGenre === '' || prevGenre !== currentGenre) {
                 currentMemeIndex = prevId;
                 closeMemeModal();
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
+            attempts++;
         }
     }
 
@@ -578,13 +583,28 @@
         loadMemes();
 
         const modalImage = document.getElementById('modal-image');
+        let touchStartX = 0;
         let touchStartY = 0;
-        modalImage.addEventListener('touchstart', e => { touchStartY = e.changedTouches[0].screenY; });
+
+        modalImage.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
         modalImage.addEventListener('touchend', e => {
-            if (!currentGenreList.length) return;
+            if (!currentMemeId) return;
+            const touchEndX = e.changedTouches[0].screenX;
             const touchEndY = e.changedTouches[0].screenY;
-            if (touchEndY < touchStartY - 50) nextGenreMeme();
-            if (touchEndY > touchStartY + 50) prevGenreMeme();
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) nextMeme();
+                else prevMeme();
+            } else if (currentGenreList.length && Math.abs(diffY) > 50) {
+                if (diffY > 0) nextGenreMeme();
+                else prevGenreMeme();
+            }
         });
     });
 
