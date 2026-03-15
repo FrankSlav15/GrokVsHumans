@@ -457,15 +457,14 @@
         return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
     }
 
-    // HORIZONTAL NAV: SKIP ENTIRE SAME-GENRE BLOCK (exactly what you asked for)
+    // ROBUST HORIZONTAL SKIP: skips entire same-genre block (no bounce, no dead-end)
     function nextMeme() {
         const keys = getMemeKeys();
         let pos = keys.indexOf(currentMemeIndex);
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        let attempts = 0;
-        while (attempts < keys.length) {
+        for (let i = 0; i < keys.length; i++) {
             pos = (pos + 1) % keys.length;
             const nextId = keys[pos];
             const nextGenre = allMemes[nextId]?.genre || '';
@@ -475,7 +474,6 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
-            attempts++;
         }
     }
 
@@ -485,8 +483,7 @@
         if (pos === -1) pos = 0;
         const currentGenre = allMemes[currentMemeIndex]?.genre || '';
 
-        let attempts = 0;
-        while (attempts < keys.length) {
+        for (let i = 0; i < keys.length; i++) {
             pos = (pos - 1 + keys.length) % keys.length;
             const prevId = keys[pos];
             const prevGenre = allMemes[prevId]?.genre || '';
@@ -496,7 +493,6 @@
                 setTimeout(() => openMemeModal(currentMemeIndex), 280);
                 return;
             }
-            attempts++;
         }
     }
 
