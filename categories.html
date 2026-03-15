@@ -13,15 +13,6 @@
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-M58E7KLM56');
-    </script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         html { height: 100%; }
@@ -35,18 +26,8 @@
             flex-direction: column; }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
-
         .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
-        .modal-content { 
-            position: relative; 
-            overflow: hidden; }
         .nav-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.75); color: white;
@@ -78,8 +59,6 @@
         .category-card .title-area { min-height: 56px; display: flex; align-items: center; }
         .category-card .desc-area { flex: 1; min-height: 4rem; }
 
-        /* FINAL MOBILE MODAL BUTTONS v3 - perfect spacing on categories (View on X + Share) */
-        #category-modal .modal-content .buttons button,
         #category-modal .border-t.border-zinc-800 a,
         #category-modal .border-t.border-zinc-800 button {
             padding: 1rem 1.5rem !important;
@@ -91,25 +70,13 @@
             min-height: 58px;
             flex: 1;
         }
-        #category-modal .modal-content .buttons button i,
-        #category-modal .border-t.border-zinc-800 a i,
-        #category-modal .border-t.border-zinc-800 button i {
-            font-size: 1.35rem;
-            flex-shrink: 0;
-        }
         @media (max-width: 640px) {
-            #category-modal .modal-content .buttons button,
             #category-modal .border-t.border-zinc-800 a,
             #category-modal .border-t.border-zinc-800 button {
                 padding: 0.75rem 1.25rem !important;
                 font-size: 0.93rem;
                 gap: 0.5rem;
                 min-height: 54px;
-            }
-            #category-modal .modal-content .buttons button i,
-            #category-modal .border-t.border-zinc-800 a i,
-            #category-modal .border-t.border-zinc-800 button i {
-                font-size: 1.25rem;
             }
         }
 
@@ -124,11 +91,69 @@
             border-bottom: 3px solid rgb(168 85 247);
             color: white;
         }
+
+        #modal-scroll-area {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #modal-scroll-area::-webkit-scrollbar {
+            display: none;
+        }
+        .modal-image-container {
+            max-height: 38vh;
+            position: relative;
+        }
+        .modal-image-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(to top, #18181b, transparent);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .tweet-embed-wrapper {
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 1rem;
+            overflow: hidden;
+            min-height: 280px;
+        }
+        .tweet-embed-header {
+            background: #27272a;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: #a1a1aa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #3f3f46;
+        }
+        .embed-fallback {
+            padding: 1.5rem;
+            text-align: center;
+            background: #111113;
+        }
+        .embed-retry-btn {
+            background: #27272a;
+            color: #a1a1aa;
+            border: 1px solid #3f3f46;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .embed-retry-btn:hover {
+            background: #3f3f46;
+            color: white;
+        }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- NAVBAR -->
     <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-center py-6 md:py-8">
@@ -156,7 +181,6 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
             <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
 
-            <!-- Sticky Tabs -->
             <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
                 <div class="flex justify-start md:justify-center px-4 md:px-6">
                     <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
@@ -175,24 +199,25 @@
         </div>
     </section>
 
-    <!-- Toast -->
     <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900 border border-purple-500 px-8 py-4 rounded-3xl shadow-2xl z-[100] transition-all duration-300">
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORY MODAL -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
             <button onclick="event.stopImmediatePropagation(); prevCategory()" class="nav-arrow nav-arrow-left">‹</button>
             <button onclick="event.stopImmediatePropagation(); nextCategory()" class="nav-arrow nav-arrow-right">›</button>
 
-            <div id="modal-image" class="w-full bg-zinc-800"></div>
-
-            <div class="flex-1 min-h-0 overflow-y-auto p-8">
-                <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-                <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
-                <p id="modal-description" class="text-gray-300 leading-relaxed"></p>
+            <div id="modal-scroll-area" class="flex-1 min-h-0 overflow-y-auto">
+                <div id="modal-image" class="modal-image-container w-full bg-zinc-800"></div>
+                
+                <div class="p-8">
+                    <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+                    <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
+                    <p id="modal-description" class="text-gray-300 leading-relaxed mb-8"></p>
+                    <div id="tweet-embed" class="tweet-embed-wrapper"></div>
+                </div>
             </div>
 
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
@@ -208,7 +233,6 @@
     </div>
 
     <script>
-    // BACKGROUND ROTATOR
     const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
@@ -217,7 +241,6 @@
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-    // FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
       authDomain: "grokvshumans.firebaseapp.com",
@@ -233,7 +256,8 @@
     let allCategories = {};
     let currentCategoryId = null;
     let currentCategoryIndex = 0;
-    let currentPlyr = null; // ← NEW: Plyr instance for videos
+    let currentXLink = '';
+    let currentPlyr = null;
 
     async function loadCategories() {
         const snapshot = await database.ref('content/categories').once('value');
@@ -245,14 +269,16 @@
     function renderGrid() {
         const grid = document.getElementById('category-grid');
         grid.innerHTML = '';
-        Object.keys(allCategories).sort((a,b) => (allCategories[b].order || 0) - (allCategories[a].order || 0)).forEach(id => {
+        Object.keys(allCategories)
+            .sort((a,b) => (allCategories[b].order || 0) - (allCategories[a].order || 0))
+            .forEach(id => {
             const c = allCategories[id];
             const isVideo = c.image.toLowerCase().endsWith('.mp4') || c.image.toLowerCase().endsWith('.webm') || c.image.toLowerCase().endsWith('.mov');
             const mediaHTML = isVideo 
                 ? `<video src="${c.image}" class="w-full h-full object-cover" loop muted playsinline></video>` 
-                : `<img src="${c.image}" class="w-full h-full object-cover" alt="${c.title}">`;
+                : `<img src="${c.image}" loading="lazy" class="w-full h-full object-cover" alt="${c.title}">`;
             const cardHTML = `
-                <div onclick="openCategoryModal(${id})" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="${(c.tags || '').split(',').join(',')}">
+                <div onclick="openCategoryModal('${id}')" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="${(c.tags || '').split(',').join(',')}">
                     ${mediaHTML}
                     <div class="content">
                         <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${c.title}</h4></div>
@@ -281,6 +307,84 @@
         setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
+    function embedXThread(xLink) {
+        currentXLink = xLink || '';
+        const embedDiv = document.getElementById('tweet-embed');
+        embedDiv.innerHTML = `
+            <div class="tweet-embed-header">
+                <i class="fa-brands fa-x-twitter text-purple-400"></i>
+                <span>FULL THREAD ON X</span>
+            </div>
+            <div class="embed-fallback">
+                <div class="flex items-center justify-center gap-3 mb-4">
+                    <div class="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-purple-400 text-sm">Loading full thread...</span>
+                </div>
+                <a href="${xLink}" target="_blank" class="text-purple-400 hover:underline text-xs">Open directly on X</a>
+            </div>`;
+
+        if (!xLink) return;
+
+        const cleanLink = xLink.split('?')[0];
+
+        const renderEmbed = () => {
+            embedDiv.innerHTML = `
+                <div class="tweet-embed-header">
+                    <i class="fa-brands fa-x-twitter text-purple-400"></i>
+                    <span>FULL THREAD ON X</span>
+                </div>
+                <blockquote class="twitter-tweet" 
+                            data-theme="dark" 
+                            data-conversation="all"
+                            data-media-max-width="560"
+                            data-dnt="true"
+                            data-align="center">
+                    <a href="${cleanLink}"></a>
+                </blockquote>`;
+        };
+
+        const attemptLoad = () => {
+            if (window.twttr && window.twttr.widgets) {
+                window.twttr.widgets.load(embedDiv);
+            } else if (window.twttr && window.twttr.ready) {
+                window.twttr.ready(() => window.twttr.widgets.load(embedDiv));
+            }
+        };
+
+        renderEmbed();
+        attemptLoad();
+        setTimeout(attemptLoad, 700);
+        setTimeout(attemptLoad, 1400);
+        setTimeout(attemptLoad, 2400);
+        setTimeout(attemptLoad, 3800);
+        setTimeout(attemptLoad, 5200);
+        setTimeout(attemptLoad, 7000);
+        setTimeout(attemptLoad, 9000);
+        setTimeout(attemptLoad, 12000);
+
+        setTimeout(() => {
+            if (!embedDiv.querySelector('iframe')) {
+                embedDiv.innerHTML = `
+                    <div class="tweet-embed-header">
+                        <i class="fa-brands fa-x-twitter text-purple-400"></i>
+                        <span>FULL THREAD ON X</span>
+                    </div>
+                    <div class="embed-fallback">
+                        <button onclick="forceReloadEmbed()" class="embed-retry-btn flex items-center gap-2 mx-auto">
+                            <i class="fa-solid fa-rotate"></i> Force Reload Thread
+                        </button>
+                        <a href="${cleanLink}" target="_blank" class="mt-6 inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm">
+                            <i class="fa-brands fa-x-twitter"></i> Open full thread on X →
+                        </a>
+                    </div>`;
+            }
+        }, 13000);
+    }
+
+    function forceReloadEmbed() {
+        if (currentXLink) embedXThread(currentXLink);
+    }
+
     function openCategoryModal(id) {
         const data = allCategories[id];
         if (!data) return;
@@ -292,9 +396,9 @@
 
         let mediaHTML = '';
         if (isVideo) {
-            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
+            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[38vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
         } else {
-            mediaHTML = `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+            mediaHTML = `<img src="${data.image}" class="w-full max-h-[38vh] object-contain mx-auto" alt="${data.title}">`;
         }
         document.getElementById('modal-image').innerHTML = mediaHTML;
 
@@ -310,6 +414,8 @@
         document.getElementById('modal-title').textContent = data.title || '';
         document.getElementById('modal-description').textContent = data.description || '';
         document.getElementById('modal-x-link').href = data.xLink || '#';
+
+        embedXThread(data.xLink);
 
         const modal = document.getElementById('category-modal');
         modal.classList.remove('hidden');
@@ -370,12 +476,14 @@
         });
     }
 
-    function getCategoryKeys() {
-        return Object.keys(allCategories).map(Number).sort((a,b) => a - b);
+    function getSortedCategoryIds() {
+        return Object.entries(allCategories)
+            .sort(([,a],[,b]) => (b.order || 0) - (a.order || 0))
+            .map(([id]) => id);
     }
 
     function nextCategory() {
-        const keys = getCategoryKeys();
+        const keys = getSortedCategoryIds();
         let pos = keys.indexOf(currentCategoryIndex);
         if (pos === -1) pos = 0;
         const nextPos = (pos + 1) % keys.length;
@@ -385,7 +493,7 @@
     }
 
     function prevCategory() {
-        const keys = getCategoryKeys();
+        const keys = getSortedCategoryIds();
         let pos = keys.indexOf(currentCategoryIndex);
         if (pos === -1) pos = 0;
         const prevPos = (pos - 1 + keys.length) % keys.length;
@@ -397,7 +505,7 @@
     function checkDeepLink() {
         const hash = window.location.hash.replace('#', '');
         if (hash && !isNaN(hash)) {
-            const id = parseInt(hash);
+            const id = hash;
             if (allCategories[id]) openCategoryModal(id);
         }
     }
