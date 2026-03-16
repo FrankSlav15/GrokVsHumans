@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <script src="https://embedsocial.com/embed.js" async></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
@@ -144,19 +143,6 @@
             padding: 1.5rem;
             text-align: center;
             background: #111113;
-        }
-        .embed-retry-btn {
-            background: #27272a;
-            color: #a1a1aa;
-            border: 1px solid #3f3f46;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .embed-retry-btn:hover {
-            background: #3f3f46;
-            color: white;
         }
         .permanent-x-button {
             background: #1d9bf0;
@@ -335,46 +321,71 @@
             embedDiv.innerHTML = `
                 <div class="tweet-embed-header">
                     <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                    <span>FULL THREAD ON X • EmbedSocial</span>
+                    <span>FULL THREAD ON X (Native)</span>
                 </div>
                 <div class="embed-fallback p-8 text-center text-gray-400">No thread link available</div>`;
             return;
         }
 
+        const tweetIdMatch = embedUrl.match(/status\/(\d+)/);
+        const tweetId = tweetIdMatch ? tweetIdMatch[1] : '';
         const cleanLink = embedUrl.replace('x.com', 'twitter.com').split('?')[0];
 
         // Loading state
         embedDiv.innerHTML = `
             <div class="tweet-embed-header">
                 <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                <span>FULL THREAD ON X • EmbedSocial</span>
+                <span>FULL THREAD ON X (Native)</span>
             </div>
             <div class="embed-fallback">
                 <div class="flex items-center justify-center gap-3 mb-4">
                     <div class="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-purple-400 text-sm">Loading complete thread...</span>
+                    <span class="text-purple-400 text-sm">Loading full conversation...</span>
                 </div>
             </div>`;
 
-        setTimeout(() => {
+        const renderNative = () => {
             embedDiv.innerHTML = `
                 <div class="tweet-embed-header">
                     <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                    <span>FULL THREAD ON X • EmbedSocial</span>
+                    <span>FULL THREAD ON X (Native)</span>
                 </div>
-                <div class="embedsocial-x" 
-                     data-ref="${cleanLink}" 
-                     data-theme="dark" 
-                     style="width:100%; max-width:550px; margin:0 auto;">
-                </div>`;
-
-            // Trigger render
-            if (typeof window.embedsocial !== 'undefined' && window.embedsocial.embed) {
-                window.embedsocial.embed();
-            } else {
-                setTimeout(() => window.embedsocial && window.embedsocial.embed(), 1200);
+                <blockquote class="twitter-tweet" 
+                            data-theme="dark" 
+                            data-conversation="all"
+                            data-media-max-width="560"
+                            data-width="550"
+                            data-dnt="true"
+                            data-align="center"
+                            data-tweet-id="${tweetId}">
+                    <a href="${cleanLink}"></a>
+                </blockquote>`;
+            if (window.twttr && window.twttr.widgets) {
+                window.twttr.widgets.load(embedDiv);
             }
-        }, 420);
+        };
+
+        renderNative();
+        setTimeout(renderNative, 800);
+        setTimeout(renderNative, 1800);
+        setTimeout(renderNative, 3200);
+        setTimeout(renderNative, 5200);
+
+        setTimeout(() => {
+            if (!embedDiv.querySelector('iframe')) {
+                embedDiv.innerHTML = `
+                    <div class="tweet-embed-header">
+                        <i class="fa-brands fa-x-twitter text-purple-400"></i>
+                        <span>FULL THREAD ON X (Native)</span>
+                    </div>
+                    <div class="embed-fallback p-8 text-center">
+                        <p class="text-gray-400 mb-4">Embed had trouble loading</p>
+                        <a href="${cleanLink}" target="_blank" class="permanent-x-button">
+                            <i class="fa-brands fa-x-twitter"></i> Open Full Thread on X
+                        </a>
+                    </div>`;
+            }
+        }, 9000);
     }
 
     function openCategoryModal(id) {
