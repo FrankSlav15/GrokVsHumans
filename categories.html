@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script src="https://embedsocial.com/embed.js" async></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
@@ -127,7 +128,7 @@
             border: 1px solid #27272a;
             border-radius: 1rem;
             overflow: hidden;
-            min-height: 620px;
+            min-height: 720px;
         }
         .tweet-embed-header {
             background: #27272a;
@@ -329,84 +330,51 @@
     function embedXThread(embedUrl) {
         currentXLink = embedUrl || '';
         const embedDiv = document.getElementById('tweet-embed');
-        const tweetIdMatch = embedUrl.match(/status\/(\d+)/);
-        const tweetId = tweetIdMatch ? tweetIdMatch[1] : '';
 
+        if (!embedUrl) {
+            embedDiv.innerHTML = `
+                <div class="tweet-embed-header">
+                    <i class="fa-brands fa-x-twitter text-purple-400"></i>
+                    <span>FULL THREAD ON X • EmbedSocial</span>
+                </div>
+                <div class="embed-fallback p-8 text-center text-gray-400">No thread link available</div>`;
+            return;
+        }
+
+        const cleanLink = embedUrl.replace('x.com', 'twitter.com').split('?')[0];
+
+        // Loading state
         embedDiv.innerHTML = `
             <div class="tweet-embed-header">
                 <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                <span>FULL THREAD ON X</span>
+                <span>FULL THREAD ON X • EmbedSocial</span>
             </div>
             <div class="embed-fallback">
                 <div class="flex items-center justify-center gap-3 mb-4">
                     <div class="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-purple-400 text-sm">Loading full thread...</span>
+                    <span class="text-purple-400 text-sm">Loading complete thread...</span>
                 </div>
-                <a href="${embedUrl}" target="_blank" class="text-purple-400 hover:underline text-xs">Open directly on X</a>
             </div>`;
 
-        if (!embedUrl) return;
-
-        const cleanLink = embedUrl.replace('x.com', 'twitter.com').split('?')[0];
-
-        const renderEmbed = () => {
+        setTimeout(() => {
             embedDiv.innerHTML = `
                 <div class="tweet-embed-header">
                     <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                    <span>FULL THREAD ON X</span>
+                    <span>FULL THREAD ON X • EmbedSocial</span>
                 </div>
-                <blockquote class="twitter-tweet" 
-                            data-theme="dark" 
-                            data-conversation="all"
-                            data-media-max-width="560"
-                            data-dnt="true"
-                            data-align="center"
-                            data-cards="hidden"
-                            data-tweet-id="${tweetId}">
-                    <a href="${cleanLink}"></a>
-                </blockquote>`;
-        };
+                <div class="embedsocial-x" 
+                     data-ref="${cleanLink}" 
+                     data-theme="dark" 
+                     style="width:100%; max-width:550px; margin:0 auto;">
+                </div>`;
 
-        const attemptLoad = () => {
-            if (window.twttr && window.twttr.widgets) {
-                window.twttr.widgets.load(embedDiv);
-            } else if (window.twttr && window.twttr.ready) {
-                window.twttr.ready(() => window.twttr.widgets.load(embedDiv));
+            // Trigger render
+            if (typeof window.embedsocial !== 'undefined' && window.embedsocial.embed) {
+                window.embedsocial.embed();
+            } else {
+                setTimeout(() => window.embedsocial && window.embedsocial.embed(), 1200);
             }
-        };
-
-        renderEmbed();
-        attemptLoad();
-        setTimeout(attemptLoad, 700);
-        setTimeout(attemptLoad, 1400);
-        setTimeout(attemptLoad, 2400);
-        setTimeout(attemptLoad, 3800);
-        setTimeout(attemptLoad, 5200);
-        setTimeout(attemptLoad, 7000);
-        setTimeout(attemptLoad, 9000);
-        setTimeout(attemptLoad, 12000);
-
-        setTimeout(() => {
-            if (!embedDiv.querySelector('iframe')) {
-                embedDiv.innerHTML = `
-                    <div class="tweet-embed-header">
-                        <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                        <span>FULL THREAD ON X</span>
-                    </div>
-                    <div class="embed-fallback">
-                        <button onclick="forceReloadEmbed()" class="embed-retry-btn flex items-center gap-2 mx-auto">
-                            <i class="fa-solid fa-rotate"></i> Force Reload Thread
-                        </button>
-                        <a href="${cleanLink}" target="_blank" class="permanent-x-button mt-6">
-                            <i class="fa-brands fa-x-twitter"></i> Open Full Thread on X
-                        </a>
-                    </div>`;
-            }
-        }, 13000);
-    }
-
-    function forceReloadEmbed() {
-        if (currentXLink) embedXThread(currentXLink);
+        }, 420);
     }
 
     function openCategoryModal(id) {
@@ -440,7 +408,7 @@
         document.getElementById('modal-x-link').href = data.xLink || '#';
 
         const embedUrl = data.conversationUrl || data.xLink;
-        embedXThread(embedUrl);
+        setTimeout(() => embedXThread(embedUrl), 480);
 
         const modal = document.getElementById('category-modal');
         modal.classList.remove('hidden');
