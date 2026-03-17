@@ -1,9 +1,9 @@
 // assets/js/common.js
-// Shared across ALL pages — modernization branch
+// Modernization branch - reliable nav highlighting
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. RANDOM BACKGROUND ROTATOR
+    // 1. RANDOM BACKGROUND ROTATOR (unchanged)
     const bgs = [
         'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
         'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
@@ -23,22 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-    // 2. ROBUST NAV ACTIVE HIGHLIGHT (fixed for Vercel + local)
-    let path = window.location.pathname.toLowerCase();
-    if (path === '/' || path === '') path = '/index.html';
-    
-    let currentPage = path.split('/').pop();
-    if (!currentPage) currentPage = 'index.html';
-    if (!currentPage.endsWith('.html')) currentPage += '.html';
-
-    const currentClean = currentPage.replace('.html', '');
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        let href = link.getAttribute('href').toLowerCase();
-        const hrefClean = href.replace('.html', '');
-        
-        if (href === currentPage || hrefClean === currentClean) {
-            link.classList.add('active');
-        }
-    });
+    // 2. BULLETPROOF NAV ACTIVE HIGHLIGHT (uses data-page)
+    const currentPage = document.body.getAttribute('data-page');
+    if (currentPage) {
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const href = link.getAttribute('href').toLowerCase();
+            if (href.includes(currentPage)) {
+                link.classList.add('active');
+            }
+        });
+    }
 });
