@@ -111,6 +111,12 @@
 
           <!-- X EMBED -->
           <div id="tweet-embed" class="tweet-embed-wrapper mt-8"></div>
+
+          <!-- VOTING IN MODAL (restored) -->
+          <div class="flex gap-4 mt-8 border-t border-zinc-800 pt-6">
+            <button id="modal-grok-btn" onclick="voteFromModal(event, 'grok')" class="flex-1 bg-purple-800 hover:bg-purple-950 text-white font-semibold py-4 rounded-2xl transition-all">Grok Won</button>
+            <button id="modal-human-btn" onclick="voteFromModal(event, 'human')" class="flex-1 bg-rose-800 hover:bg-rose-950 text-white font-semibold py-4 rounded-2xl transition-all">Human Won</button>
+          </div>
         </div>
 
         <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
@@ -124,6 +130,10 @@
         </div>
       </div>
     </div>
+
+    <!-- EXTERNAL SCRIPTS FIRST -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/thread-emulator.js"></script>
 
     <script>
         // Header & Footer partials
@@ -293,7 +303,7 @@
             // X EMBED
             embedXThread(data.xLink);
 
-            // Voting buttons
+            // Reset voting buttons
             const grokBtn = document.getElementById('modal-grok-btn');
             const humanBtn = document.getElementById('modal-human-btn');
             grokBtn.innerHTML = 'Grok Won';
@@ -328,15 +338,6 @@
             if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(embedDiv);
         }
 
-        function closeModal() {
-            if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
-            const modal = document.getElementById('battle-modal');
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'visible';
-            if (currentBattleId) updateGridVoteUI(currentBattleId);
-            currentBattleId = null;
-        }
-
         function voteFromModal(event, winner) {
             event.stopImmediatePropagation();
             if (currentBattleId) vote(event, winner, currentBattleId);
@@ -363,6 +364,15 @@
                 grokBtn.disabled = false;
                 humanBtn.disabled = false;
             }
+        }
+
+        function closeModal() {
+            if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
+            const modal = document.getElementById('battle-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'visible';
+            if (currentBattleId) updateGridVoteUI(currentBattleId);
+            currentBattleId = null;
         }
 
         document.addEventListener('keydown', e => {
@@ -433,8 +443,5 @@
         window.addEventListener('hashchange', checkDeepLink);
 
     </script>
-
-    <script src="assets/js/common.js"></script>
-    <script src="assets/js/thread-emulator.js"></script>
 </body>
 </html>
