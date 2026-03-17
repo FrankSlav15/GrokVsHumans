@@ -2,7 +2,7 @@ name: Sync JSON → Firebase
 
 on:
   push:
-    branches: [ main, preview ]
+    branches: [ main, preview, modernization ]   # ← added modernization
     paths:
       - 'data/*.json'
       - 'memes.html'
