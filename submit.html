@@ -7,9 +7,9 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
     
-    <!-- Google Analytics (your code) -->
-    <!-- Google tag (gtag.js) -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,39 +19,7 @@
     </script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        html { height: 100%; }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            flex-direction: column; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
-
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
-
-        /* Force portrait on phones only (tablets stay normal) */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-
+        /* PAGE-SPECIFIC ONLY - media query removed */
     </style>
 </head>
 <body class="text-white">
@@ -102,10 +70,9 @@
                 </form>
             </div>
 
-            <!-- Personal Blurb (kept exactly as you had it) -->
+            <!-- Personal Blurb -->
             <div class="max-w-2xl mx-auto mt-16">
                 <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 backdrop-blur-sm">
-                    <!-- Title -->
                     <div class="text-center mb-8">
                         <p class="text-purple-300 text-sm tracking-[2px] uppercase mb-2">Passion Project</p>
                         <h2 class="text-3xl font-semibold text-white leading-tight">
@@ -116,7 +83,6 @@
                         </div>
                     </div>
 
-                    <!-- Blurb -->
                     <p class="text-zinc-400 leading-relaxed">
                         Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
                         
@@ -138,7 +104,6 @@
     </section>
 
     <script>
-        // RANDOM BACKGROUND ROTATOR (20 images)
         const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
         const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
         document.body.style.backgroundImage = `url('/${randomBg}')`;
