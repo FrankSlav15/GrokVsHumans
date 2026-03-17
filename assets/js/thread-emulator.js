@@ -1,9 +1,9 @@
 // assets/js/thread-emulator.js
-// Modernization branch - robust media detection + debug logs
+// Modernization branch - 403 Forbidden fix + debug logs for video.twimg.com
 
 function renderThread(threadPosts, containerId) {
     const container = document.getElementById(containerId);
-    console.log('DEBUG: renderThread called for container', containerId);
+    console.log('DEBUG: renderThread called for', containerId);
 
     if (!container || !threadPosts || !Array.isArray(threadPosts)) {
         console.error('Thread data missing');
@@ -24,9 +24,9 @@ function renderThread(threadPosts, containerId) {
         const hasMedia = imageUrl.trim() !== '';
         const lower = imageUrl.toLowerCase();
         const isVideo = hasMedia && /\.(mp4|webm|mov|ogg|m4v)$/i.test(lower);
-        const isImage = hasMedia && /\.(webp|jpg|jpeg|png|gif|avif)$/i.test(lower);
+        const isTwitterVideo = hasMedia && lower.includes('video.twimg.com');
 
-        console.log(`Post ${i+1} → isVideo: ${isVideo}, isImage: ${isImage}`);
+        console.log(`Post ${i+1} → isVideo: ${isVideo}, isTwitterVideo: ${isTwitterVideo}`);
 
         html += `
             <div class="thread-post flex ${align} gap-3">
@@ -41,10 +41,18 @@ function renderThread(threadPosts, containerId) {
                     <div class="thread-text text-[15px] leading-relaxed">${post.text || ''}</div>
                     
                     ${hasMedia ? `
-                    <div class="mt-4 rounded-2xl overflow-hidden border border-zinc-700 bg-black">
-                        ${isVideo ? 
+                    <div class="mt-4 rounded-2xl overflow-hidden border border-zinc-700">
+                        ${isVideo && !isTwitterVideo ? 
                           `<video src="${imageUrl}" class="w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : 
-                          `<img src="${imageUrl}" class="w-full rounded-2xl block" alt="Media" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'p-4 text-red-400\\'>Failed to load media</div>'">`}
+                          isTwitterVideo ? 
+                          `<div class="bg-zinc-900 rounded-2xl p-6 text-center">
+                              <div class="text-purple-400 mb-3">📹 Video hosted on X</div>
+                              <button onclick="document.getElementById('modal-x-link').click()" 
+                                      class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-2xl text-sm">
+                                  Play on X
+                              </button>
+                           </div>` :
+                          `<img src="${imageUrl}" class="w-full rounded-2xl block" alt="Media" onerror="this.style.display='none'">`}
                     </div>` : ''}
                 </div>
                 
