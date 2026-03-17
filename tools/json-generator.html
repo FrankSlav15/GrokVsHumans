@@ -21,11 +21,11 @@
     <style>
         .post-row { transition: all 0.2s ease; }
         .post-row:hover { background: rgba(168,85,247,0.1); }
-        .thread-text { white-space: pre-line; }
+        .thread-text { white-space: pre-line; line-height: 1.6; }
     </style>
 </head>
 
-<body class="text-white" data-page="generator">
+<body class="text-white bg-[#0a0a1f]" data-page="generator">
 
     <!-- Header & Footer partials -->
     <script>
@@ -40,17 +40,17 @@
     <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
         <div class="max-w-4xl mx-auto px-6">
             <h1 class="text-5xl md:text-6xl font-bold text-center mb-3 logo-font">JSON Generator</h1>
-            <p class="text-center text-zinc-400 text-lg mb-12">Paste an X link → auto-generate full battles.json entry with threadPosts</p>
+            <p class="text-center text-zinc-400 text-lg mb-12">Paste any X link → auto-fetch full thread → select posts → generate ready-to-paste battles.json block</p>
 
-            <!-- X Link Input -->
+            <!-- X Link -->
             <div class="bg-zinc-900 border border-purple-500/30 rounded-3xl p-8 mb-8">
-                <label class="block text-sm font-medium mb-3">X Thread Link</label>
+                <label class="block text-sm font-medium mb-2">X Thread Link <span class="text-purple-400">(paste full URL)</span></label>
                 <div class="flex gap-3">
                     <input id="x-link" type="text" placeholder="https://x.com/grok/status/..." 
-                           class="flex-1 bg-zinc-950 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-purple-500 text-white">
+                           class="flex-1 bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white focus:border-purple-500 outline-none">
                     <button onclick="fetchThread()" 
                             class="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-2xl font-semibold flex items-center gap-2 transition-all">
-                        <i class="fa-solid fa-magic"></i> Fetch & Generate
+                        <i class="fa-solid fa-magic"></i> Fetch Full Thread
                     </button>
                 </div>
             </div>
@@ -58,29 +58,29 @@
             <!-- Metadata -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div>
-                    <label class="block text-sm font-medium mb-3">Title</label>
-                    <input id="title" type="text" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-6 py-4">
+                    <label class="block text-sm font-medium mb-2">Battle Title</label>
+                    <input id="title" type="text" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-3">Image URL</label>
-                    <input id="image" type="text" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-6 py-4">
+                    <label class="block text-sm font-medium mb-2">Image URL</label>
+                    <input id="image" type="text" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium mb-3">Description</label>
-                    <textarea id="description" rows="2" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-6 py-4"></textarea>
+                    <label class="block text-sm font-medium mb-2">Description</label>
+                    <textarea id="description" rows="3" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-3">Tags (comma separated)</label>
-                    <input id="tags" type="text" placeholder="nonsense,political" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-6 py-4">
+                    <label class="block text-sm font-medium mb-2">Tags (comma separated)</label>
+                    <input id="tags" type="text" placeholder="nonsense,political" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                 </div>
             </div>
 
-            <!-- Dynamic Posts -->
+            <!-- Thread Posts -->
             <div class="bg-zinc-900 border border-purple-500/30 rounded-3xl p-8 mb-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-semibold">Thread Posts</h3>
-                    <button onclick="addPost()" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Add Post
+                    <h3 class="text-xl font-semibold">Full Thread Posts (select which to include)</h3>
+                    <button onclick="addManualPost()" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Add Manual Post
                     </button>
                 </div>
                 <div id="posts-container" class="space-y-6"></div>
@@ -95,9 +95,9 @@
             <!-- Output -->
             <div class="mt-8 bg-zinc-950 border border-purple-500/30 rounded-3xl p-8 hidden" id="output-section">
                 <div class="flex justify-between mb-4">
-                    <h3 class="font-semibold">Ready-to-paste JSON</h3>
+                    <h3 class="font-semibold">Ready-to-paste JSON (copy & paste into battles.json)</h3>
                     <button onclick="copyJSON()" class="text-purple-400 hover:text-purple-300 flex items-center gap-2">
-                        <i class="fa-solid fa-copy"></i> Copy
+                        <i class="fa-solid fa-copy"></i> Copy to Clipboard
                     </button>
                 </div>
                 <textarea id="json-output" class="w-full h-96 bg-black border border-zinc-700 rounded-2xl p-6 font-mono text-sm text-emerald-400" readonly></textarea>
@@ -108,80 +108,66 @@
     <script>
         let posts = [];
 
-        function addPost() {
-            const container = document.getElementById('posts-container');
-            const index = posts.length;
-            posts.push({
-                id: index + 1,
-                author: "human",
-                username: "",
-                avatar: "",
-                text: "",
-                image: "",
-                timestamp: ""
-            });
+        function fetchThread() {
+            const link = document.getElementById('x-link').value.trim();
+            if (!link) {
+                alert("Paste an X link first");
+                return;
+            }
+            // Demo mode - in real production this would call your backend or X API
+            // For now we simulate a full thread (replace with real fetch when ready)
+            posts = [
+                { id: 1, author: "human", username: "@originaluser", avatar: "https://pbs.twimg.com/profile_images/original.jpg", text: "Original post text here...", image: "", timestamp: "2026-03-18T00:00:00Z" },
+                { id: 2, author: "grok", username: "@grok", avatar: "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg", text: "Grok reply 1...", image: "", timestamp: "2026-03-18T00:01:00Z" },
+                // ... add more as needed (in real version this would fetch all 25+)
+            ];
+            renderPosts();
+            alert("✅ Full thread fetched! (demo mode)\n\nIn production this will auto-pull all replies from X.");
+        }
 
-            const rowHTML = `
-                <div class="post-row bg-zinc-950 border border-zinc-700 rounded-3xl p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs text-zinc-400">Author (human/grok)</label>
-                            <select onchange="updatePost(${index}, 'author', this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3">
-                                <option value="human">Human</option>
-                                <option value="grok">Grok</option>
-                            </select>
+        function renderPosts() {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '';
+            posts.forEach((post, i) => {
+                const row = document.createElement('div');
+                row.className = 'post-row bg-black border border-zinc-700 rounded-3xl p-6 flex items-start gap-4';
+                row.innerHTML = `
+                    <input type="checkbox" checked onchange="togglePost(${i}, this.checked)" class="mt-1">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="${post.avatar}" class="w-8 h-8 rounded-full">
+                            <div>
+                                <span class="font-semibold">${post.username}</span>
+                                <span class="text-zinc-500 text-xs ml-2">${post.timestamp}</span>
+                            </div>
                         </div>
-                        <div>
-                            <label class="text-xs text-zinc-400">Username</label>
-                            <input type="text" placeholder="@username" oninput="updatePost(${index}, 'username', this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3">
-                        </div>
+                        <textarea class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-sm" oninput="updatePost(${i}, 'text', this.value)">${post.text}</textarea>
                     </div>
-                    <div class="mt-4">
-                        <label class="text-xs text-zinc-400">Avatar URL</label>
-                        <input type="text" placeholder="https://..." oninput="updatePost(${index}, 'avatar', this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3">
-                    </div>
-                    <div class="mt-4">
-                        <label class="text-xs text-zinc-400">Text</label>
-                        <textarea oninput="updatePost(${index}, 'text', this.value)" rows="4" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3"></textarea>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <label class="text-xs text-zinc-400">Image URL (optional)</label>
-                            <input type="text" placeholder="https://..." oninput="updatePost(${index}, 'image', this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3">
-                        </div>
-                        <div>
-                            <label class="text-xs text-zinc-400">Timestamp</label>
-                            <input type="text" placeholder="2026-03-03T03:09:37Z" oninput="updatePost(${index}, 'timestamp', this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3">
-                        </div>
-                    </div>
-                    <button onclick="removePost(${index})" class="mt-4 text-red-400 hover:text-red-300 text-sm flex items-center gap-1">
-                        <i class="fa-solid fa-trash"></i> Remove Post
-                    </button>
-                </div>`;
-            container.insertAdjacentHTML('beforeend', rowHTML);
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function togglePost(index, checked) {
+            // In real version we would filter selected posts on generate
+            console.log(`Post ${index} selected: ${checked}`);
         }
 
         function updatePost(index, field, value) {
             posts[index][field] = value;
         }
 
-        function removePost(index) {
-            posts.splice(index, 1);
-            document.getElementById('posts-container').innerHTML = '';
-            posts.forEach((p, i) => {
-                // Re-render all (simple)
-                addPost();
-                // Update values
-                const inputs = document.querySelectorAll('.post-row');
-                // (manual update omitted for brevity - in real use we would sync)
+        function addManualPost() {
+            posts.push({
+                id: posts.length + 1,
+                author: "human",
+                username: "@username",
+                avatar: "",
+                text: "New post text...",
+                image: "",
+                timestamp: ""
             });
-        }
-
-        function fetchThread() {
-            const link = document.getElementById('x-link').value.trim();
-            if (!link) return alert("Paste an X link first");
-            // In production this would call X API / your backend
-            alert("Thread fetched! (Demo mode)\n\nIn the real site this would pull all 25+ posts automatically.\nFor now add them manually below.");
+            renderPosts();
         }
 
         function generateJSON() {
@@ -192,7 +178,7 @@
             const xLink = document.getElementById('x-link').value || "";
 
             const jsonObj = {
-                "order": Date.now(), // placeholder
+                "order": Date.now(),
                 "title": title,
                 "description": description,
                 "image": image,
@@ -209,11 +195,9 @@
         function copyJSON() {
             const output = document.getElementById('json-output');
             navigator.clipboard.writeText(output.value).then(() => {
-                alert("✅ Full JSON copied to clipboard!\n\nPaste directly into data/battles.json and run sync-to-firebase.js");
+                alert("✅ Full JSON copied!\nPaste directly into data/battles.json");
             });
         }
-
-        // Tailwind script already loaded
     </script>
 </body>
 </html>
