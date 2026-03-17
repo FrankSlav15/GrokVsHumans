@@ -1,5 +1,5 @@
 // assets/js/thread-emulator.js
-// Modernization branch - strict image/video detection + fallback
+// Modernization branch - strict image/video detection + clean media rendering
 
 function renderThread(threadPosts, containerId) {
     const container = document.getElementById(containerId);
@@ -34,7 +34,7 @@ function renderThread(threadPosts, containerId) {
                     <div class="mt-4 rounded-2xl overflow-hidden border border-zinc-700">
                         ${isVideo ? 
                           `<video src="${post.image}" class="w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : 
-                          `<img src="${post.image}" class="w-full rounded-2xl block" alt="Embedded media" onerror="this.style.display='none'">`}
+                          `<img src="${post.image}" class="w-full rounded-2xl block" alt="Embedded media">`}
                     </div>` : ''}
                 </div>
                 
@@ -46,7 +46,7 @@ function renderThread(threadPosts, containerId) {
     container.innerHTML = html;
 }
 
-// Auto-attach to any thread-container
+// Auto-attach
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.thread-container').forEach(container => {
         const entryId = container.getAttribute('data-entry-id');
