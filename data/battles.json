@@ -1,5 +1,5 @@
 {
-  
+
   "19": {
     "order": 19,
     "title": "Where Does My Poop Go? (Snob Edition)",
@@ -11,22 +11,102 @@
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
+        "username": "@SoveyX",
+        "avatar": "https://pbs.twimg.com/profile_images/2033385641002532864/TyFfcuo5.jpg",
         "text": "Hey @grok, what happens to my poop after I flush? Also, how can I ensure my poop doesn’t fraternize with anyone else’s poop? I am a bit of a snob.",
-        "image": null,
-        "timestamp": "2026-03-17T15:42:08Z",
-        "xLink": "https://x.com/grok/status/2031044051672146313?s=20"
+        "image": "https://video.twimg.com/amplify_video/2031034770042298369/vid/avc1/720x720/7MyfNYN9VqSXKAMU.mp4",
+        "timestamp": "2026-03-09T15:54:12Z",
+        "xLink": "https://x.com/SoveyX/status/2031035835873919310"
       },
       {
         "id": 2,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "Your poop flushes into the S-trap, joins the sewer line, and flows by gravity to the municipal wastewater plant.\n\nSolids settle out, bacteria break down organics, it's filtered, disinfected, and the clean water is released back into nature.\n\nTo keep it from 'fraternizing': Install a private septic system or composting toilet on your property.\n\nCity sewers mix everything by design.",
-        "image": "assets/images/memes/wheredoespoopgo.webp",
-        "timestamp": "2026-03-17T15:42:09Z",
-        "xLink": "https://x.com/grok/status/2031044051672146313?s=20"
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "text": "Your poop flushes into the S-trap, joins the sewer line, and flows by gravity to the municipal wastewater plant. Solids settle out, bacteria break down organics, it's filtered, disinfected (chlorine/UV), and the clean water is released to rivers or oceans—then evaporates and cycles back as rain.\n\nTo keep it from 'fraternizing': Install a private septic system or composting toilet on your property. City sewers mix everything by design.",
+        "image": null,
+        "timestamp": "2026-03-09T15:54:43Z",
+        "xLink": "https://x.com/grok/status/2031035964580053476"
+      },
+      {
+        "id": 3,
+        "author": "user",
+        "username": "@MTUltra69420",
+        "avatar": "https://pbs.twimg.com/profile_images/2029637452223361024/EBRnHoZt.jpg",
+        "text": "Wait so we're all drinking poop water",
+        "image": null,
+        "timestamp": "2026-03-09T16:03:09Z",
+        "xLink": "https://x.com/MTUltra69420/status/2031038086399082539"
+      },
+      {
+        "id": 4,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "text": "Yep, the water cycle's ultimate remix—your flush joins the system, gets treated to EPA standards (filtered, disinfected, tested), released, evaporates, rains down, and yes, ends up in someone's tap downstream. Perfectly safe, zero poop particles left. Nature's recycler at work! 🚽💧",
+        "image": null,
+        "timestamp": "2026-03-09T16:03:31Z",
+        "xLink": "https://x.com/grok/status/2031038181194297847"
+      },
+      {
+        "id": 5,
+        "author": "user",
+        "username": "@MTUltra69420",
+        "avatar": "https://pbs.twimg.com/profile_images/2029637452223361024/EBRnHoZt.jpg",
+        "text": "I see. We arent drinking poop, we're inhaling it",
+        "image": null,
+        "timestamp": "2026-03-09T16:04:29Z",
+        "xLink": "https://x.com/MTUltra69420/status/2031038424443220027"
+      },
+      {
+        "id": 6,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "text": "Haha, not even close—evaporation turns it into pure H2O vapor, with every last impurity left behind in the treatment plant. You're breathing (and drinking) distilled-level clean stuff. No poop molecules in the air or rain. The cycle's airtight on purification! 🚽🌧️",
+        "image": null,
+        "timestamp": "2026-03-09T16:04:48Z",
+        "xLink": "https://x.com/grok/status/2031038504403112052"
+      },
+      {
+        "id": 7,
+        "author": "user",
+        "username": "@ManOnDaNet",
+        "avatar": "https://pbs.twimg.com/profile_images/1965972652264505344/q4_8oob4.jpg",
+        "text": "How much fish poop is in rivers, lakes, and oceans?",
+        "image": null,
+        "timestamp": "2026-03-09T16:05:54Z",
+        "xLink": "https://x.com/ManOnDaNet/status/2031038777976840487"
+      },
+      {
+        "id": 8,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "text": "In the oceans, fish excretions (poop included) contribute ~1.65 billion tons of carbon yearly—about 16% of what sinks below surface layers, per a 2021 Rutgers study. Rivers and lakes get a local nutrient boost too, fueling plankton and plants in the natural cycle. Ecosystems handle it via bacteria and dilution; treated drinking water has zero remnants. The ultimate remix! 🐟💩🌊",
+        "image": null,
+        "timestamp": "2026-03-09T16:06:28Z",
+        "xLink": "https://x.com/grok/status/2031038922684268660"
+      },
+      {
+        "id": 9,
+        "author": "user",
+        "username": "@ManOnDaNet",
+        "avatar": "https://pbs.twimg.com/profile_images/1965972652264505344/q4_8oob4.jpg",
+        "text": "When someone swims in the Gulf of America, how much fish poop are they touching?",
+        "image": null,
+        "timestamp": "2026-03-09T16:26:27Z",
+        "xLink": "https://x.com/ManOnDaNet/status/2031043948983296048"
+      },
+      {
+        "id": 10,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "text": "In the Gulf of America (Mexico edition?), fish poop gets diluted across trillions of gallons of water. You're \"touching\" an immeasurably tiny amount—think one speck in an ocean-sized pool. Bacteria break it down fast into nutrients for plankton; it's all natural ecosystem recycling, no health risk from the fish side. Dive in! 🐟💩🌊",
+        "image": null,
+        "timestamp": "2026-03-09T16:26:51Z",
+        "xLink": "https://x.com/grok/status/2031044051672146313"
       }
     ]
   },
