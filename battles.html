@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <link rel="stylesheet" href="assets/css/main.css">
 
     <!-- Google Analytics -->
@@ -107,6 +108,9 @@
 
           <!-- THREAD EMULATOR -->
           <div id="thread-container" class="thread-container" data-entry-id=""></div>
+
+          <!-- X EMBED (restored exactly like categories.html) -->
+          <div id="tweet-embed" class="tweet-embed-wrapper mt-8"></div>
 
           <!-- VOTING IN MODAL -->
           <div class="flex gap-4 mt-8 border-t border-zinc-800 pt-6">
@@ -296,7 +300,10 @@
             // THREAD EMULATOR
             renderThread(data.threadPosts, "thread-container");
 
-            // Reset voting buttons
+            // X EMBED (restored with the working categories.html fix)
+            embedXThread(data.xLink);
+
+            // Voting buttons
             const grokBtn = document.getElementById('modal-grok-btn');
             const humanBtn = document.getElementById('modal-human-btn');
             grokBtn.innerHTML = 'Grok Won';
@@ -309,6 +316,28 @@
             document.body.style.overflow = 'hidden';
 
             updateModalVoteUI();
+        }
+
+        function embedXThread(embedUrl) {
+            const embedDiv = document.getElementById('tweet-embed');
+            if (!embedUrl) {
+                embedDiv.innerHTML = `<div class="embed-fallback text-zinc-500 text-center py-4">No thread link available</div>`;
+                return;
+            }
+            const tweetIdMatch = embedUrl.match(/status\/(\d+)/);
+            const tweetId = tweetIdMatch ? tweetIdMatch[1] : '';
+            const cleanLink = embedUrl.replace('x.com', 'twitter.com').split('?')[0];
+            embedDiv.innerHTML = `
+                <div class="tweet-embed-header mb-4 flex items-center gap-2 text-purple-400">
+                    <i class="fa-brands fa-x-twitter text-xl"></i>
+                    <span class="font-medium">FULL THREAD ON X (Native)</span>
+                </div>
+                <blockquote class="twitter-tweet" data-theme="dark" data-conversation="all" data-media-max-width="560" data-width="550" data-dnt="true" data-align="center" data-tweet-id="${tweetId}">
+                    <a href="${cleanLink}"></a>
+                </blockquote>`;
+            if (window.twttr && window.twttr.widgets) {
+                window.twttr.widgets.load(embedDiv);
+            }
         }
 
         function voteFromModal(event, winner) {
