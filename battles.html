@@ -92,23 +92,8 @@
           <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
           <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
-          <div class="space-y-8">
-            <div>
-              <div class="flex items-center gap-2 text-purple-400 mb-3">
-                <i class="fa-solid fa-user"></i>
-                <span class="font-medium">Human's Argument</span>
-              </div>
-              <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
-            </div>
-
-            <div>
-              <div class="flex items-center gap-2 text-purple-400 mb-3">
-                <i class="fa-solid fa-robot"></i>
-                <span class="font-medium">Grok's Response</span>
-              </div>
-              <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
-            </div>
-          </div>
+        <!-- THREAD EMULATOR -->
+        <div id="thread-container" class="thread-container" data-entry-id=""></div>
 
           <div class="mt-12 pt-8 border-t border-zinc-800">
             <div class="buttons flex">
@@ -137,7 +122,7 @@
         .then(r => r.text())
         .then(html => document.body.insertAdjacentHTML('afterbegin', html));
     
-    // Footer
+        // Footer
     fetch('assets/partials/footer.html')
         .then(r => r.text())
         .then(html => document.body.insertAdjacentHTML('beforeend', html));
@@ -274,6 +259,7 @@
         currentBattleId = id;
         currentBattleIndex = id;
 
+        // Image
         const url = (data.image || '').toLowerCase();
         let mediaHTML = '';
         if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
@@ -287,15 +273,40 @@
             window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
         }
 
+        // Tags
         const tagDisplay = { nonsense: "Nonsense", political: "Political", serious: "Now, In All Seriousness", citation: "(UN)Popular Citations", joke: "Joke Battles", censorship: "Conspiracy 1984" };
         const tagsHTML = (data.tags || '').split(',').map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t.trim()] || t.trim()}</span>`).join('');
         document.getElementById('modal-tags').innerHTML = tagsHTML;
 
         document.getElementById('modal-title').textContent = data.title || '';
-        document.getElementById('modal-human').textContent = data.human || '';
-        document.getElementById('modal-grok').innerHTML = (data.grok || '').replace(/\. /g, '.<br><br>');
         document.getElementById('modal-x-link').href = data.xLink || '#';
 
+        // === NEW THREAD EMULATOR (bridge from existing human/grok fields) ===
+        const threadPosts = [
+            {
+                id: 1,
+                author: "human",
+                username: "Human",
+                avatar: "https://pbs.twimg.com/profile_images/default-human.png",
+                text: data.human || "",
+                image: null,
+                timestamp: new Date().toISOString(),
+                xLink: data.xLink || ""
+            },
+            {
+                id: 2,
+                author: "grok",
+                username: "@grok",
+                avatar: "https://pbs.twimg.com/profile_images/grok-avatar.png",
+                text: (data.grok || "").replace(/\. /g, '.<br><br>'),
+                image: data.image || null,
+                timestamp: new Date().toISOString(),
+                xLink: data.xLink || ""
+            }
+        ];
+        renderThread(threadPosts, "thread-container");
+
+        // Voting buttons
         const grokBtn = document.getElementById('modal-grok-btn');
         const humanBtn = document.getElementById('modal-human-btn');
         grokBtn.innerHTML = 'Grok Won';
