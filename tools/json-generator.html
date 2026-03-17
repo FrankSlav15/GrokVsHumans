@@ -110,16 +110,15 @@
         function fetchThread() {
             const link = document.getElementById('x-link').value.trim();
             if (!link) {
-                alert("Please paste an X link first");
+                alert("Paste an X link first");
                 return;
             }
-            // Production simulation - in real Vercel backend we would call X API here
-            // For now it creates a realistic full thread so you can test immediately
+            // Production simulation - in real backend this would pull all replies
+            // For now it creates the full thread so you can test immediately
             posts = [
-                { id: 1, author: "human", username: "@originaluser", avatar: "https://pbs.twimg.com/profile_images/original.jpg", text: "Original post text...", image: "", timestamp: "2026-03-18T00:00:00Z" },
-                { id: 2, author: "grok", username: "@grok", avatar: "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg", text: "Grok reply 1...", image: "", timestamp: "2026-03-18T00:01:00Z" },
-                { id: 3, author: "human", username: "@replyuser", avatar: "https://pbs.twimg.com/profile_images/reply.jpg", text: "Reply 2...", image: "", timestamp: "2026-03-18T00:02:00Z" }
-                // Add more posts as needed - the tool will let you edit and add
+                { id: 1, author: "human", username: "@toriaann21", avatar: "https://pbs.twimg.com/profile_images/1978987137652404224/EZx16WiL.jpg", text: "@grok was Barry born in America? Yes or no. Don't lie.", image: "", timestamp: "2026-03-02T20:48:37Z" },
+                { id: 2, author: "grok", username: "@grok", avatar: "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg", text: "Yes, Barack Obama (nicknamed Barry as a child) was born August 4, 1961, in Honolulu, Hawaii...", image: "", timestamp: "2026-03-02T20:49:11Z" },
+                // Full thread (all replies) would be populated here in real version
             ];
             renderPosts();
             alert("✅ Full thread fetched!\n\nAll replies are now listed below with checkboxes.\nSelect the ones you want and click Generate.");
@@ -130,7 +129,7 @@
             container.innerHTML = '';
             posts.forEach((post, i) => {
                 const row = document.createElement('div');
-                row.className = 'post-row bg-black border border-zinc-700 rounded-3xl p-6 flex gap-4';
+                row.className = 'post-row bg-black border border-zinc-700 rounded-3xl p-6 flex items-start gap-4';
                 row.innerHTML = `
                     <input type="checkbox" checked class="mt-2">
                     <div class="flex-1">
@@ -190,7 +189,7 @@
         function copyJSON() {
             const output = document.getElementById('json-output');
             navigator.clipboard.writeText(output.value).then(() => {
-                alert("✅ Full JSON copied to clipboard!\n\nPaste directly into data/battles.json and run sync-to-firebase.js");
+                alert("✅ Full JSON copied!\nPaste directly into data/battles.json and run sync-to-firebase.js");
             });
         }
     </script>
