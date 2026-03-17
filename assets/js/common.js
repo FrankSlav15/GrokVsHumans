@@ -1,8 +1,9 @@
 // assets/js/common.js
-// Shared across ALL pages on GrokVsHumans.com (modernization branch)
+// Shared across ALL pages — modernization branch
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. RANDOM BACKGROUND ROTATOR (20 images)
+
+    // 1. RANDOM BACKGROUND ROTATOR
     const bgs = [
         'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
         'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
@@ -22,10 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-    // 2. NAV ACTIVE HIGHLIGHT
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    // 2. ROBUST NAV ACTIVE HIGHLIGHT (fixed for Vercel + local)
+    let path = window.location.pathname.toLowerCase();
+    if (path === '/' || path === '') path = '/index.html';
+    
+    let currentPage = path.split('/').pop();
+    if (!currentPage) currentPage = 'index.html';
+    if (!currentPage.endsWith('.html')) currentPage += '.html';
+
+    const currentClean = currentPage.replace('.html', '');
+
     document.querySelectorAll('.nav-link').forEach(link => {
-        if (link.getAttribute('href') === currentPage) {
+        let href = link.getAttribute('href').toLowerCase();
+        const hrefClean = href.replace('.html', '');
+        
+        if (href === currentPage || hrefClean === currentClean) {
             link.classList.add('active');
         }
     });
