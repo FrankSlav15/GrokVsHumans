@@ -7,9 +7,9 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Google Analytics (your code) -->
-    <!-- Google tag (gtag.js) -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,42 +19,8 @@
     </script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        
-        html {
-            height: 100%;
-        }
-        
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-        }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
+        /* PAGE-SPECIFIC ONLY - portrait media query removed */
         .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    
-        /* Force portrait on phones only */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-    
     </style>
 </head>
 <body class="text-white flex flex-col">
