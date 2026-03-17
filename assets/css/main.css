@@ -1,0 +1,41 @@
+/* ====================== GROKVS HUMANS - GLOBAL STYLES ======================
+   Extracted identical CSS from index.html + battles.html + categories.html 
+   + memes.html + submit.html (March 17 2026)
+   Every page now loads this ONE file for perfect uniformity.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+
+html { height: 100%; }
+
+body { 
+    font-family: 'Inter', system-ui, sans-serif; 
+    background: #0a0a1f;
+    position: relative;
+    min-height: 100dvh;
+    margin: 0;
+    display: flex;
+    flex-direction: column; 
+}
+
+.logo-font { font-family: 'Space Grotesk', sans-serif; }
+
+body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,31,0.82);
+    z-index: -1; 
+}
+
+.nav-link.active { 
+    color: rgb(168 85 247) !important; 
+    font-weight: 600; 
+}
+
+/* Global variables for easy future color/theme changes */
+:root {
+    --purple: rgb(168 85 247);
+    --bg: #0a0a1f;
+    --overlay: rgba(10,10,31,0.82);
+}
