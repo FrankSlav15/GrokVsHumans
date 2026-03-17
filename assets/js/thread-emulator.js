@@ -1,5 +1,5 @@
 // assets/js/thread-emulator.js
-// Modernization branch - full media support for images/videos
+// Modernization branch - strict image/video detection + fallback
 
 function renderThread(threadPosts, containerId) {
     const container = document.getElementById(containerId);
@@ -15,6 +15,9 @@ function renderThread(threadPosts, containerId) {
         const bubbleClass = isGrok ? 'grok-bubble' : 'human-bubble';
         const align = isGrok ? 'justify-end' : 'justify-start';
 
+        const hasMedia = post.image && post.image.trim() !== '';
+        const isVideo = hasMedia && /\.(mp4|webm|mov|ogg|m4v)$/i.test(post.image);
+
         html += `
             <div class="thread-post flex ${align} gap-3">
                 ${!isGrok ? `<img src="${post.avatar || '/assets/images/default-avatar.png'}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="${post.username}">` : ''}
@@ -27,13 +30,11 @@ function renderThread(threadPosts, containerId) {
                     
                     <div class="thread-text text-[15px] leading-relaxed">${post.text || ''}</div>
                     
-                    ${post.image ? `
+                    ${hasMedia ? `
                     <div class="mt-4 rounded-2xl overflow-hidden border border-zinc-700">
-                        ${post.image.toLowerCase().endsWith('.mp4') || 
-                          post.image.toLowerCase().endsWith('.webm') || 
-                          post.image.toLowerCase().endsWith('.mov') ? 
-                          `<video src="${post.image}" class="w-full rounded-2xl" controls autoplay loop muted playsinline></video>` : 
-                          `<img src="${post.image}" class="w-full rounded-2xl block" alt="Embedded media">`}
+                        ${isVideo ? 
+                          `<video src="${post.image}" class="w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : 
+                          `<img src="${post.image}" class="w-full rounded-2xl block" alt="Embedded media" onerror="this.style.display='none'">`}
                     </div>` : ''}
                 </div>
                 
@@ -45,12 +46,12 @@ function renderThread(threadPosts, containerId) {
     container.innerHTML = html;
 }
 
-// Auto-attach to any thread-container on page load
+// Auto-attach to any thread-container
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.thread-container').forEach(container => {
         const entryId = container.getAttribute('data-entry-id');
-        if (entryId && window.allBattles && window.allBattles[entryId]) {
-            renderThread(window.allBattles[entryId].threadPosts, container.id);
+        if (entryId && allBattles && allBattles[entryId]) {
+            renderThread(allBattles[entryId].threadPosts, container.id);
         }
     });
 });

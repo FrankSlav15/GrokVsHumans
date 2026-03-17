@@ -100,3 +100,9 @@ body::after {
     background: #333;
     z-index: -1;
 }
+
+/* Video styling in thread emulator */
+.thread-emulator video {
+    max-height: 320px;
+    width: 100%;
+}
