@@ -92,8 +92,8 @@
           <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
           <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
 
-        <!-- THREAD EMULATOR -->
-        <div id="thread-container" class="thread-container" data-entry-id=""></div>
+            <!-- THREAD EMULATOR - inserted exactly here (right after title) -->
+            <div id="thread-container" class="thread-container" data-entry-id=""></div>
 
           <div class="mt-12 pt-8 border-t border-zinc-800">
             <div class="buttons flex">
@@ -281,30 +281,7 @@
         document.getElementById('modal-title').textContent = data.title || '';
         document.getElementById('modal-x-link').href = data.xLink || '#';
 
-        // === NEW THREAD EMULATOR (bridge from existing human/grok fields) ===
-        const threadPosts = [
-            {
-                id: 1,
-                author: "human",
-                username: "Human",
-                avatar: "https://pbs.twimg.com/profile_images/default-human.png",
-                text: data.human || "",
-                image: null,
-                timestamp: new Date().toISOString(),
-                xLink: data.xLink || ""
-            },
-            {
-                id: 2,
-                author: "grok",
-                username: "@grok",
-                avatar: "https://pbs.twimg.com/profile_images/grok-avatar.png",
-                text: (data.grok || "").replace(/\. /g, '.<br><br>'),
-                image: data.image || null,
-                timestamp: new Date().toISOString(),
-                xLink: data.xLink || ""
-            }
-        ];
-        renderThread(threadPosts, "thread-container");
+        renderThread(data.threadPosts, "thread-container");
 
         // Voting buttons
         const grokBtn = document.getElementById('modal-grok-btn');
