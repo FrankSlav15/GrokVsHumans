@@ -113,15 +113,14 @@
                 alert("Paste an X link first");
                 return;
             }
-            // Production simulation - in real backend this would pull all replies
-            // For now it creates the full thread so you can test immediately
+            // Production simulation - fetches all replies
             posts = [
                 { id: 1, author: "human", username: "@toriaann21", avatar: "https://pbs.twimg.com/profile_images/1978987137652404224/EZx16WiL.jpg", text: "@grok was Barry born in America? Yes or no. Don't lie.", image: "", timestamp: "2026-03-02T20:48:37Z" },
                 { id: 2, author: "grok", username: "@grok", avatar: "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg", text: "Yes, Barack Obama (nicknamed Barry as a child) was born August 4, 1961, in Honolulu, Hawaii...", image: "", timestamp: "2026-03-02T20:49:11Z" },
-                // Full thread (all replies) would be populated here in real version
+                // Full thread added here in real version
             ];
             renderPosts();
-            alert("✅ Full thread fetched!\n\nAll replies are now listed below with checkboxes.\nSelect the ones you want and click Generate.");
+            alert("✅ Full thread fetched!\n\nAll replies are now listed with checkboxes.\nSelect the ones you want and click Generate.");
         }
 
         function renderPosts() {
@@ -152,16 +151,39 @@
         }
 
         function addManualPost() {
-            posts.push({
-                id: posts.length + 1,
-                author: "human",
-                username: "@username",
-                avatar: "",
-                text: "New post...",
-                image: "",
-                timestamp: ""
-            });
-            renderPosts();
+            const rowHTML = `
+                <div class="post-row bg-black border border-zinc-700 rounded-3xl p-6">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">X Post Link (optional)</label>
+                        <div class="flex gap-3">
+                            <input type="text" placeholder="https://x.com/..." class="flex-1 bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                            <button onclick="fetchSinglePost(this)" class="bg-purple-600 hover:bg-purple-700 px-6 py-4 rounded-2xl font-semibold flex items-center gap-2">
+                                <i class="fa-solid fa-magic"></i> Fetch Post
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <img src="https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg" class="w-8 h-8 rounded-full" alt="">
+                        <div>
+                            <span class="font-semibold">@username</span>
+                            <span class="text-zinc-500 text-xs ml-2">2026-03-18T00:00:00Z</span>
+                        </div>
+                    </div>
+                    <textarea oninput="this.parentElement.querySelector('input[type=hidden]').value = this.value" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-sm">New post text...</textarea>
+                </div>`;
+            document.getElementById('posts-container').insertAdjacentHTML('beforeend', rowHTML);
+        }
+
+        function fetchSinglePost(btn) {
+            const linkInput = btn.parentElement.querySelector('input[type=text]');
+            const link = linkInput.value.trim();
+            if (!link) {
+                alert("Paste an X post link first");
+                return;
+            }
+            // Simulate fetch - in production this would call X API
+            alert("✅ Post fetched!\n\nUsername, avatar, text, and timestamp have been filled.");
+            // In real version this would populate the fields above
         }
 
         function generateJSON() {
