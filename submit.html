@@ -7,9 +7,9 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
     
-    <!-- Google Analytics (your code) -->
-    <!-- Google tag (gtag.js) -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -17,67 +17,10 @@
       gtag('js', new Date());
       gtag('config', 'G-M58E7KLM56');
     </script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        html { height: 100%; }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            flex-direction: column; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
-
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
-
-        /* Force portrait on phones only (tablets stay normal) */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-
-    </style>
 </head>
-<body class="text-white">
 
-    <!-- NAVBAR - Same as all other pages -->
-    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-center py-6 md:py-8">
-                <a href="index.html" class="flex items-center gap-4">
-                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
-                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
-                </a>
-            </div>
-            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
-                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
-                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
-                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link active hover:text-purple-400 transition-colors">Submit</a>
-            </div>
-            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
-                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-plus"></i> Submit Battle
-                </a>
-            </div>
-        </div>
-    </nav>
+<body class="text-white" data-page="submit">
 
     <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
         <div class="max-w-7xl mx-auto px-6">
@@ -102,10 +45,9 @@
                 </form>
             </div>
 
-            <!-- Personal Blurb (kept exactly as you had it) -->
+            <!-- Personal Blurb -->
             <div class="max-w-2xl mx-auto mt-16">
                 <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 backdrop-blur-sm">
-                    <!-- Title -->
                     <div class="text-center mb-8">
                         <p class="text-purple-300 text-sm tracking-[2px] uppercase mb-2">Passion Project</p>
                         <h2 class="text-3xl font-semibold text-white leading-tight">
@@ -116,7 +58,6 @@
                         </div>
                     </div>
 
-                    <!-- Blurb -->
                     <p class="text-zinc-400 leading-relaxed">
                         Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
                         
@@ -138,32 +79,19 @@
     </section>
 
     <script>
-        // RANDOM BACKGROUND ROTATOR (20 images)
-        const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
-        const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
-        document.body.style.backgroundImage = `url('/${randomBg}')`;
-        document.body.style.backgroundPosition = '50% 35%';
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        document.body.style.backgroundAttachment = 'fixed';
-
-        document.querySelectorAll('.nav-link').forEach(link => {
-            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-            if (link.getAttribute('href') === currentPage) link.classList.add('active');
-        });
+        // Header
+        fetch('assets/partials/header.html')
+            .then(r => r.text())
+            .then(html => document.body.insertAdjacentHTML('afterbegin', html));
+        
+        // Footer
+        fetch('assets/partials/footer.html')
+            .then(r => r.text())
+            .then(html => document.body.insertAdjacentHTML('beforeend', html));
     </script>
+
+    <script src="assets/js/common.js"></script>
+
 </body>
-
-<footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
-    Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
-    <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
-    Launched Mar 01 2026
-
-    <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px]">
-        <a href="impressum.html" class="hover:text-purple-400">Imprint / Impressum</a>
-        <a href="tos.html" class="hover:text-purple-400">Terms / Nutzungsbedingungen</a>
-        <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
-    </div>
-</footer>
 
 </html>

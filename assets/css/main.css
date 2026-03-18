@@ -1,0 +1,108 @@
+/* ====================== GROKVS HUMANS - GLOBAL STYLES ======================
+   Extracted identical CSS from index.html + battles.html + categories.html 
+   + memes.html + submit.html (March 17 2026)
+   Every page now loads this ONE file for perfect uniformity.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+
+html { height: 100%; }
+
+body { 
+    font-family: 'Inter', system-ui, sans-serif; 
+    background: #0a0a1f;
+    position: relative;
+    min-height: 100dvh;
+    margin: 0;
+    display: flex;
+    flex-direction: column; 
+}
+
+.logo-font { font-family: 'Space Grotesk', sans-serif; }
+
+body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,31,0.82);
+    z-index: -1; 
+}
+
+.nav-link.active { 
+    color: rgb(168 85 247) !important; 
+    font-weight: 600; 
+}
+
+/* Global variables for easy future color/theme changes */
+:root {
+    --purple: rgb(168 85 247);
+    --bg: #0a0a1f;
+    --overlay: rgba(10,10,31,0.82);
+}
+
+/* ====================== THREAD EMULATOR ====================== */
+.thread-emulator {
+    max-width: 620px;
+    margin: 2rem auto;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+.thread-post {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    position: relative;
+}
+/* Updated Grok bubble — black with purple outline */
+.grok-bubble {
+    background: #18181b;
+    color: white;
+    border: 2px solid rgb(168 85 247);
+    border-radius: 18px 18px 18px 4px;
+    padding: 14px;
+    flex: 1;
+}
+.human-bubble {
+    background: #2F3336;
+    color: white;
+    border-radius: 18px 18px 4px 18px;
+    padding: 14px;
+    flex: 1;
+}
+.thread-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.thread-content { flex: 1; }
+.thread-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+.thread-text { margin: 10px 0; line-height: 1.4; }
+.thread-image {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.view-original {
+    color: #1DA1F2;
+    font-size: 0.85rem;
+}
+.thread-connector {
+    position: absolute;
+    left: 23px;
+    top: 52px;
+    bottom: -20px;
+    width: 3px;
+    background: #333;
+    z-index: -1;
+}
+
+/* Video styling in thread emulator */
+.thread-emulator video {
+    max-height: 320px;
+    width: 100%;
+}
