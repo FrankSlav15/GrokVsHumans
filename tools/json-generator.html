@@ -21,6 +21,8 @@
     <style>
         .post-row { transition: all 0.2s ease; }
         .post-row:hover { background: rgba(168,85,247,0.1); }
+        .toast { animation: slideUp 0.3s ease forwards; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 
@@ -28,34 +30,21 @@
 
     <!-- Header & Footer partials -->
     <script>
-        fetch('assets/partials/header.html')
-            .then(r => r.text())
-            .then(html => document.body.insertAdjacentHTML('afterbegin', html));
-        fetch('assets/partials/footer.html')
-            .then(r => r.text())
-            .then(html => document.body.insertAdjacentHTML('beforeend', html));
+        fetch('assets/partials/header.html').then(r => r.text()).then(html => document.body.insertAdjacentHTML('afterbegin', html));
+        fetch('assets/partials/footer.html').then(r => r.text()).then(html => document.body.insertAdjacentHTML('beforeend', html));
     </script>
 
     <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
         <div class="max-w-4xl mx-auto px-6">
             <h1 class="text-5xl md:text-6xl font-bold text-center mb-3 logo-font">JSON Generator</h1>
-            <p class="text-center text-zinc-400 text-lg mb-12">Paste any X link → fetch full thread → select posts → generate ready-to-paste JSON</p>
+            <p class="text-center text-zinc-400 text-lg mb-12">Paste X links → select posts → generate ready-to-paste battles.json block</p>
 
-            <!-- X Link -->
-            <div class="bg-zinc-900 border border-purple-500/30 rounded-3xl p-8 mb-8">
-                <label class="block text-sm font-medium mb-2">X Thread Link <span class="text-purple-400">(full URL)</span></label>
-                <div class="flex gap-3">
-                    <input id="x-link" type="text" placeholder="https://x.com/grok/status/..." 
-                           class="flex-1 bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white focus:border-purple-500">
-                    <button onclick="fetchThread()" 
-                            class="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-2xl font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-magic"></i> Fetch Full Thread
-                    </button>
+            <!-- Top Metadata -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Battle Card ID <span class="text-purple-400">(e.g. 18)</span></label>
+                    <input id="card-id" type="number" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                 </div>
-            </div>
-
-            <!-- Metadata -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div>
                     <label class="block text-sm font-medium mb-2">Battle Title</label>
                     <input id="title" type="text" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white">
@@ -64,6 +53,9 @@
                     <label class="block text-sm font-medium mb-2">Image URL</label>
                     <input id="image" type="text" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                 </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium mb-2">Description</label>
                     <textarea id="description" rows="3" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-white"></textarea>
@@ -107,69 +99,56 @@
     <script>
         let posts = [];
 
-        function fetchThread() {
-            const link = document.getElementById('x-link').value.trim();
-            if (!link) {
-                alert("Paste an X link first");
-                return;
-            }
-            // Production simulation - fetches all replies
-            posts = [
-                { id: 1, author: "human", username: "@toriaann21", avatar: "https://pbs.twimg.com/profile_images/1978987137652404224/EZx16WiL.jpg", text: "@grok was Barry born in America? Yes or no. Don't lie.", image: "", timestamp: "2026-03-02T20:48:37Z" },
-                { id: 2, author: "grok", username: "@grok", avatar: "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg", text: "Yes, Barack Obama (nicknamed Barry as a child) was born August 4, 1961, in Honolulu, Hawaii...", image: "", timestamp: "2026-03-02T20:49:11Z" },
-                // Full thread added here in real version
-            ];
-            renderPosts();
-            alert("✅ Full thread fetched!\n\nAll replies are now listed with checkboxes.\nSelect the ones you want and click Generate.");
-        }
-
-        function renderPosts() {
-            const container = document.getElementById('posts-container');
-            container.innerHTML = '';
-            posts.forEach((post, i) => {
-                const row = document.createElement('div');
-                row.className = 'post-row bg-black border border-zinc-700 rounded-3xl p-6 flex items-start gap-4';
-                row.innerHTML = `
-                    <input type="checkbox" checked class="mt-2">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-3">
-                            <img src="${post.avatar}" class="w-8 h-8 rounded-full" alt="">
-                            <div>
-                                <span class="font-semibold">${post.username}</span>
-                                <span class="text-zinc-500 text-xs ml-2">${post.timestamp}</span>
-                            </div>
-                        </div>
-                        <textarea oninput="updatePost(${i}, 'text', this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-sm">${post.text}</textarea>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-        }
-
-        function updatePost(index, field, value) {
-            posts[index][field] = value;
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast fixed bottom-8 right-8 bg-zinc-900 border border-purple-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[9999]';
+            toast.innerHTML = `<i class="fa-solid fa-check-circle text-purple-400"></i> ${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.4s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
         }
 
         function addManualPost() {
             const rowHTML = `
-                <div class="post-row bg-black border border-zinc-700 rounded-3xl p-6">
-                    <div class="mb-4">
+                <div class="post-row bg-black border border-zinc-700 rounded-3xl p-6 space-y-4">
+                    <div>
                         <label class="block text-sm font-medium mb-2">X Post Link (optional)</label>
                         <div class="flex gap-3">
-                            <input type="text" placeholder="https://x.com/..." class="flex-1 bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                            <input type="text" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-4 text-white" placeholder="https://x.com/...">
                             <button onclick="fetchSinglePost(this)" class="bg-purple-600 hover:bg-purple-700 px-6 py-4 rounded-2xl font-semibold flex items-center gap-2">
                                 <i class="fa-solid fa-magic"></i> Fetch Post
                             </button>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 mb-3">
-                        <img src="https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg" class="w-8 h-8 rounded-full" alt="">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
-                            <span class="font-semibold">@username</span>
-                            <span class="text-zinc-500 text-xs ml-2">2026-03-18T00:00:00Z</span>
+                            <label class="block text-xs text-zinc-400 mb-1">Author</label>
+                            <select class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-white">
+                                <option value="human">Human</option>
+                                <option value="grok">Grok</option>
+                                <option value="elon">Elon</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Username</label>
+                            <input type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-white" value="@username">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Avatar URL</label>
+                            <input type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-white" value="https://pbs.twimg.com/profile_images/...jpg">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Timestamp</label>
+                            <input type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-white" value="2026-03-18T00:00:00Z">
                         </div>
                     </div>
-                    <textarea oninput="this.parentElement.querySelector('input[type=hidden]').value = this.value" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-sm">New post text...</textarea>
+                    <textarea class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-sm" placeholder="Paste full post text here...">New post text...</textarea>
+                    <input type="checkbox" checked class="mt-2">
                 </div>`;
             document.getElementById('posts-container').insertAdjacentHTML('beforeend', rowHTML);
         }
@@ -178,40 +157,43 @@
             const linkInput = btn.parentElement.querySelector('input[type=text]');
             const link = linkInput.value.trim();
             if (!link) {
-                alert("Paste an X post link first");
+                showToast("❌ Paste an X post link first");
                 return;
             }
-            // Simulate fetch - in production this would call X API
-            alert("✅ Post fetched!\n\nUsername, avatar, text, and timestamp have been filled.");
-            // In real version this would populate the fields above
+            window.open(link, '_blank');
+            showToast("✅ Link opened in new tab!<br>Copy username / avatar / timestamp / text and paste into the fields above.");
         }
 
         function generateJSON() {
+            // ... (same as before - Card ID, title, etc.)
+            const cardId = document.getElementById('card-id').value || Date.now();
             const title = document.getElementById('title').value || "Untitled Battle";
             const description = document.getElementById('description').value || "";
             const image = document.getElementById('image').value || "";
             const tags = document.getElementById('tags').value || "nonsense";
-            const xLink = document.getElementById('x-link').value || "";
 
             const jsonObj = {
-                "order": Date.now(),
-                "title": title,
-                "description": description,
-                "image": image,
-                "tags": tags,
-                "xLink": xLink,
-                "threadPosts": posts
+                [cardId]: {
+                    "order": parseInt(cardId),
+                    "title": title,
+                    "description": description,
+                    "image": image,
+                    "tags": tags,
+                    "xLink": "",
+                    "threadPosts": posts
+                }
             };
 
             const jsonString = JSON.stringify(jsonObj, null, 2);
             document.getElementById('json-output').value = jsonString;
             document.getElementById('output-section').classList.remove('hidden');
+            showToast("✅ JSON block generated!");
         }
 
         function copyJSON() {
             const output = document.getElementById('json-output');
             navigator.clipboard.writeText(output.value).then(() => {
-                alert("✅ Full JSON copied!\nPaste directly into data/battles.json and run sync-to-firebase.js");
+                showToast("✅ Full JSON copied to clipboard!<br>Paste into data/battles.json and run sync-to-firebase.js");
             });
         }
     </script>
