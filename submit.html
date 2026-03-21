@@ -78,18 +78,6 @@
         </div>
     </section>
 
-    <script>
-        // Header
-        fetch('assets/partials/header.html')
-            .then(r => r.text())
-            .then(html => document.body.insertAdjacentHTML('afterbegin', html));
-        
-        // Footer
-        fetch('assets/partials/footer.html')
-            .then(r => r.text())
-            .then(html => document.body.insertAdjacentHTML('beforeend', html));
-    </script>
-
     <script src="assets/js/common.js"></script>
 
 </body>
