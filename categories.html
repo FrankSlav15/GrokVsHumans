@@ -113,16 +113,6 @@
 
     <script>
 
-        // Header
-    fetch('assets/partials/header.html')
-        .then(r => r.text())
-        .then(html => document.body.insertAdjacentHTML('afterbegin', html));
-    
-    // Footer
-    fetch('assets/partials/footer.html')
-        .then(r => r.text())
-        .then(html => document.body.insertAdjacentHTML('beforeend', html));
-
     const firebaseConfig = {
       apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
       authDomain: "grokvshumans.firebaseapp.com",
@@ -414,7 +404,6 @@
     </script>
 
     <script src="assets/js/common.js"></script>
-
     <script src="assets/js/thread-emulator.js"></script>
 
 </body>
