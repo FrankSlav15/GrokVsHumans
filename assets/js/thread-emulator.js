@@ -64,12 +64,13 @@ function renderThread(threadPosts, containerId) {
     container.innerHTML = html;
 }
 
-// Auto-attach
+// Auto-attach (safe on every page now)
 document.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.allBattles === 'undefined') return;
     document.querySelectorAll('.thread-container').forEach(container => {
         const entryId = container.getAttribute('data-entry-id');
-        if (entryId && allBattles && allBattles[entryId]) {
-            renderThread(allBattles[entryId].threadPosts, container.id);
+        if (entryId && window.allBattles && window.allBattles[entryId]) {
+            renderThread(window.allBattles[entryId].threadPosts, container.id);
         }
     });
 });

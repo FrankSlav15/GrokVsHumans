@@ -132,13 +132,6 @@
     <script src="assets/js/thread-emulator.js"></script>
 
     <script>
-        // Header & Footer partials
-        fetch('assets/partials/header.html')
-            .then(r => r.text())
-            .then(html => document.body.insertAdjacentHTML('afterbegin', html));
-        fetch('assets/partials/footer.html')
-            .then(r => r.text())
-            .then(html => document.body.insertAdjacentHTML('beforeend', html));
 
         const firebaseConfig = {
           apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
@@ -409,11 +402,13 @@
             if (overlay) overlay.remove();
         }
 
+        window.allBattles = {};
+
+        window.addEventListener('hashchange', checkDeepLink);
+
         document.addEventListener('DOMContentLoaded', () => {
             loadBattles();
         });
-
-        window.addEventListener('hashchange', checkDeepLink);
 
     </script>
 </body>
