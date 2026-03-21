@@ -7,102 +7,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
 
 html { height: 100%; }
-
-body { 
-    font-family: 'Inter', system-ui, sans-serif; 
-    background: #0a0a1f;
-    position: relative;
-    min-height: 100dvh;
-    margin: 0;
-    display: flex;
-    flex-direction: column; 
-}
-
+body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a1f; position: relative; min-height: 100dvh; margin: 0; display: flex; flex-direction: column; }
 .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-body::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(10,10,31,0.82);
-    z-index: -1; 
-}
-
-.nav-link.active { 
-    color: rgb(168 85 247) !important; 
-    font-weight: 600; 
-}
+body::after { content: ''; position: absolute; inset: 0; background: rgba(10,10,31,0.82); z-index: -1; }
+.nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
 
 /* Global variables for easy future color/theme changes */
-:root {
-    --purple: rgb(168 85 247);
-    --bg: #0a0a1f;
-    --overlay: rgba(10,10,31,0.82);
-}
+:root { --purple: rgb(168 85 247); --bg: #0a0a1f; --overlay: rgba(10,10,31,0.82); }
 
 /* ====================== THREAD EMULATOR ====================== */
-.thread-emulator {
-    max-width: 620px;
-    margin: 2rem auto;
-    font-family: 'Inter', system-ui, sans-serif;
-}
-.thread-post {
-    display: flex;
-    gap: 14px;
-    margin-bottom: 24px;
-    position: relative;
-}
-/* Updated Grok bubble — black with purple outline */
-.grok-bubble {
-    background: #18181b;
-    color: white;
-    border: 2px solid rgb(168 85 247);
-    border-radius: 18px 18px 18px 4px;
-    padding: 14px;
-    flex: 1;
-}
-.human-bubble {
-    background: #2F3336;
-    color: white;
-    border-radius: 18px 18px 4px 18px;
-    padding: 14px;
-    flex: 1;
-}
-.thread-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
+.thread-emulator { max-width: 620px; margin: 2rem auto; font-family: 'Inter', system-ui, sans-serif; }
+.thread-post { display: flex; gap: 14px; margin-bottom: 24px; position: relative; }
+.grok-bubble { background: #18181b; color: white; border: 2px solid rgb(168 85 247); border-radius: 18px 18px 18px 4px; padding: 14px; flex: 1; }
+.human-bubble { background: #2F3336; color: white; border-radius: 18px 18px 4px 18px; padding: 14px; flex: 1; }
+.thread-avatar { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
 .thread-content { flex: 1; }
-.thread-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-    opacity: 0.85;
-}
+.thread-header { display: flex; justify-content: space-between; font-size: 0.9rem; opacity: 0.85; }
 .thread-text { margin: 10px 0; line-height: 1.4; }
-.thread-image {
-    max-width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-.view-original {
-    color: #1DA1F2;
-    font-size: 0.85rem;
-}
-.thread-connector {
-    position: absolute;
-    left: 23px;
-    top: 52px;
-    bottom: -20px;
-    width: 3px;
-    background: #333;
-    z-index: -1;
-}
+.thread-image { max-width: 100%; border-radius: 10px; margin-top: 10px; }
+.view-original { color: #1DA1F2; font-size: 0.85rem; }
+.thread-connector { position: absolute; left: 23px; top: 52px; bottom: -20px; width: 3px; background: #333; z-index: -1; }
+.thread-emulator video { max-height: 320px; width: 100%; }
 
-/* Video styling in thread emulator */
-.thread-emulator video {
-    max-height: 320px;
-    width: 100%;
-}
+/* ====================== HEADER STYLES ======================
+   Unified from assets/partials/header.html – all Tailwind removed
+   Use these classes on every page for perfect consistency */
+.header-nav { border-bottom: 1px solid rgb(168 85 247 / 0.3); background-color: rgb(0 0 0 / 0.9); backdrop-filter: blur(16px); position: fixed; width: 100%; z-index: 50; }
+.header-inner { max-width: 1792px; margin: 0 auto; padding: 0 1.5rem; }
+.header-logo-row { display: flex; justify-content: center; padding-top: 1.5rem; padding-bottom: 1.5rem; }
+@media (min-width: 768px) { .header-logo-row { padding-top: 2rem; padding-bottom: 2rem; } }
+.header-logo-link { display: flex; align-items: center; gap: 1rem; }
+.header-logo-circle { width: 2.5rem; height: 2.5rem; background: linear-gradient(to bottom right, rgb(168 85 247), rgb(34 211 238)); border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 700; font-size: 1.875rem; }
+@media (min-width: 768px) { .header-logo-circle { width: 3.5rem; height: 3.5rem; font-size: 2.25rem; } }
+@media (min-width: 1024px) { .header-logo-circle { width: 4rem; height: 4rem; font-size: 2.75rem; } }
+.header-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.875rem; font-weight: 600; letter-spacing: -0.05em; }
+@media (min-width: 768px) { .header-title { font-size: 2.25rem; } }
+@media (min-width: 1024px) { .header-title { font-size: 2.75rem; } }
+.header-page-tabs { display: flex; justify-content: center; gap: 0.75rem 2rem; padding-bottom: 1rem; font-size: 0.875rem; font-weight: 500; flex-wrap: wrap; min-width: max-content; }
+@media (min-width: 768px) { .header-page-tabs { font-size: 1rem; } }
+.header-submit-row { display: flex; justify-content: center; padding-bottom: 1rem; }
+@media (min-width: 768px) { .header-submit-row { justify-content: flex-end; padding-bottom: 0; position: absolute; top: 1.5rem; right: 1.5rem; } }
+.header-submit-btn { padding: 0.75rem 1.5rem; background: linear-gradient(to right, rgb(168 85 247), rgb(124 58 237)); border-radius: 9999px; font-weight: 500; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+@media (min-width: 768px) { .header-submit-btn { padding: 1rem 1.5rem; font-size: 1rem; } }
+.header-submit-btn:hover { transform: scale(1.05); }
+
+/* ====================== FOOTER STYLES ======================
+   Unified from assets/partials/footer.html – all Tailwind removed */
+.site-footer { padding-top: 3rem; padding-bottom: 3rem; border-top: 1px solid rgb(168 85 247 / 0.3); text-align: center; color: rgb(156 163 175); font-size: 0.75rem; margin-top: auto; }
+.footer-legal { margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem 1rem; font-size: 0.625rem; }
+.footer-legal a:hover { color: rgb(168 85 247); }
