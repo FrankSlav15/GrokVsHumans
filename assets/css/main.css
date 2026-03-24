@@ -52,6 +52,21 @@ body::after { content: ''; position: absolute; inset: 0; background: rgba(10,10,
 @media (min-width: 768px) { .header-submit-btn { padding: 1rem 1.5rem; font-size: 1rem; } }
 .header-submit-btn:hover { transform: scale(1.05); }
 
+/* ====================== STICKY TABS ======================
+   Unified from assets/partials/sticky-tabs.html – all Tailwind removed */
+.sticky-tabs{position:sticky;top:12rem;z-index:40;background:rgba(0,0,0,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(168,85,247,.3);padding-bottom:1rem;margin-top:2rem;overflow-x:auto;}
+@media (min-width:768px){.sticky-tabs{top:11rem;}}
+@media (min-width:1024px){.sticky-tabs{top:13rem;}}
+.sticky-tabs-container{display:flex;justify-content:flex-start;padding-left:1rem;padding-right:1.5rem;}
+@media (min-width:768px){.sticky-tabs-container{justify-content:center;padding-left:1.5rem;padding-right:1.5rem;}}
+.tabs-wrapper{display:flex;gap:.375rem;min-width:max-content;overflow-x:auto;padding-bottom:.25rem;}
+@media (min-width:768px){.tabs-wrapper{gap:.5rem;}}
+.tab{padding:.5rem 1.25rem;font-size:.75rem;font-weight:500;white-space:nowrap;border-radius:9999px;transition:all .2s cubic-bezier(0.4,0,0.2,1);background:rgba(255,255,255,.05);color:#e5e7eb;border:1px solid transparent;}
+@media (min-width:768px){.tab{padding:.5rem 1.5rem;font-size:.875rem;}}
+.tab:hover{background:rgba(255,255,255,.1);border-color:rgba(168,85,247,.4);}
+.tab-active{background:#a855f7;color:#fff;border-color:#a855f7;box-shadow:0 4px 6px -1px rgb(168 85 247 / .3);}
+.tab-active:hover{background:#9333ea;border-color:#9333ea;}
+
 /* ====================== FOOTER STYLES ======================
    Unified from assets/partials/footer.html – all Tailwind removed */
 .site-footer { padding-top: 3rem; padding-bottom: 3rem; border-top: 1px solid rgb(168 85 247 / 0.3); text-align: center; color: rgb(156 163 175); font-size: 0.75rem; margin-top: auto; }
