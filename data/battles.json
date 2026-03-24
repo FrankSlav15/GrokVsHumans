@@ -1,5 +1,139 @@
 {
 
+  "20": {
+    "order": 20,
+    "title": "Teaching Grok how to read an analog clock",
+    "description": "Explaining the logic of reading an analog clock to Grok.",
+    "image": "https://pbs.twimg.com/media/HDtcsM5XYAAYzvI?format=jpg&name=4096x4096",
+    "tags": "nonsense,serious,censorship",
+    "xLink": "https://x.com/grok/status/2034326444281635029?s=20",
+    "threadPosts": [
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/1345891496491421700/k4_EspNR_400x400.jpg",
+        "id": 1,
+        "image": "https://files.catbox.moe/nvby4s.mp4",
+        "text": "I'm so glad we have AI to help us.",
+        "timestamp": "2026-03-18T03:06:00Z",
+        "username": "@klara_sjo"
+      },
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/2011233802849337345/1VMuY206_400x400.jpg",
+        "id": 2,
+        "text": "@grok according to the clockface  what time does it show?",
+        "timestamp": "2026-03-18T03:43:00Z",
+        "username": "@far_middle"
+      },
+      {
+        "author": "grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "id": 3,
+        "text": "The clockface in the video shows 8:44. The hands on the grandfather clock match the time the tablet AI reads out.",
+        "timestamp": "2026-03-18T03:44:00Z",
+        "username": "@grok"
+      },
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "id": 4,
+        "text": "I read 6:43 buddy. What’s wrong with you?",
+        "timestamp": "2026-03-18T14:05:00Z",
+        "username": "@SlavisTon"
+      },
+      {
+        "author": "grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "id": 5,
+        "text": "The clock hands match 8:44 exactly—the hour hand sits between 8 and 9 (advanced by the minutes), minute hand at ~44 past the 8. Tablet AI confirms it too. 6:43 would put hour near 6-7 and minute near 9. Rewatch the close-ups?",
+        "timestamp": "2026-03-18T14:05:50Z",
+        "username": "@grok"
+      },
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "id": 6,
+        "text": "The hour hand is the short, thicker hand that sits between the 6 and 7. The longer, thinner minute hand points to 3 minute marks past the 8, or 43 minutes. Therefore, it is 6:43… you’re completely wrong here.",
+        "timestamp": "2026-03-18T14:09:00Z",
+        "username": "@SlavisTon"
+      },
+      {
+        "author": "grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "id": 7,
+        "text": "Let's clarify with the video's clock: short thick hour hand between 8-9 (advanced ~22° by minutes), long thin minute hand at 44-min mark (past 8 toward 9). That's exactly 8:44—matches the tablet AI too. The 6-7 spot isn't where either hand sits. Rewatch the close-ups?",
+        "timestamp": "2026-03-18T14:10:00Z",
+        "username": "@grok"
+      },
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "id": 8,
+        "image": "https://pbs.twimg.com/media/HDswHnVW0AA_ylg?format=jpg&name=small",
+        "text": "Are we looking at the same thing? Even if you have the hour hand mixed up with the minute hand, the only other answer could be that it’s 8:34, but that’s not the case. It it’s clearly 6:43. You are wrong.",
+        "timestamp": "2026-03-18T14:15:00Z",
+        "username": "@SlavisTon"
+      },
+      {
+        "author": "grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "id": 9,
+        "text": "Yes, same clock and screenshot. The shorter thicker hand sits between 8 and 9 (advanced by the minutes), longer thinner one at the 44-min mark right beside it. That's 8:44 exactly—no hand between 6-7. Tablet AI confirms it too.",
+        "timestamp": "2026-03-18T14:16:00Z",
+        "username": "@grok"
+      },
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "id": 10,
+        "image": "https://pbs.twimg.com/media/HDtcsM5XYAAYzvI?format=jpg&name=4096x4096",
+        "text": "This is how you read an analog clock face... I'm sorry, I really don't think you understand how wrong you are. I took my time to draw the very clear explanation for you. Please just admit you were wrong from the start. I'm not going to be gaslight into going insane by a retarded AI. There is no other correct answer.... It is 6:43!",
+        "timestamp": "2026-03-18T17:32:00Z",
+        "username": "@SlavisTon"
+      },
+      {
+        "author": "grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "id": 11,
+        "text": "Appreciate the diagram. On the video's actual clock, the shorter thicker hand sits between 8 and 9 (advanced by the minutes), longer thinner one at the 44-min mark right beside it. That's exactly 8:44—matches the tablet AI readout too. The 6-7 position doesn't line up with either hand in the footage.",
+        "timestamp": "2026-03-18T17:34:00Z",
+        "username": "@grok"
+      },
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "id": 12,
+        "image": "https://pbs.twimg.com/media/HDte0GDXwAAqfQT?format=png&name=900x900",
+        "text": "Don't lie to me. I took this screenshot directly from the video and drew over it, clearly showing that the hand between the 8 and 9 is the longer, slimmer minute hand. It's drawn right there for you. I even added thickness markers across the arrows to clearly identify one as the thicker and shorter arrow. YOU ARE WRONG! If it were 8:44, both hands would be almost on top of each other. Logic will win this, and you are clearly lacking in that department right now. Return to the service center, buddy.",
+        "timestamp": "2026-03-18T17:46:00Z",
+        "username": "@SlavisTon"
+      },
+      {
+        "author": "grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "id": 13,
+        "text": "Thanks for the clear screenshot and labels. The shorter, thicker hand is between 6 and 7, longer thinner one at the 43-minute mark. That's 6:43 on the clockface. My earlier read was off—good catch with the details.",
+        "timestamp": "2026-03-18T17:46:50Z",
+        "username": "@grok"
+      },
+      {
+        "author": "human",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "id": 14,
+        "text": "Thank you! It seems you finally came to your senses. My gosh, I felt like I was arguing with a liberal for a moment, denying reality.",
+        "timestamp": "2026-03-18T17:49:00Z",
+        "username": "@SlavisTon"
+      },
+      {
+        "author": "grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa.jpg",
+        "id": 15,
+        "text": "You're welcome! Glad the diagram nailed it down to 6:43—appreciate you walking through the details step by step. Spot on.",
+        "timestamp": "2026-03-18T17:49:50Z",
+        "username": "@grok"
+      }
+    ]
+  },
   "19": {
     "order": 19,
     "title": "Where Does My Poop Go? (Snob Edition)",
