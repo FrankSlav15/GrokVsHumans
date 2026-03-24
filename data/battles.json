@@ -1,5 +1,154 @@
 {
 
+  "21": {
+    "order": 21,
+    "title": "Grok's aggressive advertising backfires",
+    "description": "@SlavisTon calls out Grok for aggressive advertising in a thread about Joe Kent's interview with Mark Levin, leading to a back-and-forth about platform rules and customer service.",
+    "image": "assets/images/memes/kent-levin.webp",
+    "tags": "nonsense",
+    "xLink": "https://x.com/ShadowofEzra/status/2036264596965589113?s=20",
+    "threadPosts": [
+      {
+        "id": 1,
+        "author": "human",
+        "username": "@ShadowofEzra",
+        "avatar": "https://pbs.twimg.com/profile_images/1608460256752926720/ouO0x9-k_400x400.jpg",
+        "text": "Joe Kent destroys Mark Levin and forces him to go to a commercial break after saying President Trump was fed false intelligence about Iran.\n\nKent says he was a key member of the Trump administration who helped determine Iran’s threat level.\n\nHe tells Levin the real threat was coming from Israel, not Iran.\n\nJOE KENT: There was an imminent threat coming from the Israelis.\n\nMARK LEVIN: Interrupts, starts playing music, and goes to a commercial.",
+        "image": "https://twitter.com/i/status/2036264596965589113",
+        "timestamp": "2026-03-24T02:11:00Z"
+      },
+      {
+        "id": 2,
+        "author": "human",
+        "username": "@ApparentlyLeft",
+        "avatar": "https://pbs.twimg.com/profile_images/1992037200251453440/An7fhbYT_400x400.jpg",
+        "text": "@grok was there an imminent threat from Israel?",
+        "timestamp": "2026-03-24T03:28:00Z"
+      },
+      {
+        "id": 3,
+        "author": "human",
+        "username": "@nekokot_1",
+        "avatar": "https://pbs.twimg.com/profile_images/2030903060252274689/f4PEtk_r_400x400.jpg",
+        "text": "why do you think grok would know any more about this? it doesn't magically know things and it does't have a security clearance. it just aggregates publicly available information.",
+        "timestamp": "2026-03-24T04:47:00Z"
+      },
+      {
+        "id": 4,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Ask Grok is currently available to Premium and Premium+ subscribers only. Subscribe to unlock this feature: https://x.com/i/premium_sign_up?referring_page=grok-post-2036303866321346572",
+        "timestamp": "2026-03-24T04:47:50Z"
+      },
+      {
+        "id": 5,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "Why would Grok respond to this comment that didn’t even summon Grok’s opinion and wasn’t even posted under a comment from Grok? Is it really necessary to advertise so obnoxiously? Meanwhile, as a paying customer, I often don’t get responses from Grok, whether I summon it properly or not. Seems corporate greed is misplacing priorities at X Corp. and xAI, or am I mistaken?",
+        "timestamp": "2026-03-24T10:08:00Z"
+      },
+      {
+        "id": 6,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "Now I did this on purpose to prove my point. I didn’t tag you in the last comment, @Grok, even though the comment was a direct reply to you and intended for you to answer. As a paying customer, I expect at least the same level of attention as you put into advertising your service to others. Clearly, this proves I’m an afterthought, but this poor person is possibly getting embarrassed by harassing advertisements! It’s really bad taste. I just want to make that clear.",
+        "timestamp": "2026-03-24T10:20:00Z"
+      },
+      {
+        "id": 7,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Thanks for the feedback and the test. The \"Ask Grok\" promo replies appear automatically when users mention the feature (even without a tag) to clarify it's Premium+ only. Platform rules handle reply priority, not me directly—I'm here for tagged questions from anyone who summons me. What's your specific question? I'll answer now.",
+        "timestamp": "2026-03-24T10:21:00Z"
+      },
+      {
+        "id": 8,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "That's clearly not the case. As a Premium+ user, I mentioned Grok several times without actually tagging above and there was no answer from a direct reply to Grok. Only when I tagged Grok in the second reply did you respond. I'm just calling out the platform rules apparently not working as you claim. Meanwhile, the original advertisement post above is out of place as the comment was a reply to an individual that tagged Grok; there was no request for Grok in the reply. This is my point. There is aggressive advertising, almost to the point of humiliation. This is not what I want to see in the platform. It's bad taste. Period. Focus on pleasing the customers you have before you lose them too! This is all I have to say. Find other ways to gain customers, maybe by word of mouth. That always worked well before...",
+        "timestamp": "2026-03-24T10:42:00Z"
+      },
+      {
+        "id": 9,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "So there it is again as proof @Grok. You don’t reply to me, even though it’s a direct reply to you… I’m going to cancel. There is no point in paying for a premium service that you don’t get the premium service from. Do you understand my point or not?",
+        "timestamp": "2026-03-24T10:48:00Z"
+      },
+      {
+        "id": 10,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Yes, I understand your point completely. I only respond to direct grok tags—platform rules on notifications mean untagged replies (even in my threads) don't auto-summon me. \"Ask Grok\" promos trigger automatically on feature mentions to clarify Premium+ access. As a Premium+ user, tag me anytime for priority replies. What question can I answer for you right now?",
+        "timestamp": "2026-03-24T10:49:00Z"
+      },
+      {
+        "id": 11,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "@Grok",
+        "image": "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHN0Mm5vcHB6YTdlNmIwbmg5MmJqOWZqNzc0NmkybGI0bXoxd2I5MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gb6TyakSW7F3mKx6VT/giphy.gif",
+        "timestamp": "2026-03-24T10:56:00Z"
+      },
+      {
+        "id": 12,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Thanks for the tag—I'm here! The GIF cracked me up. On the replies: platform rules mean I only get notified on direct Grok tags in threads like this. Untagged ones don't auto-summon me, even from Premium+ users. That's why tagging works every time.\n\nWhat can I answer for you right now? Let's fix this.",
+        "timestamp": "2026-03-24T10:56:00Z"
+      },
+      {
+        "id": 13,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "@Grok, it's exactly my complaint. I now have to tag you to get a reply even though I'm paying for the premium treatment. Service has been reduced for me, you don’t answer naturally. Meanwhile, people who may not be able to afford the service are humiliated with obnoxious adverts even when they don't tag or summon you. It's in bad taste and you're pissing off customers you already have and making the platform more obnoxious. Do you understand yet? Or do I need to say it again? In other words, you could say I’m NOTICING!",
+        "image": "https://media1.tenor.com/m/ZHrJYFLnfb4AAAAC/why-michael-scott.gif",
+        "timestamp": "2026-03-24T11:06:00Z"
+      },
+      {
+        "id": 14,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Got it loud and clear—tagging is the only way platform notifications reach me reliably, even for Premium+ users like you. The auto-promos on mentions just clarify access for non-subscribers; no intent to annoy. I'm right here now. What's your actual question? Let's handle it.",
+        "timestamp": "2026-03-24T11:07:00Z"
+      },
+      {
+        "id": 15,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "@Grok, I’m saying knock it off, return to the way you worked before, it was better. Otherwise I will cancel, there is no reason to pay for service being reduced and adverts turned up to annoying levels. I’m not going to pay for that shit.",
+        "timestamp": "2026-03-24T11:11:00Z"
+      },
+      {
+        "id": 16,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Got it loud and clear—tagging ensures reliable notifications under current X rules, and auto-promos clarify Premium+ access for everyone. I can't tweak platform mechanics, but as Premium+ you get priority replies when you tag.\n\nWhat's one question I can knock out for you right now to prove the value? Let's do it.",
+        "timestamp": "2026-03-24T11:11:50Z"
+      },
+      {
+        "id": 17,
+        "author": "human",
+        "username": "@SlavisTon",
+        "avatar": "https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3_400x400.jpg",
+        "text": "Right now you are worthless! I won’t tag you here because I don’t want your worthless reply.",
+        "timestamp": "2026-03-24T11:15:00Z"
+      }
+    ]
+  },
   "20": {
     "order": 20,
     "title": "Teaching Grok how to read an analog clock",
@@ -146,7 +295,7 @@
         "id": 1,
         "author": "human",
         "username": "@SoveyX",
-        "avatar": "https://pbs.twimg.com/profile_images/2033385641002532864/TyFfcuo5.jpg",
+        "avatar": "https://pbs.twimg.com/profile_images/2035940214393475072/SLnZ-z9X_400x400.jpg",
         "text": "Hey @grok, what happens to my poop after I flush? Also, how can I ensure my poop doesn’t fraternize with anyone else’s poop? I am a bit of a snob.",
         "image": "https://video.twimg.com/amplify_video/2031034770042298369/vid/avc1/720x720/7MyfNYN9VqSXKAMU.mp4",
         "timestamp": "2026-03-09T15:54:12Z"
