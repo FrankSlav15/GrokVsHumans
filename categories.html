@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="portrait">
     <title>Categories - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -60,16 +61,17 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
             <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
 
-            <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
-                <div class="flex justify-start md:justify-center px-4 md:px-6">
-                    <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
-                        <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
-                        <button onclick="filterCategory('lazy')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-lazy">Grok, Think For Me</button>
-                        <button onclick="filterCategory('politics')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-politics">Politics</button>
-                        <button onclick="filterCategory('photo')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-photo">Photo Requests</button>
-                        <button onclick="filterCategory('opinion')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-opinion">Grok's Opinion</button>
-                        <button onclick="filterCategory('avoids')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-avoids">Grok Avoids Request</button>
-                        <button onclick="filterCategory('other')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-other">Miscellaneous</button>
+            <!-- STICKY TABS - UNIFIED -->
+            <div class="sticky-tabs">
+                <div class="sticky-tabs-container">
+                    <div class="tabs-wrapper" id="tabs">
+                        <button onclick="filterCategory('all')" class="tab tab-active" id="tab-all">All</button>
+                        <button onclick="filterCategory('lazy')" class="tab" id="tab-lazy">Grok, Think For Me</button>
+                        <button onclick="filterCategory('politics')" class="tab" id="tab-politics">Politics</button>
+                        <button onclick="filterCategory('photo')" class="tab" id="tab-photo">Photo Requests</button>
+                        <button onclick="filterCategory('opinion')" class="tab" id="tab-opinion">Grok's Opinion</button>
+                        <button onclick="filterCategory('avoids')" class="tab" id="tab-avoids">Grok Avoids Request</button>
+                        <button onclick="filterCategory('other')" class="tab" id="tab-other">Miscellaneous</button>
                     </div>
                 </div>
             </div>
