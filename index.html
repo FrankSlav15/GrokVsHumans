@@ -19,11 +19,11 @@
     </script>
     
 <style>
-.hero-section{padding-top:20rem;padding-bottom:5rem;position:relative;z-index:10;flex:1 1 auto;}
+.hero-section{padding-top:20rem;padding-bottom:5rem;position:relative;z-index:10;flex:1 1 auto;background:linear-gradient(180deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.9) 100%);}
 @media (min-width:768px){.hero-section{padding-top:13rem;}}
 @media (min-width:1024px){.hero-section{padding-top:15rem;}}
 .hero-container{max-width:64rem;margin-left:auto;margin-right:auto;padding-left:1.5rem;padding-right:1.5rem;text-align:center;}
-.live-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:9999px;padding:.375rem 1.25rem;margin-bottom:2rem;font-size:.875rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;transition:all .2s cubic-bezier(0.4,0,0.2,1);}
+.live-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:9999px;padding:.375rem 1.25rem;margin-bottom:2rem;font-size:.875rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;transition:all .2s cubic-bezier(0.4,0,0.2,1);text-decoration:none;}
 .live-badge:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);}
 .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:live-pulse 2s infinite ease-in-out;}
 @keyframes live-pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
@@ -60,11 +60,11 @@
     <section class="hero-section">
         <div class="hero-container">
 
-            <!-- LIVE BADGE -->
-            <div class="live-badge">
+            <!-- LIVE BADGE → NOW CLICKABLE LINK TO BATTLES -->
+            <a href="battles.html" class="live-badge">
                 <div class="live-dot"></div>
                 <span>LIVE • Human vs Grok Arena</span>
-            </div>
+            </a>
 
             <!-- HERO HEADING -->
             <h1 class="hero-heading">
