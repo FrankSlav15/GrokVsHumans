@@ -1,5 +1,5 @@
 // assets/js/card-generator.js
-// FINAL version for all pages – raw id in onclick (fixes genre cards)
+// FINAL FIXED VERSION – forces string ID in onclick (fixes genre-grouped meme cards)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
@@ -51,8 +51,9 @@ window.createContentCard = function(pageType, id, data) {
   const baseClass = pageType === 'battles' ? 'battle-card' :
                     pageType === 'categories' ? 'category-card' : 'meme-card';
 
+  // FIXED: Force string literal '${id}' so genre-grouped cards always open correctly
   return `
-    <div onclick="${modalOpener}(${id})"
+    <div onclick="${modalOpener}('${id}')"
          class="${baseClass} rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full"
          data-categories="${(data.tags || '').split(',').map(t => t.trim()).join(',')}"
          data-id="${id}">
