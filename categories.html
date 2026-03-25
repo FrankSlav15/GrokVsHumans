@@ -113,6 +113,11 @@
         </div>
     </div>
 
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/thread-emulator.js"></script>
+    <script src="assets/js/card-generator.js"></script>
+    <script src="assets/js/modal-generator.js"></script>
+    
     <script>
 
     const firebaseConfig = {
@@ -146,21 +151,9 @@
         Object.keys(allCategories)
             .sort((a,b) => (allCategories[b].order || 0) - (allCategories[a].order || 0))
             .forEach(id => {
-            const c = allCategories[id];
-            const isVideo = c.image.toLowerCase().endsWith('.mp4') || c.image.toLowerCase().endsWith('.webm') || c.image.toLowerCase().endsWith('.mov');
-            const mediaHTML = isVideo 
-                ? `<video src="${c.image}" class="w-full h-full object-cover" loop muted playsinline></video>` 
-                : `<img src="${c.image}" loading="lazy" class="w-full h-full object-cover" alt="${c.title}">`;
-            const cardHTML = `
-                <div onclick="openCategoryModal('${id}')" class="category-card rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full" data-categories="${(c.tags || '').split(',').join(',')}">
-                    ${mediaHTML}
-                    <div class="content">
-                        <div class="title-area"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${c.title}</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(c.description || '').substring(0,130)}...</p></div>
-                    </div>
-                </div>`;
-            grid.insertAdjacentHTML('beforeend', cardHTML);
-        });
+                const cardHTML = createContentCard('categories', id, allCategories[id]);
+                grid.insertAdjacentHTML('beforeend', cardHTML);
+            });
     }
 
     function filterCategory(cat) {
@@ -270,36 +263,25 @@
         currentCategoryId = id;
         currentCategoryIndex = id;
 
-        const url = data.image.toLowerCase();
-        const isVideo = url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov');
+        // Unified modal population (media + tags + title + X link)
+        populateModal('categories', id, data);
 
-        let mediaHTML = '';
-        if (isVideo) {
-            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full max-h-[38vh] object-contain mx-auto" autoplay loop muted playsinline></video>`;
-        } else {
-            mediaHTML = `<img src="${data.image}" class="w-full max-h-[38vh] object-contain mx-auto" alt="${data.title}">`;
-        }
-        document.getElementById('modal-image').innerHTML = mediaHTML;
-
-        if (isVideo) {
-            if (currentPlyr) currentPlyr.destroy();
-            currentPlyr = new Plyr('#modal-video', { controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
-        }
-
-        const tagDisplay = { lazy: "Grok, Think For Me", politics: "Politics", photo: "Photo Requests", opinion: "Grok's Opinion", avoids: "Grok Avoids Request", other: "Miscellaneous" };
-        const tagsHTML = (data.tags || '').split(',').map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t.trim()] || t.trim()}</span>`).join('');
-        document.getElementById('modal-tags').innerHTML = tagsHTML;
-
-        document.getElementById('modal-title').textContent = data.title || '';
-        document.getElementById('modal-description').textContent = data.description || '';
-        document.getElementById('modal-x-link').href = data.xLink || '#';
-
-        const embedUrl = data.conversationUrl || data.xLink;
-        embedXThread(embedUrl);
-
+        // Categories-specific extras
         const modal = document.getElementById('category-modal');
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+
+        // Video support with Plyr (keeps your existing behavior)
+        const url = data.image.toLowerCase();
+        const isVideo = url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov');
+        if (isVideo) {
+            if (currentPlyr) currentPlyr.destroy();
+            currentPlyr = new Plyr('#modal-video', { 
+                controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], 
+                settings: [], 
+                tooltips: { controls: true, seek: true } 
+            });
+        }
     }
 
     function closeCategoryModal() {
@@ -404,9 +386,6 @@
         if (e.key === 'ArrowRight') prevCategory();
     });
     </script>
-
-    <script src="assets/js/common.js"></script>
-    <script src="assets/js/thread-emulator.js"></script>
 
 </body>
 </html>
