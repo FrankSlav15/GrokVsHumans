@@ -1,5 +1,5 @@
 // assets/js/card-generator.js
-// FINAL fixed version – explicit modal opener names (fixes the meme modal click issue)
+// FIXED – forces Number(id) in onclick so genre-grouped meme cards open correctly
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
@@ -45,7 +45,7 @@ window.createContentCard = function(pageType, id, data) {
   const shortDesc = getShortDescription(data, pageType);
   const footerHTML = getCardFooter(pageType, id);
 
-  // EXPLICIT FUNCTION NAMES – this fixes the modal not opening
+  // EXPLICIT + Number(id) – this fixes genre cards not opening the modal
   const modalOpener = pageType === 'battles' ? 'openBattleModal' :
                       pageType === 'categories' ? 'openCategoryModal' : 'openMemeModal';
 
@@ -53,7 +53,7 @@ window.createContentCard = function(pageType, id, data) {
                     pageType === 'categories' ? 'category-card' : 'meme-card';
 
   return `
-    <div onclick="${modalOpener}(${id})"
+    <div onclick="${modalOpener}(Number(${id}))"
          class="${baseClass} rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full"
          data-categories="${(data.tags || '').split(',').map(t => t.trim()).join(',')}"
          data-id="${id}">
