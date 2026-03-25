@@ -12,11 +12,11 @@ function renderCommonModalParts(data, pageType) {
   const titleEl = document.getElementById('modal-title');
   if (titleEl) titleEl.textContent = data.title || '';
 
-  // X link (memes uses #base-x-link, others use #modal-x-link)
+  // X link
   const xLinkEl = document.getElementById('base-x-link') || document.getElementById('modal-x-link');
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 
-  // Description (memes uses #modal-desc, categories uses #modal-description)
+  // Description
   const descEl = document.getElementById('modal-desc') || document.getElementById('modal-description');
   if (descEl) descEl.textContent = data.description || data.context || '';
 }
@@ -29,6 +29,14 @@ window.populateModal = function(pageType, id, data) {
   } else if (pageType === 'categories') {
     if (typeof renderThread === 'function') renderThread(data.threadPosts || [], "thread-container");
   } else if (pageType === 'memes') {
-    if (typeof renderGenreNav === 'function') renderGenreNav(id);
+    // STRICT GENRE CHECK — only show section if JSON has a real non-blank genre
+    const genreSection = document.getElementById('genre-section');
+    if (genreSection) {
+      if (!data.genre || data.genre.trim() === '') {
+        genreSection.classList.add('hidden');
+      } else {
+        if (typeof renderGenreNav === 'function') renderGenreNav(id);
+      }
+    }
   }
 };
