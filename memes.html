@@ -181,32 +181,31 @@
         setTimeout(checkDeepLink, 400);
     }
 
-    function renderGrid() {
-        const grid = document.getElementById('meme-grid');
-        grid.innerHTML = '';
-
-        const visibleIds = new Set();
-        const genreMap = new Map();
-
-        Object.keys(allMemes).forEach(id => {
-            const m = allMemes[id];
-            if (!m.genre || m.genre.trim() === '') {
-                visibleIds.add(id);
-            } else {
-                if (!genreMap.has(m.genre) || (allMemes[genreMap.get(m.genre)].order || 0) < (m.order || 0)) {
-                    genreMap.set(m.genre, id);
-                }
-            }
-        });
-
-        genreMap.forEach(id => visibleIds.add(id));
-
-        Array.from(visibleIds)
-            .sort((a,b) => (allMemes[b].order || 0) - (allMemes[a].order || 0))
-            .forEach(id => {
-                const cardHTML = createContentCard('memes', id, allMemes[id]);
-                grid.insertAdjacentHTML('beforeend', cardHTML);
-            });
+    function renderGenreNav(currentId) {
+        const section = document.getElementById('genre-section');
+        const current = allMemes[currentId];
+        if (!current || !current.genre || current.genre.trim() === '') {
+            section.classList.add('hidden');
+            currentGenreList = [];
+            return;
+        }
+        
+        currentGenreList = Object.keys(allMemes)
+            .filter(id => allMemes[id].genre === current.genre)
+            .sort((a, b) => (allMemes[b].order || 0) - (allMemes[a].order || 0));
+        
+        // ONLY show the section when there are 2 or more cards in this genre
+        if (currentGenreList.length <= 1) {
+            section.classList.add('hidden');
+            return;
+        }
+        
+        currentGenreIndex = currentGenreList.indexOf(currentId);
+        
+        document.getElementById('genre-header').textContent = `SEE OTHER VARIATIONS OF`;
+        document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
+        document.getElementById('genre-count').textContent = `${currentGenreList.length} total`;
+        section.classList.remove('hidden');
     }
 
     function filterCategory(cat) {
