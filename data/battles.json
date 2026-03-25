@@ -29,7 +29,7 @@
         "id": 3,
         "author": "human",
         "username": "@nekokot_1",
-        "avatar": "https://pbs.twimg.com/profile_images/2030903060252274689/f4PEtk_r_400x400.jpg",
+        "avatar": "https://pbs.twimg.com/profile_images/2036576027540119552/3A2W49dQ_400x400.jpg",
         "text": "why do you think grok would know any more about this? it doesn't magically know things and it does't have a security clearance. it just aggregates publicly available information.",
         "timestamp": "2026-03-24T04:47:00Z"
       },
@@ -395,7 +395,7 @@
         "id": 1,
         "author": "elon",
         "username": "@elonmusk",
-        "avatar": "https://pbs.twimg.com/profile_images/2008546467615580160/57KcqsTA_400x400.jpg",
+        "avatar": "https://pbs.twimg.com/profile_images/2035314704307081216/71U1ftM3_400x400.jpg",
         "text": "The side that needs to build a wall to keep people from leaving is the bad side",
         "image": "https://pbs.twimg.com/media/HDDToFZaAAAKSpF.jpg",
         "timestamp": "2026-03-10T13:40:00Z"
@@ -729,7 +729,7 @@
       {
         "id": 1,
         "author": "human",
-        "username": "GlockfordFiles",
+        "username": "@GlockfordFiles",
         "avatar": "https://pbs.twimg.com/profile_images/2009473508917882880/LE0S9OqC_400x400.jpg",
         "text": "Hey @grok. Did Barack Obama ever go by the name Barry Soetoro? Yes or no answer please.",
         "image": "https://pbs.twimg.com/media/HCbq6VdXsAAtepB?format=jpg&name=large",
@@ -1312,7 +1312,7 @@
     "description": "User asks Grok to remove the dictator in Obama/Trump image — Grok replies with edited image removing Trump, sparking debate on bias.",
     "image": "https://pbs.twimg.com/media/HCMOcwdXAAAVSXX.jpg",
     "tags": "political,joke,censorship",
-    "xLink": "https://x.com/4thOfJuly365/status/2027489869031678230?s=20",
+    "xLink": "https://x.com/grok/status/2027586237691736283?s=20",
     "threadPosts": [
       {
         "id": 1,
