@@ -1,5 +1,5 @@
 // assets/js/card-generator.js
-// FIXED – raw id in onclick (matches how Firebase stores keys) + consistent heights
+// FINAL version for all pages – raw id in onclick (fixes genre cards)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
