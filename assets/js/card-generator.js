@@ -1,9 +1,9 @@
 // assets/js/card-generator.js
-// Unified card generator – now with consistent media height across ALL pages
+// Unified card generator – restored original image proportions per page (modernization branch)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
-    return '<div class="w-full aspect-video bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
+    return '<div class="w-full h-56 bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
   }
 
   const lower = imageUrl.toLowerCase();
@@ -17,9 +17,13 @@ function generateMediaHTML(imageUrl, pageType) {
       </div>`;
   }
 
-  // All cards now use the exact same aspect-video wrapper → perfectly uniform height
+  // PAGE-SPECIFIC HEIGHTS restored (exactly like your original designs)
+  let heightClass = 'h-56';                    // default (battles)
+  if (pageType === 'categories') heightClass = 'h-[15.5rem]';
+  if (pageType === 'memes') heightClass = 'aspect-video';
+
   return `
-    <div class="aspect-video">
+    <div class="${heightClass}">
       <img src="${imageUrl}" loading="lazy" class="w-full h-full object-cover" alt="Preview">
     </div>`;
 }
