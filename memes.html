@@ -249,7 +249,8 @@
         
         currentGenreIndex = currentGenreList.indexOf(currentId);
         
-        document.getElementById('genre-header').textContent = `SEE OTHER VARIATIONS OF`;
+        // FIXED: use querySelector for class, not getElementById
+        document.querySelector('.genre-header').textContent = `SEE OTHER VARIATIONS OF`;
         document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
         document.getElementById('genre-count').textContent = `${currentGenreList.length} total`;
         section.classList.remove('hidden');
