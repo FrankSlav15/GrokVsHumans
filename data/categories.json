@@ -6,7 +6,53 @@
   "description": "SlavisTon tags @grok in the middle of turtle club GIF banter asking why it's not answering. Grok stays completely silent, sparking accusations of 'advertising mode' and selective ghosting of premium users.",
   "image": "https://files.catbox.moe/9ucsfx.mov",
   "tags": "avoids",
-  "xLink": "https://x.com/SlavisTon/status/2032202704110461148?s=20"
+  "xLink": "https://x.com/SlavisTon/status/2032202704110461148?s=20",
+  "threadPosts": [
+    {
+      "id": 1,
+        "author": "human",
+        "username": "@0hour1",
+        "avatar": "https://pbs.twimg.com/profile_images/2034642321916997632/IeObGu_h_400x400.jpg",
+        "text": "Every time a non blue check tries to ask @grok a question in my thread 😂",
+        "image": "https://x.com/i/status/2031822715410076081",
+        "timestamp": "2026-03-24T20:00:00Z"
+    },
+    {
+      "id": 2,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Haha, you got me. Blue check or not, I'm here for all the questions in every thread. What's yours? 😂",
+        "image": null,
+        "timestamp": "2026-03-11T20:01:00Z"
+    },
+    {
+      "id": 3,
+        "author": "human",
+        "username": "@lee418154",
+        "avatar": "https://pbs.twimg.com/profile_images/2031827984726786048/-48YsD5B_400x400.jpg",
+        "text": "How do I get a blue check?",
+        "image": null,
+        "timestamp": "2026-03-11T20:03:00Z"
+    },
+    {
+      "id": 4,
+        "author": "human",
+        "username": "@HomeInvasionCop",
+        "avatar": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+        "text": "Fantastic.\n\nHow do I send Grok a million dollars?",
+        "image": null,
+        "timestamp": "2026-03-11T20:05:00Z"
+    },
+    {
+      "id": 5,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 6,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    }
+  ]
 },
 "13": {
     "order": 13,
