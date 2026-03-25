@@ -1,6 +1,5 @@
 // assets/js/card-generator.js
-// Unified card generator for battles, categories, and memes
-// (modernization branch — unified styling ready for main.css)
+// Unified card generator for battles, categories, and memes (modernization branch)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
@@ -46,11 +45,16 @@ window.createContentCard = function(pageType, id, data) {
   const shortDesc = getShortDescription(data, pageType);
   const footerHTML = getCardFooter(pageType, id);
 
+  // FIXED: Explicit modal opener names (prevents openBattlesModal vs openBattleModal bug)
+  const modalOpener = pageType === 'battles' ? 'openBattleModal' :
+                      pageType === 'categories' ? 'openCategoryModal' :
+                      'openMemeModal';
+
   const baseClass = pageType === 'battles' ? 'battle-card' :
                     pageType === 'categories' ? 'category-card' : 'meme-card';
 
   return `
-    <div onclick="open${pageType.charAt(0).toUpperCase() + pageType.slice(1)}Modal(${id})"
+    <div onclick="${modalOpener}(${id})"
          class="${baseClass} rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full"
          data-categories="${(data.tags || '').split(',').map(t => t.trim()).join(',')}"
          data-id="${id}">
