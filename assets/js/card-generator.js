@@ -1,9 +1,9 @@
 // assets/js/card-generator.js
-// Unified card generator for battles, categories, and memes (modernization branch)
+// Unified card generator – now with consistent media height across ALL pages
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
-    return '<div class="w-full h-56 bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
+    return '<div class="w-full aspect-video bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
   }
 
   const lower = imageUrl.toLowerCase();
@@ -17,8 +17,11 @@ function generateMediaHTML(imageUrl, pageType) {
       </div>`;
   }
 
-  const heightClass = pageType === 'battles' ? 'h-56' : 'h-[15.5rem]';
-  return `<img src="${imageUrl}" loading="lazy" class="w-full ${heightClass} object-cover" alt="Preview">`;
+  // All cards now use the exact same aspect-video wrapper → perfectly uniform height
+  return `
+    <div class="aspect-video">
+      <img src="${imageUrl}" loading="lazy" class="w-full h-full object-cover" alt="Preview">
+    </div>`;
 }
 
 function getShortDescription(data, pageType) {
@@ -45,10 +48,8 @@ window.createContentCard = function(pageType, id, data) {
   const shortDesc = getShortDescription(data, pageType);
   const footerHTML = getCardFooter(pageType, id);
 
-  // FIXED: Explicit modal opener names (prevents openBattlesModal vs openBattleModal bug)
   const modalOpener = pageType === 'battles' ? 'openBattleModal' :
-                      pageType === 'categories' ? 'openCategoryModal' :
-                      'openMemeModal';
+                      pageType === 'categories' ? 'openCategoryModal' : 'openMemeModal';
 
   const baseClass = pageType === 'battles' ? 'battle-card' :
                     pageType === 'categories' ? 'category-card' : 'meme-card';
@@ -59,7 +60,7 @@ window.createContentCard = function(pageType, id, data) {
          data-categories="${(data.tags || '').split(',').map(t => t.trim()).join(',')}"
          data-id="${id}">
       ${mediaHTML}
-      <div class="content">
+      <div class="content flex-1 flex flex-col">
         <div class="title-area h-[56px] flex items-center">
           <h4 class="font-semibold text-lg leading-tight line-clamp-2">${data.title || ''}</h4>
         </div>

@@ -24,17 +24,32 @@
     </script>
 
     <style>
-        /* PAGE-SPECIFIC ONLY (cleaned for unification) */
+        /* PAGE-SPECIFIC ONLY – cleaned for unification */
         .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.75); color: white; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 42px; border-radius: 9999px; z-index: 60; transition: all 0.2s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         .nav-arrow:hover { background: rgba(0,0,0,0.95); transform: translateY(-50%) scale(1.1); }
         .nav-arrow-left  { left: -58px; }
         .nav-arrow-right { right: -58px; }
         @media (max-width: 640px) { .nav-arrow-left { left: -42px; } .nav-arrow-right { right: -42px; } .nav-arrow { width: 44px; height: 44px; font-size: 36px; } }
 
-        /* Removed old .category-card image rules and modal-image-container gradient → unified card-generator now controls everything */
-        .category-card { transition: all 0.3s ease; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.2); display: flex; flex-direction: column; height: 100%; overflow: hidden; border-radius: 1.5rem; position: relative; }
-        .category-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); border-color: rgb(168 85 247); }
+        .category-card { 
+            transition: all 0.3s ease; 
+            cursor: pointer; 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(168,85,247,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%; 
+            overflow: hidden; 
+            border-radius: 1.5rem; 
+            position: relative; 
+        }
+        .category-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); 
+            border-color: rgb(168 85 247); 
+        }
 
+        /* No more old image/video height rules – card-generator now controls everything uniformly */
         .tab { padding: 0.75rem 1.25rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s ease; white-space: nowrap; }
         .tab-active { border-bottom: 3px solid rgb(168 85 247); color: white; }
 
