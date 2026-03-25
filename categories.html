@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <link rel="stylesheet" href="assets/css/main.css">
 
     <!-- Google Analytics -->
@@ -84,6 +83,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
+    <!-- CATEGORIES MODAL (updated with thread emulator + clean "View" button) -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
@@ -97,14 +97,17 @@
                     <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                     <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
                     <p id="modal-description" class="text-gray-300 leading-relaxed mb-8"></p>
-                    <div id="tweet-embed" class="tweet-embed-wrapper"></div>
+                    
+                    <!-- THREAD EMULATOR (replaces old X embed) -->
+                    <div id="thread-container" class="thread-container" data-entry-id=""></div>
                 </div>
             </div>
 
+            <!-- Updated bottom buttons – white "View" like memes.html -->
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-                <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-[#18181b] hover:bg-[#27272a] text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
+                <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
-                    <span class="text-center">View on X</span>
+                    <span class="text-center">View</span>
                 </a>
                 <button onclick="showCategoryShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
                     <i class="fa-solid fa-share-nodes"></i> Share
@@ -135,7 +138,6 @@
     let allCategories = {};
     let currentCategoryId = null;
     let currentCategoryIndex = 0;
-    let currentXLink = '';
     let currentPlyr = null;
 
     async function loadCategories() {
@@ -174,104 +176,26 @@
         setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
-    function embedXThread(embedUrl) {
-        currentXLink = embedUrl || '';
-        const embedDiv = document.getElementById('tweet-embed');
-        const tweetIdMatch = embedUrl.match(/status\/(\d+)/);
-        const tweetId = tweetIdMatch ? tweetIdMatch[1] : '';
-
-        embedDiv.innerHTML = `
-            <div class="tweet-embed-header">
-                <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                <span>FULL THREAD ON X</span>
-            </div>
-            <div class="embed-fallback">
-                <div class="flex items-center justify-center gap-3 mb-4">
-                    <div class="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-purple-400 text-sm">Loading full thread...</span>
-                </div>
-                <a href="${embedUrl}" target="_blank" class="text-purple-400 hover:underline text-xs">Open directly on X</a>
-            </div>`;
-
-        if (!embedUrl) return;
-
-        const cleanLink = embedUrl.replace('x.com', 'twitter.com').split('?')[0];
-
-        const renderEmbed = () => {
-            embedDiv.innerHTML = `
-                <div class="tweet-embed-header">
-                    <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                    <span>FULL THREAD ON X</span>
-                </div>
-                <blockquote class="twitter-tweet" 
-                            data-theme="dark" 
-                            data-conversation="all"
-                            data-media-max-width="560"
-                            data-dnt="true"
-                            data-align="center"
-                            data-cards="hidden"
-                            data-tweet-id="${tweetId}">
-                    <a href="${cleanLink}"></a>
-                </blockquote>`;
-        };
-
-        const attemptLoad = () => {
-            if (window.twttr && window.twttr.widgets) {
-                window.twttr.widgets.load(embedDiv);
-            } else if (window.twttr && window.twttr.ready) {
-                window.twttr.ready(() => window.twttr.widgets.load(embedDiv));
-            }
-        };
-
-        renderEmbed();
-        attemptLoad();
-        setTimeout(attemptLoad, 700);
-        setTimeout(attemptLoad, 1400);
-        setTimeout(attemptLoad, 2400);
-        setTimeout(attemptLoad, 3800);
-        setTimeout(attemptLoad, 5200);
-        setTimeout(attemptLoad, 7000);
-        setTimeout(attemptLoad, 9000);
-        setTimeout(attemptLoad, 12000);
-
-        setTimeout(() => {
-            if (!embedDiv.querySelector('iframe')) {
-                embedDiv.innerHTML = `
-                    <div class="tweet-embed-header">
-                        <i class="fa-brands fa-x-twitter text-purple-400"></i>
-                        <span>FULL THREAD ON X</span>
-                    </div>
-                    <div class="embed-fallback">
-                        <button onclick="forceReloadEmbed()" class="embed-retry-btn flex items-center gap-2 mx-auto">
-                            <i class="fa-solid fa-rotate"></i> Force Reload Thread
-                        </button>
-                        <a href="${cleanLink}" target="_blank" class="permanent-x-button mt-6">
-                            <i class="fa-brands fa-x-twitter"></i> Open Full Thread on X
-                        </a>
-                    </div>`;
-            }
-        }, 13000);
-    }
-
-    function forceReloadEmbed() {
-        if (currentXLink) embedXThread(currentXLink);
-    }
-
     function openCategoryModal(id) {
         const data = allCategories[id];
         if (!data) return;
         currentCategoryId = id;
         currentCategoryIndex = id;
 
-        // Unified modal population (media + tags + title + X link)
+        // Unified modal population
         populateModal('categories', id, data);
 
-        // Categories-specific extras
+        // Render thread emulator (exactly like battles.html)
+        if (typeof renderThread === 'function') {
+            renderThread(data.threadPosts || [], "thread-container");
+        }
+
+        // Open modal
         const modal = document.getElementById('category-modal');
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        // Video support with Plyr (keeps your existing behavior)
+        // Video support with Plyr
         const url = data.image.toLowerCase();
         const isVideo = url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov');
         if (isVideo) {
