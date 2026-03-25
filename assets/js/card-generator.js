@@ -1,15 +1,16 @@
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
-    return '<div class="w-full h-56 bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
+    return '<div class="w-full h-[15.5rem] bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
   }
 
   const lower = imageUrl.toLowerCase();
   const isVideo = lower.endsWith('.mp4') || lower.endsWith('.webm') || lower.endsWith('.mov');
 
   if (isVideo) {
+    const heightClass = pageType === 'categories' ? 'h-[15.5rem]' : 'aspect-video';
     const extraClass = pageType === 'memes' ? 'video-card' : '';
     return `
-      <div class="aspect-video ${extraClass}">
+      <div class="${heightClass} ${extraClass}">
         <video src="${imageUrl}" class="w-full h-full object-cover" loop muted playsinline></video>
       </div>`;
   }
