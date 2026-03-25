@@ -131,6 +131,8 @@
     <!-- EXTERNAL SCRIPTS FIRST -->
     <script src="assets/js/common.js"></script>
     <script src="assets/js/thread-emulator.js"></script>
+    <script src="assets/js/card-generator.js"></script>
+    <script src="assets/js/modal-generator.js"></script>
 
     <script>
 
@@ -160,23 +162,16 @@
         function renderGrid() {
             const grid = document.getElementById('battle-grid');
             grid.innerHTML = '';
-            Object.keys(allBattles).sort((a,b) => (allBattles[b].order || 0) - (allBattles[a].order || 0)).forEach(id => {
-                const b = allBattles[id];
-                const cardHTML = `
-                    <div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="${(b.tags || '').split(',').join(',')}">
-                        <img src="${b.image}" class="w-full h-full object-cover" alt="${b.title}">
-                        <div class="content">
-                            <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${b.title}</h4></div>
-                            <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(b.description || b.grok || '').substring(0,130)}...</p></div>
-                        </div>
-                        <div class="buttons flex">
-                            <button id="grok-btn-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                            <button id="human-btn-${id}" onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                        </div>
-                    </div>`;
-                grid.insertAdjacentHTML('beforeend', cardHTML);
+            Object.keys(allBattles)
+                .sort((a,b) => (allBattles[b].order || 0) - (allBattles[a].order || 0))
+                .forEach(id => {
+                    const cardHTML = createContentCard('battles', id, allBattles[id]);
+                    grid.insertAdjacentHTML('beforeend', cardHTML);
+                });
+            // Update vote UI for battles (keeps your existing voting system working)
+            Object.keys(allBattles).forEach(id => {
+                if (typeof updateGridVoteUI === 'function') updateGridVoteUI(id);
             });
-            Object.keys(allBattles).forEach(id => updateGridVoteUI(id));
         }
 
         function filterCategory(cat) {
@@ -265,42 +260,25 @@
             currentBattleId = id;
             currentBattleIndex = id;
 
-            // Image
-            const url = (data.image || '').toLowerCase();
-            let mediaHTML = '';
-            if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
-                mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full h-full object-cover" autoplay loop muted playsinline></video>`;
-            } else {
-                mediaHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
-            }
-            document.getElementById('modal-image').innerHTML = mediaHTML;
+            // Unified modal population (cards + media + tags + title + X link)
+            populateModal('battles', id, data);
 
-            if (document.getElementById('modal-video')) {
-                window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
-            }
-
-            // Tags
-            const tagDisplay = { nonsense: "Nonsense", political: "Political", serious: "Now, In All Seriousness", citation: "(UN)Popular Citations", joke: "Joke Battles", censorship: "Conspiracy 1984" };
-            const tagsHTML = (data.tags || '').split(',').map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t.trim()] || t.trim()}</span>`).join('');
-            document.getElementById('modal-tags').innerHTML = tagsHTML;
-
-            document.getElementById('modal-title').textContent = data.title || '';
-            document.getElementById('modal-x-link').href = data.xLink || '#';
-
-            // THREAD EMULATOR
-            renderThread(data.threadPosts, "thread-container");
-
-            // Voting buttons
-            const grokBtn = document.getElementById('modal-grok-btn');
-            const humanBtn = document.getElementById('modal-human-btn');
-            grokBtn.innerHTML = 'Grok Won';
-            humanBtn.innerHTML = 'Human Won';
-            grokBtn.disabled = false;
-            humanBtn.disabled = false;
-
+            // Battles-specific extras (thread emulator + voting UI)
             const modal = document.getElementById('battle-modal');
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+
+            // Media (video support)
+            const url = (data.image || '').toLowerCase();
+            if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
+                if (document.getElementById('modal-video')) {
+                    window.currentPlyr = new Plyr('#modal-video', { 
+                        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'], 
+                        settings: [], 
+                        tooltips: { controls: true, seek: true } 
+                    });
+                }
+            }
 
             updateModalVoteUI();
         }
