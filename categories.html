@@ -24,37 +24,21 @@
     </script>
 
     <style>
-        /* PAGE-SPECIFIC ONLY – cleaned for unification */
-        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.75); color: white; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 42px; border-radius: 9999px; z-index: 60; transition: all 0.2s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-        .nav-arrow:hover { background: rgba(0,0,0,0.95); transform: translateY(-50%) scale(1.1); }
-        .nav-arrow-left  { left: -58px; }
-        .nav-arrow-right { right: -58px; }
-        @media (max-width: 640px) { .nav-arrow-left { left: -42px; } .nav-arrow-right { right: -42px; } .nav-arrow { width: 44px; height: 44px; font-size: 36px; } }
-
-        .category-card { 
-            transition: all 0.3s ease; 
-            cursor: pointer; 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(168,85,247,0.2); 
-            display: flex; 
-            flex-direction: column; 
-            height: 100%; 
-            overflow: hidden; 
-            border-radius: 1.5rem; 
-            position: relative; 
-        }
-        .category-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); 
-            border-color: rgb(168 85 247); 
-        }
-
-        /* No more old image/video height rules – card-generator now controls everything uniformly */
-        .tab { padding: 0.75rem 1.25rem; font-weight: 500; font-size: 0.875rem; transition: all 0.2s ease; white-space: nowrap; }
-        .tab-active { border-bottom: 3px solid rgb(168 85 247); color: white; }
-
-        #modal-scroll-area { scrollbar-width: none; -ms-overflow-style: none; }
-        #modal-scroll-area::-webkit-scrollbar { display: none; }
+        /* PAGE-SPECIFIC ONLY – Categories page (modernization branch) */
+        .nav-arrow { position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.75);color:white;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:42px;border-radius:9999px;z-index:60;transition:all .2s ease;box-shadow:0 10px 30px rgba(0,0,0,.6); }
+        .nav-arrow:hover { background:rgba(0,0,0,.95);transform:translateY(-50%) scale(1.1); }
+        .nav-arrow-left { left:-58px; }
+        .nav-arrow-right { right:-58px; }
+        @media (max-width:640px) { .nav-arrow-left { left:-42px; } .nav-arrow-right { right:-42px; } .nav-arrow { width:44px;height:44px;font-size:36px; } }
+        .category-card { transition:all .3s ease;cursor:pointer;background:rgba(255,255,255,.03);border:1px solid rgba(168,85,247,.2);display:flex;flex-direction:column;height:100%;overflow:hidden;border-radius:1.5rem;position:relative; }
+        .category-card:hover { transform:translateY(-8px);box-shadow:0 0 40px rgba(168,85,247,.5);border-color:rgb(168 85 247); }
+        .category-card .content { flex:1;padding:1.25rem;background:#18181b;display:flex;flex-direction:column; }
+        .category-card .title-area { height:56px;display:flex;align-items:center; }
+        .category-card .desc-area { flex:1; }
+        .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
+        .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
+        #modal-scroll-area { scrollbar-width:none;-ms-overflow-style:none; }
+        #modal-scroll-area::-webkit-scrollbar { display:none; }
     </style>
 
 </head>
@@ -126,9 +110,8 @@
     <script src="assets/js/thread-emulator.js"></script>
     <script src="assets/js/card-generator.js"></script>
     <script src="assets/js/modal-generator.js"></script>
-    
-    <script>
 
+    <script>
     const firebaseConfig = {
       apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
       authDomain: "grokvshumans.firebaseapp.com",
@@ -144,7 +127,6 @@
     let allCategories = {};
     let currentCategoryId = null;
     let currentCategoryIndex = 0;
-    let currentPlyr = null;
 
     async function loadCategories() {
         const snapshot = await database.ref('content/categories').once('value');
@@ -156,8 +138,9 @@
     function renderGrid() {
         const grid = document.getElementById('category-grid');
         grid.innerHTML = '';
+
         Object.keys(allCategories)
-            .sort((a,b) => (allCategories[b].order || 0) - (allCategories[a].order || 0))
+            .sort((a, b) => (allCategories[b].order || 0) - (allCategories[a].order || 0))
             .forEach(id => {
                 const cardHTML = createContentCard('categories', id, allCategories[id]);
                 grid.insertAdjacentHTML('beforeend', cardHTML);
@@ -173,105 +156,26 @@
         });
     }
 
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        const text = document.getElementById('toast-text');
-        text.textContent = message;
-        toast.classList.remove('hidden');
-        toast.style.transform = 'translate(-50%, 0)';
-        setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
-    }
-
     function openCategoryModal(id) {
+        currentCategoryIndex = id;
         const data = allCategories[id];
         if (!data) return;
         currentCategoryId = id;
-        currentCategoryIndex = id;
 
-        // Unified modal population
         populateModal('categories', id, data);
 
-        // Render thread emulator (exactly like battles.html)
-        if (typeof renderThread === 'function') {
-            renderThread(data.threadPosts || [], "thread-container");
-        }
-
-        // Open modal
-        const modal = document.getElementById('category-modal');
-        modal.classList.remove('hidden');
+        document.getElementById('category-modal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        // Video support with Plyr
-        const url = data.image.toLowerCase();
-        const isVideo = url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov');
-        if (isVideo) {
-            if (currentPlyr) currentPlyr.destroy();
-            currentPlyr = new Plyr('#modal-video', { 
-                controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], 
-                settings: [], 
-                tooltips: { controls: true, seek: true } 
-            });
+        // Thread emulator (already unified)
+        if (typeof renderThread === 'function') {
+            renderThread(data.threadPosts || [], "thread-container");
         }
     }
 
     function closeCategoryModal() {
-        if (currentPlyr) {
-            currentPlyr.pause();
-            currentPlyr.destroy();
-            currentPlyr = null;
-        }
         document.getElementById('category-modal').classList.add('hidden');
         document.body.style.overflow = 'visible';
-    }
-
-    function showCategoryShareMenu() {
-        if (!currentCategoryId) return;
-        const data = allCategories[currentCategoryId];
-        const baseUrl = window.location.origin + window.location.pathname;
-        const shareUrl = `${baseUrl}#${currentCategoryId}`;
-        const text = `Check out this category on GrokVsHumans: ${data.title} 🔥`;
-        const shareHTML = `
-            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[99999]" onclick="closeCategoryShareMenu()">
-                <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
-                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this category</h3>
-                    <div class="grid grid-cols-3 gap-6 text-center">
-                        <button onclick="copyCategoryDeepLink('${shareUrl}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-link text-4xl text-purple-400"></i><span class="text-xs mt-1">Our Site</span></button>
-                        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-facebook text-4xl text-blue-500"></i><span class="text-xs mt-1">Facebook</span></a>
-                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-4xl text-pink-500"></i><span class="text-xs mt-1">Instagram</span></a>
-                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-4xl"></i><span class="text-xs mt-1">TikTok</span></a>
-                        <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + '\\n' + shareUrl)}" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-envelope text-4xl text-green-400"></i><span class="text-xs mt-1">Email</span></a>
-                    </div>
-                    <button onclick="closeCategoryShareMenu()" class="mt-10 w-full py-4 border border-zinc-700 rounded-2xl hover:bg-zinc-800 font-medium">Cancel</button>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', shareHTML);
-    }
-
-    function closeCategoryShareMenu() {
-        const overlay = document.getElementById('share-overlay');
-        if (overlay) overlay.remove();
-    }
-
-    function copyCategoryDeepLink(url) {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link to this category copied!');
-            closeCategoryShareMenu();
-        });
-    }
-
-    function copyToClipboard(url) {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link copied to clipboard!');
-            closeCategoryShareMenu();
-        });
-    }
-
-    function getSortedCategoryIds() {
-        return Object.entries(allCategories)
-            .sort(([,a],[,b]) => (b.order || 0) - (a.order || 0))
-            .map(([id]) => id);
     }
 
     function nextCategory() {
@@ -292,6 +196,11 @@
         currentCategoryIndex = keys[prevPos];
         closeCategoryModal();
         setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
+    }
+
+    function getSortedCategoryIds() {
+        return Object.keys(allCategories)
+            .sort((a, b) => (allCategories[b].order || 0) - (allCategories[a].order || 0));
     }
 
     function checkDeepLink() {
