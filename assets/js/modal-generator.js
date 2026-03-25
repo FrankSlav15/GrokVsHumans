@@ -29,14 +29,25 @@ window.populateModal = function(pageType, id, data) {
   } else if (pageType === 'categories') {
     if (typeof renderThread === 'function') renderThread(data.threadPosts || [], "thread-container");
   } else if (pageType === 'memes') {
-    // STRICT GENRE CHECK — only show section if JSON has a real non-blank genre
     const genreSection = document.getElementById('genre-section');
-    if (genreSection) {
-      if (!data.genre || data.genre.trim() === '') {
-        genreSection.classList.add('hidden');
-      } else {
-        if (typeof renderGenreNav === 'function') renderGenreNav(id);
-      }
+    if (!genreSection) return;
+
+    // SIMPLE & BULLETPROOF: if JSON has NO text in "genre" field → hide the WHOLE div completely
+    if (!data.genre || data.genre.trim() === '') {
+      genreSection.style.display = 'none';           // strongest hide
+      // clear all inner text so nothing ever leaks from previous modal
+      const header = genreSection.querySelector('.genre-header');
+      const name = document.getElementById('genre-name');
+      const count = document.getElementById('genre-count');
+      if (header) header.textContent = '';
+      if (name) name.textContent = '';
+      if (count) count.textContent = '';
+      currentGenreList = [];
+      return;
     }
+
+    // Otherwise we have a real genre → let renderGenreNav decide if we show it
+    genreSection.style.display = '';   // reset to default (flex)
+    if (typeof renderGenreNav === 'function') renderGenreNav(id);
   }
 };
