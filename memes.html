@@ -231,25 +231,32 @@
 
     function renderGenreNav(currentId) {
         const section = document.getElementById('genre-section');
+        if (!section) return;
+
         const current = allMemes[currentId];
         if (!current || !current.genre || current.genre.trim() === '') {
             section.classList.add('hidden');
             currentGenreList = [];
             return;
         }
-        
+
+        // Build list of ALL cards with this exact genre
         currentGenreList = Object.keys(allMemes)
-            .filter(id => allMemes[id].genre === current.genre)
+            .filter(id => {
+                const g = allMemes[id].genre;
+                return g && g.trim() === current.genre.trim();
+            })
             .sort((a, b) => (allMemes[b].order || 0) - (allMemes[a].order || 0));
-        
+
+        // ONLY show if 2 or more cards share the genre
         if (currentGenreList.length <= 1) {
             section.classList.add('hidden');
+            currentGenreList = [];
             return;
         }
-        
+
         currentGenreIndex = currentGenreList.indexOf(currentId);
-        
-        // FIXED: use querySelector for class, not getElementById
+
         document.querySelector('.genre-header').textContent = `SEE OTHER VARIATIONS OF`;
         document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
         document.getElementById('genre-count').textContent = `${currentGenreList.length} total`;
