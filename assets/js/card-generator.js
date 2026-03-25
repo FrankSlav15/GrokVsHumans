@@ -1,5 +1,5 @@
 // assets/js/card-generator.js
-// Unified card generator – restored original image proportions per page (modernization branch)
+// FINAL unified card generator – matches your original Battles card look exactly (solid dark content box + proper padding)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
@@ -17,15 +17,9 @@ function generateMediaHTML(imageUrl, pageType) {
       </div>`;
   }
 
-  // PAGE-SPECIFIC HEIGHTS restored (exactly like your original designs)
-  let heightClass = 'h-56';                    // default (battles)
-  if (pageType === 'categories') heightClass = 'h-[15.5rem]';
-  if (pageType === 'memes') heightClass = 'aspect-video';
-
-  return `
-    <div class="${heightClass}">
-      <img src="${imageUrl}" loading="lazy" class="w-full h-full object-cover" alt="Preview">
-    </div>`;
+  // Exact original heights per page
+  const heightClass = pageType === 'categories' ? 'h-[15.5rem]' : 'h-56';
+  return `<img src="${imageUrl}" loading="lazy" class="w-full ${heightClass} object-cover" alt="Preview">`;
 }
 
 function getShortDescription(data, pageType) {
@@ -64,7 +58,7 @@ window.createContentCard = function(pageType, id, data) {
          data-categories="${(data.tags || '').split(',').map(t => t.trim()).join(',')}"
          data-id="${id}">
       ${mediaHTML}
-      <div class="content flex-1 flex flex-col">
+      <div class="content">   <!-- solid dark background + padding restored -->
         <div class="title-area h-[56px] flex items-center">
           <h4 class="font-semibold text-lg leading-tight line-clamp-2">${data.title || ''}</h4>
         </div>
