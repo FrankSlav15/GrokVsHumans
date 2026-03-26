@@ -1,5 +1,5 @@
 // assets/js/modal-generator.js
-// Unified modal population + embedded thread emulator with catbox video support + @username hyperlinks (modernization branch)
+// Unified modal population + embedded thread emulator (modernization branch)
 
 function getLocalAvatar(post) {
   let username = post.username || post.user || post.avatar || post.author || '';
@@ -44,9 +44,8 @@ function renderThread(threadPosts, containerId) {
   threadPosts.forEach((post) => {
     const isDeleted = post.deleted === true || !post.author;
     const avatarSrc = getLocalAvatar(post);
-    const youtubeEmbed = getYouTubeEmbed(post.image);
 
-    // Convert @username to clickable X links (light violet)
+    // Make @username clickable to X profile (light violet)
     let textWithLinks = (post.text || '').replace(/\n/g, '<br>');
     textWithLinks = textWithLinks.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank" class="text-[#c084fc] hover:underline">@$1</a>');
 
@@ -67,15 +66,15 @@ function renderThread(threadPosts, containerId) {
             </div>
             <div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>
 
-            ${youtubeEmbed ? `
+            ${getYouTubeEmbed(post.image) ? `
             <div class="mt-4 aspect-video rounded-2xl overflow-hidden border border-zinc-700">
-              <iframe width="100%" height="100%" src="${youtubeEmbed}" 
+              <iframe width="100%" height="100%" src="${getYouTubeEmbed(post.image)}" 
                       title="YouTube video player" frameborder="0" 
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                       allowfullscreen></iframe>
             </div>` : ''}
 
-            ${post.image && !youtubeEmbed ? 
+            ${post.image && !getYouTubeEmbed(post.image) ? 
               (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? 
                 `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` :
                 `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">`) : ''}
