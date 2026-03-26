@@ -1,5 +1,25 @@
 // assets/js/modal-generator.js
-// Unified modal population + thread emulator with clickable @usernames + restored tag pills (modernization branch)
+// Unified modal population + thread emulator using users.json (modernization branch)
+
+let allUsers = null;
+
+async function loadUsers() {
+  if (allUsers) return allUsers;
+  try {
+    const res = await fetch('/assets/data/users.json');
+    allUsers = await res.json();
+  } catch (e) {
+    console.warn('users.json not loaded, using fallbacks');
+    allUsers = {};
+  }
+  return allUsers;
+}
+
+function getUserData(username) {
+  if (!username || !allUsers) return {};
+  const clean = username.replace('@', '').trim();
+  return allUsers[clean] || {};
+}
 
 function getLocalAvatar(post) {
   let username = post.username || post.user || post.avatar || post.author || '';
@@ -16,25 +36,7 @@ function getYouTubeEmbed(url) {
   return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&modestbranding=1` : '';
 }
 
-function renderTags(data, pageType) {
-  const tagMap = pageType === 'battles'
-    ? { nonsense: "Nonsense", political: "Political", serious: "Now, In All Seriousness", citation: "(UN)Popular Citations", joke: "Joke Battles", censorship: "Conspiracy 1984" }
-    : pageType === 'categories'
-    ? { lazy: "Grok, Think For Me", politics: "Politics", photo: "Photo Requests", opinion: "Grok's Opinion", avoids: "Grok Avoids Request", other: "Miscellaneous" }
-    : { 'grok-memes': "Grok Memes", 'political-memes': "Political Memes", 'misc-memes': "Miscellaneous Memes", gifs: "GIFs", 'ai-tech': "AI Meme Tech", videos: "Videos", other: "Other" };
-
-  const tagsHTML = (data.tags || '').split(',').map(t => {
-    const trimmed = t.trim();
-    const label = tagMap[trimmed] || trimmed;
-    return `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${label}</span>`;
-  }).join('');
-
-  const tagsEl = document.getElementById('modal-tags');
-  if (tagsEl) tagsEl.innerHTML = tagsHTML;
-}
-
 function renderCommonModalParts(data, pageType) {
-  // Media
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
@@ -43,10 +45,6 @@ function renderCommonModalParts(data, pageType) {
       : `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
   }
 
-  // Tags (restored above title)
-  renderTags(data, pageType);
-
-  // Title + X link + description
   const titleEl = document.getElementById('modal-title');
   if (titleEl) titleEl.textContent = data.title || '';
 
@@ -67,9 +65,13 @@ function renderThread(threadPosts, containerId) {
     const isDeleted = post.deleted === true || !post.author;
     const avatarSrc = getLocalAvatar(post);
 
-    const username = post.username || post.user || post.author || '';
-    const displayName = username 
-      ? `<a href="https://x.com/${username.replace('@','')}" target="_blank" class="text-[#c084fc] hover:underline">${username}</a>` 
+    const rawUsername = post.username || post.user || post.author || '';
+    const userData = getUserData(rawUsername);
+    const displayName = userData.displayName || rawUsername;
+    const verifiedBadge = userData.verified ? `<i class="fa-solid fa-circle-check text-blue-400 ml-1 text-sm"></i>` : '';
+
+    const displayNameHTML = rawUsername 
+      ? `<a href="https://x.com/${rawUsername.replace('@','')}" target="_blank" class="text-[#c084fc] hover:underline">${displayName}${verifiedBadge}</a>` 
       : '';
 
     let textWithLinks = (post.text || '').replace(/\n/g, '<br>');
@@ -87,7 +89,7 @@ function renderThread(threadPosts, containerId) {
             </div>
           ` : `
             <div class="flex items-center gap-2 mb-2">
-              <span class="font-semibold text-sm">${displayName}</span>
+              <span class="font-semibold text-sm">${displayNameHTML}</span>
               <span class="text-zinc-500 text-xs">${post.date || ''}</span>
             </div>
             <div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>
@@ -125,7 +127,8 @@ function renderThread(threadPosts, containerId) {
   container.innerHTML = html;
 }
 
-window.populateModal = function(pageType, id, data) {
+window.populateModal = async function(pageType, id, data) {
+  await loadUsers();                     // ensure users.json is loaded once
   renderCommonModalParts(data, pageType);
 
   if (pageType === 'battles' || pageType === 'categories') {
