@@ -4,7 +4,7 @@
   "order": 14,
   "title": "Error 404: Grok Not Found!",
   "description": "SlavisTon tags @grok in the middle of turtle club GIF banter asking why it's not answering. Grok stays completely silent, sparking accusations of 'advertising mode' and selective ghosting of premium users.",
-  "image": "https://files.catbox.moe/9ucsfx.mov",
+  "image": "assets/images/categories/error404.webp",
   "tags": "avoids",
   "xLink": "https://x.com/SlavisTon/status/2032202704110461148?s=20",
   "threadPosts": [
@@ -12,7 +12,6 @@
       "id": 1,
         "author": "human",
         "username": "@0hour1",
-        "avatar": "https://pbs.twimg.com/profile_images/2034642321916997632/IeObGu_h_400x400.jpg",
         "text": "Every time a non blue check tries to ask @grok a question in my thread 😂",
         "image": "https://youtu.be/zBkuNpgACH0?si=snAVgW_1CqWjDGGd"
     },
