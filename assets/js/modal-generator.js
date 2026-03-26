@@ -1,5 +1,5 @@
 // assets/js/modal-generator.js
-// Unified modal population + embedded thread emulator with YouTube clip support (modernization branch)
+// Unified modal population + embedded thread emulator with catbox video support + @username hyperlinks (modernization branch)
 
 function getLocalAvatar(post) {
   let username = post.username || post.user || post.avatar || post.author || '';
@@ -46,6 +46,10 @@ function renderThread(threadPosts, containerId) {
     const avatarSrc = getLocalAvatar(post);
     const youtubeEmbed = getYouTubeEmbed(post.image);
 
+    // Convert @username to clickable X links (light violet)
+    let textWithLinks = (post.text || '').replace(/\n/g, '<br>');
+    textWithLinks = textWithLinks.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank" class="text-[#c084fc] hover:underline">@$1</a>');
+
     html += `
       <div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">
         ${!isDeleted && post.author !== 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
@@ -61,7 +65,7 @@ function renderThread(threadPosts, containerId) {
               <span class="font-semibold text-sm">${post.username || post.user || post.author || ''}</span>
               <span class="text-zinc-500 text-xs">${post.date || ''}</span>
             </div>
-            <div class="thread-text text-[15px] leading-relaxed">${(post.text || '').replace(/\n/g, '<br>')}</div>
+            <div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>
 
             ${youtubeEmbed ? `
             <div class="mt-4 aspect-video rounded-2xl overflow-hidden border border-zinc-700">
@@ -71,7 +75,10 @@ function renderThread(threadPosts, containerId) {
                       allowfullscreen></iframe>
             </div>` : ''}
 
-            ${post.image && !youtubeEmbed ? `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">` : ''}
+            ${post.image && !youtubeEmbed ? 
+              (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? 
+                `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` :
+                `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">`) : ''}
 
             ${post.linkedPost ? `
             <div class="mt-4 border border-zinc-700 rounded-3xl p-4 bg-zinc-950">
