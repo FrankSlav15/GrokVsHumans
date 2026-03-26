@@ -107,7 +107,6 @@
     </div>
 
     <script src="assets/js/common.js"></script>
-    <script src="assets/js/thread-emulator.js"></script>
     <script src="assets/js/card-generator.js"></script>
     <script src="assets/js/modal-generator.js"></script>
 
@@ -167,7 +166,6 @@
         document.getElementById('category-modal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        // Thread emulator (already unified)
         if (typeof renderThread === 'function') {
             renderThread(data.threadPosts || [], "thread-container");
         }
