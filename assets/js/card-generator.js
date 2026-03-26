@@ -13,11 +13,13 @@ function generateMediaHTML(imageUrl, pageType) {
       <div class="${heightClass} ${extraClass}" style="background:#18181b;">
         <video 
           src="${imageUrl}" 
+          poster="${imageUrl}" 
           class="w-full h-full object-cover" 
           loop 
           muted 
           playsinline 
-          preload="metadata"
+          preload="auto"
+          crossorigin="anonymous"
           style="width:100%; height:100%; object-fit:cover;">
         </video>
       </div>`;
