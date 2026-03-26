@@ -1,10 +1,12 @@
 // assets/js/modal-generator.js
-// Unified modal population + embedded thread emulator with \n support + robust avatar fetching (modernization branch)
+// Unified modal population + embedded thread emulator with exact X casing for avatars (modernization branch)
 
 function getLocalAvatar(post) {
-  const username = post.username || post.user || post.avatar || post.author || '';
+  let username = post.username || post.user || post.avatar || post.author || '';
   if (!username) return '/assets/images/users/@unknown.webp';
-  const clean = username.replace('@', '').toLowerCase().trim();
+  
+  // Remove @ if present, but keep original case exactly as in your JSON
+  const clean = username.replace('@', '').trim();
   return `/assets/images/users/@${clean}.webp`;
 }
 
