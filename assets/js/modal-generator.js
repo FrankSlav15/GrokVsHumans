@@ -1,7 +1,8 @@
 // assets/js/modal-generator.js
-// Unified modal population + embedded thread emulator with full linked X post support (modernization branch)
+// Unified modal population + embedded thread emulator with \n support + robust avatar fetching (modernization branch)
 
-function getLocalAvatar(username) {
+function getLocalAvatar(post) {
+  const username = post.username || post.user || post.avatar || post.author || '';
   if (!username) return '/assets/images/users/@unknown.webp';
   const clean = username.replace('@', '').toLowerCase().trim();
   return `/assets/images/users/@${clean}.webp`;
@@ -34,8 +35,7 @@ function renderThread(threadPosts, containerId) {
 
   threadPosts.forEach((post) => {
     const isDeleted = post.deleted === true || !post.author;
-    const username = post.username || '@unknown';
-    const avatarSrc = getLocalAvatar(username);
+    const avatarSrc = getLocalAvatar(post);
 
     html += `
       <div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">
@@ -49,18 +49,18 @@ function renderThread(threadPosts, containerId) {
             </div>
           ` : `
             <div class="flex items-center gap-2 mb-2">
-              <span class="font-semibold text-sm">${post.username}</span>
+              <span class="font-semibold text-sm">${post.username || post.user || post.author || ''}</span>
               <span class="text-zinc-500 text-xs">${post.date || ''}</span>
             </div>
-            <div class="thread-text text-[15px] leading-relaxed">${post.text || ''}</div>
+            <div class="thread-text text-[15px] leading-relaxed">${(post.text || '').replace(/\n/g, '<br>')}</div>
 
             ${post.linkedPost ? `
             <div class="mt-4 border border-zinc-700 rounded-3xl p-4 bg-zinc-950">
               <div class="flex items-center gap-2 mb-3">
-                <img src="${getLocalAvatar(post.linkedPost.username)}" class="w-6 h-6 rounded-full" alt="">
-                <span class="font-semibold text-sm">${post.linkedPost.username}</span>
+                <img src="${getLocalAvatar(post.linkedPost)}" class="w-6 h-6 rounded-full" alt="">
+                <span class="font-semibold text-sm">${post.linkedPost.username || post.linkedPost.author || ''}</span>
               </div>
-              <div class="text-[15px] leading-relaxed">${post.linkedPost.text || ''}</div>
+              <div class="text-[15px] leading-relaxed">${(post.linkedPost.text || '').replace(/\n/g, '<br>')}</div>
               ${post.linkedPost.url ? `<a href="${post.linkedPost.url}" target="_blank" class="text-purple-400 text-xs mt-3 inline-block">View on X →</a>` : ''}
             </div>` : ''}
 
