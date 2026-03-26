@@ -1,5 +1,5 @@
 // assets/js/modal-generator.js
-// Unified modal population + thread emulator using users.json (modernization branch)
+// Unified modal population + thread emulator using users.json + restored tag pills (modernization branch)
 
 let allUsers = null;
 
@@ -36,7 +36,25 @@ function getYouTubeEmbed(url) {
   return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&modestbranding=1` : '';
 }
 
+function renderTags(data, pageType) {
+  const tagMap = pageType === 'battles'
+    ? { nonsense: "Nonsense", political: "Political", serious: "Now, In All Seriousness", citation: "(UN)Popular Citations", joke: "Joke Battles", censorship: "Conspiracy 1984" }
+    : pageType === 'categories'
+    ? { lazy: "Grok, Think For Me", politics: "Politics", photo: "Photo Requests", opinion: "Grok's Opinion", avoids: "Grok Avoids Request", other: "Miscellaneous" }
+    : { 'grok-memes': "Grok Memes", 'political-memes': "Political Memes", 'misc-memes': "Miscellaneous Memes", gifs: "GIFs", 'ai-tech': "AI Meme Tech", videos: "Videos", other: "Other" };
+
+  const tagsHTML = (data.tags || '').split(',').map(t => {
+    const trimmed = t.trim();
+    const label = tagMap[trimmed] || trimmed;
+    return `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${label}</span>`;
+  }).join('');
+
+  const tagsEl = document.getElementById('modal-tags');
+  if (tagsEl) tagsEl.innerHTML = tagsHTML;
+}
+
 function renderCommonModalParts(data, pageType) {
+  // Media
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
@@ -45,6 +63,10 @@ function renderCommonModalParts(data, pageType) {
       : `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
   }
 
+  // Tags (restored above title)
+  renderTags(data, pageType);
+
+  // Title + X link + description
   const titleEl = document.getElementById('modal-title');
   if (titleEl) titleEl.textContent = data.title || '';
 
