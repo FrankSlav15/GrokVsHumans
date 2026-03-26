@@ -1,13 +1,19 @@
 // assets/js/modal-generator.js
-// Unified modal population + embedded thread emulator with exact X casing for avatars (modernization branch)
+// Unified modal population + embedded thread emulator with YouTube clip support (modernization branch)
 
 function getLocalAvatar(post) {
   let username = post.username || post.user || post.avatar || post.author || '';
   if (!username) return '/assets/images/users/@unknown.webp';
-  
-  // Remove @ if present, but keep original case exactly as in your JSON
   const clean = username.replace('@', '').trim();
   return `/assets/images/users/@${clean}.webp`;
+}
+
+function getYouTubeEmbed(url) {
+  if (!url) return '';
+  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  const videoId = (match && match[2].length === 11) ? match[2] : null;
+  return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&modestbranding=1` : '';
 }
 
 function renderCommonModalParts(data, pageType) {
@@ -38,6 +44,7 @@ function renderThread(threadPosts, containerId) {
   threadPosts.forEach((post) => {
     const isDeleted = post.deleted === true || !post.author;
     const avatarSrc = getLocalAvatar(post);
+    const youtubeEmbed = getYouTubeEmbed(post.image);
 
     html += `
       <div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">
@@ -56,6 +63,16 @@ function renderThread(threadPosts, containerId) {
             </div>
             <div class="thread-text text-[15px] leading-relaxed">${(post.text || '').replace(/\n/g, '<br>')}</div>
 
+            ${youtubeEmbed ? `
+            <div class="mt-4 aspect-video rounded-2xl overflow-hidden border border-zinc-700">
+              <iframe width="100%" height="100%" src="${youtubeEmbed}" 
+                      title="YouTube video player" frameborder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowfullscreen></iframe>
+            </div>` : ''}
+
+            ${post.image && !youtubeEmbed ? `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">` : ''}
+
             ${post.linkedPost ? `
             <div class="mt-4 border border-zinc-700 rounded-3xl p-4 bg-zinc-950">
               <div class="flex items-center gap-2 mb-3">
@@ -65,8 +82,6 @@ function renderThread(threadPosts, containerId) {
               <div class="text-[15px] leading-relaxed">${(post.linkedPost.text || '').replace(/\n/g, '<br>')}</div>
               ${post.linkedPost.url ? `<a href="${post.linkedPost.url}" target="_blank" class="text-purple-400 text-xs mt-3 inline-block">View on X →</a>` : ''}
             </div>` : ''}
-
-            ${post.image ? `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">` : ''}
           `}
         </div>
 
