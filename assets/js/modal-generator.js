@@ -1,5 +1,5 @@
 // assets/js/modal-generator.js
-// Unified modal population + thread emulator using users.json + restored tag pills (modernization branch)
+// Unified modal population + thread emulator using users.json + restored tags + description (modernization branch)
 
 let allUsers = null;
 
@@ -63,18 +63,27 @@ function renderCommonModalParts(data, pageType) {
       : `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
   }
 
-  // Tags (restored above title)
+  // Tags (above title)
   renderTags(data, pageType);
 
-  // Title + X link + description
+  // Title
   const titleEl = document.getElementById('modal-title');
   if (titleEl) titleEl.textContent = data.title || '';
 
+  // X link
   const xLinkEl = document.getElementById('base-x-link') || document.getElementById('modal-x-link');
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 
-  const descEl = document.getElementById('modal-desc') || document.getElementById('modal-description');
-  if (descEl) descEl.textContent = data.description || data.context || '';
+  // Description – robust selector for all pages
+  const descSelectors = ['modal-desc', 'modal-description', 'modal-description-text', '.modal-description'];
+  let descEl = null;
+  for (let sel of descSelectors) {
+    descEl = document.getElementById(sel) || document.querySelector(sel);
+    if (descEl) break;
+  }
+  if (descEl) {
+    descEl.textContent = data.description || data.context || data.grok || data.human || '';
+  }
 }
 
 function renderThread(threadPosts, containerId) {
