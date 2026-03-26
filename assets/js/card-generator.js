@@ -1,5 +1,5 @@
 // assets/js/card-generator.js
-// Unified card generator with compact tag pills inside content area (modernization branch)
+// Unified card generator with STRICT uniform content heights (modernization branch)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
@@ -54,7 +54,8 @@ function renderCardTags(data, pageType) {
     return `<span class="px-3 py-0.5 bg-purple-900/80 text-purple-200 text-[10px] rounded-full">${label}</span>`;
   }).join('');
 
-  return tagsHTML ? `<div class="flex flex-wrap gap-1 px-6 pt-4">${tagsHTML}</div>` : '';
+  // Fixed-height tag area → max 2 lines, never changes card height
+  return tagsHTML ? `<div class="tags-area px-6 pt-4 pb-1 min-h-[32px] max-h-[64px] overflow-hidden flex flex-wrap gap-1">${tagsHTML}</div>` : '<div class="tags-area px-6 pt-4 pb-1 min-h-[32px]"></div>';
 }
 
 window.createContentCard = function(pageType, id, data) {
@@ -80,7 +81,7 @@ window.createContentCard = function(pageType, id, data) {
         <div class="title-area h-[56px] flex items-center px-6">
           <h4 class="font-semibold text-lg leading-tight line-clamp-2">${data.title || ''}</h4>
         </div>
-        <div class="desc-area flex-1 px-6">
+        <div class="desc-area flex-1 px-6 pb-6">
           <p class="text-gray-400 text-sm line-clamp-4">${shortDesc}...</p>
         </div>
       </div>
