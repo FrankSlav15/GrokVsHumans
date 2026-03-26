@@ -1,5 +1,5 @@
 // assets/js/card-generator.js
-// Unified card generator with tag pills on cards (modernization branch)
+// Unified card generator with compact tag pills inside content area (modernization branch)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
@@ -51,9 +51,10 @@ function renderCardTags(data, pageType) {
   const tagsHTML = (data.tags || '').split(',').map(t => {
     const trimmed = t.trim();
     const label = tagMap[trimmed] || trimmed;
-    return `<span class="px-3 py-0.5 bg-purple-900/70 text-purple-200 text-xs rounded-full">${label}</span>`;
+    return `<span class="px-3 py-0.5 bg-purple-900/80 text-purple-200 text-[10px] rounded-full">${label}</span>`;
   }).join('');
-  return tagsHTML ? `<div class="flex flex-wrap gap-2 px-6 pt-6">${tagsHTML}</div>` : '';
+
+  return tagsHTML ? `<div class="flex flex-wrap gap-1 px-6 pt-4">${tagsHTML}</div>` : '';
 }
 
 window.createContentCard = function(pageType, id, data) {
@@ -73,9 +74,9 @@ window.createContentCard = function(pageType, id, data) {
          class="${baseClass} rounded-3xl overflow-hidden block cursor-pointer flex flex-col h-full"
          data-categories="${(data.tags || '').split(',').map(t => t.trim()).join(',')}"
          data-id="${id}">
-      ${tagsHTML}
       ${mediaHTML}
       <div class="content flex-1 flex flex-col">
+        ${tagsHTML}
         <div class="title-area h-[56px] flex items-center px-6">
           <h4 class="font-semibold text-lg leading-tight line-clamp-2">${data.title || ''}</h4>
         </div>
