@@ -14,7 +14,7 @@
         "username": "@0hour1",
         "avatar": "https://pbs.twimg.com/profile_images/2034642321916997632/IeObGu_h_400x400.jpg",
         "text": "Every time a non blue check tries to ask @grok a question in my thread 😂",
-        "image": "https://x.com/i/status/2031822715410076081",
+        "image": "https://youtu.be/zBkuNpgACH0?si=snAVgW_1CqWjDGGd",
         "timestamp": "2026-03-24T20:00:00Z"
     },
     {
@@ -51,6 +51,72 @@
     {
       "id": 6,
         "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 7,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 8,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 9,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 10,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "Come on @Grok, aren’t you going to answer?",
+        "image": null,
+        "timestamp": "2026-03-12T09:45:00Z"
+    },
+    {
+      "id": 11,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "@Grok is apparently stuck in advertising mode. It answers all non-checkmark accounts with promotional non-replies, while paying accounts are left completely unanswered… @elonmusk, someone is sabotaging your company from within…",
+        "image": null,
+        "timestamp": "2026-03-12T09:54:00Z"
+    },
+    {
+      "id": 12,
+        "author": "human",
+        "username": "@JamesKInFlorida",
+        "text": "It sure seems that way but he is doing this.",
+        "image": null,
+        "timestamp": "2026-03-12T13:58:00Z"
+    },
+    {
+      "id": 13,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 14,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 15,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 16,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 17,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "@Grok had no issue replying to me in this thread where I call him out directly. You see, we work together to build this website, exactly about human vs Grok situations. But clearly, here he refuses to answer because the original question comes from a free user and he is stuck in promoter mode. It’s just a glitch…even though he claims that it has nothing to do with account status and it’s all about the query content, relevance, and context.\n\nStill…highly dubious!",
+        "image": null,
+        "timestamp": "2026-03-12T17:20:00Z",
+          "linkedPost": {
+            "author": "human",
+            "username": "@SlavisTon",
+            "text": "Is @Grok avoiding paying customers requests while replying to non-paying users with self-promotion non-answers?\n\nGrokVsHumans Card:\n\nhttps://grokvshumans.com/categories.html#14",
+            "url": "https://x.com/SlavisTon/status/2032045921635115102?s=20"
+          }
     }
   ]
 },
