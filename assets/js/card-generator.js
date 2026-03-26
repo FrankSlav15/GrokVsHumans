@@ -11,7 +11,15 @@ function generateMediaHTML(imageUrl, pageType) {
     const extraClass = pageType === 'memes' ? 'video-card' : '';
     return `
       <div class="${heightClass} ${extraClass}" style="background:#18181b;">
-        <video src="${imageUrl}" class="w-full h-full object-cover" loop muted playsinline preload="metadata"></video>
+        <video 
+          src="${imageUrl}" 
+          class="w-full h-full object-cover" 
+          loop 
+          muted 
+          playsinline 
+          preload="metadata"
+          style="width:100%; height:100%; object-fit:cover;">
+        </video>
       </div>`;
   }
 
