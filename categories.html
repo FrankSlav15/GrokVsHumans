@@ -73,7 +73,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- CATEGORIES MODAL (fixed overlay + uniform layout + thread emulator) -->
+    <!-- CATEGORIES MODAL -->
     <div id="category-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeCategoryModal()">
         <div class="bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeCategoryModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
@@ -93,7 +93,7 @@
                 </div>
             </div>
 
-            <!-- Clean white "View" button (exactly like memes.html) -->
+            <!-- Clean white "View" button -->
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
                 <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
@@ -219,8 +219,8 @@
         const modal = document.getElementById('category-modal');
         if (modal.classList.contains('hidden') || !currentCategoryId) return;
         if (e.key === 'Escape') closeCategoryModal();
-        if (e.key === 'ArrowLeft') nextCategory();
-        if (e.key === 'ArrowRight') prevCategory();
+        if (e.key === 'ArrowLeft') prevCategory();      // ← now correctly goes to previous
+        if (e.key === 'ArrowRight') nextCategory();     // → now correctly goes to next
     });
     </script>
 
