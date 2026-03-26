@@ -1,5 +1,11 @@
 // assets/js/thread-emulator.js
-// Modernization branch - 403 Forbidden fix + debug logs for video.twimg.com
+// Modernization branch - Permanent local avatars + original video/debug logic preserved
+
+function getLocalAvatar(username) {
+  if (!username) return '/assets/images/users/@unknown.webp';
+  const clean = username.replace('@', '').toLowerCase().trim();
+  return `/assets/images/users/@${clean}.webp`;
+}
 
 function renderThread(threadPosts, containerId) {
     const container = document.getElementById(containerId);
@@ -28,9 +34,11 @@ function renderThread(threadPosts, containerId) {
 
         console.log(`Post ${i+1} → isVideo: ${isVideo}, isTwitterVideo: ${isTwitterVideo}`);
 
+        const avatarSrc = getLocalAvatar(post.username);
+
         html += `
             <div class="thread-post flex ${align} gap-3">
-                ${!isGrok ? `<img src="${post.avatar || '/assets/images/default-avatar.png'}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="${post.username}">` : ''}
+                ${!isGrok ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="${post.username}">` : ''}
                 
                 <div class="${bubbleClass} max-w-[85%] p-5 rounded-3xl">
                     <div class="flex items-center gap-2 mb-2">
@@ -56,7 +64,7 @@ function renderThread(threadPosts, containerId) {
                     </div>` : ''}
                 </div>
                 
-                ${isGrok ? `<img src="${post.avatar || '/assets/images/grok-avatar.png'}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="${post.username}">` : ''}
+                ${isGrok ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="${post.username}">` : ''}
             </div>`;
     });
 
