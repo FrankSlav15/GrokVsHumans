@@ -1,16 +1,16 @@
 // assets/js/card-generator.js
-// Unified card generator with STRICT uniform content heights + natural ellipsis (modernization branch)
+// Unified card generator – tighter content area, taller image (modernization branch)
 
 function generateMediaHTML(imageUrl, pageType) {
   if (!imageUrl) {
-    return '<div class="w-full h-[15.5rem] bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
+    return '<div class="w-full h-[17rem] bg-zinc-800 flex items-center justify-center text-zinc-500 text-sm">No media</div>';
   }
 
   const lower = imageUrl.toLowerCase();
   const isVideo = lower.endsWith('.mp4') || lower.endsWith('.webm') || lower.endsWith('.mov');
 
   if (isVideo) {
-    const heightClass = pageType === 'categories' ? 'h-[15.5rem]' : 'aspect-video';
+    const heightClass = pageType === 'categories' ? 'h-[17rem]' : 'aspect-video';
     const extraClass = pageType === 'memes' ? 'video-card' : '';
     return `
       <div class="${heightClass} ${extraClass}" style="background:#18181b;">
@@ -18,7 +18,7 @@ function generateMediaHTML(imageUrl, pageType) {
       </div>`;
   }
 
-  const heightClass = pageType === 'categories' ? 'h-[15.5rem]' : 'h-56';
+  const heightClass = pageType === 'categories' ? 'h-[17rem]' : 'h-56';
   return `<img src="${imageUrl}" loading="lazy" class="w-full ${heightClass} object-cover" alt="Preview">`;
 }
 
@@ -27,7 +27,7 @@ function getShortDescription(data, pageType) {
   if (pageType === 'battles') desc = data.description || data.grok || data.human || '';
   else if (pageType === 'categories') desc = data.description || '';
   else if (pageType === 'memes') desc = data.description || data.context || '';
-  return (desc || '').substring(0, 160);   // slightly longer safety net
+  return (desc || '').substring(0, 160);
 }
 
 function getCardFooter(pageType, id) {
@@ -54,7 +54,7 @@ function renderCardTags(data, pageType) {
     return `<span class="px-3 py-0.5 bg-purple-900/80 text-purple-200 text-[10px] rounded-full">${label}</span>`;
   }).join('');
 
-  return tagsHTML ? `<div class="tags-area px-6 pt-4 pb-1 min-h-[32px] max-h-[64px] overflow-hidden flex flex-wrap gap-1">${tagsHTML}</div>` : '<div class="tags-area px-6 pt-4 pb-1 min-h-[32px]"></div>';
+  return tagsHTML ? `<div class="tags-area px-6 pt-3 pb-1 min-h-[28px] max-h-[56px] overflow-hidden flex flex-wrap gap-1">${tagsHTML}</div>` : '<div class="tags-area px-6 pt-3 pb-1 min-h-[28px]"></div>';
 }
 
 window.createContentCard = function(pageType, id, data) {
@@ -77,10 +77,10 @@ window.createContentCard = function(pageType, id, data) {
       ${mediaHTML}
       <div class="content flex-1 flex flex-col">
         ${tagsHTML}
-        <div class="title-area h-[56px] flex items-center px-6">
+        <div class="title-area h-[52px] flex items-center px-6">
           <h4 class="font-semibold text-lg leading-tight line-clamp-2">${data.title || ''}</h4>
         </div>
-        <div class="desc-area flex-1 px-6 pb-6">
+        <div class="desc-area flex-1 px-6 pb-4">
           <p class="text-gray-400 text-sm line-clamp-4">${shortDesc}</p>
         </div>
       </div>
