@@ -10,8 +10,8 @@ function generateMediaHTML(imageUrl, pageType) {
     const heightClass = pageType === 'categories' ? 'h-[15.5rem]' : 'aspect-video';
     const extraClass = pageType === 'memes' ? 'video-card' : '';
     return `
-      <div class="${heightClass} ${extraClass}">
-        <video src="${imageUrl}" class="w-full h-full object-cover" loop muted playsinline></video>
+      <div class="${heightClass} ${extraClass}" style="background:#18181b;">
+        <video src="${imageUrl}" class="w-full h-full object-cover" loop muted playsinline preload="metadata"></video>
       </div>`;
   }
 
