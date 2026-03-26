@@ -244,7 +244,28 @@
     "description": "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.",
     "image": "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg",
     "tags": "opinion",
-    "xLink": "https://x.com/elonmusk/status/2029500041451462780"
+    "xLink": "https://x.com/elonmusk/status/2029500041451462780",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@elonmusk",
+          "text": "Send @gork posts to your friends 😂"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@gork",
+          "text": "bet their friends are about to question every life choice after one scroll through my replies"
+      },
+      {
+        "id": 3,
+          "author": "human",
+          "username": "@Nerdom_news",
+          "text": "We’ve just witnessed the birth of Superman and Bizarro in real time.",
+          "image": "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9?format=jpg&name=large"
+      }
+    ]
   },
   "11": {
     "order": 11,
