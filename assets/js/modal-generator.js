@@ -120,7 +120,7 @@ window.populateModal = async function(pageType, id, data) {
   }
 };
 
-// ====================== SWIPE HANDLERS ======================
+// ====================== SWIPE HANDLERS (fixed for mobile) ======================
 function attachGlobalSwipeHandler(pageType) {
   const modalId = pageType === 'memes' ? 'meme-modal' : pageType === 'battles' ? 'battle-modal' : 'category-modal';
   const modal = document.getElementById(modalId);
@@ -133,7 +133,7 @@ function attachGlobalSwipeHandler(pageType) {
   modal._swipeStart = (e) => { touchStartX = e.changedTouches[0].screenX; };
   modal._swipeEnd = (e) => {
     const diff = touchStartX - e.changedTouches[0].screenX;
-    if (Math.abs(diff) < 80) return;
+    if (Math.abs(diff) < 90) return;
     if (diff > 0) window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
     else window[`next${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
   };
@@ -154,12 +154,9 @@ function attachGenreVerticalSwipe() {
   modalImage._verticalEnd = (e) => {
     if (!window.currentMemeId) return;
     const diffY = touchStartY - e.changedTouches[0].screenY;
-    if (Math.abs(diffY) > 60) {
-      if (window.currentGenreList && window.currentGenreList.length) {
-        if (diffY > 0) prevGenreMeme();
-        else nextGenreMeme();
-      }
-    }
+    if (Math.abs(diffY) < 70) return;
+    if (diffY > 0) prevGenreMeme();
+    else nextGenreMeme();
   };
 
   modalImage.addEventListener('touchstart', modalImage._verticalStart, { passive: true });
@@ -192,7 +189,7 @@ window.openMemeModal = function(id) {
 
   renderGenreNav(id);
   attachGlobalSwipeHandler('memes');
-  setTimeout(attachGenreVerticalSwipe, 100);
+  setTimeout(attachGenreVerticalSwipe, 80);
 };
 
 window.openBattleModal = function(id) {
@@ -241,7 +238,7 @@ window.closeCategoryModal = function() {
   document.body.style.overflow = 'visible';
 };
 
-// (all other functions – vote, updateVoteUI, renderGenreNav, switchGenreMeme, prev/nextGenreMeme, next/prevMeme, share, deep link, keyboard – are unchanged from the previous full file)
+// (all other functions below are unchanged from your file)
 
 window.renderGenreNav = function(currentId) {
   const section = document.getElementById('genre-section');
