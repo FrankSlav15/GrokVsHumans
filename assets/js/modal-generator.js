@@ -1,5 +1,5 @@
 // assets/js/modal-generator.js
-// MODERNIZATION BRANCH – FULL FILE, mobile containment fixed (55vh), desktop 65vh, swipe + video controls stable
+// MODERNIZATION BRANCH – FULL FILE, mobile Plyr controls now fully visible/controllable (close X no longer covers mute/sound)
 
 let allUsers = null;
 
@@ -114,12 +114,14 @@ window.initPlyrSafely = function() {
     const container = document.getElementById('modal-image');
     if (!container) return;
 
-    // Mobile (55vh) vs Desktop (65vh)
     const isMobile = window.innerWidth <= 640;
     container.style.maxHeight = isMobile ? '55vh' : '65vh';
     container.style.minHeight = '0';
     container.style.flex = '0 0 auto';
     container.style.overflow = 'hidden';
+
+    // Mobile padding so close X never covers Plyr mute/sound controls
+    if (isMobile) container.style.paddingTop = '70px';
 
     const plyr = videoEl.closest('.plyr');
     if (plyr) {
@@ -127,6 +129,7 @@ window.initPlyrSafely = function() {
       plyr.style.height = '100%';
       plyr.style.width = '100%';
       plyr.style.overflow = 'hidden';
+      plyr.style.zIndex = '10'; // ensure controls sit above close X
     }
 
     videoEl.style.maxHeight = '100%';
@@ -136,7 +139,15 @@ window.initPlyrSafely = function() {
   };
 
   videoEl.onloadedmetadata = () => {
-    window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], autoplay: true, muted: true, loop: true, playsinline: true, clickToPlay: true, hideControls: false });
+    window.currentPlyr = new Plyr('#modal-video', { 
+      controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], 
+      autoplay: true, 
+      muted: true, 
+      loop: true, 
+      playsinline: true, 
+      clickToPlay: true, 
+      hideControls: false 
+    });
     setTimeout(forceContainer, 0);
     setTimeout(forceContainer, 30);
     setTimeout(forceContainer, 120);
@@ -160,7 +171,7 @@ window.populateModal = async function(pageType, id, data) {
   }
 };
 
-// ====================== SWIPE + MOBILE FIXES ======================
+// ====================== SWIPE HANDLERS ======================
 function attachGlobalSwipeHandler(pageType) {
   const modalId = pageType === 'memes' ? 'meme-modal' : pageType === 'battles' ? 'battle-modal' : 'category-modal';
   const modal = document.getElementById(modalId);
@@ -206,7 +217,7 @@ function attachGenreVerticalSwipe() {
   modalImage.addEventListener('touchend', modalImage._verticalEnd, { passive: true });
 }
 
-// ====================== OPEN MODALS (with mobile force) ======================
+// ====================== OPEN MODALS ======================
 window.openMemeModal = function(id) {
   window.currentMemeIndex = id;
   const data = window.allMemes[id];
@@ -263,14 +274,29 @@ window.openCategoryModal = function(id) {
   attachGlobalSwipeHandler('categories');
 };
 
-// (all other functions unchanged – vote, close*, genre nav, share, etc. are the same as the previous full file)
-
+// ====================== CLOSE & SHARED FUNCTIONS (unchanged) ======================
 window.closeMemeModal = function() {
   if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
   document.getElementById('modal-image').innerHTML = '';
   document.getElementById('meme-modal').style.display = 'none';
   document.body.style.overflow = 'visible';
 };
+
+window.closeModal = function() {
+  if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
+  const modal = document.getElementById('battle-modal');
+  modal.classList.add('hidden');
+  document.body.style.overflow = 'visible';
+  if (window.currentBattleId) updateGridVoteUI(window.currentBattleId);
+  window.currentBattleId = null;
+};
+
+window.closeCategoryModal = function() {
+  document.getElementById('category-modal').classList.add('hidden');
+  document.body.style.overflow = 'visible';
+};
+
+// ... (all remaining functions – vote, updateVoteUI, renderGenreNav, switchGenreMeme, prev/nextGenreMeme, next/prevMeme, share, deep link, keyboard – are exactly as in the previous full file you had)
 
 window.renderGenreNav = function(currentId) {
   const section = document.getElementById('genre-section');
@@ -495,7 +521,6 @@ window.checkDeepLink = function() {
   else if (window.allMemes && window.allMemes[id]) openMemeModal(id);
 };
 
-// Keyboard support
 document.addEventListener('keydown', e => {
   const memeModal = document.getElementById('meme-modal');
   const battleModal = document.getElementById('battle-modal');
