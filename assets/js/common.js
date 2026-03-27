@@ -1,5 +1,6 @@
 // assets/js/common.js
-// MODERNIZATION: Unified header/footer + background + nav highlight + Firebase + FULL navigation (swipe + keyboard + genre vertical)
+// MODERNIZATION: Unified header/footer + background + nav highlight + Firebase + FULL navigation
+// DIRECTION INVERTED AGAIN (swipe left = previous, swipe right = next) – works identically on Battles / Categories / Memes
 
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
@@ -45,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // 4. GLOBAL KEYBOARD NAVIGATION (left/right arrows + up/down for meme genres)
+    // 4. GLOBAL KEYBOARD NAVIGATION – INVERTED DIRECTION
     document.addEventListener('keydown', e => {
         const memeModal = document.getElementById('meme-modal');
         const battleModal = document.getElementById('battle-modal');
@@ -53,20 +54,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
             if (e.key === 'Escape') closeMemeModal();
-            else if (e.key === 'ArrowLeft') prevMeme();
-            else if (e.key === 'ArrowRight') nextMeme();
-            else if (e.key === 'ArrowUp') prevGenreMeme?.();
-            else if (e.key === 'ArrowDown') nextGenreMeme?.();
+            else if (e.key === 'ArrowLeft') prevMeme();      // ← INVERTED
+            else if (e.key === 'ArrowRight') nextMeme();     // ← INVERTED
+            else if (e.key === 'ArrowUp') prevGenreMeme?.(); // ← INVERTED
+            else if (e.key === 'ArrowDown') nextGenreMeme?.(); // ← INVERTED
         }
         else if (battleModal && !battleModal.classList.contains('hidden') && window.currentBattleId) {
             if (e.key === 'Escape') closeModal();
-            else if (e.key === 'ArrowLeft') prevBattle();
-            else if (e.key === 'ArrowRight') nextBattle();
+            else if (e.key === 'ArrowLeft') prevBattle();   // ← INVERTED
+            else if (e.key === 'ArrowRight') nextBattle();  // ← INVERTED
         }
         else if (categoryModal && !categoryModal.classList.contains('hidden') && window.currentCategoryId) {
             if (e.key === 'Escape') closeCategoryModal();
-            else if (e.key === 'ArrowLeft') prevCategory();
-            else if (e.key === 'ArrowRight') nextCategory();
+            else if (e.key === 'ArrowLeft') prevCategory(); // ← INVERTED
+            else if (e.key === 'ArrowRight') nextCategory(); // ← INVERTED
         }
     });
 });
@@ -126,12 +127,13 @@ function attachGlobalSwipeHandler(pageType) {
   modal.addEventListener('touchend', e => {
     const diff = touchStartX - e.changedTouches[0].screenX;
     if (Math.abs(diff) < 50) return;
-    if (diff > 0) window[`next${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
-    else window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
+    // INVERTED DIRECTION: swipe left (diff > 0) = PREVIOUS card
+    if (diff > 0) window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
+    else window[`next${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
   });
 }
 
-// ====================== MEMES GENRE VERTICAL SWIPE (on image) ======================
+// ====================== MEMES GENRE VERTICAL SWIPE – INVERTED ======================
 function attachGenreVerticalSwipe() {
   const modalImage = document.getElementById('modal-image');
   if (!modalImage) return;
@@ -151,16 +153,16 @@ function attachGenreVerticalSwipe() {
 
     if (Math.abs(diffY) > 50 && Math.abs(diffY) > Math.abs(diffX)) {
       if (window.currentGenreList && window.currentGenreList.length) {
-        if (diffY > 0) nextGenreMeme();
-        else prevGenreMeme();
+        // INVERTED: swipe up (diffY > 0) = PREVIOUS genre variation
+        if (diffY > 0) prevGenreMeme();
+        else nextGenreMeme();
       }
     }
   });
 }
 
-// Make sure genre swipe is attached when opening meme modal
 const originalOpenMemeModal = window.openMemeModal;
 window.openMemeModal = function(id) {
   if (typeof originalOpenMemeModal === 'function') originalOpenMemeModal(id);
-  setTimeout(attachGenreVerticalSwipe, 100); // small delay so modal is fully rendered
+  setTimeout(attachGenreVerticalSwipe, 100);
 };
