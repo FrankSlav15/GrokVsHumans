@@ -131,7 +131,16 @@
                     <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
                 </div>
 
-                <div id="genre-section" class="hidden"></div>
+                <!-- FULL GENRE SECTION STRUCTURE (restored so it actually renders) -->
+                <div id="genre-section" class="hidden">
+                    <div class="genre-header">SEE OTHER VARIATIONS OF</div>
+                    <div class="genre-arrows">
+                        <button onclick="prevGenreMeme()" class="text-4xl text-purple-400 hover:text-white transition-all">↑</button>
+                        <div id="genre-name" class="text-white font-medium"></div>
+                        <button onclick="nextGenreMeme()" class="text-4xl text-purple-400 hover:text-white transition-all">↓</button>
+                    </div>
+                    <div id="genre-count" class="text-zinc-500 text-xs"></div>
+                </div>
             </div>
 
             <!-- CONTEXT PANEL -->
@@ -263,9 +272,6 @@
 
         const current = allMemes[currentId];
         if (!current || !current.genre || current.genre.trim() === '') {
-            document.querySelector('.genre-header').textContent = '';
-            document.getElementById('genre-name').textContent = '';
-            document.getElementById('genre-count').textContent = '';
             section.classList.add('hidden');
             currentGenreList = [];
             return;
@@ -279,9 +285,6 @@
             .sort((a, b) => (allMemes[b].order || 0) - (allMemes[a].order || 0));
 
         if (currentGenreList.length <= 1) {
-            document.querySelector('.genre-header').textContent = '';
-            document.getElementById('genre-name').textContent = '';
-            document.getElementById('genre-count').textContent = '';
             section.classList.add('hidden');
             currentGenreList = [];
             return;
@@ -493,7 +496,7 @@
             attachSwipeHandler('meme-modal', prevMeme, nextMeme);
         }
 
-        // Memes-specific genre swipe on image
+        // Memes-specific genre swipe on image ONLY (vertical) — horizontal now always handled by main modal swipe
         const modalImage = document.getElementById('modal-image');
         let touchStartX = 0;
         let touchStartY = 0;
@@ -510,12 +513,12 @@
             const diffX = touchStartX - touchEndX;
             const diffY = touchStartY - touchEndY;
 
-            if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 0) nextMeme();
-                else prevMeme();
-            } else if (currentGenreList.length && Math.abs(diffY) > 50) {
-                if (diffY > 0) nextGenreMeme();
-                else prevGenreMeme();
+            // ONLY vertical for genre (horizontal is handled by the main modal swipe)
+            if (Math.abs(diffY) > 50 && Math.abs(diffY) > Math.abs(diffX)) {
+                if (currentGenreList.length) {
+                    if (diffY > 0) nextGenreMeme();
+                    else prevGenreMeme();
+                }
             }
         });
     });
