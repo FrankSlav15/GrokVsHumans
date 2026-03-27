@@ -41,29 +41,27 @@
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
-        /* ====================== MOBILE MODAL + SWIPE FIXES (modernization branch) ====================== */
+        /* ====================== MOBILE + DESKTOP MODAL FIXES (modernization branch) ====================== */
         @media (max-width: 640px) {
-          /* Rounded corners restored (matches site styling) */
           .modal-content {
             max-height: 100dvh !important;
-            border-radius: 20px !important;
+            border-radius: 20px !important; /* restored rounded corners */
             margin: 0 !important;
             width: 100% !important;
           }
-
-          /* Image shrinks dynamically so title + genre + buttons ALWAYS fit */
           #meme-modal .modal-content {
             overflow: hidden;
             padding-bottom: 0;
           }
+          /* STRICT IMAGE CONTAINER – no bleed into title/desc */
           #meme-modal #modal-image {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #18181b;
-            padding: 8px;
-            max-height: calc(100vh - 260px); /* leaves room for title + genre + buttons */
+            padding: 12px;
+            max-height: calc(100vh - 280px); /* always leaves room for title + genre + buttons */
           }
           #meme-modal #modal-image img,
           #meme-modal #modal-image video {
@@ -71,33 +69,29 @@
             width: 100%;
             object-fit: contain;
           }
+        }
 
-          #modal-buttons {
+        /* GENRE SECTION – identical on desktop AND mobile */
+        #genre-section {
             flex-shrink: 0;
-            padding: 12px 12px !important;
-          }
-
-          /* Genre section – exactly as you requested */
-          #genre-section {
-            flex-shrink: 0;
-            padding: 12px 16px;
+            padding: 14px 16px;
             border-top: 1px solid #27272a;
             background: #18181b;
             text-align: center;
-          }
-          .genre-header {
+        }
+        .genre-header {
             font-size: 13px;
             font-weight: 600;
             color: #c084fc;
             margin-bottom: 6px;
-          }
-          .genre-arrows {
+        }
+        .genre-arrows {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 24px;
-          }
-          #genre-name {
+        }
+        #genre-name {
             font-size: 15px;
             font-weight: 600;
             color: #fff;
@@ -106,7 +100,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-          }
         }
     </style>
 
@@ -151,6 +144,7 @@
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
             <div class="flex flex-col flex-1" id="modal-content-inner">
+                <!-- STRICT IMAGE SECTION – no bleed into title/desc -->
                 <div id="modal-image" class="flex-1 bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
 
                 <div class="px-6 pt-4 pb-3 border-t border-zinc-800">
@@ -158,7 +152,7 @@
                     <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
                 </div>
 
-                <!-- GENRE SECTION – exactly as you requested -->
+                <!-- GENRE SECTION – identical on desktop AND mobile -->
                 <div id="genre-section" class="hidden">
                     <div class="genre-header">SEE OTHER VARIATIONS OF</div>
                     <div class="genre-arrows">
