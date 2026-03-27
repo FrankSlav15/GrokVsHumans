@@ -1,5 +1,5 @@
 // assets/js/common.js
-// MODERNIZATION: Background + header/footer + initPage only
+// MODERNIZATION: Background + header/footer + nav highlight only
 
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
@@ -35,7 +35,21 @@ async function loadLayout() {
         const footerRes = await fetch('assets/partials/footer.html');
         const footerHTML = await footerRes.text();
         document.body.insertAdjacentHTML('beforeend', footerHTML);
+
+        // Nav highlight after header is inserted
+        highlightActiveNav();
     } catch (e) {}
+}
+
+function highlightActiveNav() {
+  const navLinks = document.querySelectorAll('.nav-link');
+  if (navLinks.length === 0) return;
+  const currentPage = document.body.getAttribute('data-page') || '';
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    const href = link.getAttribute('href').replace('.html', '').toLowerCase();
+    if (href === currentPage.toLowerCase()) link.classList.add('active');
+  });
 }
 
 window.showToast = function(message) {
