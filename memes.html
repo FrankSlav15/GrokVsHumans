@@ -53,9 +53,9 @@
         }
         #meme-modal #modal-image img,
         #meme-modal #modal-image video {
-            max-height: 100% !important;
             width: 100% !important;
             object-fit: contain !important;
+            /* max-height: 100% !important; ← DISABLED as you asked */
         }
 
         /* Title/desc + genre never shrink */
@@ -255,7 +255,7 @@
 
         populateModal('memes', id, data);
 
-        // IMMEDIATE OVERRIDE – kills any max-h-[70vh] from modal-generator.js
+        // IMMEDIATE OVERRIDE – kills max-h-[70vh] from modal-generator.js
         const mediaContainer = document.getElementById('modal-image');
         const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
         mediaContainer.innerHTML = isVideo
