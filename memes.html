@@ -41,7 +41,7 @@
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
-        /* ====================== STRICT MEDIA CONTAINER (images + videos) ====================== */
+        /* ====================== BEST-PRACTICE MODAL MEDIA CONTAINER ====================== */
         #modal-image {
             flex: 1;
             display: flex;
@@ -49,7 +49,7 @@
             justify-content: center;
             background: #18181b;
             padding: 12px;
-            max-height: 62vh;           /* desktop-safe height */
+            max-height: calc(100vh - 320px);   /* desktop: plenty of room for tall images/videos to shrink */
         }
         #modal-image img,
         #modal-image video {
@@ -58,7 +58,7 @@
             object-fit: contain;
         }
 
-        /* GENRE SECTION – clean on both desktop and mobile */
+        /* GENRE SECTION – clean on desktop AND mobile */
         #genre-section {
             flex-shrink: 0;
             padding: 12px 16px;
@@ -102,7 +102,7 @@
             padding-bottom: 0;
           }
           #modal-image {
-            max-height: 55vh;   /* mobile is tighter */
+            max-height: 55vh;   /* mobile stays tight and perfect */
           }
           #modal-buttons {
             flex-shrink: 0;
@@ -152,7 +152,7 @@
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
             <div class="flex flex-col flex-1" id="modal-content-inner">
-                <!-- STRICT MEDIA CONTAINER – works for BOTH images and videos -->
+                <!-- STRICT MEDIA CONTAINER – works for BOTH images and videos on desktop + mobile -->
                 <div id="modal-image" class="flex-1 bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
 
                 <div class="px-6 pt-4 pb-3 border-t border-zinc-800">
@@ -338,8 +338,8 @@
         const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
         
         mediaContainer.innerHTML = isVideo
-            ? `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`
-            : `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+            ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline></video>`
+            : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
         
         if (window.currentPlyr) window.currentPlyr.destroy();
         if (isVideo) {
