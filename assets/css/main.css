@@ -72,3 +72,51 @@ body::after { content: ''; position: absolute; inset: 0; background: rgba(10,10,
 .site-footer { padding-top: 3rem; padding-bottom: 3rem; border-top: 1px solid rgb(168 85 247 / 0.3); text-align: center; color: rgb(156 163 175); font-size: 0.75rem; margin-top: auto; }
 .footer-legal { margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem 1rem; font-size: 0.625rem; }
 .footer-legal a:hover { color: rgb(168 85 247); }
+
+/* ====================== MOBILE MODAL + SWIPE FIXES (modernization branch) ====================== */
+@media (max-width: 640px) {
+  /* Perfect one-card fit + no stray scroll */
+  .modal-content {
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Memes modal — strict no-scroll */
+  #meme-modal .modal-content {
+    overflow: hidden;
+  }
+  #meme-modal #modal-image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #18181b;
+    padding: 8px;
+    max-height: 58vh;
+  }
+  #meme-modal #modal-image img,
+  #meme-modal #modal-image video {
+    max-height: 58vh;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  /* Battles & Categories — image scrolls away */
+  #battle-modal #modal-scroll-area,
+  #category-modal #modal-scroll-area {
+    padding-top: 0;
+  }
+}
+
+/* Unified nav arrows on phones */
+@media (max-width: 640px) {
+  .nav-arrow {
+    width: 44px;
+    height: 44px;
+    font-size: 36px;
+  }
+  .nav-arrow-left { left: -42px; }
+  .nav-arrow-right { right: -42px; }
+}

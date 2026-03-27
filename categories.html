@@ -39,6 +39,23 @@
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
         #modal-scroll-area { scrollbar-width:none;-ms-overflow-style:none; }
         #modal-scroll-area::-webkit-scrollbar { display:none; }
+
+        /* ====================== MOBILE MODAL + SWIPE FIXES (modernization branch) ====================== */
+        @media (max-width: 640px) {
+          /* Perfect one-card fit + no stray scroll */
+          .modal-content {
+            max-height: 100dvh !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+          }
+
+          /* Battles & Categories — image scrolls away */
+          #battle-modal #modal-scroll-area,
+          #category-modal #modal-scroll-area {
+            padding-top: 0;
+          }
+        }
     </style>
 
 </head>
@@ -211,6 +228,41 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         loadCategories();
+
+        // UNIFIED SWIPE – right-to-left swipe = backward (recent → oldest) – modernization branch
+        // Attached per-page so it works reliably on battles, categories, and memes
+        const attachSwipeHandler = (modalId, prevFn, nextFn) => {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            let touchStartX = 0;
+
+            modal.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            modal.addEventListener('touchend', e => {
+                const touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+
+                if (Math.abs(diff) < 50) return;
+
+                // right → left swipe = previous card (as you requested)
+                if (diff > 0) {
+                    if (typeof prevFn === 'function') prevFn();
+                } else {
+                    if (typeof nextFn === 'function') nextFn();
+                }
+            });
+        };
+
+        // Page-specific swipe (only one modal exists per HTML file)
+        if (typeof openBattleModal === 'function') {
+            attachSwipeHandler('battle-modal', prevBattle, nextBattle);
+        } else if (typeof openCategoryModal === 'function') {
+            attachSwipeHandler('category-modal', prevCategory, nextCategory);
+        } else if (typeof openMemeModal === 'function') {
+            attachSwipeHandler('meme-modal', prevMeme, nextMeme);
+        }
     });
 
     window.addEventListener('hashchange', checkDeepLink);
