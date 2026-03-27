@@ -1,12 +1,16 @@
 // assets/js/modal-generator.js
-// FINAL CLEAN VERSION – all navigation unified here, no duplicates anywhere
+// FINAL CLEAN VERSION – all navigation unified here, video containment fixed
 
 let allUsers = null;
 
 async function loadUsers() {
   if (allUsers) return allUsers;
-  const res = await fetch('/assets/data/users.json');
-  allUsers = await res.json();
+  try {
+    const res = await fetch('/assets/data/users.json');
+    allUsers = await res.json();
+  } catch (e) {
+    allUsers = {};
+  }
   return allUsers;
 }
 
