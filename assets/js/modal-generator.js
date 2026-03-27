@@ -1,5 +1,5 @@
 // assets/js/modal-generator.js
-// FINAL CLEAN VERSION – all navigation unified here, video containment fixed
+// FINAL CLEAN VERSION – all navigation unified here, video containment fixed for memes page
 
 let allUsers = null;
 
