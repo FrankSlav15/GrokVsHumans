@@ -41,15 +41,15 @@
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
-        /* HIGH-SPECIFICITY FIX FOR TALL IMAGES/VIDEOS (based on your DevTools screenshot) */
+        /* HIGH-SPECIFICITY FIX (based on your latest DevTools screenshot) */
         #meme-modal #modal-image {
-            flex: 0 0 auto !important;           /* stops growing */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #18181b;
-            padding: 12px;
-            max-height: calc(100vh - 420px) !important;   /* aggressive desktop cap */
+            flex: 0 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: #18181b !important;
+            padding: 12px !important;
+            max-height: calc(100vh - 420px) !important;   /* aggressive desktop shrink */
         }
         #meme-modal #modal-image img,
         #meme-modal #modal-image video {
@@ -58,13 +58,44 @@
             object-fit: contain !important;
         }
 
-        /* Text + Genre never shrink */
+        /* TITLE + DESCRIPTION + GENRE never shrink */
         #modal-content-inner > div:nth-child(2),
         #genre-section {
             flex-shrink: 0 !important;
         }
 
-        /* Mobile stays exactly as you wanted */
+        /* GENRE SECTION – restored exactly as you wanted */
+        #genre-section {
+            flex-shrink: 0;
+            padding: 12px 16px;
+            border-top: 1px solid #27272a;
+            background: #18181b;
+            text-align: center;
+        }
+        .genre-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: #c084fc;
+            margin-bottom: 6px;
+        }
+        .genre-arrows {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        #genre-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Mobile stays perfect */
         @media (max-width: 640px) {
           .modal-content {
             max-height: 100dvh !important;
@@ -119,7 +150,6 @@
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
             <div class="flex flex-col flex-1" id="modal-content-inner">
-                <!-- MEDIA CONTAINER – high-specificity fix from your DevTools screenshot -->
                 <div id="modal-image" class="flex-none bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
 
                 <div class="px-6 pt-4 pb-3 border-t border-zinc-800 flex-shrink-0">
@@ -127,7 +157,6 @@
                     <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
                 </div>
 
-                <!-- GENRE SECTION -->
                 <div id="genre-section" class="hidden flex-shrink-0">
                     <div class="genre-header">SEE OTHER VARIATIONS OF</div>
                     <div class="genre-arrows">
