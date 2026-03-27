@@ -104,23 +104,13 @@ body::after { content: ''; position: absolute; inset: 0; background: rgba(10,10,
   object-fit: contain !important;
 }
 
-/* MOBILE FIX – strict 55vh + padding so Plyr mute/sound controls are never covered by the close X */
+/* MOBILE FIX – strict 55vh + padding so native video controls (mute/sound) are never covered by the close X */
 @media (max-width: 640px) {
   #meme-modal #modal-image,
   #battle-modal #modal-image,
   #category-modal #modal-image {
     max-height: 55vh !important;
-    padding-top: 70px; /* space for close X + Plyr controls */
-  }
-
-  #meme-modal #modal-image .plyr,
-  #battle-modal #modal-image .plyr,
-  #category-modal #modal-image .plyr {
-    max-height: 100% !important;
-    height: 100% !important;
-    width: 100% !important;
-    overflow: hidden;
-    z-index: 10;
+    padding-top: 70px; /* space for close X + native controls */
   }
 
   #meme-modal #modal-image video,
