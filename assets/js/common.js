@@ -27,18 +27,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadLayout() {
-    try {
-        const headerRes = await fetch('assets/partials/header.html');
-        const headerHTML = await headerRes.text();
-        document.body.insertAdjacentHTML('afterbegin', headerHTML);
+  try {
+    // Header
+    const headerRes = await fetch('assets/partials/header.html');
+    if (!headerRes.ok) throw new Error('Header 404');
+    const headerHTML = await headerRes.text();
+    document.body.insertAdjacentHTML('afterbegin', headerHTML);
 
-        const footerRes = await fetch('assets/partials/footer.html');
-        const footerHTML = await footerRes.text();
-        document.body.insertAdjacentHTML('beforeend', footerHTML);
+    // Footer
+    const footerRes = await fetch('assets/partials/footer.html');
+    if (!footerRes.ok) throw new Error('Footer 404');
+    const footerHTML = await footerRes.text();
+    document.body.insertAdjacentHTML('beforeend', footerHTML);
 
-        // Nav highlight after header is inserted
-        highlightActiveNav();
-    } catch (e) {}
+    // Force nav highlight immediately after header is inserted
+    highlightActiveNav();
+
+    console.log('✅ Header + Footer loaded on index.html');
+  } catch (e) {
+    console.error('❌ Layout load failed:', e);
+    // Minimal fallback so index never appears broken
+    document.body.insertAdjacentHTML('afterbegin', 
+      `<nav class="fixed top-0 w-full bg-black/90 p-4 text-center z-50 border-b border-red-500">GrokVsHumans <span class="text-red-400">(header failed — refresh?)</span></nav>`
+    );
+  }
 }
 
 function highlightActiveNav() {
