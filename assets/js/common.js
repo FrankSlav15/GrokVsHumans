@@ -1,6 +1,5 @@
 // assets/js/common.js
-// MODERNIZATION: Unified header/footer + background + nav highlight + Firebase + page dispatcher
-// (This file now powers ALL three pages: memes.html, battles.html, categories.html)
+// MODERNIZATION: Unified header/footer + background + nav highlight + Firebase + FULL navigation (swipe + keyboard + genre vertical)
 
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
@@ -17,19 +16,8 @@ const database = firebase.database();
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. RANDOM BACKGROUND ROTATOR (unchanged from your original)
-    const bgs = [
-        'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
-        'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
-        'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
-        'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
-        'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
-        'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
-        'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
-        'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
-        'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
-        'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
-    ];
+    // 1. RANDOM BACKGROUND ROTATOR
+    const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
     document.body.style.backgroundPosition = '50% 35%';
@@ -37,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
-    // 2. LOAD HEADER + FOOTER (unchanged)
+    // 2. LOAD HEADER + FOOTER
     loadLayout();
 
-    // 3. NAV HIGHLIGHT (unchanged)
+    // 3. NAV HIGHLIGHT
     const observer = new MutationObserver(() => {
         const navLinks = document.querySelectorAll('.nav-link');
         if (navLinks.length > 0) {
@@ -56,34 +44,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     observer.observe(document.body, { childList: true, subtree: true });
+
+    // 4. GLOBAL KEYBOARD NAVIGATION (left/right arrows + up/down for meme genres)
+    document.addEventListener('keydown', e => {
+        const memeModal = document.getElementById('meme-modal');
+        const battleModal = document.getElementById('battle-modal');
+        const categoryModal = document.getElementById('category-modal');
+
+        if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
+            if (e.key === 'Escape') closeMemeModal();
+            else if (e.key === 'ArrowLeft') prevMeme();
+            else if (e.key === 'ArrowRight') nextMeme();
+            else if (e.key === 'ArrowUp') prevGenreMeme?.();
+            else if (e.key === 'ArrowDown') nextGenreMeme?.();
+        }
+        else if (battleModal && !battleModal.classList.contains('hidden') && window.currentBattleId) {
+            if (e.key === 'Escape') closeModal();
+            else if (e.key === 'ArrowLeft') prevBattle();
+            else if (e.key === 'ArrowRight') nextBattle();
+        }
+        else if (categoryModal && !categoryModal.classList.contains('hidden') && window.currentCategoryId) {
+            if (e.key === 'Escape') closeCategoryModal();
+            else if (e.key === 'ArrowLeft') prevCategory();
+            else if (e.key === 'ArrowRight') nextCategory();
+        }
+    });
 });
 
 async function loadLayout() {
     try {
-        // Header
         const headerRes = await fetch('assets/partials/header.html');
-        if (!headerRes.ok) throw new Error('Header 404');
         const headerHTML = await headerRes.text();
         document.body.insertAdjacentHTML('afterbegin', headerHTML);
 
-        // Footer
         const footerRes = await fetch('assets/partials/footer.html');
-        if (!footerRes.ok) throw new Error('Footer 404');
         const footerHTML = await footerRes.text();
         document.body.insertAdjacentHTML('beforeend', footerHTML);
 
         console.log('✅ Header + Footer loaded from common.js');
     } catch (e) {
         console.error('❌ Layout load failed:', e);
-        // Fallback so site never dies
-        document.body.insertAdjacentHTML('afterbegin', 
-            `<nav class="fixed top-0 w-full bg-black/90 p-4 text-center z-50 border-b border-red-500">GrokVsHumans <span class="text-red-400">(header failed — refresh?)</span></nav>`
-        );
     }
 }
 
-// ====================== NEW MODERNIZATION FEATURES ======================
-
+// ====================== GLOBAL UTILITIES ======================
 window.showToast = function(message) {
   const toast = document.getElementById('toast');
   if (!toast) return;
@@ -91,40 +95,29 @@ window.showToast = function(message) {
   text.textContent = message;
   toast.classList.remove('hidden');
   toast.style.transform = 'translate(-50%, 0)';
-  setTimeout(() => {
-    toast.style.transform = 'translate(-50%, 80px)';
-    setTimeout(() => toast.classList.add('hidden'), 400);
-  }, 2800);
+  setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
 };
 
 window.initPage = async function(pageType) {
-  // Make sure users.json is loaded once (used by modal-generator.js)
   await loadUsers();
-
   if (pageType === 'memes') {
     const snapshot = await database.ref('content/memes').once('value');
     window.allMemes = snapshot.val() || {};
     if (typeof renderMemeGrid === 'function') renderMemeGrid();
-  } 
-  else if (pageType === 'battles') {
+  } else if (pageType === 'battles') {
     const snapshot = await database.ref('content/battles').once('value');
     window.allBattles = snapshot.val() || {};
     if (typeof renderBattleGrid === 'function') renderBattleGrid();
-  } 
-  else if (pageType === 'categories') {
+  } else if (pageType === 'categories') {
     const snapshot = await database.ref('content/categories').once('value');
     window.allCategories = snapshot.val() || {};
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
   }
-
-  // Attach global swipe handler for this page
   attachGlobalSwipeHandler(pageType);
 };
 
 function attachGlobalSwipeHandler(pageType) {
-  const modalId = pageType === 'memes' ? 'meme-modal' 
-                : pageType === 'battles' ? 'battle-modal' 
-                : 'category-modal';
+  const modalId = pageType === 'memes' ? 'meme-modal' : pageType === 'battles' ? 'battle-modal' : 'category-modal';
   const modal = document.getElementById(modalId);
   if (!modal) return;
 
@@ -137,3 +130,37 @@ function attachGlobalSwipeHandler(pageType) {
     else window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
   });
 }
+
+// ====================== MEMES GENRE VERTICAL SWIPE (on image) ======================
+function attachGenreVerticalSwipe() {
+  const modalImage = document.getElementById('modal-image');
+  if (!modalImage) return;
+  let touchStartX = 0, touchStartY = 0;
+
+  modalImage.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  });
+
+  modalImage.addEventListener('touchend', e => {
+    if (!window.currentMemeId) return;
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+
+    if (Math.abs(diffY) > 50 && Math.abs(diffY) > Math.abs(diffX)) {
+      if (window.currentGenreList && window.currentGenreList.length) {
+        if (diffY > 0) nextGenreMeme();
+        else prevGenreMeme();
+      }
+    }
+  });
+}
+
+// Make sure genre swipe is attached when opening meme modal
+const originalOpenMemeModal = window.openMemeModal;
+window.openMemeModal = function(id) {
+  if (typeof originalOpenMemeModal === 'function') originalOpenMemeModal(id);
+  setTimeout(attachGenreVerticalSwipe, 100); // small delay so modal is fully rendered
+};
