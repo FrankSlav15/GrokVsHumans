@@ -266,22 +266,7 @@
             mediaEl.style.maxHeight = '100%';
         }
 
-        if (isVideo) {
-            const videoEl = document.getElementById('modal-video');
-            if (videoEl) {
-                videoEl.onloadedmetadata = () => {
-                    if (window.currentPlyr) window.currentPlyr.destroy();
-                    window.currentPlyr = new Plyr('#modal-video', {
-                        controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
-                        autoplay: true,
-                        muted: true,
-                        loop: true,
-                        playsinline: true,
-                        clickToPlay: true
-                    });
-                };
-            }
-        }
+        if (isVideo) initPlyrSafely();
 
         document.getElementById('modal-desc').textContent = data.description || data.context || '';
         document.getElementById('base-x-link').href = data.xLink || '#';
@@ -291,6 +276,35 @@
         document.body.style.overflow = 'hidden';
 
         renderGenreNav(id);
+    }
+
+    function initPlyrSafely() {
+        const videoEl = document.getElementById('modal-video');
+        if (!videoEl) return;
+
+        const forceContainerHeight = () => {
+            const plyrWrapper = videoEl.closest('.plyr');
+            if (plyrWrapper) plyrWrapper.style.maxHeight = '100%';
+        };
+
+        videoEl.onloadedmetadata = () => {
+            if (window.currentPlyr) window.currentPlyr.destroy();
+            window.currentPlyr = new Plyr('#modal-video', {
+                controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
+                autoplay: true,
+                muted: true,
+                loop: true,
+                playsinline: true,
+                clickToPlay: true
+            });
+            // Ensure Plyr wrapper respects container after init
+            setTimeout(forceContainerHeight, 50);
+        };
+
+        // Fallback if metadata already loaded
+        if (videoEl.readyState >= 1) {
+            videoEl.onloadedmetadata();
+        }
     }
 
     function renderGenreNav(currentId) {
@@ -346,22 +360,7 @@
             mediaEl.style.maxHeight = '100%';
         }
         
-        if (isVideo) {
-            const videoEl = document.getElementById('modal-video');
-            if (videoEl) {
-                videoEl.onloadedmetadata = () => {
-                    if (window.currentPlyr) window.currentPlyr.destroy();
-                    window.currentPlyr = new Plyr('#modal-video', {
-                        controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
-                        autoplay: true,
-                        muted: true,
-                        loop: true,
-                        playsinline: true,
-                        clickToPlay: true
-                    });
-                };
-            }
-        }
+        if (isVideo) initPlyrSafely();
         
         document.getElementById('base-x-link').href = data.xLink || '#';
         currentMemeId = newId;
