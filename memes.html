@@ -41,7 +41,7 @@
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
-        /* HIGH-SPECIFICITY MEDIA CONTAINER – overrides modal-generator.js */
+        /* HIGH-SPECIFICITY MEDIA CONTAINER – overrides modal-generator.js max-h-[70vh] */
         #meme-modal #modal-image {
             flex: 0 0 auto !important;
             display: flex !important;
@@ -255,7 +255,7 @@
 
         populateModal('memes', id, data);
 
-        // IMMEDIATE OVERRIDE – kills the max-h-[70vh] from modal-generator.js
+        // IMMEDIATE OVERRIDE – kills max-h-[70vh] from modal-generator.js
         const mediaContainer = document.getElementById('modal-image');
         const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
         mediaContainer.innerHTML = isVideo
