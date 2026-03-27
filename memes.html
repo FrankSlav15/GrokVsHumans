@@ -20,7 +20,7 @@
     <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
     
     <style>
-        /* PAGE-SPECIFIC ONLY – Memes page (modernization branch) – UNIFIED MODAL BUTTONS (boxier corners) */
+        /* PAGE-SPECIFIC ONLY – Memes page (modernization branch) */
         .nav-arrow { position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.75);color:white;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:42px;border-radius:9999px;z-index:75;transition:all .2s ease;box-shadow:0 10px 30px rgba(0,0,0,.6); }
         .nav-arrow:hover { background:rgba(0,0,0,.95);transform:translateY(-50%) scale(1.1); }
         .nav-arrow-left { left:-58px; }
@@ -38,25 +38,17 @@
         .modal-btn-context { background:#27272a !important;color:#fff !important;font-weight:600;padding:14px 24px !important;border-radius:12px !important;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(0.4,0,0.2,1); }
         .modal-btn-share { border:1px solid #a855f7 !important;color:#fff !important;font-weight:600;padding:14px 24px !important;border-radius:12px !important;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(0.4,0,0.2,1); }
         @media (max-width:640px) { #modal-buttons { gap:6px;padding:12px 12px !important; } }
-        #genre-section { padding:12px 24px !important;border-top:1px solid #27272a;background:#18181b;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap; }
-        .genre-header { font-size:13px;font-weight:600;letter-spacing:1px;color:#c084fc;white-space:nowrap; }
-        .genre-arrows { display:flex;align-items:center;gap:16px;flex:1;justify-content:center; }
-        #genre-name { font-size:15px;font-weight:600;color:#fff;white-space:nowrap; }
-        #genre-count { font-size:12px;color:#71717a;white-space:nowrap; }
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
         /* ====================== MOBILE MODAL + SWIPE FIXES (modernization branch) ====================== */
         @media (max-width: 640px) {
-          /* Perfect one-card fit + no stray scroll */
           .modal-content {
             max-height: 100dvh !important;
             border-radius: 0 !important;
             margin: 0 !important;
             width: 100% !important;
           }
-
-          /* Memes modal — strict no-scroll + buttons always inside */
           #meme-modal .modal-content {
             overflow: hidden;
             padding-bottom: 0;
@@ -79,6 +71,36 @@
           #modal-buttons {
             flex-shrink: 0;
             padding: 12px 12px !important;
+          }
+          /* GENRE SECTION - EXACT LAYOUT YOU REQUESTED */
+          #genre-section {
+            flex-shrink: 0;
+            padding: 12px 16px;
+            border-top: 1px solid #27272a;
+            background: #18181b;
+            text-align: center;
+          }
+          .genre-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: #c084fc;
+            margin-bottom: 6px;
+          }
+          .genre-arrows {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+          }
+          #genre-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
     </style>
@@ -115,7 +137,7 @@
         <span id="toast-text" class="font-medium text-white"></span>
     </div>
 
-    <!-- MEME MODAL – mobile-perfect fit, NO scrolling, swipe enabled (modernization) -->
+    <!-- MEME MODAL -->
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-0" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
@@ -131,15 +153,14 @@
                     <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
                 </div>
 
-                <!-- FULL GENRE SECTION STRUCTURE (restored so it actually renders) -->
+                <!-- GENRE SECTION – EXACTLY as you requested in the screenshot -->
                 <div id="genre-section" class="hidden">
                     <div class="genre-header">SEE OTHER VARIATIONS OF</div>
                     <div class="genre-arrows">
-                        <button onclick="prevGenreMeme()" class="text-4xl text-purple-400 hover:text-white transition-all">↑</button>
+                        <button onclick="prevGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↓</button>
                         <div id="genre-name" class="text-white font-medium"></div>
-                        <button onclick="nextGenreMeme()" class="text-4xl text-purple-400 hover:text-white transition-all">↓</button>
+                        <button onclick="nextGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↑</button>
                     </div>
-                    <div id="genre-count" class="text-zinc-500 text-xs"></div>
                 </div>
             </div>
 
@@ -294,7 +315,6 @@
 
         document.querySelector('.genre-header').textContent = `SEE OTHER VARIATIONS OF`;
         document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
-        document.getElementById('genre-count').textContent = `${currentGenreList.length} total`;
         section.classList.remove('hidden');
     }
 
@@ -464,7 +484,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadMemes();
 
-        // UNIFIED SWIPE – right-to-left swipe = backward (recent → oldest) – modernization branch
         const attachSwipeHandler = (modalId, prevFn, nextFn) => {
             const modal = document.getElementById(modalId);
             if (!modal) return;
@@ -496,7 +515,6 @@
             attachSwipeHandler('meme-modal', prevMeme, nextMeme);
         }
 
-        // Memes-specific genre swipe on image ONLY (vertical) — horizontal now always handled by main modal swipe
         const modalImage = document.getElementById('modal-image');
         let touchStartX = 0;
         let touchStartY = 0;
@@ -513,7 +531,6 @@
             const diffX = touchStartX - touchEndX;
             const diffY = touchStartY - touchEndY;
 
-            // ONLY vertical for genre (horizontal is handled by the main modal swipe)
             if (Math.abs(diffY) > 50 && Math.abs(diffY) > Math.abs(diffX)) {
                 if (currentGenreList.length) {
                     if (diffY > 0) nextGenreMeme();
