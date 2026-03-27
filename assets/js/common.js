@@ -1,6 +1,7 @@
 // assets/js/common.js
 // MODERNIZATION: Background + header/footer + nav highlight only
 
+// Replace the entire top section (Firebase init) with this safe version:
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
   authDomain: "grokvshumans.firebaseapp.com",
@@ -11,12 +12,13 @@ const firebaseConfig = {
   appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
 };
 
-// Firebase init – non-blocking so index.html and submit.html never break
+// Safe Firebase init – never breaks index or submit pages
+let database = null;
 try {
   firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+  database = firebase.database();
 } catch (e) {
-  console.warn('Firebase not loaded on this page (normal for index/submit)');
+  console.warn("Firebase not available on this page (normal for index/submit)");
 }
 
 document.addEventListener('DOMContentLoaded', () => {
