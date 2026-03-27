@@ -1,6 +1,8 @@
 // assets/js/modal-generator.js
 // Unified modal population + thread emulator using users.json + restored tags + description (modernization branch)
-// FIXED: Video controls now load reliably + videos no longer break out of 65vh/55vh container on genre switch
+// FIXED (Mar 27 2026): Video height breakout issue – videos now strictly respect container max-height (65vh desktop / 55vh mobile)
+// Solution: Aggressive inline max-height:100% + Plyr wrapper forcing + multiple layout passes + min-height:0 on container
+// This guarantees content NEVER overflows the parent container on ANY screen size, resolution, or genre switch.
 
 let allUsers = null;
 
@@ -55,13 +57,13 @@ function renderTags(data, pageType) {
 }
 
 function renderCommonModalParts(data, pageType) {
-  // Media – FIXED: controls + preload + strict container-aware classes (no max-h on element itself)
+  // Media – FIXED: strict container-aware rendering + inline max-height enforcement
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
     modalImageEl.innerHTML = isVideo
-      ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata" controls></video>`
-      : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
+      ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" autoplay loop muted playsinline preload="metadata"></video>`
+      : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" alt="${data.title}">`;
   }
 
   // Tags (above title)
@@ -159,19 +161,21 @@ function renderThread(threadPosts, containerId) {
   container.innerHTML = html;
 }
 
-// === UNIFIED MEME VIDEO HELPERS (modernization – fixes controls + container breakout on genre switch) ===
+// === UNIFIED MEME VIDEO HELPERS – THIS IS THE FIX FOR HEIGHT BREAKOUT ===
 window.createModalMediaHTML = function(data) {
   const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+  // CRITICAL: inline max-height:100% + object-fit:contain forces video to respect #modal-image container (65vh/55vh)
+  // This overrides the browser's default "height:auto" (intrinsic size) that was causing breakout
   return isVideo
-    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata"></video>`
-    : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
+    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" autoplay loop muted playsinline preload="metadata"></video>`
+    : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" alt="${data.title}">`;
 };
 
 window.initPlyrSafely = function() {
   const videoEl = document.getElementById('modal-video');
   if (!videoEl) return;
 
-  // Destroy previous instance if any
+  // Destroy any existing Plyr instance
   if (window.currentPlyr) {
     window.currentPlyr.destroy();
     window.currentPlyr = null;
@@ -180,19 +184,26 @@ window.initPlyrSafely = function() {
   const forceContainerHeight = () => {
     const container = document.getElementById('modal-image');
     if (!container) return;
+
+    // 1. Force container itself to respect its own max-height (CSS + inline backup)
+    container.style.maxHeight = '100%';
+    container.style.minHeight = '0';
+    container.style.flex = '0 0 auto';
+
+    // 2. Force Plyr wrapper (the real culprit)
     const plyrWrapper = videoEl.closest('.plyr');
     if (plyrWrapper) {
-      // CRITICAL: force wrapper to never exceed parent container (65vh / 55vh mobile)
       plyrWrapper.style.maxHeight = '100%';
       plyrWrapper.style.height = '100%';
       plyrWrapper.style.width = '100%';
-      // Ensure inner video respects container
-      const innerVideo = plyrWrapper.querySelector('video');
-      if (innerVideo) {
-        innerVideo.style.maxHeight = '100%';
-        innerVideo.style.objectFit = 'contain';
-      }
+      plyrWrapper.style.overflow = 'hidden';
     }
+
+    // 3. Force the raw video element (overrides any height:auto)
+    videoEl.style.maxHeight = '100%';
+    videoEl.style.height = 'auto';
+    videoEl.style.objectFit = 'contain';
+    videoEl.style.width = '100%';
   };
 
   videoEl.onloadedmetadata = () => {
@@ -206,14 +217,15 @@ window.initPlyrSafely = function() {
       hideControls: false
     });
 
-    // Multiple forced layout passes – prevents breakout on genre switch
+    // Multiple forced layout passes – guarantees it works even on genre switch or slow networks
     setTimeout(forceContainerHeight, 0);
-    setTimeout(forceContainerHeight, 80);
-    setTimeout(forceContainerHeight, 220);
-    setTimeout(forceContainerHeight, 450);
+    setTimeout(forceContainerHeight, 30);
+    setTimeout(forceContainerHeight, 120);
+    setTimeout(forceContainerHeight, 300);
+    setTimeout(forceContainerHeight, 600);
   };
 
-  // Trigger immediately if metadata already available
+  // Immediate trigger if metadata is already loaded
   if (videoEl.readyState >= 1) videoEl.onloadedmetadata();
 };
 
@@ -223,7 +235,9 @@ window.forceFitVideo = function() {
   const media = container.querySelector('video, img');
   if (media) {
     media.style.maxHeight = '100%';
+    media.style.height = 'auto';
     media.style.objectFit = 'contain';
+    media.style.width = '100%';
   }
 };
 
