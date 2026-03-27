@@ -119,14 +119,25 @@
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
             <div class="flex flex-col flex-1" id="modal-content-inner">
-            <div id="modal-image" class="flex-1 bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
+                <div id="modal-image" class="flex-1 bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
 
-            <div class="px-6 pt-4 pb-3 border-t border-zinc-800">
-                <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
-                <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
+                <div class="px-6 pt-4 pb-3 border-t border-zinc-800">
+                    <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
+                    <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
+                </div>
+
+                <div id="genre-section" class="hidden"></div>
             </div>
 
-            <div id="genre-section" class="hidden"></div>
+            <!-- CONTEXT PANEL (was missing — this was the bug) -->
+            <div id="context-panel" class="hidden p-6 bg-zinc-900 border-t border-purple-500/40">
+                <div class="flex justify-between items-start gap-4">
+                    <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
+                    <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">✕</button>
+                </div>
+                <button onclick="searchMemeImage()" class="mt-5 w-full bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
+                    <i class="fa-solid fa-magnifying-glass"></i> Google Image Search
+                </button>
             </div>
 
             <div id="modal-buttons">
@@ -247,7 +258,6 @@
 
         const current = allMemes[currentId];
         if (!current || !current.genre || current.genre.trim() === '') {
-            // Clear everything so stale text never shows
             document.querySelector('.genre-header').textContent = '';
             document.getElementById('genre-name').textContent = '';
             document.getElementById('genre-count').textContent = '';
@@ -264,7 +274,6 @@
             .sort((a, b) => (allMemes[b].order || 0) - (allMemes[a].order || 0));
 
         if (currentGenreList.length <= 1) {
-            // Clear everything so stale text never shows
             document.querySelector('.genre-header').textContent = '';
             document.getElementById('genre-name').textContent = '';
             document.getElementById('genre-count').textContent = '';
@@ -448,7 +457,6 @@
         loadMemes();
 
         // UNIFIED SWIPE – right-to-left swipe = backward (recent → oldest) – modernization branch
-        // Attached per-page so it works reliably on battles, categories, and memes
         const attachSwipeHandler = (modalId, prevFn, nextFn) => {
             const modal = document.getElementById(modalId);
             if (!modal) return;
@@ -464,7 +472,6 @@
 
                 if (Math.abs(diff) < 50) return;
 
-                // right → left swipe = previous card (as you requested)
                 if (diff > 0) {
                     if (typeof prevFn === 'function') prevFn();
                 } else {
@@ -473,7 +480,6 @@
             });
         };
 
-        // Page-specific swipe (only one modal exists per HTML file)
         if (typeof openBattleModal === 'function') {
             attachSwipeHandler('battle-modal', prevBattle, nextBattle);
         } else if (typeof openCategoryModal === 'function') {
@@ -482,7 +488,7 @@
             attachSwipeHandler('meme-modal', prevMeme, nextMeme);
         }
 
-        // Memes-specific genre swipe (up/down on image) – kept exactly as you had it
+        // Memes-specific genre swipe on image
         const modalImage = document.getElementById('modal-image');
         let touchStartX = 0;
         let touchStartY = 0;
