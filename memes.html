@@ -41,59 +41,43 @@
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
-        /* ====================== MOBILE MODAL FIXES (modernization branch) ====================== */
-        @media (max-width: 640px) {
-          .modal-content {
-            max-height: 100dvh !important;
-            border-radius: 20px !important;   /* restored rounded corners */
-            margin: 0 !important;
-            width: 100% !important;
-          }
-          #meme-modal .modal-content {
-            overflow: hidden;
-            padding-bottom: 0;
-          }
-          /* STRICT MEDIA CONTAINER – works for BOTH images and videos */
-          #meme-modal #modal-image {
+        /* ====================== STRICT MEDIA CONTAINER (images + videos) ====================== */
+        #modal-image {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #18181b;
             padding: 12px;
-            max-height: 58vh;               /* balanced height so everything fits */
-          }
-          #meme-modal #modal-image img,
-          #meme-modal #modal-image video {
+        }
+        #modal-image img,
+        #modal-image video {
             max-height: 100%;
             width: 100%;
             object-fit: contain;
-          }
-          #modal-buttons {
-            flex-shrink: 0;
-            padding: 12px 12px !important;
-          }
-          /* GENRE SECTION – identical on desktop and mobile */
-          #genre-section {
+        }
+
+        /* GENRE SECTION – identical clean layout on desktop AND mobile */
+        #genre-section {
             flex-shrink: 0;
             padding: 12px 16px;
             border-top: 1px solid #27272a;
             background: #18181b;
             text-align: center;
-          }
-          .genre-header {
+        }
+        .genre-header {
             font-size: 13px;
             font-weight: 600;
             color: #c084fc;
             margin-bottom: 6px;
-          }
-          .genre-arrows {
+        }
+        .genre-arrows {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 24px;
-          }
-          #genre-name {
+        }
+        #genre-name {
             font-size: 15px;
             font-weight: 600;
             color: #fff;
@@ -102,6 +86,26 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        /* Mobile-only tweaks */
+        @media (max-width: 640px) {
+          .modal-content {
+            max-height: 100dvh !important;
+            border-radius: 20px !important;   /* rounded corners restored */
+            margin: 0 !important;
+            width: 100% !important;
+          }
+          #meme-modal .modal-content {
+            overflow: hidden;
+            padding-bottom: 0;
+          }
+          #modal-image {
+            max-height: 55vh;   /* conservative height so tall videos/images shrink and everything fits */
+          }
+          #modal-buttons {
+            flex-shrink: 0;
+            padding: 12px 12px !important;
           }
         }
     </style>
