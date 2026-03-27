@@ -57,6 +57,10 @@
             object-fit: contain !important;
             /* max-height: 100% !important; ← DISABLED as you asked */
         }
+        /* CRITICAL: Plyr wrapper can NEVER break the container again */
+        #meme-modal .plyr {
+            max-height: 100% !important;
+        }
 
         /* Title/desc + genre never shrink */
         #modal-content-inner > div:nth-child(2),
@@ -295,13 +299,15 @@
                 muted: true,
                 loop: true,
                 playsinline: true,
-                clickToPlay: true
+                clickToPlay: true,
+                hideControls: false   /* ← controls always visible from the beginning */
             });
-            // Ensure Plyr wrapper respects container after init
-            setTimeout(forceContainerHeight, 50);
+            // Multiple forced height calls after Plyr finishes its wrapper
+            setTimeout(forceContainerHeight, 0);
+            setTimeout(forceContainerHeight, 100);
+            setTimeout(forceContainerHeight, 300);
         };
 
-        // Fallback if metadata already loaded
         if (videoEl.readyState >= 1) {
             videoEl.onloadedmetadata();
         }
