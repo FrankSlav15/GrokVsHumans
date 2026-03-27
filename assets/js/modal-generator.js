@@ -1,5 +1,5 @@
 // assets/js/modal-generator.js
-// MODERNIZATION BRANCH – FULL FILE, mobile Plyr controls now fully visible/controllable (close X no longer covers mute/sound)
+// MODERNIZATION BRANCH – FULL FILE, native <video controls> for mobile (mute/volume visible), perfect 55vh scaling
 
 let allUsers = null;
 
@@ -105,57 +105,6 @@ window.createModalMediaHTML = function(data) {
     : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
 };
 
-window.initPlyrSafely = function() {
-  const videoEl = document.getElementById('modal-video');
-  if (!videoEl) return;
-  if (window.currentPlyr) { window.currentPlyr.destroy(); window.currentPlyr = null; }
-
-  const forceContainer = () => {
-    const container = document.getElementById('modal-image');
-    if (!container) return;
-
-    const isMobile = window.innerWidth <= 640;
-    container.style.maxHeight = isMobile ? '55vh' : '65vh';
-    container.style.minHeight = '0';
-    container.style.flex = '0 0 auto';
-    container.style.overflow = 'hidden';
-
-    // Mobile padding so close X never covers Plyr mute/sound controls
-    if (isMobile) container.style.paddingTop = '70px';
-
-    const plyr = videoEl.closest('.plyr');
-    if (plyr) {
-      plyr.style.maxHeight = '100%';
-      plyr.style.height = '100%';
-      plyr.style.width = '100%';
-      plyr.style.overflow = 'hidden';
-      plyr.style.zIndex = '10'; // ensure controls sit above close X
-    }
-
-    videoEl.style.maxHeight = '100%';
-    videoEl.style.height = 'auto';
-    videoEl.style.objectFit = 'contain';
-    videoEl.style.width = '100%';
-  };
-
-  videoEl.onloadedmetadata = () => {
-    window.currentPlyr = new Plyr('#modal-video', { 
-      controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], 
-      autoplay: true, 
-      muted: true, 
-      loop: true, 
-      playsinline: true, 
-      clickToPlay: true, 
-      hideControls: false 
-    });
-    setTimeout(forceContainer, 0);
-    setTimeout(forceContainer, 30);
-    setTimeout(forceContainer, 120);
-    setTimeout(forceContainer, 300);
-  };
-  if (videoEl.readyState >= 1) videoEl.onloadedmetadata();
-};
-
 window.populateModal = async function(pageType, id, data) {
   await loadUsers();
   renderCommonModalParts(data, pageType);
@@ -234,8 +183,6 @@ window.openMemeModal = function(id) {
     mediaEl.style.maxHeight = '100%';
   }
 
-  if (data.image.toLowerCase().match(/\.(mp4|webm)$/)) initPlyrSafely();
-
   document.getElementById('modal-desc').textContent = data.description || data.context || '';
   document.getElementById('base-x-link').href = data.xLink || '#';
   document.getElementById('context-panel').style.display = 'none';
@@ -259,7 +206,7 @@ window.openBattleModal = function(id) {
   document.body.style.overflow = 'hidden';
   updateModalVoteUI();
   const url = (data.image || '').toLowerCase();
-  if (url.match(/\.(mp4|webm|mov|ogg|gif)$/)) initPlyrSafely();
+  if (url.match(/\.(mp4|webm|mov|ogg|gif)$/)) {} // native controls already in createModalMediaHTML
   attachGlobalSwipeHandler('battles');
 };
 
@@ -274,16 +221,14 @@ window.openCategoryModal = function(id) {
   attachGlobalSwipeHandler('categories');
 };
 
-// ====================== CLOSE & SHARED FUNCTIONS (unchanged) ======================
+// ====================== CLOSE & SHARED ======================
 window.closeMemeModal = function() {
-  if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
   document.getElementById('modal-image').innerHTML = '';
   document.getElementById('meme-modal').style.display = 'none';
   document.body.style.overflow = 'visible';
 };
 
 window.closeModal = function() {
-  if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
   const modal = document.getElementById('battle-modal');
   modal.classList.add('hidden');
   document.body.style.overflow = 'visible';
@@ -296,7 +241,7 @@ window.closeCategoryModal = function() {
   document.body.style.overflow = 'visible';
 };
 
-// ... (all remaining functions – vote, updateVoteUI, renderGenreNav, switchGenreMeme, prev/nextGenreMeme, next/prevMeme, share, deep link, keyboard – are exactly as in the previous full file you had)
+// (all other functions – vote, updateVoteUI, renderGenreNav, switchGenreMeme, prev/nextGenreMeme, next/prevMeme, share, deep link, keyboard – are unchanged from the previous full file)
 
 window.renderGenreNav = function(currentId) {
   const section = document.getElementById('genre-section');
@@ -338,7 +283,6 @@ window.switchGenreMeme = function(newId) {
     mediaEl.classList.remove('max-h-[70vh]');
     mediaEl.style.maxHeight = '100%';
   }
-  if (data.image.toLowerCase().match(/\.(mp4|webm)$/)) initPlyrSafely();
   document.getElementById('base-x-link').href = data.xLink || '#';
   window.currentMemeId = newId;
   window.currentMemeIndex = newId;
