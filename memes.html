@@ -41,55 +41,30 @@
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
-        /* ====================== STRICT MEDIA CONTAINER (images + videos) ====================== */
-        #modal-image {
-            flex: 1;
+        /* HIGH-SPECIFICITY FIX FOR TALL IMAGES/VIDEOS (based on your DevTools screenshot) */
+        #meme-modal #modal-image {
+            flex: 0 0 auto !important;           /* stops growing */
             display: flex;
             align-items: center;
             justify-content: center;
             background: #18181b;
             padding: 12px;
-            max-height: calc(100vh - 380px);   /* desktop: aggressive shrink so tall content never overflows title/desc/genre */
+            max-height: calc(100vh - 420px) !important;   /* aggressive desktop cap */
         }
-        #modal-image img,
-        #modal-image video {
-            max-height: 100%;
-            width: 100%;
-            object-fit: contain;
+        #meme-modal #modal-image img,
+        #meme-modal #modal-image video {
+            max-height: 100% !important;
+            width: 100% !important;
+            object-fit: contain !important;
         }
 
-        /* GENRE SECTION – clean on desktop AND mobile */
+        /* Text + Genre never shrink */
+        #modal-content-inner > div:nth-child(2),
         #genre-section {
-            flex-shrink: 0;
-            padding: 12px 16px;
-            border-top: 1px solid #27272a;
-            background: #18181b;
-            text-align: center;
-        }
-        .genre-header {
-            font-size: 13px;
-            font-weight: 600;
-            color: #c084fc;
-            margin-bottom: 6px;
-        }
-        .genre-arrows {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-        }
-        #genre-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #fff;
-            flex: 1;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            flex-shrink: 0 !important;
         }
 
-        /* Mobile-only tweaks (mobile stays perfect – no changes) */
+        /* Mobile stays exactly as you wanted */
         @media (max-width: 640px) {
           .modal-content {
             max-height: 100dvh !important;
@@ -97,17 +72,9 @@
             margin: 0 !important;
             width: 100% !important;
           }
-          #meme-modal .modal-content {
-            overflow: hidden;
-            padding-bottom: 0;
-          }
-          #modal-image {
-            max-height: 55vh;   /* mobile stays exactly as you wanted */
-          }
-          #modal-buttons {
-            flex-shrink: 0;
-            padding: 12px 12px !important;
-          }
+          #meme-modal .modal-content { overflow: hidden; padding-bottom: 0; }
+          #meme-modal #modal-image { max-height: 55vh !important; }
+          #modal-buttons { flex-shrink: 0; padding: 12px 12px !important; }
         }
     </style>
 
@@ -152,8 +119,8 @@
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
             <div class="flex flex-col flex-1" id="modal-content-inner">
-                <!-- STRICT MEDIA CONTAINER – tall images/videos now shrink aggressively on desktop -->
-                <div id="modal-image" class="flex-1 bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
+                <!-- MEDIA CONTAINER – high-specificity fix from your DevTools screenshot -->
+                <div id="modal-image" class="flex-none bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
 
                 <div class="px-6 pt-4 pb-3 border-t border-zinc-800 flex-shrink-0">
                     <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
