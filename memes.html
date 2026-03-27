@@ -49,6 +49,7 @@
             justify-content: center;
             background: #18181b;
             padding: 12px;
+            max-height: 62vh;           /* desktop-safe height */
         }
         #modal-image img,
         #modal-image video {
@@ -57,7 +58,7 @@
             object-fit: contain;
         }
 
-        /* GENRE SECTION – identical clean layout on desktop AND mobile */
+        /* GENRE SECTION – clean on both desktop and mobile */
         #genre-section {
             flex-shrink: 0;
             padding: 12px 16px;
@@ -88,11 +89,11 @@
             text-overflow: ellipsis;
         }
 
-        /* Mobile-only tweaks */
+        /* Mobile-only tweaks (mobile stays perfect) */
         @media (max-width: 640px) {
           .modal-content {
             max-height: 100dvh !important;
-            border-radius: 20px !important;   /* rounded corners restored */
+            border-radius: 20px !important;
             margin: 0 !important;
             width: 100% !important;
           }
@@ -101,7 +102,7 @@
             padding-bottom: 0;
           }
           #modal-image {
-            max-height: 55vh;   /* conservative height so tall videos/images shrink and everything fits */
+            max-height: 55vh;   /* mobile is tighter */
           }
           #modal-buttons {
             flex-shrink: 0;
