@@ -98,8 +98,8 @@ body::after { content: ''; position: absolute; inset: 0; background: rgba(10,10,
 #battle-modal #modal-image video,
 #category-modal #modal-image img,
 #category-modal #modal-image video {
-  max-height: 100% !important;
-  height: auto !important;
+  max-height: 65vh !important;
+  height: 65vh !important;
   width: 100% !important;
   object-fit: contain !important;
 }
@@ -116,7 +116,7 @@ body::after { content: ''; position: absolute; inset: 0; background: rgba(10,10,
   #meme-modal #modal-image video,
   #battle-modal #modal-image video,
   #category-modal #modal-image video {
-    max-height: 100% !important;
+    max-height: 55vh !important;
     height: 55vh !important;
     object-fit: contain !important;
   }
