@@ -11,8 +11,13 @@ const firebaseConfig = {
   appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
 };
 
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Firebase init – non-blocking so index.html and submit.html never break
+try {
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+} catch (e) {
+  console.warn('Firebase not loaded on this page (normal for index/submit)');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. RANDOM BACKGROUND ROTATOR
