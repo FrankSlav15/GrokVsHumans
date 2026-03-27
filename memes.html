@@ -7,8 +7,6 @@
     <title>Memes - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
@@ -41,47 +39,21 @@
         .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
         .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
 
-        /* HIGH-SPECIFICITY MEDIA CONTAINER – 65vh as you requested */
         #meme-modal #modal-image {
-            flex: 0 0 auto !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background: #18181b !important;
-            padding: 12px !important;
-            max-height: 65vh !important;
+            flex: 0 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important;
+            background: #18181b !important; padding: 12px !important; max-height: 65vh !important;
         }
         #meme-modal #modal-image img,
-        #meme-modal #modal-image video {
-            width: 100% !important;
-            object-fit: contain !important;
-            /* max-height: 100% !important; ← DISABLED as you asked */
-        }
-        /* CRITICAL: Plyr wrapper can NEVER break the container again */
-        #meme-modal .plyr {
-            max-height: 100% !important;
-            width: 100% !important;
-        }
+        #meme-modal #modal-image video { width: 100% !important; object-fit: contain !important; }
+        #meme-modal .plyr { max-height: 100% !important; width: 100% !important; }
 
-        /* Title/desc + genre never shrink */
-        #modal-content-inner > div:nth-child(2),
-        #genre-section {
-            flex-shrink: 0 !important;
-        }
+        #modal-content-inner > div:nth-child(2), #genre-section { flex-shrink: 0 !important; }
 
-        /* GENRE SECTION – exactly as you wanted */
-        #genre-section {
-            flex-shrink: 0;
-            padding: 12px 16px;
-            border-top: 1px solid #27272a;
-            background: #18181b;
-            text-align: center;
-        }
+        #genre-section { flex-shrink: 0; padding: 12px 16px; border-top: 1px solid #27272a; background: #18181b; text-align: center; }
         .genre-header { font-size: 13px; font-weight: 600; color: #c084fc; margin-bottom: 6px; }
         .genre-arrows { display: flex; align-items: center; justify-content: center; gap: 24px; }
         #genre-name { font-size: 15px; font-weight: 600; color: #fff; flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Mobile stays perfect (matches main.css) */
         @media (max-width: 640px) {
           .modal-content { max-height: 100dvh !important; border-radius: 20px !important; margin: 0 !important; width: 100% !important; }
           #meme-modal .modal-content { overflow: hidden; padding-bottom: 0; }
@@ -125,7 +97,6 @@
     <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-0" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
-
             <button onclick="event.stopImmediatePropagation(); prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
@@ -147,7 +118,6 @@
                 </div>
             </div>
 
-            <!-- CONTEXT PANEL -->
             <div id="context-panel" class="hidden p-6 bg-zinc-900 border-t border-purple-500/40">
                 <div class="flex justify-between items-start gap-4">
                     <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
@@ -160,16 +130,13 @@
 
             <div id="modal-buttons">
                 <a id="base-x-link" href="#" target="_blank" class="modal-btn-view flex-1">
-                    <i class="fa-brands fa-x-twitter"></i>
-                    View
+                    <i class="fa-brands fa-x-twitter"></i> View
                 </a>
                 <button onclick="showContextPanel()" class="modal-btn-context flex-1">
-                    <i class="fa-solid fa-info-circle"></i>
-                    Context
+                    <i class="fa-solid fa-info-circle"></i> Context
                 </button>
                 <button onclick="showMemeShareMenu()" class="modal-btn-share flex-1">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    Share
+                    <i class="fa-solid fa-share-nodes"></i> Share
                 </button>
             </div>
         </div>
@@ -180,408 +147,9 @@
     <script src="assets/js/modal-generator.js"></script>
 
     <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
-      authDomain: "grokvshumans.firebaseapp.com",
-      databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "grokvshumans",
-      storageBucket: "grokvshumans.firebasestorage.app",
-      messagingSenderId: "483683492125",
-      appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    let allMemes = {};
-    let currentMemeId = null;
-    let currentMemeIndex = 0;
-    let currentGenreList = [];
-    let currentGenreIndex = 0;
-
-    async function loadMemes() {
-        const snapshot = await database.ref('content/memes').once('value');
-        allMemes = snapshot.val() || {};
-        renderGrid();
-        setTimeout(checkDeepLink, 400);
-    }
-
-    function renderGrid() {
-        const grid = document.getElementById('meme-grid');
-        grid.innerHTML = '';
-
-        const visibleIds = new Set();
-        const genreMap = new Map();
-
-        Object.keys(allMemes).forEach(id => {
-            const m = allMemes[id];
-            if (!m.genre || m.genre.trim() === '') {
-                visibleIds.add(id);
-            } else {
-                if (!genreMap.has(m.genre) || (allMemes[genreMap.get(m.genre)].order || 0) < (m.order || 0)) {
-                    genreMap.set(m.genre, id);
-                }
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage('memes');
         });
-
-        genreMap.forEach(id => visibleIds.add(id));
-
-        Array.from(visibleIds)
-            .sort((a,b) => (allMemes[b].order || 0) - (allMemes[a].order || 0))
-            .forEach(id => {
-                const cardHTML = createContentCard('memes', id, allMemes[id]);
-                grid.insertAdjacentHTML('beforeend', cardHTML);
-            });
-    }
-
-    function filterCategory(cat) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-        document.getElementById('tab-' + cat).classList.add('tab-active');
-        document.querySelectorAll('#meme-grid > div').forEach(card => {
-            const cats = (card.getAttribute('data-categories') || '').split(',').map(c => c.trim());
-            card.style.display = (cat === 'all' || cats.includes(cat)) ? 'block' : 'none';
-        });
-    }
-
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        const text = document.getElementById('toast-text');
-        text.textContent = message;
-        toast.classList.remove('hidden');
-        toast.style.transform = 'translate(-50%, 0)';
-        setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
-    }
-
-    function createModalMediaHTML(data) {
-        const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
-        return isVideo
-            ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata"></video>`
-            : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
-    }
-
-    function openMemeModal(id) {
-        currentMemeIndex = id;
-        const data = allMemes[id];
-        if (!data) return;
-        currentMemeId = id;
-
-        populateModal('memes', id, data);
-
-        const mediaContainer = document.getElementById('modal-image');
-        mediaContainer.innerHTML = createModalMediaHTML(data);
-
-        const mediaEl = mediaContainer.querySelector('img, video');
-        if (mediaEl) {
-            mediaEl.classList.remove('max-h-[70vh]');
-            mediaEl.style.maxHeight = '100%';
-        }
-
-        if (data.image.toLowerCase().match(/\.(mp4|webm)$/)) initPlyrSafely();
-
-        document.getElementById('modal-desc').textContent = data.description || data.context || '';
-        document.getElementById('base-x-link').href = data.xLink || '#';
-        document.getElementById('context-panel').style.display = 'none';
-        document.getElementById('modal-buttons').style.display = 'flex';
-        document.getElementById('meme-modal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-
-        renderGenreNav(id);
-    }
-
-    function initPlyrSafely() {
-        const videoEl = document.getElementById('modal-video');
-        if (!videoEl) return;
-
-        const forceContainerHeight = () => {
-            const plyrWrapper = videoEl.closest('.plyr');
-            if (plyrWrapper) {
-                plyrWrapper.style.maxHeight = '100%';
-                plyrWrapper.style.width = '100%';
-            }
-        };
-
-        videoEl.onloadedmetadata = () => {
-            if (window.currentPlyr) window.currentPlyr.destroy();
-            window.currentPlyr = new Plyr('#modal-video', {
-                controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
-                autoplay: true,
-                muted: true,
-                loop: true,
-                playsinline: true,
-                clickToPlay: true,
-                hideControls: false
-            });
-            setTimeout(forceContainerHeight, 0);
-            setTimeout(forceContainerHeight, 50);
-            setTimeout(forceContainerHeight, 150);
-        };
-
-        if (videoEl.readyState >= 1) videoEl.onloadedmetadata();
-    }
-
-    function renderGenreNav(currentId) {
-        const section = document.getElementById('genre-section');
-        if (!section) return;
-
-        const current = allMemes[currentId];
-        if (!current || !current.genre || current.genre.trim() === '') {
-            section.classList.add('hidden');
-            currentGenreList = [];
-            return;
-        }
-
-        currentGenreList = Object.keys(allMemes)
-            .filter(id => {
-                const g = allMemes[id].genre;
-                return g && g.trim() === current.genre.trim();
-            })
-            .sort((a, b) => (allMemes[b].order || 0) - (allMemes[a].order || 0));
-
-        if (currentGenreList.length <= 1) {
-            section.classList.add('hidden');
-            currentGenreList = [];
-            return;
-        }
-
-        currentGenreIndex = currentGenreList.indexOf(currentId);
-
-        document.querySelector('.genre-header').textContent = `SEE OTHER VARIATIONS OF`;
-        document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
-        section.classList.remove('hidden');
-    }
-
-    function switchGenreMeme(newId) {
-        const data = allMemes[newId];
-        if (!data) return;
-        
-        document.getElementById('modal-title').textContent = data.title;
-        document.getElementById('modal-desc').innerHTML = 
-            (data.description || data.context || '') + 
-            (data.xLink ? `<br><a href="${data.xLink}" target="_blank" class="text-purple-400 text-xs mt-2 inline-block">View original on X →</a>` : '');
-        
-        const mediaContainer = document.getElementById('modal-image');
-        mediaContainer.innerHTML = createModalMediaHTML(data);
-        
-        const mediaEl = mediaContainer.querySelector('img, video');
-        if (mediaEl) {
-            mediaEl.classList.remove('max-h-[70vh]');
-            mediaEl.style.maxHeight = '100%';
-        }
-        
-        if (data.image.toLowerCase().match(/\.(mp4|webm)$/)) initPlyrSafely();
-        
-        document.getElementById('base-x-link').href = data.xLink || '#';
-        currentMemeId = newId;
-        currentMemeIndex = newId;
-        renderGenreNav(newId);
-    }
-
-    function prevGenreMeme() {
-        if (currentGenreList.length === 0) return;
-        currentGenreIndex = (currentGenreIndex - 1 + currentGenreList.length) % currentGenreList.length;
-        switchGenreMeme(currentGenreList[currentGenreIndex]);
-    }
-
-    function nextGenreMeme() {
-        if (currentGenreList.length === 0) return;
-        currentGenreIndex = (currentGenreIndex + 1) % currentGenreList.length;
-        switchGenreMeme(currentGenreList[currentGenreIndex]);
-    }
-
-    function getMemeKeys() {
-        return Object.keys(allMemes).map(Number).sort((a,b) => a - b);
-    }
-
-    function nextMeme() {
-        const keys = getMemeKeys();
-        let pos = keys.indexOf(currentMemeIndex);
-        if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex]?.genre || '';
-
-        let attempts = 0;
-        while (attempts < keys.length) {
-            pos = (pos + 1) % keys.length;
-            const nextId = keys[pos];
-            const nextGenre = allMemes[nextId]?.genre || '';
-            if (currentGenre === '' || nextGenre !== currentGenre) {
-                currentMemeIndex = nextId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-            attempts++;
-        }
-    }
-
-    function prevMeme() {
-        const keys = getMemeKeys();
-        let pos = keys.indexOf(currentMemeIndex);
-        if (pos === -1) pos = 0;
-        const currentGenre = allMemes[currentMemeIndex]?.genre || '';
-
-        let attempts = 0;
-        while (attempts < keys.length) {
-            pos = (pos - 1 + keys.length) % keys.length;
-            const prevId = keys[pos];
-            const prevGenre = allMemes[prevId]?.genre || '';
-            if (currentGenre === '' || prevGenre !== currentGenre) {
-                currentMemeIndex = prevId;
-                closeMemeModal();
-                setTimeout(() => openMemeModal(currentMemeIndex), 280);
-                return;
-            }
-            attempts++;
-        }
-    }
-
-    function closeMemeModal() {
-        if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
-        document.getElementById('modal-image').innerHTML = '';
-        document.getElementById('meme-modal').style.display = 'none';
-        document.body.style.overflow = 'visible';
-    }
-
-    function showContextPanel() {
-        if (!currentMemeId) return;
-        const data = allMemes[currentMemeId];
-        document.getElementById('context-text').textContent = data.context || '';
-        document.getElementById('context-panel').style.display = 'block';
-        document.getElementById('modal-buttons').style.display = 'none';
-    }
-
-    function hideContextPanel() {
-        document.getElementById('context-panel').style.display = 'none';
-        document.getElementById('modal-buttons').style.display = 'flex';
-    }
-
-    function searchMemeImage() {
-        if (!currentMemeId) return;
-        const data = allMemes[currentMemeId];
-        window.open(`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(data.image)}`, '_blank');
-    }
-
-    function showMemeShareMenu() {
-        if (!currentMemeId) return;
-        const data = allMemes[currentMemeId];
-        const baseUrl = window.location.origin + window.location.pathname;
-        const shareUrl = `${baseUrl}#${currentMemeId}`;
-        const text = `Check out this meme from the GrokVsHumans Meme Vault: ${data.title} 🔥`;
-        const shareHTML = `
-            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[99999]" onclick="closeMemeShareMenu()">
-                <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
-                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this meme</h3>
-                    <div class="grid grid-cols-3 gap-6 text-center">
-                        <button onclick="copyMemeDeepLink('${shareUrl}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-link text-4xl text-purple-400"></i><span class="text-xs mt-1">Our Site</span></button>
-                        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-facebook text-4xl text-blue-500"></i><span class="text-xs mt-1">Facebook</span></a>
-                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-4xl text-pink-500"></i><span class="text-xs mt-1">Instagram</span></a>
-                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-4xl"></i><span class="text-xs mt-1">TikTok</span></a>
-                        <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + '\\n' + shareUrl)}" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-envelope text-4xl text-green-400"></i><span class="text-xs mt-1">Email</span></a>
-                    </div>
-                    <button onclick="closeMemeShareMenu()" class="mt-10 w-full py-4 border border-zinc-700 rounded-2xl hover:bg-zinc-800 font-medium">Cancel</button>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', shareHTML);
-    }
-
-    function closeMemeShareMenu() {
-        const overlay = document.getElementById('share-overlay');
-        if (overlay) overlay.remove();
-    }
-
-    function copyMemeDeepLink(url) {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link to this meme copied!');
-            closeMemeShareMenu();
-        });
-    }
-
-    function copyToClipboard(url) {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link copied to clipboard!');
-            closeMemeShareMenu();
-        });
-    }
-
-    function checkDeepLink() {
-        const hash = window.location.hash.replace('#', '');
-        if (hash && !isNaN(hash)) {
-            const id = parseInt(hash);
-            if (allMemes[id]) openMemeModal(id);
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadMemes();
-
-        const attachSwipeHandler = (modalId, prevFn, nextFn) => {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            let touchStartX = 0;
-
-            modal.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-            });
-
-            modal.addEventListener('touchend', e => {
-                const touchEndX = e.changedTouches[0].screenX;
-                const diff = touchStartX - touchEndX;
-
-                if (Math.abs(diff) < 50) return;
-
-                if (diff > 0) {
-                    if (typeof prevFn === 'function') prevFn();
-                } else {
-                    if (typeof nextFn === 'function') nextFn();
-                }
-            });
-        };
-
-        if (typeof openBattleModal === 'function') {
-            attachSwipeHandler('battle-modal', prevBattle, nextBattle);
-        } else if (typeof openCategoryModal === 'function') {
-            attachSwipeHandler('category-modal', prevCategory, nextCategory);
-        } else if (typeof openMemeModal === 'function') {
-            attachSwipeHandler('meme-modal', prevMeme, nextMeme);
-        }
-
-        const modalImage = document.getElementById('modal-image');
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        modalImage.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        });
-
-        modalImage.addEventListener('touchend', e => {
-            if (!currentMemeId) return;
-            const touchEndX = e.changedTouches[0].screenX;
-            const touchEndY = e.changedTouches[0].screenY;
-            const diffX = touchStartX - touchEndX;
-            const diffY = touchStartY - touchEndY;
-
-            if (Math.abs(diffY) > 50 && Math.abs(diffY) > Math.abs(diffX)) {
-                if (currentGenreList.length) {
-                    if (diffY > 0) nextGenreMeme();
-                    else prevGenreMeme();
-                }
-            }
-        });
-    });
-
-    window.addEventListener('hashchange', checkDeepLink);
-
-    document.addEventListener('keydown', e => {
-        const modal = document.getElementById('meme-modal');
-        if (modal.style.display !== 'flex' || !currentMemeId) return;
-        if (e.key === 'Escape') closeMemeModal();
-        if (e.key === 'ArrowLeft') nextMeme();
-        if (e.key === 'ArrowRight') prevMeme();
-        if (e.key === 'ArrowUp') prevGenreMeme();
-        if (e.key === 'ArrowDown') nextGenreMeme();
-    });
     </script>
-
 </body>
 </html>
