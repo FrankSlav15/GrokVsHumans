@@ -56,9 +56,10 @@
             width: 100% !important;
           }
 
-          /* Memes modal — strict no-scroll */
+          /* Memes modal — strict no-scroll + buttons always inside */
           #meme-modal .modal-content {
             overflow: hidden;
+            padding-bottom: 0;
           }
           #meme-modal #modal-image {
             flex: 1;
@@ -74,6 +75,10 @@
             max-height: 58vh;
             width: 100%;
             object-fit: contain;
+          }
+          #modal-buttons {
+            flex-shrink: 0;
+            padding: 12px 12px !important;
           }
         }
     </style>
@@ -111,7 +116,7 @@
     </div>
 
     <!-- MEME MODAL – mobile-perfect fit, NO scrolling, swipe enabled (modernization) -->
-    <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-4" onclick="if(event.target === this) closeMemeModal()">
+    <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-0" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal-content bg-zinc-950 rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
             <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
 
@@ -129,7 +134,7 @@
                 <div id="genre-section" class="hidden"></div>
             </div>
 
-            <!-- CONTEXT PANEL (was missing — this was the bug) -->
+            <!-- CONTEXT PANEL -->
             <div id="context-panel" class="hidden p-6 bg-zinc-900 border-t border-purple-500/40">
                 <div class="flex justify-between items-start gap-4">
                     <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
