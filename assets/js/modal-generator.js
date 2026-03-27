@@ -1,5 +1,6 @@
 // assets/js/modal-generator.js
 // Unified modal population + thread emulator using users.json + restored tags + description (modernization branch)
+// FIXED: Video controls now load reliably + videos no longer break out of 65vh/55vh container on genre switch
 
 let allUsers = null;
 
@@ -54,13 +55,13 @@ function renderTags(data, pageType) {
 }
 
 function renderCommonModalParts(data, pageType) {
-  // Media
+  // Media – FIXED: controls + preload + strict container-aware classes (no max-h on element itself)
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
     modalImageEl.innerHTML = isVideo
-      ? `<video id="modal-video" src="${data.image}" class="w-full max-h-[65vh] object-contain mx-auto" autoplay loop muted playsinline></video>`
-      : `<img src="${data.image}" class="w-full max-h-[65vh] object-contain mx-auto" alt="${data.title}">`;
+      ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata" controls></video>`
+      : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
   }
 
   // Tags (above title)
@@ -157,6 +158,74 @@ function renderThread(threadPosts, containerId) {
   html += `</div>`;
   container.innerHTML = html;
 }
+
+// === UNIFIED MEME VIDEO HELPERS (modernization – fixes controls + container breakout on genre switch) ===
+window.createModalMediaHTML = function(data) {
+  const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+  return isVideo
+    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata"></video>`
+    : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
+};
+
+window.initPlyrSafely = function() {
+  const videoEl = document.getElementById('modal-video');
+  if (!videoEl) return;
+
+  // Destroy previous instance if any
+  if (window.currentPlyr) {
+    window.currentPlyr.destroy();
+    window.currentPlyr = null;
+  }
+
+  const forceContainerHeight = () => {
+    const container = document.getElementById('modal-image');
+    if (!container) return;
+    const plyrWrapper = videoEl.closest('.plyr');
+    if (plyrWrapper) {
+      // CRITICAL: force wrapper to never exceed parent container (65vh / 55vh mobile)
+      plyrWrapper.style.maxHeight = '100%';
+      plyrWrapper.style.height = '100%';
+      plyrWrapper.style.width = '100%';
+      // Ensure inner video respects container
+      const innerVideo = plyrWrapper.querySelector('video');
+      if (innerVideo) {
+        innerVideo.style.maxHeight = '100%';
+        innerVideo.style.objectFit = 'contain';
+      }
+    }
+  };
+
+  videoEl.onloadedmetadata = () => {
+    window.currentPlyr = new Plyr('#modal-video', {
+      controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
+      autoplay: true,
+      muted: true,
+      loop: true,
+      playsinline: true,
+      clickToPlay: true,
+      hideControls: false
+    });
+
+    // Multiple forced layout passes – prevents breakout on genre switch
+    setTimeout(forceContainerHeight, 0);
+    setTimeout(forceContainerHeight, 80);
+    setTimeout(forceContainerHeight, 220);
+    setTimeout(forceContainerHeight, 450);
+  };
+
+  // Trigger immediately if metadata already available
+  if (videoEl.readyState >= 1) videoEl.onloadedmetadata();
+};
+
+window.forceFitVideo = function() {
+  const container = document.getElementById('modal-image');
+  if (!container) return;
+  const media = container.querySelector('video, img');
+  if (media) {
+    media.style.maxHeight = '100%';
+    media.style.objectFit = 'contain';
+  }
+};
 
 window.populateModal = async function(pageType, id, data) {
   await loadUsers();                     // ensure users.json is loaded once
