@@ -59,8 +59,8 @@ function renderCommonModalParts(data, pageType) {
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
     modalImageEl.innerHTML = isVideo
-      ? `<video id="modal-video" src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" autoplay loop muted playsinline></video>`
-      : `<img src="${data.image}" class="w-full max-h-[70vh] object-contain mx-auto" alt="${data.title}">`;
+      ? `<video id="modal-video" src="${data.image}" class="w-full max-h-[65vh] object-contain mx-auto" autoplay loop muted playsinline></video>`
+      : `<img src="${data.image}" class="w-full max-h-[65vh] object-contain mx-auto" alt="${data.title}">`;
   }
 
   // Tags (above title)
