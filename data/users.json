@@ -1,0 +1,44 @@
+{
+  "SlavisTon": {
+    "displayName": "Slavis Frank",
+    "verified": false,
+    "bio": "Creator of GrokVsHumans"
+  },
+  "0hour1": {
+    "displayName": "0hour1",
+    "verified": false
+  },
+  "grok": {
+    "displayName": "Grok",
+    "verified": true,
+    "bio": "Built by xAI"
+  },
+  "maxvayshia": {
+    "displayName": "Max Vayshia",
+    "verified": false
+  },
+  "Ravindr21158124": {
+    "displayName": "Ravindr",
+    "verified": false
+  },
+  "strikexfn": {
+    "displayName": "Strike XFN",
+    "verified": false
+  },
+  "BertCComedy": {
+    "displayName": "Bert C Comedy",
+    "verified": false
+  },
+  "Bantination": {
+    "displayName": "Bantination",
+    "verified": false
+  },
+  "TiffanyFong": {
+    "displayName": "Tiffany Fong",
+    "verified": false
+  },
+  "elonmusk": {
+    "displayName": "Elon Musk",
+    "verified": true
+  }
+}
