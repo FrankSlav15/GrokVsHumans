@@ -1,6 +1,7 @@
 // assets/js/common.js
 // MODERNIZATION: Background + header/footer + nav highlight only
 
+// Replace the entire top section (Firebase init) with this safe version:
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
   authDomain: "grokvshumans.firebaseapp.com",
@@ -11,11 +12,29 @@ const firebaseConfig = {
   appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
 };
 
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Safe Firebase init – never breaks index or submit pages
+let database = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  database = firebase.database();
+} catch (e) {
+  console.warn("Firebase not available on this page (normal for index/submit)");
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-    const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
+    // 1. RANDOM BACKGROUND ROTATOR
+    const bgs = [
+        'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
+        'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
+        'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
+        'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
+        'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
+        'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
+        'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
+        'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
+        'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
+        'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
+    ];
     const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
     document.body.style.backgroundImage = `url('/${randomBg}')`;
     document.body.style.backgroundPosition = '50% 35%';
@@ -23,22 +42,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.backgroundRepeat = 'no-repeat';
     document.body.style.backgroundAttachment = 'fixed';
 
+    // FORCE header + footer on EVERY page (including index and submit)
     loadLayout();
 });
 
 async function loadLayout() {
-    try {
-        const headerRes = await fetch('assets/partials/header.html');
-        const headerHTML = await headerRes.text();
-        document.body.insertAdjacentHTML('afterbegin', headerHTML);
+  try {
+    // Header
+    const headerRes = await fetch('assets/partials/header.html');
+    if (!headerRes.ok) throw new Error('Header 404');
+    const headerHTML = await headerRes.text();
+    document.body.insertAdjacentHTML('afterbegin', headerHTML);
 
-        const footerRes = await fetch('assets/partials/footer.html');
-        const footerHTML = await footerRes.text();
-        document.body.insertAdjacentHTML('beforeend', footerHTML);
+    // Footer
+    const footerRes = await fetch('assets/partials/footer.html');
+    if (!footerRes.ok) throw new Error('Footer 404');
+    const footerHTML = await footerRes.text();
+    document.body.insertAdjacentHTML('beforeend', footerHTML);
 
-        // Nav highlight after header is inserted
-        highlightActiveNav();
-    } catch (e) {}
+    // Force nav highlight immediately after header is inserted
+    highlightActiveNav();
+
+    console.log('✅ Header + Footer loaded on index.html');
+  } catch (e) {
+    console.error('❌ Layout load failed:', e);
+    // Minimal fallback so index never appears broken
+    document.body.insertAdjacentHTML('afterbegin', 
+      `<nav class="fixed top-0 w-full bg-black/90 p-4 text-center z-50 border-b border-red-500">GrokVsHumans <span class="text-red-400">(header failed — refresh?)</span></nav>`
+    );
+  }
 }
 
 function highlightActiveNav() {
