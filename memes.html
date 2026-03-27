@@ -60,6 +60,7 @@
         /* CRITICAL: Plyr wrapper can NEVER break the container again */
         #meme-modal .plyr {
             max-height: 100% !important;
+            width: 100% !important;
         }
 
         /* Title/desc + genre never shrink */
@@ -250,6 +251,13 @@
         setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
     }
 
+    function createModalMediaHTML(data) {
+        const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
+        return isVideo
+            ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata"></video>`
+            : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
+    }
+
     function openMemeModal(id) {
         currentMemeIndex = id;
         const data = allMemes[id];
@@ -259,10 +267,7 @@
         populateModal('memes', id, data);
 
         const mediaContainer = document.getElementById('modal-image');
-        const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
-        mediaContainer.innerHTML = isVideo
-            ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata"></video>`
-            : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
+        mediaContainer.innerHTML = createModalMediaHTML(data);
 
         const mediaEl = mediaContainer.querySelector('img, video');
         if (mediaEl) {
@@ -270,7 +275,7 @@
             mediaEl.style.maxHeight = '100%';
         }
 
-        if (isVideo) initPlyrSafely();
+        if (data.image.toLowerCase().match(/\.(mp4|webm)$/)) initPlyrSafely();
 
         document.getElementById('modal-desc').textContent = data.description || data.context || '';
         document.getElementById('base-x-link').href = data.xLink || '#';
@@ -288,7 +293,10 @@
 
         const forceContainerHeight = () => {
             const plyrWrapper = videoEl.closest('.plyr');
-            if (plyrWrapper) plyrWrapper.style.maxHeight = '100%';
+            if (plyrWrapper) {
+                plyrWrapper.style.maxHeight = '100%';
+                plyrWrapper.style.width = '100%';
+            }
         };
 
         videoEl.onloadedmetadata = () => {
@@ -300,17 +308,14 @@
                 loop: true,
                 playsinline: true,
                 clickToPlay: true,
-                hideControls: false   /* ← controls always visible from the beginning */
+                hideControls: false
             });
-            // Multiple forced height calls after Plyr finishes its wrapper
             setTimeout(forceContainerHeight, 0);
-            setTimeout(forceContainerHeight, 100);
-            setTimeout(forceContainerHeight, 300);
+            setTimeout(forceContainerHeight, 50);
+            setTimeout(forceContainerHeight, 150);
         };
 
-        if (videoEl.readyState >= 1) {
-            videoEl.onloadedmetadata();
-        }
+        if (videoEl.readyState >= 1) videoEl.onloadedmetadata();
     }
 
     function renderGenreNav(currentId) {
@@ -354,11 +359,7 @@
             (data.xLink ? `<br><a href="${data.xLink}" target="_blank" class="text-purple-400 text-xs mt-2 inline-block">View original on X →</a>` : '');
         
         const mediaContainer = document.getElementById('modal-image');
-        const isVideo = data.image.toLowerCase().endsWith('.mp4') || data.image.toLowerCase().endsWith('.webm');
-        
-        mediaContainer.innerHTML = isVideo
-            ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" autoplay loop muted playsinline preload="metadata"></video>`
-            : `<img src="${data.image}" class="w-full object-contain mx-auto" alt="${data.title}">`;
+        mediaContainer.innerHTML = createModalMediaHTML(data);
         
         const mediaEl = mediaContainer.querySelector('img, video');
         if (mediaEl) {
@@ -366,7 +367,7 @@
             mediaEl.style.maxHeight = '100%';
         }
         
-        if (isVideo) initPlyrSafely();
+        if (data.image.toLowerCase().match(/\.(mp4|webm)$/)) initPlyrSafely();
         
         document.getElementById('base-x-link').href = data.xLink || '#';
         currentMemeId = newId;
