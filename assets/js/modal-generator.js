@@ -1,19 +1,12 @@
 // assets/js/modal-generator.js
-// MODERNIZATION: Fully unified modal population + thread emulator + video fix + genre nav + voting + share menus
-// ALL functions from battles.html, categories.html and memes.html have been merged here (NO OMISSIONS)
-// Video height breakout is fixed with aggressive inline styles + multiple layout passes
+// FINAL CLEAN VERSION – all navigation unified here, no duplicates anywhere
 
 let allUsers = null;
 
 async function loadUsers() {
   if (allUsers) return allUsers;
-  try {
-    const res = await fetch('/assets/data/users.json');
-    allUsers = await res.json();
-  } catch (e) {
-    console.warn('users.json not loaded, using fallbacks');
-    allUsers = {};
-  }
+  const res = await fetch('/assets/data/users.json');
+  allUsers = await res.json();
   return allUsers;
 }
 
@@ -56,142 +49,72 @@ function renderTags(data, pageType) {
 }
 
 function renderCommonModalParts(data, pageType) {
-  // Media – FIXED: strict container-aware rendering + inline max-height enforcement
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
     modalImageEl.innerHTML = isVideo
-      ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" autoplay loop muted playsinline preload="metadata"></video>`
-      : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" alt="${data.title}">`;
+      ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" autoplay loop muted playsinline preload="metadata" controls></video>`
+      : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
   }
 
-  // Tags (above title)
   renderTags(data, pageType);
 
-  // Title
   const titleEl = document.getElementById('modal-title');
   if (titleEl) titleEl.textContent = data.title || '';
 
-  // X link
   const xLinkEl = document.getElementById('base-x-link') || document.getElementById('modal-x-link');
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 
-  // Description – robust selector for all pages
   const descSelectors = ['modal-desc', 'modal-description', 'modal-description-text', '.modal-description'];
   let descEl = null;
   for (let sel of descSelectors) {
     descEl = document.getElementById(sel) || document.querySelector(sel);
     if (descEl) break;
   }
-  if (descEl) {
-    descEl.textContent = data.description || data.context || data.grok || data.human || '';
-  }
+  if (descEl) descEl.textContent = data.description || data.context || data.grok || data.human || '';
 }
 
 function renderThread(threadPosts, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-
   let html = `<div class="thread-emulator mx-auto max-w-[620px] space-y-8">`;
-
   threadPosts.forEach((post) => {
     const isDeleted = post.deleted === true || !post.author;
     const avatarSrc = getLocalAvatar(post);
-
     const rawUsername = post.username || post.user || post.author || '';
     const userData = getUserData(rawUsername);
     const displayName = userData.displayName || rawUsername;
     const verifiedBadge = userData.verified ? `<i class="fa-solid fa-circle-check text-blue-400 ml-1 text-sm"></i>` : '';
-
-    const displayNameHTML = rawUsername 
-      ? `<a href="https://x.com/${rawUsername.replace('@','')}" target="_blank" class="text-[#c084fc] hover:underline">${displayName}${verifiedBadge}</a>` 
-      : '';
-
+    const displayNameHTML = rawUsername ? `<a href="https://x.com/${rawUsername.replace('@','')}" target="_blank" class="text-[#c084fc] hover:underline">${displayName}${verifiedBadge}</a>` : '';
     let textWithLinks = (post.text || '').replace(/\n/g, '<br>');
     textWithLinks = textWithLinks.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank" class="text-[#c084fc] hover:underline">@$1</a>');
-
-    html += `
-      <div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">
-        ${!isDeleted && post.author !== 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
-
-        <div class="${post.author === 'grok' ? 'grok-bubble' : 'human-bubble'} max-w-[85%] p-5 rounded-3xl">
-          ${isDeleted ? `
-            <div class="deleted-post bg-[#27272a] text-[#71717a] p-4 rounded-2xl text-sm">
-              This Post is from an account that no longer exists. 
-              <a href="https://help.twitter.com/rules-and-policies/notices-on-twitter" class="text-[#a855f7] underline">Learn more</a>
-            </div>
-          ` : `
-            <div class="flex items-center gap-2 mb-2">
-              <span class="font-semibold text-sm">${displayNameHTML}</span>
-              <span class="text-zinc-500 text-xs">${post.date || ''}</span>
-            </div>
-            <div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>
-
-            ${getYouTubeEmbed(post.image) ? `
-            <div class="mt-4 aspect-video rounded-2xl overflow-hidden border border-zinc-700">
-              <iframe width="100%" height="100%" src="${getYouTubeEmbed(post.image)}" 
-                      title="YouTube video player" frameborder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowfullscreen></iframe>
-            </div>` : ''}
-
-            ${post.image && !getYouTubeEmbed(post.image) ? 
-              (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? 
-                `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` :
-                `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">`) : ''}
-
-            ${post.linkedPost ? `
-            <div class="mt-4 border border-zinc-700 rounded-3xl p-4 bg-zinc-950">
-              <div class="flex items-center gap-2 mb-3">
-                <img src="${getLocalAvatar(post.linkedPost)}" class="w-6 h-6 rounded-full" alt="">
-                <span class="font-semibold text-sm">${post.linkedPost.username || post.linkedPost.author || ''}</span>
-              </div>
-              <div class="text-[15px] leading-relaxed">${(post.linkedPost.text || '').replace(/\n/g, '<br>')}</div>
-              ${post.linkedPost.url ? `<a href="${post.linkedPost.url}" target="_blank" class="text-purple-400 text-xs mt-3 inline-block">View on X →</a>` : ''}
-            </div>` : ''}
-          `}
-        </div>
-
-        ${!isDeleted && post.author === 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
-      </div>`;
+    html += `<div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">${!isDeleted && post.author !== 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}<div class="${post.author === 'grok' ? 'grok-bubble' : 'human-bubble'} max-w-[85%] p-5 rounded-3xl">${isDeleted ? `<div class="deleted-post bg-[#27272a] text-[#71717a] p-4 rounded-2xl text-sm">This Post is from an account that no longer exists. <a href="https://help.twitter.com/rules-and-policies/notices-on-twitter" class="text-[#a855f7] underline">Learn more</a></div>` : `<div class="flex items-center gap-2 mb-2"><span class="font-semibold text-sm">${displayNameHTML}</span><span class="text-zinc-500 text-xs">${post.date || ''}</span></div><div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>${getYouTubeEmbed(post.image) ? `<div class="mt-4 aspect-video rounded-2xl overflow-hidden border border-zinc-700"><iframe width="100%" height="100%" src="${getYouTubeEmbed(post.image)}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>` : ''}${post.image && !getYouTubeEmbed(post.image) ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">`) : ''}`}</div>${!isDeleted && post.author === 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}</div>`;
   });
-
   html += `</div>`;
   container.innerHTML = html;
 }
 
-// === UNIFIED MEME VIDEO HELPERS – THIS IS THE FIX FOR HEIGHT BREAKOUT ===
 window.createModalMediaHTML = function(data) {
   const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
   return isVideo
-    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" autoplay loop muted playsinline preload="metadata"></video>`
-    : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important; height:auto !important; width:100% !important; object-fit:contain !important;" alt="${data.title}">`;
+    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" autoplay loop muted playsinline preload="metadata" controls></video>`
+    : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
 };
 
 window.initPlyrSafely = function() {
   const videoEl = document.getElementById('modal-video');
   if (!videoEl) return;
+  if (window.currentPlyr) { window.currentPlyr.destroy(); window.currentPlyr = null; }
 
-  if (window.currentPlyr) {
-    window.currentPlyr.destroy();
-    window.currentPlyr = null;
-  }
-
-  const forceContainerHeight = () => {
+  const force = () => {
     const container = document.getElementById('modal-image');
     if (!container) return;
     container.style.maxHeight = '100%';
     container.style.minHeight = '0';
     container.style.flex = '0 0 auto';
-
-    const plyrWrapper = videoEl.closest('.plyr');
-    if (plyrWrapper) {
-      plyrWrapper.style.maxHeight = '100%';
-      plyrWrapper.style.height = '100%';
-      plyrWrapper.style.width = '100%';
-      plyrWrapper.style.overflow = 'hidden';
-    }
-
+    container.style.overflow = 'hidden';
+    const plyr = videoEl.closest('.plyr');
+    if (plyr) { plyr.style.maxHeight = '100%'; plyr.style.height = '100%'; plyr.style.width = '100%'; plyr.style.overflow = 'hidden'; }
     videoEl.style.maxHeight = '100%';
     videoEl.style.height = 'auto';
     videoEl.style.objectFit = 'contain';
@@ -199,36 +122,10 @@ window.initPlyrSafely = function() {
   };
 
   videoEl.onloadedmetadata = () => {
-    window.currentPlyr = new Plyr('#modal-video', {
-      controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
-      autoplay: true,
-      muted: true,
-      loop: true,
-      playsinline: true,
-      clickToPlay: true,
-      hideControls: false
-    });
-
-    setTimeout(forceContainerHeight, 0);
-    setTimeout(forceContainerHeight, 30);
-    setTimeout(forceContainerHeight, 120);
-    setTimeout(forceContainerHeight, 300);
-    setTimeout(forceContainerHeight, 600);
+    window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'], autoplay: true, muted: true, loop: true, playsinline: true, clickToPlay: true, hideControls: false });
+    setTimeout(force, 0); setTimeout(force, 30); setTimeout(force, 120); setTimeout(force, 300);
   };
-
   if (videoEl.readyState >= 1) videoEl.onloadedmetadata();
-};
-
-window.forceFitVideo = function() {
-  const container = document.getElementById('modal-image');
-  if (!container) return;
-  const media = container.querySelector('video, img');
-  if (media) {
-    media.style.maxHeight = '100%';
-    media.style.height = 'auto';
-    media.style.objectFit = 'contain';
-    media.style.width = '100%';
-  }
 };
 
 window.populateModal = async function(pageType, id, data) {
@@ -236,23 +133,79 @@ window.populateModal = async function(pageType, id, data) {
   renderCommonModalParts(data, pageType);
 
   if (pageType === 'battles' || pageType === 'categories') {
-    if (typeof renderThread === 'function') {
-      renderThread(data.threadPosts || [], "thread-container");
-    }
+    if (typeof renderThread === 'function') renderThread(data.threadPosts || [], "thread-container");
   } else if (pageType === 'memes') {
     const genreSection = document.getElementById('genre-section');
     if (genreSection) {
-      if (!data.genre || data.genre.trim() === '') {
-        genreSection.style.display = 'none';
-      } else {
-        genreSection.style.display = '';
-        if (typeof renderGenreNav === 'function') renderGenreNav(id);
-      }
+      genreSection.style.display = (!data.genre || data.genre.trim() === '') ? 'none' : '';
+      if (typeof renderGenreNav === 'function') renderGenreNav(id);
     }
   }
 };
 
-// ====================== BATTLES-SPECIFIC FUNCTIONS ======================
+// ====================== ALL NAVIGATION (unified here – right arrow = older) ======================
+document.addEventListener('keydown', e => {
+  const memeModal = document.getElementById('meme-modal');
+  const battleModal = document.getElementById('battle-modal');
+  const categoryModal = document.getElementById('category-modal');
+
+  if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
+    if (e.key === 'Escape') closeMemeModal();
+    else if (e.key === 'ArrowLeft') nextMeme();
+    else if (e.key === 'ArrowRight') prevMeme();
+    else if (e.key === 'ArrowUp') prevGenreMeme?.();
+    else if (e.key === 'ArrowDown') nextGenreMeme?.();
+  }
+  else if (battleModal && !battleModal.classList.contains('hidden') && window.currentBattleId) {
+    if (e.key === 'Escape') closeModal();
+    else if (e.key === 'ArrowLeft') nextBattle();
+    else if (e.key === 'ArrowRight') prevBattle();
+  }
+  else if (categoryModal && !categoryModal.classList.contains('hidden') && window.currentCategoryId) {
+    if (e.key === 'Escape') closeCategoryModal();
+    else if (e.key === 'ArrowLeft') nextCategory();
+    else if (e.key === 'ArrowRight') prevCategory();
+  }
+});
+
+function attachGlobalSwipeHandler(pageType) {
+  const modalId = pageType === 'memes' ? 'meme-modal' : pageType === 'battles' ? 'battle-modal' : 'category-modal';
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  let touchStartX = 0;
+  modal.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  modal.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) < 50) return;
+    if (diff > 0) window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
+    else window[`next${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
+  });
+}
+
+function attachGenreVerticalSwipe() {
+  const modalImage = document.getElementById('modal-image');
+  if (!modalImage) return;
+  let touchStartY = 0;
+  modalImage.addEventListener('touchstart', e => { touchStartY = e.changedTouches[0].screenY; });
+  modalImage.addEventListener('touchend', e => {
+    if (!window.currentMemeId) return;
+    const diffY = touchStartY - e.changedTouches[0].screenY;
+    if (Math.abs(diffY) > 50) {
+      if (window.currentGenreList && window.currentGenreList.length) {
+        if (diffY > 0) prevGenreMeme();
+        else nextGenreMeme();
+      }
+    }
+  });
+}
+
+const originalOpenMemeModal = window.openMemeModal;
+window.openMemeModal = function(id) {
+  if (typeof originalOpenMemeModal === 'function') originalOpenMemeModal(id);
+  setTimeout(attachGenreVerticalSwipe, 100);
+};
+
+// ====================== BATTLES FUNCTIONS ======================
 window.vote = function(event, winner, id) {
   event.stopImmediatePropagation();
   event.preventDefault();
@@ -338,7 +291,7 @@ window.updateModalVoteUI = function() {
   }
 };
 
-// ====================== CATEGORIES-SPECIFIC FUNCTIONS ======================
+// ====================== CATEGORIES FUNCTIONS ======================
 window.openCategoryModal = function(id) {
   window.currentCategoryIndex = id;
   const data = window.allCategories[id];
@@ -354,7 +307,7 @@ window.closeCategoryModal = function() {
   document.body.style.overflow = 'visible';
 };
 
-// ====================== MEMES-SPECIFIC FUNCTIONS ======================
+// ====================== MEMES FUNCTIONS ======================
 window.openMemeModal = function(id) {
   window.currentMemeIndex = id;
   const data = window.allMemes[id];
@@ -555,7 +508,7 @@ window.copyToClipboard = function(url) {
   });
 };
 
-// ====================== SHARED NAVIGATION & DEEP LINK ======================
+// ====================== SHARED NAVIGATION HELPERS ======================
 window.getBattleKeys = function() {
   return Object.keys(window.allBattles || {}).map(Number).sort((a,b) => a - b);
 };
