@@ -7,8 +7,6 @@
     <title>Categories - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
@@ -16,12 +14,7 @@
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-M58E7KLM56');
-    </script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
 
     <style>
         /* PAGE-SPECIFIC ONLY – Categories page (modernization branch) */
@@ -40,24 +33,12 @@
         #modal-scroll-area { scrollbar-width:none;-ms-overflow-style:none; }
         #modal-scroll-area::-webkit-scrollbar { display:none; }
 
-        /* ====================== MOBILE MODAL + SWIPE FIXES (modernization branch) ====================== */
         @media (max-width: 640px) {
-          /* Perfect one-card fit + no stray scroll */
-          .modal-content {
-            max-height: 100dvh !important;
-            border-radius: 0 !important;
-            margin: 0 !important;
-            width: 100% !important;
-          }
-
-          /* Battles & Categories — image scrolls away */
+          .modal-content { max-height: 100dvh !important; border-radius: 0 !important; margin: 0 !important; width: 100% !important; }
           #battle-modal #modal-scroll-area,
-          #category-modal #modal-scroll-area {
-            padding-top: 0;
-          }
+          #category-modal #modal-scroll-area { padding-top: 0; }
         }
     </style>
-
 </head>
 
 <body class="text-white" data-page="categories">
@@ -67,7 +48,6 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Categories</h1>
             <p class="text-center text-zinc-400 text-lg">Every Grok vs Humans clash, neatly sorted</p>
 
-            <!-- STICKY TABS - UNIFIED -->
             <div class="sticky-tabs">
                 <div class="sticky-tabs-container">
                     <div class="tabs-wrapper" id="tabs">
@@ -99,18 +79,14 @@
 
             <div id="modal-scroll-area" class="flex-1 min-h-0 overflow-y-auto">
                 <div id="modal-image" class="w-full bg-zinc-800"></div>
-                
                 <div class="p-8">
                     <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
                     <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
                     <p id="modal-description" class="text-gray-300 leading-relaxed mb-8"></p>
-                    
-                    <!-- THREAD EMULATOR -->
                     <div id="thread-container" class="thread-container" data-entry-id=""></div>
                 </div>
             </div>
 
-            <!-- Clean white "View" button -->
             <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
                 <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
@@ -128,153 +104,9 @@
     <script src="assets/js/modal-generator.js"></script>
 
     <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
-      authDomain: "grokvshumans.firebaseapp.com",
-      databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "grokvshumans",
-      storageBucket: "grokvshumans.firebasestorage.app",
-      messagingSenderId: "483683492125",
-      appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    let allCategories = {};
-    let currentCategoryId = null;
-    let currentCategoryIndex = 0;
-
-    async function loadCategories() {
-        const snapshot = await database.ref('content/categories').once('value');
-        allCategories = snapshot.val() || {};
-        renderGrid();
-        setTimeout(checkDeepLink, 400);
-    }
-
-    function renderGrid() {
-        const grid = document.getElementById('category-grid');
-        grid.innerHTML = '';
-
-        Object.keys(allCategories)
-            .sort((a, b) => (allCategories[b].order || 0) - (allCategories[a].order || 0))
-            .forEach(id => {
-                const cardHTML = createContentCard('categories', id, allCategories[id]);
-                grid.insertAdjacentHTML('beforeend', cardHTML);
-            });
-    }
-
-    function filterCategory(cat) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-        document.getElementById('tab-' + cat).classList.add('tab-active');
-        document.querySelectorAll('#category-grid > div').forEach(card => {
-            const cats = (card.getAttribute('data-categories') || '').split(',').map(c => c.trim());
-            card.style.display = (cat === 'all' || cats.includes(cat)) ? 'block' : 'none';
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage('categories');
         });
-    }
-
-    function openCategoryModal(id) {
-        currentCategoryIndex = id;
-        const data = allCategories[id];
-        if (!data) return;
-        currentCategoryId = id;
-
-        populateModal('categories', id, data);
-
-        document.getElementById('category-modal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-
-        if (typeof renderThread === 'function') {
-            renderThread(data.threadPosts || [], "thread-container");
-        }
-    }
-
-    function closeCategoryModal() {
-        document.getElementById('category-modal').classList.add('hidden');
-        document.body.style.overflow = 'visible';
-    }
-
-    function nextCategory() {
-        const keys = getSortedCategoryIds();
-        let pos = keys.indexOf(currentCategoryIndex);
-        if (pos === -1) pos = 0;
-        const nextPos = (pos + 1) % keys.length;
-        currentCategoryIndex = keys[nextPos];
-        closeCategoryModal();
-        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
-    }
-
-    function prevCategory() {
-        const keys = getSortedCategoryIds();
-        let pos = keys.indexOf(currentCategoryIndex);
-        if (pos === -1) pos = 0;
-        const prevPos = (pos - 1 + keys.length) % keys.length;
-        currentCategoryIndex = keys[prevPos];
-        closeCategoryModal();
-        setTimeout(() => openCategoryModal(currentCategoryIndex), 280);
-    }
-
-    function getSortedCategoryIds() {
-        return Object.keys(allCategories)
-            .sort((a, b) => (allCategories[b].order || 0) - (allCategories[a].order || 0));
-    }
-
-    function checkDeepLink() {
-        const hash = window.location.hash.replace('#', '');
-        if (hash && !isNaN(hash)) {
-            const id = hash;
-            if (allCategories[id]) openCategoryModal(id);
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadCategories();
-
-        // UNIFIED SWIPE – right-to-left swipe = backward (recent → oldest) – modernization branch
-        // Attached per-page so it works reliably on battles, categories, and memes
-        const attachSwipeHandler = (modalId, prevFn, nextFn) => {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            let touchStartX = 0;
-
-            modal.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-            });
-
-            modal.addEventListener('touchend', e => {
-                const touchEndX = e.changedTouches[0].screenX;
-                const diff = touchStartX - touchEndX;
-
-                if (Math.abs(diff) < 50) return;
-
-                // right → left swipe = previous card (as you requested)
-                if (diff > 0) {
-                    if (typeof prevFn === 'function') prevFn();
-                } else {
-                    if (typeof nextFn === 'function') nextFn();
-                }
-            });
-        };
-
-        // Page-specific swipe (only one modal exists per HTML file)
-        if (typeof openBattleModal === 'function') {
-            attachSwipeHandler('battle-modal', prevBattle, nextBattle);
-        } else if (typeof openCategoryModal === 'function') {
-            attachSwipeHandler('category-modal', prevCategory, nextCategory);
-        } else if (typeof openMemeModal === 'function') {
-            attachSwipeHandler('meme-modal', prevMeme, nextMeme);
-        }
-    });
-
-    window.addEventListener('hashchange', checkDeepLink);
-
-    document.addEventListener('keydown', e => {
-        const modal = document.getElementById('category-modal');
-        if (modal.classList.contains('hidden') || !currentCategoryId) return;
-        if (e.key === 'Escape') closeCategoryModal();
-        if (e.key === 'ArrowLeft') prevCategory();      // ← now correctly goes to previous
-        if (e.key === 'ArrowRight') nextCategory();     // → now correctly goes to next
-    });
     </script>
-
 </body>
 </html>
