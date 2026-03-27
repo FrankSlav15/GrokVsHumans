@@ -57,8 +57,8 @@ function renderCommonModalParts(data, pageType) {
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
     modalImageEl.innerHTML = isVideo
-      ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" autoplay loop muted playsinline preload="metadata" controls></video>`
-      : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
+      ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:65vh !important;height:auto !important;width:100% !important;object-fit:contain !important;" autoplay loop muted playsinline preload="metadata" controls></video>`
+      : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:65vh !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
   }
 
   renderTags(data, pageType);
@@ -101,8 +101,8 @@ function renderThread(threadPosts, containerId) {
 window.createModalMediaHTML = function(data) {
   const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
   return isVideo
-    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" autoplay loop muted playsinline preload="metadata" controls></video>`
-    : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:100% !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
+    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:65vh !important;height:auto !important;width:100% !important;object-fit:contain !important;" autoplay loop muted playsinline preload="metadata" controls></video>`
+    : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:65vh !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
 };
 
 window.initPlyrSafely = function() {
