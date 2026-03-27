@@ -45,7 +45,7 @@
         @media (max-width: 640px) {
           .modal-content {
             max-height: 100dvh !important;
-            border-radius: 20px !important; /* restored rounded corners */
+            border-radius: 20px !important;   /* restored rounded corners */
             margin: 0 !important;
             width: 100% !important;
           }
@@ -53,7 +53,7 @@
             overflow: hidden;
             padding-bottom: 0;
           }
-          /* STRICT CONTAINER FOR BOTH IMAGES AND VIDEOS */
+          /* STRICT MEDIA CONTAINER – works for BOTH images and videos */
           #meme-modal #modal-image {
             flex: 1;
             display: flex;
@@ -61,7 +61,7 @@
             justify-content: center;
             background: #18181b;
             padding: 12px;
-            max-height: calc(100vh - 280px); /* guaranteed space for title + genre + buttons */
+            max-height: 58vh;               /* balanced height so everything fits */
           }
           #meme-modal #modal-image img,
           #meme-modal #modal-image video {
@@ -147,7 +147,7 @@
             <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
             <div class="flex flex-col flex-1" id="modal-content-inner">
-                <!-- STRICT CONTAINER FOR BOTH IMAGES AND VIDEOS -->
+                <!-- STRICT MEDIA CONTAINER – works for BOTH images and videos -->
                 <div id="modal-image" class="flex-1 bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
 
                 <div class="px-6 pt-4 pb-3 border-t border-zinc-800">
