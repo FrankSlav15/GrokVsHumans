@@ -133,7 +133,7 @@ function attachGlobalSwipeHandler(pageType) {
   modal._swipeStart = (e) => { touchStartX = e.changedTouches[0].screenX; };
   modal._swipeEnd = (e) => {
     const diff = touchStartX - e.changedTouches[0].screenX;
-    if (Math.abs(diff) < 90) return;
+    if (Math.abs(diff) < 55) return;   // lowered for easier phone swipe
     if (diff > 0) window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
     else window[`next${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
   };
