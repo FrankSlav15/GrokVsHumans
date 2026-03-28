@@ -55,7 +55,7 @@ body {
 }
 
 /* ============================================= */
-/* Header (global – exact match to original main branch) */
+/* Header (global – exact original structure) */
 /* ============================================= */
 .header {
   position: fixed;
@@ -188,11 +188,11 @@ body {
 }
 
 /* ============================================= */
-/* Sticky Tabs (global) – matches JS class names */
+/* Sticky Tabs (global – fixed under header) */
 /* ============================================= */
 .tabs {
   position: sticky;
-  top: 0;
+  top: 4rem;
   z-index: 40;
   background: rgba(10, 10, 31, 0.95);
   backdrop-filter: blur(12px);
@@ -232,19 +232,12 @@ body {
 }
 
 /* ============================================= */
-/* Memes Page – Content Section */
+/* Memes Page – Content Grid */
 /* ============================================= */
-.page__section {
-  padding-top: 2.5rem;
-}
-
-.page__container {
+.content-grid {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.content-grid {
+  padding: 2rem 1.5rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
@@ -359,9 +352,7 @@ body {
 }
 
 @media (max-width: 640px) {
-  .modal__image {
-    max-height: 55vh;
-  }
+  .modal__image { max-height: 55vh; }
 }
 
 .modal__body {
@@ -454,15 +445,15 @@ body {
 }
 
 /* ============================================= */
-/* Footer (global – BEM) */
+/* Footer (global) */
 /* ============================================= */
 .footer {
   background: #0a0a1f;
   border-top: 1px solid rgba(168, 85, 247, 0.2);
   padding: 3rem 1.5rem 2rem;
   text-align: center;
-  color: #a1a1aa;
   font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 .footer__container {
