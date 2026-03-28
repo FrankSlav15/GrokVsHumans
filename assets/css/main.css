@@ -147,6 +147,39 @@ body {
 }
 
 /* ============================================= */
+/* Hero (Memes page only) */
+/* ============================================= */
+.page__hero {
+  position: relative;
+  height: 65vh;
+  min-height: 500px;
+  background-image: url('https://raw.githubusercontent.com/FrankSlav15/GrokVsHumans/main/assets/images/hero-meme-vault.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.page__hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10,10,31,0.3), rgba(10,10,31,0.85));
+  z-index: 1;
+}
+
+.page__hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  padding: 0 1.5rem;
+}
+
+/* ============================================= */
 /* Hero / Page Section */
 /* ============================================= */
 .page__section {
@@ -162,9 +195,9 @@ body {
 }
 
 /* ============================================= */
-/* Sticky Tabs (global – matches original JS structure) */
+/* Sticky Tabs (exact original structure JS expects) */
 /* ============================================= */
-.tabs {
+.sticky-tabs {
   position: sticky;
   top: 4rem;
   z-index: 40;
@@ -174,13 +207,13 @@ body {
   padding: 1rem 0;
 }
 
-.tabs__container {
+.sticky-tabs-container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
-.tabs__list {
+.tabs-wrapper {
   display: flex;
   gap: 0.5rem;
   overflow-x: auto;
@@ -223,7 +256,6 @@ body {
   }
 }
 
-/* meme-card – exact class used by card-generator.js */
 .meme-card {
   background: #18181b;
   border-radius: 1rem;
