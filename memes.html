@@ -10,20 +10,17 @@
     <script src="assets/js/card-generator.js" defer></script>
     <script src="assets/js/modal-generator.js" defer></script>
 </head>
-<body data-page="memes">
+<body class="text-white" data-page="memes">
 
-    <!-- HERO + PAGE CONTENT (exact original wrappers) -->
     <section class="page__section">
         <div class="page__container">
-            
-            <!-- PAGE TITLE + SUBTITLE -->
             <h1 class="page__title">Meme Vault</h1>
             <p class="page__subtitle">Grok cooks humanity — the best of the best</p>
 
-            <!-- STICKY TABS (exact original structure so filterCategory works) -->
-            <div class="tabs">
-                <div class="tabs__container">
-                    <div class="tabs__list" id="tabs">
+            <!-- STICKY TABS (exact structure JS expects) -->
+            <div class="sticky-tabs">
+                <div class="sticky-tabs-container">
+                    <div class="tabs-wrapper" id="tabs">
                         <button onclick="filterCategory('all')" class="tab tab-active" id="tab-all">All</button>
                         <button onclick="filterCategory('grok-memes')" class="tab" id="tab-grok-memes">Grok Memes</button>
                         <button onclick="filterCategory('political-memes')" class="tab" id="tab-political-memes">Political Memes</button>
@@ -36,16 +33,15 @@
                 </div>
             </div>
 
-            <!-- CONTENT GRID (exact ID the JS expects – cards with class="meme-card" will appear here) -->
+            <!-- CONTENT GRID (exact ID + classes JS expects) -->
             <div class="content-grid" id="meme-grid"></div>
-
         </div>
     </section>
 
-    <!-- TOAST (global) -->
+    <!-- TOAST -->
     <div id="toast" class="toast"></div>
 
-    <!-- MEME MODAL (exact original structure for modal-generator.js) -->
+    <!-- MEME MODAL (exact structure for modal-generator.js) -->
     <div id="meme-modal" class="modal modal--hidden">
         <div class="modal__overlay" onclick="if(event.target === this) closeMemeModal()"></div>
         <div class="modal__content">
@@ -61,9 +57,7 @@
                 </div>
             </div>
 
-            <div id="modal-buttons" class="modal__buttons">
-                <!-- populated by JS -->
-            </div>
+            <div id="modal-buttons" class="modal__buttons"></div>
         </div>
     </div>
 
