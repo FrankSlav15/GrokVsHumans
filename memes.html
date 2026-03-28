@@ -12,30 +12,60 @@
 </head>
 <body data-page="memes">
 
-    <!-- HERO (page-specific) -->
-    <div class="page__hero">
-        <div class="page__hero-content">
+    <!-- HERO + PAGE CONTENT (exact original wrappers) -->
+    <section class="page__section">
+        <div class="page__container">
+            
+            <!-- PAGE TITLE + SUBTITLE -->
             <h1 class="page__title">Meme Vault</h1>
             <p class="page__subtitle">Grok cooks humanity — the best of the best</p>
+
+            <!-- STICKY TABS (exact original structure so filterCategory works) -->
+            <div class="tabs">
+                <div class="tabs__container">
+                    <div class="tabs__list" id="tabs">
+                        <button onclick="filterCategory('all')" class="tab tab-active" id="tab-all">All</button>
+                        <button onclick="filterCategory('grok-memes')" class="tab" id="tab-grok-memes">Grok Memes</button>
+                        <button onclick="filterCategory('political-memes')" class="tab" id="tab-political-memes">Political Memes</button>
+                        <button onclick="filterCategory('misc-memes')" class="tab" id="tab-misc-memes">Miscellaneous Memes</button>
+                        <button onclick="filterCategory('gifs')" class="tab" id="tab-gifs">GIFs</button>
+                        <button onclick="filterCategory('ai-tech')" class="tab" id="tab-ai-tech">AI Meme Tech</button>
+                        <button onclick="filterCategory('videos')" class="tab" id="tab-videos">Videos</button>
+                        <button onclick="filterCategory('other')" class="tab" id="tab-other">Other</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT GRID (exact ID the JS expects – cards with class="meme-card" will appear here) -->
+            <div class="content-grid" id="meme-grid"></div>
+
+        </div>
+    </section>
+
+    <!-- TOAST (global) -->
+    <div id="toast" class="toast"></div>
+
+    <!-- MEME MODAL (exact original structure for modal-generator.js) -->
+    <div id="meme-modal" class="modal modal--hidden">
+        <div class="modal__overlay" onclick="if(event.target === this) closeMemeModal()"></div>
+        <div class="modal__content">
+            <button onclick="closeMemeModal()" class="modal__close">✕</button>
+            <button onclick="prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
+            <button onclick="nextMeme()" class="nav-arrow nav-arrow-right">›</button>
+
+            <div id="modal-content-inner">
+                <div id="modal-image" class="modal__image-container"></div>
+                <div class="modal__body">
+                    <h2 id="modal-title" class="modal__title"></h2>
+                    <p id="modal-desc" class="modal__description"></p>
+                </div>
+            </div>
+
+            <div id="modal-buttons" class="modal__buttons">
+                <!-- populated by JS -->
+            </div>
         </div>
     </div>
-
-    <!-- STICKY TABS (global – exact labels + onclicks your JS expects) -->
-    <div class="tabs">
-        <div class="tabs__list" id="tabs">
-            <button onclick="filterCategory('all')" class="tab tab-active">All</button>
-            <button onclick="filterCategory('grok-memes')" class="tab">Grok Memes</button>
-            <button onclick="filterCategory('political-memes')" class="tab">Political Memes</button>
-            <button onclick="filterCategory('misc-memes')" class="tab">Miscellaneous Memes</button>
-            <button onclick="filterCategory('gifs')" class="tab">GIFs</button>
-            <button onclick="filterCategory('ai-tech')" class="tab">AI Meme Tech</button>
-            <button onclick="filterCategory('videos')" class="tab">Videos</button>
-            <button onclick="filterCategory('other')" class="tab">Other</button>
-        </div>
-    </div>
-
-    <!-- CONTENT GRID (this is what card-generator.js populates) -->
-    <div class="content-grid" id="meme-grid"></div>
 
 </body>
 </html>
