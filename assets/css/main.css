@@ -55,7 +55,7 @@ body {
 }
 
 /* ============================================= */
-/* Header (global – BEM) */
+/* Header (global – cleaned BEM, matches old structure exactly) */
 /* ============================================= */
 .header {
   position: fixed;
@@ -68,7 +68,7 @@ body {
   z-index: 50;
 }
 
-.header__container {
+.header__inner {
   max-width: 1280px;
   margin: 0 auto;
   padding: 1rem 1.5rem;
@@ -76,6 +76,11 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.header__logo-row {
+  display: flex;
+  align-items: center;
 }
 
 .header__logo {
@@ -124,6 +129,10 @@ body {
 .nav-link:hover,
 .nav-link.active {
   color: rgb(168 85 247);
+}
+
+.header__submit-row {
+  display: flex;
 }
 
 .header__submit-btn {
