@@ -55,7 +55,7 @@ body {
 }
 
 /* ============================================= */
-/* Header (global – cleaned BEM, matches old structure exactly) */
+/* Header (global – exact match to original main branch) */
 /* ============================================= */
 .header {
   position: fixed;
@@ -75,7 +75,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .header__logo-row {
@@ -83,7 +83,7 @@ body {
   align-items: center;
 }
 
-.header__logo {
+.header__logo-link {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -146,6 +146,7 @@ body {
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .header__submit-btn:hover {
