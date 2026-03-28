@@ -12,7 +12,7 @@
 </head>
 <body data-page="memes">
 
-    <!-- HERO (exact original structure – background already styled in main.css) -->
+    <!-- HERO (page-specific) -->
     <div class="page__hero">
         <div class="page__hero-content">
             <h1 class="page__title">Meme Vault</h1>
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <!-- STICKY TABS (exact labels + onclicks from your screenshot – JS expects these) -->
+    <!-- STICKY TABS (global – exact labels + onclicks your JS expects) -->
     <div class="tabs">
         <div class="tabs__list" id="tabs">
             <button onclick="filterCategory('all')" class="tab tab-active">All</button>
@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <!-- CONTENT GRID (this is the missing piece – card-generator.js populates it) -->
+    <!-- CONTENT GRID (this is what card-generator.js populates) -->
     <div class="content-grid" id="meme-grid"></div>
 
 </body>
