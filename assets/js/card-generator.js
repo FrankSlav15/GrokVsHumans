@@ -24,10 +24,10 @@ function getShortDescription(data, pageType) {
 
 function getCardFooter(pageType, id) {
   if (pageType === 'battles') {
-    return `<div class="flex border-t border-[#27272a]">
-              <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-4 bg-[#6b21a8] hover:bg-[#581c8c] text-white font-semibold">Grok Won</button>
-              <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-4 bg-[#9f1239] hover:bg-[#88132f] text-white font-semibold">Human Won</button>
-            </div>`;
+    return `<div class="flex border-t border-[#27272a] rounded-b-3xl overflow-hidden">
+      <button onclick="voteFromModal(event, 'grok', ${id}); event.stopImmediatePropagation(); event.preventDefault();" class="flex-1 py-5 bg-[#6b21a8] text-white font-semibold text-base">Grok Won</button>
+      <button onclick="voteFromModal(event, 'human', ${id}); event.stopImmediatePropagation(); event.preventDefault();" class="flex-1 py-5 bg-[#9f1239] text-white font-semibold text-base">Human Won</button>
+    </div>`;
   }
   return '';
 }

@@ -213,4 +213,17 @@ document.addEventListener('keydown', e => {
   }
 });
 
+window.voteFromModal = function(e, side, id) {
+  e.stopImmediatePropagation();
+  e.preventDefault();
+  if (!window.allBattles || !window.allBattles[id]) return;
+
+  if (side === 'grok') window.allBattles[id].grokVotes = (window.allBattles[id].grokVotes || 0) + 1;
+  else window.allBattles[id].humanVotes = (window.allBattles[id].humanVotes || 0) + 1;
+
+  showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
+  updateGridVoteUI(id);
+  closeModal();
+};
+
 // End of modal-generator.js
