@@ -145,7 +145,7 @@ body {
 }
 
 /* ============================================= */
-/* Hero + Diffuse Translucent Overlay (matches common.js background) */
+/* Hero + Diffuse Translucent Overlay */
 /* ============================================= */
 .page__section {
   position: relative;
@@ -217,7 +217,7 @@ body {
 }
 
 /* ============================================= */
-/* Content Grid + meme-card (exact classes JS injects) */
+/* Content Grid + meme-card */
 /* ============================================= */
 .content-grid {
   display: grid;
