@@ -260,6 +260,6 @@ function renderThread(threadPosts, containerId) {
   });
   html += `</div>`;
   container.innerHTML = html;
-}
+};
 
 // End of modal-generator.js
