@@ -9,9 +9,7 @@
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -147,7 +145,7 @@ body {
 }
 
 /* ============================================= */
-/* Hero Background + Diffuse Translucent Overlay (matches common.js + main branch) */
+/* Hero + Diffuse Translucent Overlay (matches common.js) */
 /* ============================================= */
 .page__section {
   position: relative;
@@ -159,10 +157,7 @@ body {
 .page__section::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: linear-gradient(to bottom, rgba(10,10,31,0.35), rgba(10,10,31,0.85));
   z-index: 1;
   pointer-events: none;
@@ -177,7 +172,7 @@ body {
 }
 
 /* ============================================= */
-/* Sticky Tabs (exact original structure) */
+/* Sticky Tabs */
 /* ============================================= */
 .sticky-tabs {
   position: sticky;
@@ -239,37 +234,38 @@ body {
 }
 
 .meme-card {
-  background: #18181b;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(168,85,247,.2);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  position: relative;
 }
 
 .meme-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+  box-shadow: 0 0 40px rgba(168,85,247,.5);
+  border-color: rgb(168 85 247);
 }
 
-.meme-card img,
-.meme-card video {
+.meme-card .aspect-video {
+  flex-shrink: 0;
+  height: 15.5rem;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  overflow: hidden;
 }
 
-.meme-card h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  padding: 0 1.25rem;
-}
-
-.meme-card p {
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  line-height: 1.4;
-  padding: 0 1.25rem 1.25rem;
+.meme-card .content {
+  flex: 1;
+  padding: 1.25rem;
+  background: #18181b;
+  display: flex;
+  flex-direction: column;
+  min-height: 6rem;
 }
 
 /* ============================================= */
