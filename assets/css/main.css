@@ -98,6 +98,8 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .footer__links { display: flex; justify-content: center; gap: 2rem; margin: 1.5rem 0; }
 .footer__link { color: #a1a1aa; text-decoration: none; }
 .footer__link:hover { color: rgb(168 85 247); text-decoration: none; }
+.footer a, .footer__link { color: #a1a1aa !important; text-decoration: none !important; }
+.footer a:hover, .footer__link:hover { color: rgb(168 85 247) !important; text-decoration: none !important; }
 
 /* ============================================= */
 /* Utilities */
