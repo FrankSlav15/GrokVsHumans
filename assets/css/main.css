@@ -158,6 +158,7 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .hero__blurb-text { color: #a1a1aa; line-height: 1.75; }
 .hero__blurb-signature { margin-top: 2.5rem; color: #c084fc; font-size: 0.875rem; font-weight: 500; text-align: center; }
 
+
 /* Submit Page */
 .submit__wrapper { max-width: 64rem; margin: 0 auto; }
 .submit__form-container { max-width: 28rem; margin: 0 auto; }
@@ -194,5 +195,14 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 /* Utilities */
 /* ============================================= */
 .hidden { display: none !important; }
+
+/* Little fixes for index hero */
+.hero__live-badge { color: #fff; text-decoration: none; }
+.hero__live-badge:hover { color: #fff; }
+
+.hero__featured-name,
+.hero__featured-handle { color: #fff; }
+
+.page__container { text-align: center; }
 
 /* End of main.css */
