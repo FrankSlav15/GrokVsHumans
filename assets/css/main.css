@@ -528,4 +528,34 @@ body::before {
 /* ============================================= */
 .hidden { display: none !important; }
 
+/* ============================================= */
+/* Modal Button & Genre Fix (temporary ID support) */
+/* ============================================= */
+#modal-buttons {
+  display: flex !important;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #27272a;
+}
+
+#modal-buttons a,
+#modal-buttons button {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+#genre-section {
+  display: block !important;
+  padding: 1rem;
+  background: #27272a;
+  border-top: 1px solid #3b3b40;
+}
+
 /* End of main.css */
