@@ -63,7 +63,7 @@ body {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(168, 85, 247, 0.2);
   z-index: 50;
-  height: 4rem; /* exact height so sticky tabs can sit flush underneath */
+  height: 4rem;
 }
 
 .header__inner {
@@ -150,13 +150,12 @@ body {
 
 /* ============================================= */
 /* Global Background Overlay (for all pages) */
-/* Consistent diffuse translucent dark veil applied to every background image set by common.js */
 /* ============================================= */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: rgba(10, 10, 31, 0.65); /* consistent diffuse dark overlay – no gradient */
+  background: rgba(10, 10, 31, 0.65);
   z-index: 1;
   pointer-events: none;
 }
@@ -166,7 +165,7 @@ body::before {
 /* ============================================= */
 .sticky-tabs {
   position: sticky;
-  top: 4rem; /* exactly under the fixed header (header height = 4rem) */
+  top: 4rem;
   z-index: 40;
   background: rgba(10, 10, 31, 0.95);
   backdrop-filter: blur(12px);
@@ -208,7 +207,6 @@ body::before {
 
 /* ============================================= */
 /* Content Grid & Cards (global + memes) */
-/* Uniform card sizing – fixed heights for tags/title/description */
 /* ============================================= */
 .page__section {
   position: relative;
@@ -247,12 +245,12 @@ body::before {
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
   display: flex;
   flex-direction: column;
-  height: 100%; /* forces all cards to same height */
+  height: 100%;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4);
+  box-shadow: 0 0 30px 12px rgba(168, 85, 247, 0.5);
 }
 
 .card--meme {
@@ -262,8 +260,9 @@ body::before {
 
 .card__media {
   position: relative;
-  aspect-ratio: 16 / 9;
+  height: 200px; /* fixed image height for all cards */
   flex-shrink: 0;
+  background: #27272a;
 }
 
 .card__media img,
@@ -286,7 +285,7 @@ body::before {
   flex-wrap: wrap;
   gap: 0.25rem;
   margin-bottom: 0.75rem;
-  max-height: 2.2rem; /* exactly 2 lines */
+  max-height: 2.2rem;
   overflow: hidden;
 }
 
@@ -307,6 +306,7 @@ body::before {
   margin-bottom: 0.5rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2; /* standard property – silences the warning */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -319,6 +319,7 @@ body::before {
   flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4; /* standard property – silences the warning */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
