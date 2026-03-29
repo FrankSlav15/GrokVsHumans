@@ -508,6 +508,20 @@ body::before {
 }
 
 /* ============================================= */
+/* Footer Link Override – forces grey color, purple hover, no underline */
+/* ============================================= */
+.footer a,
+.footer__link {
+  color: #a1a1aa !important;
+  text-decoration: none !important;
+}
+
+.footer a:hover,
+.footer__link:hover {
+  color: rgb(168 85 247) !important;
+}
+
+/* ============================================= */
 /* Utilities */
 /* ============================================= */
 .hidden { display: none !important; }
