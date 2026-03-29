@@ -229,6 +229,7 @@ body::before {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   padding-top: 2.5rem;
+  padding-bottom: 4rem;
 }
 
 @media (min-width: 1024px) {
@@ -480,6 +481,8 @@ body::before {
   text-align: center;
   font-size: 0.875rem;
   color: var(--text-muted);
+  position: relative;
+  z-index: 10;
 }
 
 .footer__container {
@@ -501,6 +504,7 @@ body::before {
 
 .footer__link:hover {
   color: rgb(168 85 247);
+  text-decoration: none;
 }
 
 /* ============================================= */

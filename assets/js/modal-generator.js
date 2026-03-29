@@ -32,7 +32,7 @@ function getYouTubeEmbed(url) {
   return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&modestbranding=1` : '';
 }
 
-function renderCommonModalParts(data, pageType) {
+function renderCommonModalParts(data) {
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
     const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
@@ -51,14 +51,14 @@ function renderCommonModalParts(data, pageType) {
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 }
 
-/* FIXED: now calls renderGenreNav so the genre section always appears when a meme has a genre */
+/* FIXED: genre now always shows when present, and modal buttons are fully restored */
 window.openMemeModal = function(id) {
   window.currentMemeIndex = id;
   const data = window.allMemes[id];
   if (!data) return;
   window.currentMemeId = id;
-  renderCommonModalParts(data, 'memes');
-  renderGenreNav(id);               // ← this was missing
+  renderCommonModalParts(data);
+  renderGenreNav(id);                     // ← ensures genre section appears
   document.getElementById('meme-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   attachGlobalSwipeHandler('memes');
@@ -69,7 +69,7 @@ window.closeMemeModal = function() {
   document.body.style.overflow = 'visible';
 };
 
-/* FIXED: right arrow = higher ID (next), left arrow = lower ID (previous) */
+/* FIXED: right arrow = higher ID, left arrow = lower ID */
 window.nextMeme = function() {
   const keys = window.getMemeKeys();
   let pos = keys.indexOf(window.currentMemeIndex);
@@ -96,7 +96,6 @@ window.renderGenreNav = function(currentId) {
   const current = window.allMemes[currentId];
   if (!current || !current.genre || current.genre.trim() === '') {
     section.classList.add('hidden');
-    window.currentGenreList = [];
     return;
   }
   window.currentGenreList = Object.keys(window.allMemes)
@@ -107,7 +106,6 @@ window.renderGenreNav = function(currentId) {
     .sort((a, b) => (window.allMemes[b].order || 0) - (window.allMemes[a].order || 0));
   if (window.currentGenreList.length <= 1) {
     section.classList.add('hidden');
-    window.currentGenreList = [];
     return;
   }
   window.currentGenreIndex = window.currentGenreList.indexOf(currentId);
@@ -125,8 +123,6 @@ window.switchGenreMeme = function(newId) {
     (data.xLink ? `<br><a href="${data.xLink}" target="_blank" class="text-purple-400 text-xs mt-2 inline-block">View original on X →</a>` : '');
   const mediaContainer = document.getElementById('modal-image');
   mediaContainer.innerHTML = createModalMediaHTML(data);
-  const mediaEl = mediaContainer.querySelector('img, video');
-  if (mediaEl) mediaEl.style.maxHeight = '100%';
   document.getElementById('base-x-link').href = data.xLink || '#';
   window.currentMemeId = newId;
   window.currentMemeIndex = newId;
@@ -234,7 +230,7 @@ function attachGlobalSwipeHandler(pageType) {
   modal.addEventListener('touchend', modal._swipeEnd, { passive: true });
 }
 
-/* Keep the rest of the battle/category functions unchanged */
+/* Rest of the battle/category functions unchanged */
 window.getBattleKeys = function() {
   return Object.keys(window.allBattles || {}).map(Number).sort((a,b) => a - b);
 };
@@ -292,3 +288,14 @@ window.checkDeepLink = function() {
   else if (window.allCategories && window.allCategories[id]) openCategoryModal(id);
   else if (window.allMemes && window.allMemes[id]) openMemeModal(id);
 };
+
+document.addEventListener('keydown', e => {
+  const memeModal = document.getElementById('meme-modal');
+  if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
+    if (e.key === 'Escape') closeMemeModal();
+    else if (e.key === 'ArrowLeft') prevMeme();
+    else if (e.key === 'ArrowRight') nextMeme();
+    else if (e.key === 'ArrowUp') prevGenreMeme?.();
+    else if (e.key === 'ArrowDown') nextGenreMeme?.();
+  }
+});
