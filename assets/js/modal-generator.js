@@ -35,12 +35,10 @@ window.openMemeModal = function(id) {
   const data = window.allMemes[id];
   if (!data) return;
   window.currentMemeId = id;
-
   renderCommonModalParts(data);
   renderGenreNav(id);
   document.getElementById('modal-buttons').style.display = 'flex';
   document.getElementById('context-panel').style.display = 'none';
-
   document.getElementById('meme-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   attachGlobalSwipeHandler();
