@@ -1,3 +1,4 @@
+// assets/js/modal-generator.js
 let allUsers = null;
 
 async function loadUsers() {
@@ -51,14 +52,17 @@ function renderCommonModalParts(data) {
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 }
 
-/* FIXED: genre now always shows when present, and modal buttons are fully restored */
 window.openMemeModal = function(id) {
   window.currentMemeIndex = id;
   const data = window.allMemes[id];
   if (!data) return;
   window.currentMemeId = id;
+
   renderCommonModalParts(data);
-  renderGenreNav(id);                     // ← ensures genre section appears
+  renderGenreNav(id);
+  document.getElementById('modal-buttons').style.display = 'flex';
+  document.getElementById('context-panel').style.display = 'none';
+
   document.getElementById('meme-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   attachGlobalSwipeHandler('memes');
@@ -69,7 +73,6 @@ window.closeMemeModal = function() {
   document.body.style.overflow = 'visible';
 };
 
-/* FIXED: right arrow = higher ID, left arrow = lower ID */
 window.nextMeme = function() {
   const keys = window.getMemeKeys();
   let pos = keys.indexOf(window.currentMemeIndex);
@@ -214,23 +217,33 @@ function createModalMediaHTML(data) {
     : `<img src="${data.image}" class="modal__image" alt="${data.title}">`;
 }
 
-function attachGlobalSwipeHandler(pageType) {
-  const modalId = pageType === 'memes' ? 'meme-modal' : pageType === 'battles' ? 'battle-modal' : 'category-modal';
-  const modal = document.getElementById(modalId);
+function attachGlobalSwipeHandler() {
+  const modal = document.getElementById('meme-modal');
   if (!modal) return;
   let touchStartX = 0;
   modal._swipeStart = (e) => { touchStartX = e.changedTouches[0].screenX; };
   modal._swipeEnd = (e) => {
     const diff = touchStartX - e.changedTouches[0].screenX;
     if (Math.abs(diff) < 55) return;
-    if (diff > 0) window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
-    else window[`next${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
+    if (diff > 0) prevMeme();
+    else nextMeme();
   };
   modal.addEventListener('touchstart', modal._swipeStart, { passive: true });
   modal.addEventListener('touchend', modal._swipeEnd, { passive: true });
 }
 
-/* Rest of the battle/category functions unchanged */
+/* Keyboard support */
+document.addEventListener('keydown', e => {
+  const memeModal = document.getElementById('meme-modal');
+  if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
+    if (e.key === 'Escape') closeMemeModal();
+    else if (e.key === 'ArrowLeft') prevMeme();
+    else if (e.key === 'ArrowRight') nextMeme();
+    else if (e.key === 'ArrowUp') prevGenreMeme?.();
+    else if (e.key === 'ArrowDown') nextGenreMeme?.();
+  }
+});
+
 window.getBattleKeys = function() {
   return Object.keys(window.allBattles || {}).map(Number).sort((a,b) => a - b);
 };
@@ -288,14 +301,3 @@ window.checkDeepLink = function() {
   else if (window.allCategories && window.allCategories[id]) openCategoryModal(id);
   else if (window.allMemes && window.allMemes[id]) openMemeModal(id);
 };
-
-document.addEventListener('keydown', e => {
-  const memeModal = document.getElementById('meme-modal');
-  if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
-    if (e.key === 'Escape') closeMemeModal();
-    else if (e.key === 'ArrowLeft') prevMeme();
-    else if (e.key === 'ArrowRight') nextMeme();
-    else if (e.key === 'ArrowUp') prevGenreMeme?.();
-    else if (e.key === 'ArrowDown') nextGenreMeme?.();
-  }
-});
