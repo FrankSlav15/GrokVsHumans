@@ -227,4 +227,39 @@ window.voteFromModal = function(e, side, id) {
   closeModal();
 };
 
+function renderThread(threadPosts, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  let html = `<div class="thread-emulator">`;
+  threadPosts.forEach((post) => {
+    const isDeleted = post.deleted === true || !post.author;
+    const avatarSrc = getLocalAvatar(post);
+    const rawUsername = post.username || post.user || post.author || '';
+    const userData = getUserData(rawUsername);
+    const displayName = userData.displayName || rawUsername;
+    const verifiedBadge = userData.verified ? `<i class="fa-solid fa-circle-check text-blue-400 ml-1 text-sm"></i>` : '';
+    const displayNameHTML = rawUsername ? `<a href="https://x.com/${rawUsername.replace('@','')}" target="_blank" class="text-[#c084fc] hover:underline">${displayName}${verifiedBadge}</a>` : '';
+    let textWithLinks = (post.text || '').replace(/\n/g, '<br>');
+    textWithLinks = textWithLinks.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank" class="text-[#c084fc] hover:underline">@$1</a>');
+
+    html += `<div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">
+      ${!isDeleted && post.author !== 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
+      <div class="${post.author === 'grok' ? 'grok-bubble' : 'human-bubble'} max-w-[85%] p-5 rounded-3xl">
+        ${isDeleted ? `<div class="deleted-post bg-[#27272a] text-[#71717a] p-4 rounded-2xl text-sm">This Post is from an account that no longer exists.</div>` : `
+          <div class="flex items-center gap-2 mb-2">
+            <span class="font-semibold text-sm">${displayNameHTML}</span>
+            <span class="text-zinc-500 text-xs">${post.date || ''}</span>
+          </div>
+          <div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>
+          ${post.image && !post.image.includes('youtube') ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">`) : ''}
+        `}
+      </div>
+      ${!isDeleted && post.author === 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
+    </div>`;
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
 // End of modal-generator.js
