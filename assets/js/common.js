@@ -83,6 +83,7 @@ window.showToast = function(message) {
 
 window.initPage = async function(pageType) {
   await loadUsers();
+
   if (pageType === 'memes') {
     const res = await fetch('assets/data/memes.json');
     window.allMemes = await res.json();
