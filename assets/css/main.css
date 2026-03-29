@@ -52,7 +52,7 @@ body {
 }
 
 /* ============================================= */
-/* Header (global – matches original partial) */
+/* Header (global) */
 /* ============================================= */
 .header {
   position: fixed;
@@ -147,55 +147,37 @@ body {
 }
 
 /* ============================================= */
-/* Hero (Memes page only) */
-/* ============================================= */
-.page__hero {
-  position: relative;
-  height: 65vh;
-  min-height: 500px;
-  background-image: url('https://raw.githubusercontent.com/FrankSlav15/GrokVsHumans/main/assets/images/hero-meme-vault.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  overflow: hidden;
-}
-
-.page__hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(10,10,31,0.3), rgba(10,10,31,0.85));
-  z-index: 1;
-}
-
-.page__hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 1280px;
-  padding: 0 1.5rem;
-}
-
-/* ============================================= */
-/* Hero / Page Section */
+/* Hero Background + Diffuse Translucent Overlay (matches common.js + main branch) */
 /* ============================================= */
 .page__section {
+  position: relative;
   padding-top: 20rem;
 }
 @media (min-width: 768px) { .page__section { padding-top: 13rem; } }
 @media (min-width: 1024px) { .page__section { padding-top: 15rem; } }
 
+.page__section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(10,10,31,0.35), rgba(10,10,31,0.85));
+  z-index: 1;
+  pointer-events: none;
+}
+
 .page__container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  position: relative;
+  z-index: 2;
 }
 
 /* ============================================= */
-/* Sticky Tabs (exact original structure JS expects) */
+/* Sticky Tabs (exact original structure) */
 /* ============================================= */
 .sticky-tabs {
   position: sticky;
@@ -240,7 +222,7 @@ body {
 }
 
 /* ============================================= */
-/* Content Grid + meme-card (JS injects this class) */
+/* Content Grid + meme-card (exact classes JS injects) */
 /* ============================================= */
 .content-grid {
   display: grid;
