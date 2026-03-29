@@ -1,4 +1,3 @@
-// assets/js/modal-generator.js
 let allUsers = null;
 
 async function loadUsers() {
@@ -10,27 +9,6 @@ async function loadUsers() {
     allUsers = {};
   }
   return allUsers;
-}
-
-function getUserData(username) {
-  if (!username || !allUsers) return {};
-  const clean = username.replace('@', '').trim();
-  return allUsers[clean] || {};
-}
-
-function getLocalAvatar(post) {
-  let username = post.username || post.user || post.avatar || post.author || '';
-  if (!username) return '/assets/images/users/@unknown.webp';
-  const clean = username.replace('@', '').trim();
-  return `/assets/images/users/@${clean}.webp`;
-}
-
-function getYouTubeEmbed(url) {
-  if (!url) return '';
-  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  const videoId = (match && match[2].length === 11) ? match[2] : null;
-  return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&modestbranding=1` : '';
 }
 
 function renderCommonModalParts(data) {
@@ -65,7 +43,7 @@ window.openMemeModal = function(id) {
 
   document.getElementById('meme-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  attachGlobalSwipeHandler('memes');
+  attachGlobalSwipeHandler();
 };
 
 window.closeMemeModal = function() {
@@ -232,7 +210,6 @@ function attachGlobalSwipeHandler() {
   modal.addEventListener('touchend', modal._swipeEnd, { passive: true });
 }
 
-/* Keyboard support */
 document.addEventListener('keydown', e => {
   const memeModal = document.getElementById('meme-modal');
   if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
