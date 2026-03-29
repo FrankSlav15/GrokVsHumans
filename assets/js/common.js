@@ -84,16 +84,16 @@ window.showToast = function(message) {
 window.initPage = async function(pageType) {
   await loadUsers();
   if (pageType === 'memes') {
-    const snapshot = await database.ref('content/memes').once('value');
-    window.allMemes = snapshot.val() || {};
+    const res = await fetch('assets/data/memes.json');
+    window.allMemes = await res.json();
     if (typeof renderMemeGrid === 'function') renderMemeGrid();
   } else if (pageType === 'battles') {
-    const snapshot = await database.ref('content/battles').once('value');
-    window.allBattles = snapshot.val() || {};
+    const res = await fetch('assets/data/battles.json');
+    window.allBattles = await res.json();
     if (typeof renderBattleGrid === 'function') renderBattleGrid();
   } else if (pageType === 'categories') {
-    const snapshot = await database.ref('content/categories').once('value');
-    window.allCategories = snapshot.val() || {};
+    const res = await fetch('assets/data/categories.json');
+    window.allCategories = await res.json();
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
   }
 };
