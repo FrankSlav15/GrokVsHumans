@@ -213,7 +213,7 @@ body::before {
 /* ============================================= */
 .page__section {
   position: relative;
-  padding-top: 20rem;
+  padding-top: 10rem;
 }
 @media (min-width: 768px) { .page__section { padding-top: 13rem; } }
 @media (min-width: 1024px) { .page__section { padding-top: 15rem; } }
