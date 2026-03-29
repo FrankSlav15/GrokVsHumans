@@ -80,8 +80,8 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .modal__buttons, #modal-buttons { display: flex; gap: 1rem; padding: 1.5rem; border-top: 1px solid #27272a; }
 .modal__buttons a, .modal__buttons button, #modal-buttons a, #modal-buttons button { flex: 1; padding: 14px 24px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; color: #fff; }
 .modal-btn-view, #modal-buttons a:first-child { background: #fff; color: #000 !important; }
-.modal-btn-context, .modal-btn-share, #modal-buttons button { background: #27272a; border: 1px solid #3b3b40; }
-.modal-btn-share { border: 1px solid #a855f7; color: #fff; font-weight: 600; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
+.modal-btn-context, #modal-buttons button { background: #27272a; border: 1px solid #3b3b40; }
+.modal-btn-share { background: #000; border: 1px solid #a855f7 !important; color: #fff; font-weight: 600; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
 .modal__buttons a:hover, .modal__buttons button:hover, #modal-buttons a:hover, #modal-buttons button:hover { background: #3b3b40; }
 
 /* Genre section - exact match to your screenshot */
