@@ -2,24 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GrokVsHumans - Meme Vault">
-    <title>Meme Vault • GrokVsHumans</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="portrait">
+    <title>Memes - GrokVsHumans</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
     <script src="assets/js/common.js" defer></script>
     <script src="assets/js/card-generator.js" defer></script>
     <script src="assets/js/modal-generator.js" defer></script>
+    <!-- Google Analytics (kept from your file) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
 </head>
 <body data-page="memes">
 
     <section class="page__section">
         <div class="page__container">
-
-            <!-- PAGE TITLE + SUBTITLE -->
             <h1 class="page__title">Meme Vault</h1>
             <p class="page__subtitle">Grok cooks humanity — the best of the best</p>
 
-            <!-- STICKY TABS – exact original structure JS expects -->
+            <!-- STICKY TABS – exact original structure card-generator.js expects -->
             <div class="sticky-tabs">
                 <div class="sticky-tabs-container">
                     <div class="tabs-wrapper" id="tabs">
@@ -35,16 +38,15 @@
                 </div>
             </div>
 
-            <!-- CONTENT GRID – exact ID JS expects (cards will appear here) -->
+            <!-- CONTENT GRID – exact ID JS expects -->
             <div class="content-grid" id="meme-grid"></div>
-
         </div>
     </section>
 
-    <!-- TOAST (global) -->
+    <!-- TOAST -->
     <div id="toast" class="toast"></div>
 
-    <!-- MEME MODAL (exact structure for modal-generator.js) -->
+    <!-- MEME MODAL – exact structure modal-generator.js expects -->
     <div id="meme-modal" class="modal modal--hidden">
         <div class="modal__overlay" onclick="if(event.target === this) closeMemeModal()"></div>
         <div class="modal__content">
@@ -64,5 +66,10 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage('memes');
+        });
+    </script>
 </body>
 </html>
