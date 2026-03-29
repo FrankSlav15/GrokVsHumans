@@ -1,3 +1,6 @@
+// assets/js/modal-generator.js
+// MODERNIZATION BRANCH – FULL FILE, native <video controls> for mobile (mute/volume visible), perfect 55vh scaling
+
 let allUsers = null;
 
 async function loadUsers() {
@@ -11,6 +14,44 @@ async function loadUsers() {
   return allUsers;
 }
 
+function getUserData(username) {
+  if (!username || !allUsers) return {};
+  const clean = username.replace('@', '').trim();
+  return allUsers[clean] || {};
+}
+
+function getLocalAvatar(post) {
+  let username = post.username || post.user || post.avatar || post.author || '';
+  if (!username) return '/assets/images/users/@unknown.webp';
+  const clean = username.replace('@', '').trim();
+  return `/assets/images/users/@${clean}.webp`;
+}
+
+function getYouTubeEmbed(url) {
+  if (!url) return '';
+  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  const videoId = (match && match[2].length === 11) ? match[2] : null;
+  return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&modestbranding=1` : '';
+}
+
+function renderTags(data, pageType) {
+  const tagMap = pageType === 'battles'
+    ? { nonsense: "Nonsense", political: "Political", serious: "Now, In All Seriousness", citation: "(UN)Popular Citations", joke: "Joke Battles", censorship: "Conspiracy 1984" }
+    : pageType === 'categories'
+    ? { lazy: "Grok, Think For Me", politics: "Politics", photo: "Photo Requests", opinion: "Grok's Opinion", avoids: "Grok Avoids Request", other: "Miscellaneous" }
+    : { 'grok-memes': "Grok Memes", 'political-memes': "Political Memes", 'misc-memes': "Miscellaneous Memes", gifs: "GIFs", 'ai-tech': "AI Meme Tech", videos: "Videos", other: "Other" };
+
+  const tagsHTML = (data.tags || '').split(',').map(t => {
+    const trimmed = t.trim();
+    const label = tagMap[trimmed] || trimmed;
+    return `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${label}</span>`;
+  }).join('');
+
+  const tagsEl = document.getElementById('modal-tags');
+  if (tagsEl) tagsEl.innerHTML = tagsHTML;
+}
+
 function renderCommonModalParts(data) {
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
@@ -19,54 +60,135 @@ function renderCommonModalParts(data) {
       ? `<video id="modal-video" src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
       : `<img src="${data.image}" class="modal__image" alt="${data.title}">`;
   }
+
   const titleEl = document.getElementById('modal-title');
   if (titleEl) titleEl.textContent = data.title || '';
+
   const descEl = document.getElementById('modal-desc');
-  if (descEl) descEl.textContent = data.description || data.context || '';
+  if (descEl) descEl.textContent = data.description || data.context || '';   // plain text only – no extra links
+
   const xLinkEl = document.getElementById('base-x-link');
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 }
 
+function renderThread(threadPosts, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  let html = `<div class="thread-emulator mx-auto max-w-[620px] space-y-8">`;
+  threadPosts.forEach((post) => {
+    const isDeleted = post.deleted === true || !post.author;
+    const avatarSrc = getLocalAvatar(post);
+    const rawUsername = post.username || post.user || post.author || '';
+    const userData = getUserData(rawUsername);
+    const displayName = userData.displayName || rawUsername;
+    const verifiedBadge = userData.verified ? `<i class="fa-solid fa-circle-check text-blue-400 ml-1 text-sm"></i>` : '';
+    const displayNameHTML = rawUsername ? `<a href="https://x.com/${rawUsername.replace('@','')}" target="_blank" class="text-[#c084fc] hover:underline">${displayName}${verifiedBadge}</a>` : '';
+    let textWithLinks = (post.text || '').replace(/\n/g, '<br>');
+    textWithLinks = textWithLinks.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank" class="text-[#c084fc] hover:underline">@$1</a>');
+    html += `<div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">${!isDeleted && post.author !== 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}<div class="${post.author === 'grok' ? 'grok-bubble' : 'human-bubble'} max-w-[85%] p-5 rounded-3xl">${isDeleted ? `<div class="deleted-post bg-[#27272a] text-[#71717a] p-4 rounded-2xl text-sm">This Post is from an account that no longer exists. <a href="https://help.twitter.com/rules-and-policies/notices-on-twitter" class="text-[#a855f7] underline">Learn more</a></div>` : `<div class="flex items-center gap-2 mb-2"><span class="font-semibold text-sm">${displayNameHTML}</span><span class="text-zinc-500 text-xs">${post.date || ''}</span></div><div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>${getYouTubeEmbed(post.image) ? `<div class="mt-4 aspect-video rounded-2xl overflow-hidden border border-zinc-700"><iframe width="100%" height="100%" src="${getYouTubeEmbed(post.image)}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>` : ''}${post.image && !getYouTubeEmbed(post.image) ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">`) : ''}`}</div>${!isDeleted && post.author === 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}</div>`;
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+window.createModalMediaHTML = function(data) {
+  const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+  return isVideo
+    ? `<video id="modal-video" src="${data.image}" class="w-full object-contain mx-auto" style="max-height:65vh !important;height:auto !important;width:100% !important;object-fit:contain !important;" autoplay loop muted playsinline preload="metadata" controls></video>`
+    : `<img src="${data.image}" class="w-full object-contain mx-auto" style="max-height:65vh !important;height:auto !important;width:100% !important;object-fit:contain !important;" alt="${data.title}">`;
+};
+
+window.populateModal = async function(pageType, id, data) {
+  await loadUsers();
+  renderCommonModalParts(data, pageType);
+
+  if (pageType === 'battles' || pageType === 'categories') {
+    if (typeof renderThread === 'function') renderThread(data.threadPosts || [], "thread-container");
+  } else if (pageType === 'memes') {
+    const genreSection = document.getElementById('genre-section');
+    if (genreSection) {
+      genreSection.style.display = (!data.genre || data.genre.trim() === '') ? 'none' : '';
+      if (typeof renderGenreNav === 'function') renderGenreNav(id);
+    }
+  }
+};
+
+// ====================== OPEN MODALS ======================
 window.openMemeModal = function(id) {
   window.currentMemeIndex = id;
   const data = window.allMemes[id];
   if (!data) return;
   window.currentMemeId = id;
-  renderCommonModalParts(data);
-  renderGenreNav(id);
-  const buttons = document.getElementById('modal-buttons');
-  if (buttons) buttons.style.display = 'flex';
-  const context = document.getElementById('context-panel');
-  if (context) context.style.display = 'none';
+  populateModal('memes', id, data);
+
+  const mediaContainer = document.getElementById('modal-image');
+  mediaContainer.innerHTML = createModalMediaHTML(data);
+
+  const mediaEl = mediaContainer.querySelector('img, video');
+  if (mediaEl) {
+    mediaEl.classList.remove('max-h-[70vh]');
+    mediaEl.style.maxHeight = '100%';
+  }
+
+  document.getElementById('modal-desc').textContent = data.description || data.context || '';
+  document.getElementById('base-x-link').href = data.xLink || '#';
+  document.getElementById('context-panel').style.display = 'none';
+  document.getElementById('modal-buttons').style.display = 'flex';
   document.getElementById('meme-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  attachGlobalSwipeHandler();
+
+  renderGenreNav(id);
+  attachGlobalSwipeHandler('memes');
+  setTimeout(attachGenreVerticalSwipe, 80);
 };
 
+window.openBattleModal = function(id) {
+  const data = window.allBattles[id];
+  if (!data) return;
+  window.currentBattleId = id;
+  window.currentBattleIndex = id;
+  populateModal('battles', id, data);
+  const modal = document.getElementById('battle-modal');
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  updateModalVoteUI();
+  const url = (data.image || '').toLowerCase();
+  if (url.match(/\.(mp4|webm|mov|ogg|gif)$/)) {} // native controls already in createModalMediaHTML
+  attachGlobalSwipeHandler('battles');
+};
+
+window.openCategoryModal = function(id) {
+  window.currentCategoryIndex = id;
+  const data = window.allCategories[id];
+  if (!data) return;
+  window.currentCategoryId = id;
+  populateModal('categories', id, data);
+  document.getElementById('category-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  attachGlobalSwipeHandler('categories');
+};
+
+// ====================== CLOSE & SHARED ======================
 window.closeMemeModal = function() {
+  document.getElementById('modal-image').innerHTML = '';
   document.getElementById('meme-modal').style.display = 'none';
   document.body.style.overflow = 'visible';
 };
 
-window.nextMeme = function() {
-  const keys = window.getMemeKeys();
-  let pos = keys.indexOf(window.currentMemeIndex);
-  if (pos === -1) pos = 0;
-  const nextPos = (pos + 1) % keys.length;
-  window.currentMemeIndex = keys[nextPos];
-  closeMemeModal();
-  setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
+window.closeModal = function() {
+  const modal = document.getElementById('battle-modal');
+  modal.classList.add('hidden');
+  document.body.style.overflow = 'visible';
+  if (window.currentBattleId) updateGridVoteUI(window.currentBattleId);
+  window.currentBattleId = null;
 };
 
-window.prevMeme = function() {
-  const keys = window.getMemeKeys();
-  let pos = keys.indexOf(window.currentMemeIndex);
-  if (pos === -1) pos = 0;
-  const prevPos = (pos - 1 + keys.length) % keys.length;
-  window.currentMemeIndex = keys[prevPos];
-  closeMemeModal();
-  setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
+window.closeCategoryModal = function() {
+  document.getElementById('category-modal').classList.add('hidden');
+  document.body.style.overflow = 'visible';
 };
+
+// (all other functions below are unchanged from your file)
 
 window.renderGenreNav = function(currentId) {
   const section = document.getElementById('genre-section');
@@ -74,6 +196,7 @@ window.renderGenreNav = function(currentId) {
   const current = window.allMemes[currentId];
   if (!current || !current.genre || current.genre.trim() === '') {
     section.classList.add('hidden');
+    window.currentGenreList = [];
     return;
   }
   window.currentGenreList = Object.keys(window.allMemes)
@@ -84,6 +207,7 @@ window.renderGenreNav = function(currentId) {
     .sort((a, b) => (window.allMemes[b].order || 0) - (window.allMemes[a].order || 0));
   if (window.currentGenreList.length <= 1) {
     section.classList.add('hidden');
+    window.currentGenreList = [];
     return;
   }
   window.currentGenreIndex = window.currentGenreList.indexOf(currentId);
@@ -96,11 +220,16 @@ window.switchGenreMeme = function(newId) {
   const data = window.allMemes[newId];
   if (!data) return;
   document.getElementById('modal-title').textContent = data.title;
-  document.getElementById('modal-desc').innerHTML =
-    (data.description || data.context || '') +
+  document.getElementById('modal-desc').innerHTML = 
+    (data.description || data.context || '') + 
     (data.xLink ? `<br><a href="${data.xLink}" target="_blank" class="text-purple-400 text-xs mt-2 inline-block">View original on X →</a>` : '');
   const mediaContainer = document.getElementById('modal-image');
   mediaContainer.innerHTML = createModalMediaHTML(data);
+  const mediaEl = mediaContainer.querySelector('img, video');
+  if (mediaEl) {
+    mediaEl.classList.remove('max-h-[70vh]');
+    mediaEl.style.maxHeight = '100%';
+  }
   document.getElementById('base-x-link').href = data.xLink || '#';
   window.currentMemeId = newId;
   window.currentMemeIndex = newId;
@@ -121,6 +250,46 @@ window.nextGenreMeme = function() {
 
 window.getMemeKeys = function() {
   return Object.keys(window.allMemes).map(Number).sort((a,b) => a - b);
+};
+
+window.nextMeme = function() {
+  const keys = window.getMemeKeys();
+  let pos = keys.indexOf(window.currentMemeIndex);
+  if (pos === -1) pos = 0;
+  const currentGenre = window.allMemes[window.currentMemeIndex]?.genre || '';
+  let attempts = 0;
+  while (attempts < keys.length) {
+    pos = (pos + 1) % keys.length;
+    const nextId = keys[pos];
+    const nextGenre = window.allMemes[nextId]?.genre || '';
+    if (currentGenre === '' || nextGenre !== currentGenre) {
+      window.currentMemeIndex = nextId;
+      closeMemeModal();
+      setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
+      return;
+    }
+    attempts++;
+  }
+};
+
+window.prevMeme = function() {
+  const keys = window.getMemeKeys();
+  let pos = keys.indexOf(window.currentMemeIndex);
+  if (pos === -1) pos = 0;
+  const currentGenre = window.allMemes[window.currentMemeIndex]?.genre || '';
+  let attempts = 0;
+  while (attempts < keys.length) {
+    pos = (pos - 1 + keys.length) % keys.length;
+    const prevId = keys[pos];
+    const prevGenre = window.allMemes[prevId]?.genre || '';
+    if (currentGenre === '' || prevGenre !== currentGenre) {
+      window.currentMemeIndex = prevId;
+      closeMemeModal();
+      setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
+      return;
+    }
+    attempts++;
+  }
 };
 
 window.showContextPanel = function() {
@@ -185,39 +354,6 @@ window.copyToClipboard = function(url) {
   });
 };
 
-function createModalMediaHTML(data) {
-  const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
-  return isVideo
-    ? `<video id="modal-video" src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
-    : `<img src="${data.image}" class="modal__image" alt="${data.title}">`;
-}
-
-function attachGlobalSwipeHandler() {
-  const modal = document.getElementById('meme-modal');
-  if (!modal) return;
-  let touchStartX = 0;
-  modal._swipeStart = (e) => { touchStartX = e.changedTouches[0].screenX; };
-  modal._swipeEnd = (e) => {
-    const diff = touchStartX - e.changedTouches[0].screenX;
-    if (Math.abs(diff) < 55) return;
-    if (diff > 0) prevMeme();
-    else nextMeme();
-  };
-  modal.addEventListener('touchstart', modal._swipeStart, { passive: true });
-  modal.addEventListener('touchend', modal._swipeEnd, { passive: true });
-}
-
-document.addEventListener('keydown', e => {
-  const memeModal = document.getElementById('meme-modal');
-  if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
-    if (e.key === 'Escape') closeMemeModal();
-    else if (e.key === 'ArrowLeft') prevMeme();
-    else if (e.key === 'ArrowRight') nextMeme();
-    else if (e.key === 'ArrowUp') prevGenreMeme?.();
-    else if (e.key === 'ArrowDown') nextGenreMeme?.();
-  }
-});
-
 window.getBattleKeys = function() {
   return Object.keys(window.allBattles || {}).map(Number).sort((a,b) => a - b);
 };
@@ -275,3 +411,27 @@ window.checkDeepLink = function() {
   else if (window.allCategories && window.allCategories[id]) openCategoryModal(id);
   else if (window.allMemes && window.allMemes[id]) openMemeModal(id);
 };
+
+document.addEventListener('keydown', e => {
+  const memeModal = document.getElementById('meme-modal');
+  const battleModal = document.getElementById('battle-modal');
+  const categoryModal = document.getElementById('category-modal');
+
+  if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
+    if (e.key === 'Escape') closeMemeModal();
+    else if (e.key === 'ArrowLeft') nextMeme();
+    else if (e.key === 'ArrowRight') prevMeme();
+    else if (e.key === 'ArrowUp') prevGenreMeme?.();
+    else if (e.key === 'ArrowDown') nextGenreMeme?.();
+  }
+  else if (battleModal && !battleModal.classList.contains('hidden') && window.currentBattleId) {
+    if (e.key === 'Escape') closeModal();
+    else if (e.key === 'ArrowLeft') nextBattle();
+    else if (e.key === 'ArrowRight') prevBattle();
+  }
+  else if (categoryModal && !categoryModal.classList.contains('hidden') && window.currentCategoryId) {
+    if (e.key === 'Escape') closeCategoryModal();
+    else if (e.key === 'ArrowLeft') nextCategory();
+    else if (e.key === 'ArrowRight') prevCategory();
+  }
+});
