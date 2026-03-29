@@ -25,8 +25,8 @@ function getShortDescription(data, pageType) {
 function getCardFooter(pageType, id) {
   if (pageType === 'battles') {
     return `<div class="flex border-t border-[#27272a] rounded-b-3xl overflow-hidden">
-      <button onclick="voteFromModal(event, 'grok', ${id}); event.stopImmediatePropagation(); event.preventDefault();" class="flex-1 py-5 bg-[#6b21a8] text-white font-semibold text-base">Grok Won</button>
-      <button onclick="voteFromModal(event, 'human', ${id}); event.stopImmediatePropagation(); event.preventDefault();" class="flex-1 py-5 bg-[#9f1239] text-white font-semibold text-base">Human Won</button>
+      <button id="grok-btn-${id}" onclick="voteFromModal(event, 'grok', ${id});" class="flex-1 py-5 bg-[#6b21a8] text-white font-semibold text-base">Grok Won</button>
+      <button id="human-btn-${id}" onclick="voteFromModal(event, 'human', ${id});" class="flex-1 py-5 bg-[#9f1239] text-white font-semibold text-base">Human Won</button>
     </div>`;
   }
   return '';

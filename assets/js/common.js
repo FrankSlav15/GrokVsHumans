@@ -1,4 +1,5 @@
-// assets/js/common.js
+// assets/js/common.js - Firebase re-enabled for live voting
+
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
   authDomain: "grokvshumans.firebaseapp.com",
@@ -11,11 +12,49 @@ const firebaseConfig = {
 
 let database = null;
 try {
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   database = firebase.database();
 } catch (e) {
-  console.warn("Firebase not available on this page (normal for index/submit)");
+  console.warn("Firebase init failed (normal on some pages)", e);
 }
+
+// ====================== LIVE VOTING HELPERS ======================
+window.vote = async function(e, side, id) {
+  e.stopImmediatePropagation();
+  e.preventDefault();
+  if (!database || !window.allBattles || !window.allBattles[id]) return;
+
+  const ref = database.ref(`content/battles/${id}`);
+  const snapshot = await ref.once('value');
+  const current = snapshot.val() || { grokVotes: 0, humanVotes: 0 };
+
+  if (side === 'grok') current.grokVotes = (current.grokVotes || 0) + 1;
+  else current.humanVotes = (current.humanVotes || 0) + 1;
+
+  await ref.update(current);
+  showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
+  updateGridVoteUI(id);
+};
+
+window.updateGridVoteUI = function(id) {
+  const grokBtn = document.getElementById(`grok-btn-${id}`);
+  const humanBtn = document.getElementById(`human-btn-${id}`);
+  if (!grokBtn || !humanBtn || !window.allBattles[id]) return;
+
+  const grokVotes = window.allBattles[id].grokVotes || 0;
+  const humanVotes = window.allBattles[id].humanVotes || 0;
+  const total = grokVotes + humanVotes;
+
+  if (total === 0) return;
+
+  const grokPct = Math.round((grokVotes / total) * 100);
+  const humanPct = 100 - grokPct;
+
+  grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
+  humanBtn.innerHTML = `Human Won <span class="vote-tally">${humanPct}%</span>`;
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   const bgs = [
