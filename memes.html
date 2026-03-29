@@ -10,14 +10,14 @@
     <script src="assets/js/card-generator.js" defer></script>
     <script src="assets/js/modal-generator.js" defer></script>
 </head>
-<body class="text-white" data-page="memes">
+<body data-page="memes">
 
     <section class="page__section">
         <div class="page__container">
             <h1 class="page__title">Meme Vault</h1>
             <p class="page__subtitle">Grok cooks humanity — the best of the best</p>
 
-            <!-- STICKY TABS (exact structure JS expects) -->
+            <!-- STICKY TABS – exact original structure JS expects -->
             <div class="sticky-tabs">
                 <div class="sticky-tabs-container">
                     <div class="tabs-wrapper" id="tabs">
@@ -33,12 +33,12 @@
                 </div>
             </div>
 
-            <!-- CONTENT GRID (exact ID + classes JS expects) -->
+            <!-- CONTENT GRID – exact ID + structure JS expects -->
             <div class="content-grid" id="meme-grid"></div>
         </div>
     </section>
 
-    <!-- TOAST -->
+    <!-- TOAST (global) -->
     <div id="toast" class="toast"></div>
 
     <!-- MEME MODAL (exact structure for modal-generator.js) -->
