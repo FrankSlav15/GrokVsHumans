@@ -67,10 +67,11 @@ window.openBattleModal = function(id) {
   const data = window.allBattles[id];
   if (!data) return;
   window.currentBattleId = id;
+  window.currentBattleIndex = id;
 
   renderCommonModalParts(data, 'battles');
   renderTags(data);
-  if (typeof renderThread === 'function') renderThread(data.threadPosts || [], 'thread-container');
+  if (typeof renderThread === 'function') renderThread(data.threadPosts || [], "thread-container");
 
   document.getElementById('battle-modal').style.display = 'flex';
   attachGlobalSwipeHandler('battles');
@@ -83,7 +84,7 @@ window.openCategoryModal = function(id) {
 
   renderCommonModalParts(data, 'categories');
   renderTags(data);
-  if (typeof renderThread === 'function') renderThread(data.threadPosts || [], 'thread-container');
+  if (typeof renderThread === 'function') renderThread(data.threadPosts || [], "thread-container");
 
   document.getElementById('category-modal').style.display = 'flex';
   attachGlobalSwipeHandler('categories');
