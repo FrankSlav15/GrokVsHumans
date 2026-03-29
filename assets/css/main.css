@@ -140,6 +140,13 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .human-bubble { background: #3b3b40; color: #fff; padding: 16px 20px; border-radius: 20px 20px 4px 20px; max-width: 80%; }
 .thread-text { line-height: 1.6; font-size: 15px; }
 .thread-post img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+/* Strong thread emulator override – forces old-site chat-bubble look */
+#thread-container { padding: 20px 24px; background: #18181b; max-height: 480px; overflow-y: auto; border-top: 1px solid #27272a; }
+.thread-emulator { display: flex !important; flex-direction: column; gap: 1.5rem; }
+.thread-post { display: flex; gap: 12px; }
+.grok-bubble { background: #27272a !important; border: 1px solid #a855f7 !important; color: #fff; padding: 16px 20px; border-radius: 20px 20px 20px 4px; max-width: 78%; align-self: flex-end; }
+.human-bubble { background: #3b3b40 !important; border: 1px solid #6b7280 !important; color: #fff; padding: 16px 20px; border-radius: 20px 20px 4px 20px; max-width: 78%; align-self: flex-start; }
+.thread-text { line-height: 1.55; font-size: 15px; white-space: pre-line; }
 
 /* Battle voting buttons (added for battles modal) */
 .modal__vote-buttons { display: flex; gap: 1rem; padding: 1rem 1.5rem; }

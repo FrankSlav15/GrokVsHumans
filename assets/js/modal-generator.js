@@ -116,7 +116,11 @@ window.openBattleModal = function(id) {
   renderTags(data);
   renderThread(data.threadPosts || [], "thread-container");
 
-  document.getElementById('battle-modal').style.display = 'flex';
+  const modal = document.getElementById('battle-modal');
+  modal.style.display = 'flex';
+  const buttons = document.getElementById('modal-buttons');
+  if (buttons) buttons.style.display = 'flex';
+
   attachGlobalSwipeHandler('battles');
 };
 
@@ -129,7 +133,11 @@ window.openCategoryModal = function(id) {
   renderTags(data);
   renderThread(data.threadPosts || [], "thread-container");
 
-  document.getElementById('category-modal').style.display = 'flex';
+  const modal = document.getElementById('category-modal');
+  modal.style.display = 'flex';
+  const buttons = document.getElementById('modal-buttons');
+  if (buttons) buttons.style.display = 'flex';
+
   attachGlobalSwipeHandler('categories');
 };
 
