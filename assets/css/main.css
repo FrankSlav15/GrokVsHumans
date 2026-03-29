@@ -184,6 +184,7 @@ body::before {
   gap: 0.5rem;
   overflow-x: auto;
   scrollbar-width: none;
+  justify-content: center;
 }
 
 .tab {
