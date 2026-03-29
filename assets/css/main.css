@@ -205,4 +205,28 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 
 .page__container { text-align: center; }
 
+/* Little edits for submit.html - paste these at the very end of main.css */
+
+.page__section { padding-bottom: 6rem; }           /* 1. Padding at bottom of page content */
+
+.submit__input,
+.submit__textarea {
+  background: rgba(255,255,255,.08);
+  border: 2px solid rgba(168,85,247,.4);
+  color: #fff;
+  font-size: 1.1rem;
+}
+.submit__input:focus,
+.submit__textarea:focus {
+  border-color: rgb(168 85 247);
+  box-shadow: 0 0 0 4px rgba(168,85,247,.2);
+}
+.submit__btn {
+  background: linear-gradient(to right, rgb(168 85 247), #22d3ee);
+  color: #000;
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding: 1.25rem 2rem;
+}
+
 /* End of main.css */
