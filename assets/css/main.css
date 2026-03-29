@@ -73,8 +73,8 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .modal__image-container { flex: none; background: #27272a; padding: 0.5rem; display: flex; align-items: center; justify-content: center; min-height: 0; }
 .modal__image { max-height: 65vh; width: 100%; object-fit: contain; }
 @media (max-width: 640px) { .modal__image { max-height: 55vh; } }
-.modal__title { font-size: 1.25rem; font-weight: 700; }
-.modal__description { color: var(--text-muted); margin-top: 0.5rem; font-size: 0.875rem; }
+.modal__title { font-size: 1.25rem; font-weight: 700; padding-top: 0.5rem; }
+.modal__description { color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 0.5rem font-size: 0.875rem; }
 
 /* Bottom buttons - exact match to your screenshot */
 .modal__buttons, #modal-buttons { display: flex; gap: 1rem; padding: 1.5rem; border-top: 1px solid #27272a; }
