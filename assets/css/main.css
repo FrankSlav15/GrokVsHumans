@@ -75,16 +75,38 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 @media (max-width: 640px) { .modal__image { max-height: 55vh; } }
 .modal__title { font-size: 1.25rem; font-weight: 700; }
 .modal__description { color: var(--text-muted); margin-top: 0.5rem; font-size: 0.875rem; }
+
+/* Bottom buttons - exact match to your screenshot */
 .modal__buttons, #modal-buttons { display: flex; gap: 1rem; padding: 1.5rem; border-top: 1px solid #27272a; }
-.modal__buttons a, .modal__buttons button, #modal-buttons a, #modal-buttons button { flex: 1; padding: 1rem; border-radius: 1rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s; color: #fff; }
-.modal__buttons a:hover, .modal__buttons button:hover, #modal-buttons a:hover, #modal-buttons button:hover { background: #27272a; }
+.modal__buttons a, .modal__buttons button, #modal-buttons a, #modal-buttons button { flex: 1; padding: 14px 24px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; color: #fff; }
+.modal-btn-view, #modal-buttons a:first-child { background: #fff; color: #000 !important; }
+.modal-btn-context, .modal-btn-share, #modal-buttons button { background: #27272a; border: 1px solid #3b3b40; }
+.modal-btn-share { border-color: var(--purple); }
+.modal__buttons a:hover, .modal__buttons button:hover, #modal-buttons a:hover, #modal-buttons button:hover { background: #3b3b40; }
+
+/* Genre section - exact match to your screenshot */
+#genre-section, .genre-section { display: block !important; padding: 1rem 1.5rem; background: #27272a; border-top: 1px solid #3b3b40; }
+.genre-header { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #c084fc; margin-bottom: 0.5rem; text-align: center; }
+.genre-arrows { display: flex; align-items: center; justify-content: space-between; }
+.genre-arrows button { background: none; border: none; font-size: 2rem; color: #c084fc; cursor: pointer; }
+.genre-arrows button:hover { color: #fff; }
+
+/* Context panel */
+#context-panel, .modal__context { display: none; padding: 1.5rem; background: #27272a; border-top: 1px solid #3b3b40; }
+.context-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.context-text { color: #d1d5db; font-size: 0.875rem; line-height: 1.5; flex: 1; }
+.context-close { background: none; border: none; font-size: 1.75rem; color: #9ca3af; cursor: pointer; }
+
+/* Close button */
 .modal__close { position: absolute; top: 1.25rem; right: 1.25rem; background: rgba(0, 0, 0, 0.7); color: #fff; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; z-index: 30; transition: background 0.2s; }
+
+/* Navigation arrows */
 .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.7); color: #fff; width: 3rem; height: 3rem; border-radius: 9999px; font-size: 2rem; display: flex; align-items: center; justify-content: center; z-index: 30; }
 .nav-arrow-left { left: 1rem; }
 .nav-arrow-right { right: 1rem; }
-#genre-section, .genre-section { display: block !important; padding: 1rem 1.5rem; background: #27272a; border-top: 1px solid #3b3b40; }
-.genre-header { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #c084fc; margin-bottom: 0.5rem; }
-.modal-button-view { background: #fff; color: #000; font-weight: 600; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Utility for buttons */
+.modal-btn-view, .modal-btn-context, .modal-btn-share { color: #fff; }
 
 /* ============================================= */
 /* Toast (global) */
