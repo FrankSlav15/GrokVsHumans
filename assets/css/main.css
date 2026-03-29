@@ -532,7 +532,7 @@ body::before {
 
 /* Reduce top padding + add space between sticky tabs and title */
 .page__section {
-  padding-top: 16rem; /* was 20rem → smaller top space */
+  padding-top: 14rem; /* was 20rem → smaller top space */
 }
 
 @media (min-width: 768px) { .page__section { padding-top: 11rem; } }
