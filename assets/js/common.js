@@ -85,15 +85,15 @@ window.initPage = async function(pageType) {
   await loadUsers();
 
   if (pageType === 'memes') {
-    const res = await fetch('/assets/data/memes.json');
+    const res = await fetch('/data/memes.json');
     window.allMemes = await res.json();
     if (typeof renderMemeGrid === 'function') renderMemeGrid();
   } else if (pageType === 'battles') {
-    const res = await fetch('/assets/data/battles.json');
+    const res = await fetch('/data/battles.json');
     window.allBattles = await res.json();
     if (typeof renderBattleGrid === 'function') renderBattleGrid();
   } else if (pageType === 'categories') {
-    const res = await fetch('/assets/data/categories.json');
+    const res = await fetch('/data/categories.json');
     window.allCategories = await res.json();
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
   }
