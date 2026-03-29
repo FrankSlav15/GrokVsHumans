@@ -42,53 +42,63 @@
 
     <div id="toast" class="toast"></div>
 
-    <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-0" onclick="if(event.target === this) closeMemeModal()">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
-            <button onclick="event.stopImmediatePropagation(); prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
-            <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
+    <div id="meme-modal" class="modal hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-0" onclick="if(event.target === this) closeMemeModal()">
+    <div class="modal__content bg-zinc-950 rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
+        
+        <!-- Close button -->
+        <button onclick="closeMemeModal()" class="modal__close">✕</button>
+        
+        <!-- Navigation arrows -->
+        <button onclick="prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
+        <button onclick="nextMeme()" class="nav-arrow nav-arrow-right">›</button>
 
-            <div class="flex flex-col flex-1" id="modal-content-inner">
-                <div id="modal-image" class="flex-none bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
+        <div class="flex flex-col flex-1" id="modal-content-inner">
+            
+            <!-- Image / Video -->
+            <div id="modal-image" class="modal__image-container flex-none bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
 
-                <div class="px-6 pt-4 pb-3 border-t border-zinc-800 flex-shrink-0">
-                    <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
-                    <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
-                </div>
-
-                <div id="genre-section" class="hidden flex-shrink-0">
-                    <div class="genre-header">SEE OTHER VARIATIONS OF</div>
-                    <div class="genre-arrows">
-                        <button onclick="prevGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↓</button>
-                        <div id="genre-name" class="text-white font-medium"></div>
-                        <button onclick="nextGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↑</button>
-                    </div>
-                </div>
+            <!-- Title + Description -->
+            <div class="px-6 pt-4 pb-3 border-t border-zinc-800 flex-shrink-0">
+                <h2 id="modal-title" class="modal__title"></h2>
+                <p id="modal-desc" class="modal__description"></p>
             </div>
 
-            <div id="context-panel" class="hidden p-6 bg-zinc-900 border-t border-purple-500/40">
-                <div class="flex justify-between items-start gap-4">
-                    <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
-                    <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">✕</button>
+            <!-- Genre section -->
+            <div id="genre-section" class="genre-section hidden flex-shrink-0 p-4 bg-zinc-900 border-t border-zinc-800">
+                <div class="genre-header text-purple-400 text-xs tracking-widest mb-2">SEE OTHER VARIATIONS OF</div>
+                <div class="flex items-center justify-between">
+                    <button onclick="prevGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↓</button>
+                    <div id="genre-name" class="text-white font-medium text-center"></div>
+                    <button onclick="nextGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↑</button>
                 </div>
-                <button onclick="searchMemeImage()" class="mt-5 w-full bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
-                    <i class="fa-solid fa-magnifying-glass"></i> Google Image Search
-                </button>
-            </div>
-
-            <div id="modal-buttons">
-                <a id="base-x-link" href="#" target="_blank" class="modal-btn-view flex-1">
-                    <i class="fa-brands fa-x-twitter"></i> View
-                </a>
-                <button onclick="showContextPanel()" class="modal-btn-context flex-1">
-                    <i class="fa-solid fa-info-circle"></i> Context
-                </button>
-                <button onclick="showMemeShareMenu()" class="modal-btn-share flex-1">
-                    <i class="fa-solid fa-share-nodes"></i> Share
-                </button>
             </div>
         </div>
+
+        <!-- Context panel -->
+        <div id="context-panel" class="modal__context hidden p-6 bg-zinc-900 border-t border-purple-500/40">
+            <div class="flex justify-between items-start gap-4">
+                <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
+                <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">✕</button>
+            </div>
+            <button onclick="searchMemeImage()" class="mt-5 w-full bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
+                <i class="fa-solid fa-magnifying-glass"></i> Google Image Search
+            </button>
+        </div>
+
+        <!-- Bottom buttons -->
+        <div id="modal-buttons" class="modal__buttons">
+            <a id="base-x-link" href="#" target="_blank" class="modal-btn-view flex-1">
+                <i class="fa-brands fa-x-twitter"></i> View
+            </a>
+            <button onclick="showContextPanel()" class="modal-btn-context flex-1">
+                <i class="fa-solid fa-info-circle"></i> Context
+            </button>
+            <button onclick="showMemeShareMenu()" class="modal-btn-share flex-1">
+                <i class="fa-solid fa-share-nodes"></i> Share
+            </button>
+        </div>
     </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

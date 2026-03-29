@@ -558,4 +558,54 @@ body::before {
   border-top: 1px solid #3b3b40;
 }
 
+/* ============================================= */
+/* Modal Buttons & Genre Section (for the IDs used in memes.html) */
+/* ============================================= */
+
+.modal__buttons {
+  display: flex !important;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #27272a;
+}
+
+.modal__buttons a,
+.modal__buttons button {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.modal__buttons a:hover,
+.modal__buttons button:hover {
+  background: #27272a;
+}
+
+.modal-btn-view,
+.modal-btn-context,
+.modal-btn-share {
+  color: #fff;
+}
+
+.genre-section {
+  display: block !important;
+  padding: 1rem 1.5rem;
+  background: #27272a;
+  border-top: 1px solid #3b3b40;
+}
+
+.genre-header {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: #c084fc;
+  margin-bottom: 0.5rem;
+}
+
 /* End of main.css */
