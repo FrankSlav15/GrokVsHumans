@@ -11,7 +11,7 @@
     <script src="assets/js/common.js" defer></script>
     <script src="assets/js/card-generator.js" defer></script>
     <script src="assets/js/modal-generator.js" defer></script>
-    <!-- Google Analytics -->
+    <!-- Google Analytics (kept from your file) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
 </head>
@@ -22,7 +22,7 @@
             <h1 class="page__title">Meme Vault</h1>
             <p class="page__subtitle">Grok cooks humanity — the best of the best</p>
 
-            <!-- STICKY TABS – exact original structure -->
+            <!-- STICKY TABS – exact original structure JS expects -->
             <div class="sticky-tabs">
                 <div class="sticky-tabs-container">
                     <div class="tabs-wrapper" id="tabs">
@@ -46,7 +46,7 @@
     <!-- TOAST -->
     <div id="toast" class="toast"></div>
 
-    <!-- MEME MODAL -->
+    <!-- MEME MODAL – exact structure modal-generator.js expects -->
     <div id="meme-modal" class="modal modal--hidden">
         <div class="modal__overlay" onclick="if(event.target === this) closeMemeModal()"></div>
         <div class="modal__content">
