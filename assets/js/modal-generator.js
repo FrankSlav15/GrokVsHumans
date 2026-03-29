@@ -1,5 +1,4 @@
 let allUsers = null;
-
 async function loadUsers() {
   if (allUsers) return allUsers;
   try {
@@ -10,7 +9,6 @@ async function loadUsers() {
   }
   return allUsers;
 }
-
 function renderCommonModalParts(data) {
   const modalImageEl = document.getElementById('modal-image');
   if (modalImageEl) {
@@ -26,7 +24,6 @@ function renderCommonModalParts(data) {
   const xLinkEl = document.getElementById('base-x-link');
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 }
-
 window.openMemeModal = function(id) {
   window.currentMemeIndex = id;
   const data = window.allMemes[id];
@@ -40,12 +37,10 @@ window.openMemeModal = function(id) {
   document.body.style.overflow = 'hidden';
   attachGlobalSwipeHandler();
 };
-
 window.closeMemeModal = function() {
   document.getElementById('meme-modal').style.display = 'none';
   document.body.style.overflow = 'visible';
 };
-
 window.nextMeme = function() {
   const keys = window.getMemeKeys();
   let pos = keys.indexOf(window.currentMemeIndex);
@@ -55,7 +50,6 @@ window.nextMeme = function() {
   closeMemeModal();
   setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
 };
-
 window.prevMeme = function() {
   const keys = window.getMemeKeys();
   let pos = keys.indexOf(window.currentMemeIndex);
@@ -65,7 +59,6 @@ window.prevMeme = function() {
   closeMemeModal();
   setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
 };
-
 window.renderGenreNav = function(currentId) {
   const section = document.getElementById('genre-section');
   if (!section) return;
@@ -89,7 +82,6 @@ window.renderGenreNav = function(currentId) {
   document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
   section.classList.remove('hidden');
 };
-
 window.switchGenreMeme = function(newId) {
   const data = window.allMemes[newId];
   if (!data) return;
@@ -104,23 +96,19 @@ window.switchGenreMeme = function(newId) {
   window.currentMemeIndex = newId;
   renderGenreNav(newId);
 };
-
 window.prevGenreMeme = function() {
   if (!window.currentGenreList || window.currentGenreList.length === 0) return;
   window.currentGenreIndex = (window.currentGenreIndex - 1 + window.currentGenreList.length) % window.currentGenreList.length;
   switchGenreMeme(window.currentGenreList[window.currentGenreIndex]);
 };
-
 window.nextGenreMeme = function() {
   if (!window.currentGenreList || window.currentGenreList.length === 0) return;
   window.currentGenreIndex = (window.currentGenreIndex + 1) % window.currentGenreList.length;
   switchGenreMeme(window.currentGenreList[window.currentGenreIndex]);
 };
-
 window.getMemeKeys = function() {
   return Object.keys(window.allMemes).map(Number).sort((a,b) => a - b);
 };
-
 window.showContextPanel = function() {
   if (!window.currentMemeId) return;
   const data = window.allMemes[window.currentMemeId];
@@ -128,18 +116,15 @@ window.showContextPanel = function() {
   document.getElementById('context-panel').style.display = 'block';
   document.getElementById('modal-buttons').style.display = 'none';
 };
-
 window.hideContextPanel = function() {
   document.getElementById('context-panel').style.display = 'none';
   document.getElementById('modal-buttons').style.display = 'flex';
 };
-
 window.searchMemeImage = function() {
   if (!window.currentMemeId) return;
   const data = window.allMemes[window.currentMemeId];
   window.open(`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(data.image)}`, '_blank');
 };
-
 window.showMemeShareMenu = function() {
   if (!window.currentMemeId) return;
   const data = window.allMemes[window.currentMemeId];
@@ -163,33 +148,28 @@ window.showMemeShareMenu = function() {
     </div>`;
   document.body.insertAdjacentHTML('beforeend', shareHTML);
 };
-
 window.closeMemeShareMenu = function() {
   const overlay = document.getElementById('share-overlay');
   if (overlay) overlay.remove();
 };
-
 window.copyMemeDeepLink = function(url) {
   navigator.clipboard.writeText(url).then(() => {
     window.showToast('✅ Link to this meme copied!');
     closeMemeShareMenu();
   });
 };
-
 window.copyToClipboard = function(url) {
   navigator.clipboard.writeText(url).then(() => {
     window.showToast('✅ Link copied to clipboard!');
     closeMemeShareMenu();
   });
 };
-
 function createModalMediaHTML(data) {
   const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
   return isVideo
     ? `<video id="modal-video" src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
     : `<img src="${data.image}" class="modal__image" alt="${data.title}">`;
 }
-
 function attachGlobalSwipeHandler() {
   const modal = document.getElementById('meme-modal');
   if (!modal) return;
@@ -204,7 +184,6 @@ function attachGlobalSwipeHandler() {
   modal.addEventListener('touchstart', modal._swipeStart, { passive: true });
   modal.addEventListener('touchend', modal._swipeEnd, { passive: true });
 }
-
 document.addEventListener('keydown', e => {
   const memeModal = document.getElementById('meme-modal');
   if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
@@ -215,11 +194,9 @@ document.addEventListener('keydown', e => {
     else if (e.key === 'ArrowDown') nextGenreMeme?.();
   }
 });
-
 window.getBattleKeys = function() {
   return Object.keys(window.allBattles || {}).map(Number).sort((a,b) => a - b);
 };
-
 window.nextBattle = function() {
   const keys = window.getBattleKeys();
   let pos = keys.indexOf(window.currentBattleIndex);
@@ -229,7 +206,6 @@ window.nextBattle = function() {
   closeModal();
   setTimeout(() => openBattleModal(window.currentBattleIndex), 280);
 };
-
 window.prevBattle = function() {
   const keys = window.getBattleKeys();
   let pos = keys.indexOf(window.currentBattleIndex);
@@ -239,12 +215,10 @@ window.prevBattle = function() {
   closeModal();
   setTimeout(() => openBattleModal(window.currentBattleIndex), 280);
 };
-
 window.getSortedCategoryIds = function() {
   return Object.keys(window.allCategories || {})
     .sort((a, b) => (window.allCategories[b].order || 0) - (window.allCategories[a].order || 0));
 };
-
 window.nextCategory = function() {
   const keys = window.getSortedCategoryIds();
   let pos = keys.indexOf(window.currentCategoryIndex);
@@ -254,7 +228,6 @@ window.nextCategory = function() {
   closeCategoryModal();
   setTimeout(() => openCategoryModal(window.currentCategoryIndex), 280);
 };
-
 window.prevCategory = function() {
   const keys = window.getSortedCategoryIds();
   let pos = keys.indexOf(window.currentCategoryIndex);
@@ -264,7 +237,6 @@ window.prevCategory = function() {
   closeCategoryModal();
   setTimeout(() => openCategoryModal(window.currentCategoryIndex), 280);
 };
-
 window.checkDeepLink = function() {
   const hash = window.location.hash.replace('#', '');
   if (!hash || isNaN(hash)) return;
