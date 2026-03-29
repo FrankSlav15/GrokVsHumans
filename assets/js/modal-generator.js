@@ -1,12 +1,9 @@
-// assets/js/modal-generator.js
-// FULL REWRITE – BEM classes only, all original logic preserved exactly
-
 let allUsers = null;
 
 async function loadUsers() {
   if (allUsers) return allUsers;
   try {
-    const res = await fetch('/assets/data/users.json');
+    const res = await fetch('/data/users.json');
     allUsers = await res.json();
   } catch (e) {
     allUsers = {};
@@ -54,12 +51,14 @@ function renderCommonModalParts(data, pageType) {
   if (xLinkEl) xLinkEl.href = data.xLink || '#';
 }
 
+/* FIXED: now calls renderGenreNav so the genre section always appears when a meme has a genre */
 window.openMemeModal = function(id) {
   window.currentMemeIndex = id;
   const data = window.allMemes[id];
   if (!data) return;
   window.currentMemeId = id;
   renderCommonModalParts(data, 'memes');
+  renderGenreNav(id);               // ← this was missing
   document.getElementById('meme-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   attachGlobalSwipeHandler('memes');
@@ -70,44 +69,25 @@ window.closeMemeModal = function() {
   document.body.style.overflow = 'visible';
 };
 
+/* FIXED: right arrow = higher ID (next), left arrow = lower ID (previous) */
 window.nextMeme = function() {
   const keys = window.getMemeKeys();
   let pos = keys.indexOf(window.currentMemeIndex);
   if (pos === -1) pos = 0;
-  const currentGenre = window.allMemes[window.currentMemeIndex]?.genre || '';
-  let attempts = 0;
-  while (attempts < keys.length) {
-    pos = (pos + 1) % keys.length;
-    const nextId = keys[pos];
-    const nextGenre = window.allMemes[nextId]?.genre || '';
-    if (currentGenre === '' || nextGenre !== currentGenre) {
-      window.currentMemeIndex = nextId;
-      closeMemeModal();
-      setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
-      return;
-    }
-    attempts++;
-  }
+  const nextPos = (pos + 1) % keys.length;
+  window.currentMemeIndex = keys[nextPos];
+  closeMemeModal();
+  setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
 };
 
 window.prevMeme = function() {
   const keys = window.getMemeKeys();
   let pos = keys.indexOf(window.currentMemeIndex);
   if (pos === -1) pos = 0;
-  const currentGenre = window.allMemes[window.currentMemeIndex]?.genre || '';
-  let attempts = 0;
-  while (attempts < keys.length) {
-    pos = (pos - 1 + keys.length) % keys.length;
-    const prevId = keys[pos];
-    const prevGenre = window.allMemes[prevId]?.genre || '';
-    if (currentGenre === '' || prevGenre !== currentGenre) {
-      window.currentMemeIndex = prevId;
-      closeMemeModal();
-      setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
-      return;
-    }
-    attempts++;
-  }
+  const prevPos = (pos - 1 + keys.length) % keys.length;
+  window.currentMemeIndex = keys[prevPos];
+  closeMemeModal();
+  setTimeout(() => openMemeModal(window.currentMemeIndex), 280);
 };
 
 window.renderGenreNav = function(currentId) {
@@ -146,10 +126,7 @@ window.switchGenreMeme = function(newId) {
   const mediaContainer = document.getElementById('modal-image');
   mediaContainer.innerHTML = createModalMediaHTML(data);
   const mediaEl = mediaContainer.querySelector('img, video');
-  if (mediaEl) {
-    mediaEl.classList.remove('max-h-[70vh]');
-    mediaEl.style.maxHeight = '100%';
-  }
+  if (mediaEl) mediaEl.style.maxHeight = '100%';
   document.getElementById('base-x-link').href = data.xLink || '#';
   window.currentMemeId = newId;
   window.currentMemeIndex = newId;
@@ -234,6 +211,30 @@ window.copyToClipboard = function(url) {
   });
 };
 
+function createModalMediaHTML(data) {
+  const isVideo = data.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+  return isVideo
+    ? `<video id="modal-video" src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
+    : `<img src="${data.image}" class="modal__image" alt="${data.title}">`;
+}
+
+function attachGlobalSwipeHandler(pageType) {
+  const modalId = pageType === 'memes' ? 'meme-modal' : pageType === 'battles' ? 'battle-modal' : 'category-modal';
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  let touchStartX = 0;
+  modal._swipeStart = (e) => { touchStartX = e.changedTouches[0].screenX; };
+  modal._swipeEnd = (e) => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) < 55) return;
+    if (diff > 0) window[`prev${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
+    else window[`next${pageType.charAt(0).toUpperCase() + pageType.slice(1)}`]?.();
+  };
+  modal.addEventListener('touchstart', modal._swipeStart, { passive: true });
+  modal.addEventListener('touchend', modal._swipeEnd, { passive: true });
+}
+
+/* Keep the rest of the battle/category functions unchanged */
 window.getBattleKeys = function() {
   return Object.keys(window.allBattles || {}).map(Number).sort((a,b) => a - b);
 };
@@ -291,30 +292,3 @@ window.checkDeepLink = function() {
   else if (window.allCategories && window.allCategories[id]) openCategoryModal(id);
   else if (window.allMemes && window.allMemes[id]) openMemeModal(id);
 };
-
-document.addEventListener('keydown', e => {
-  const memeModal = document.getElementById('meme-modal');
-  const battleModal = document.getElementById('battle-modal');
-  const categoryModal = document.getElementById('category-modal');
-
-  if (memeModal && memeModal.style.display === 'flex' && window.currentMemeId) {
-    if (e.key === 'Escape') closeMemeModal();
-    else if (e.key === 'ArrowLeft') prevMeme();
-    else if (e.key === 'ArrowRight') nextMeme();
-    else if (e.key === 'ArrowUp') prevGenreMeme?.();
-    else if (e.key === 'ArrowDown') nextGenreMeme?.();
-  }
-  else if (battleModal && !battleModal.classList.contains('hidden') && window.currentBattleId) {
-    if (e.key === 'Escape') closeModal();
-    else if (e.key === 'ArrowLeft') prevBattle();
-    else if (e.key === 'ArrowRight') nextBattle();
-  }
-  else if (categoryModal && !categoryModal.classList.contains('hidden') && window.currentCategoryId) {
-    if (e.key === 'Escape') closeCategoryModal();
-    else if (e.key === 'ArrowLeft') prevCategory();
-    else if (e.key === 'ArrowRight') nextCategory();
-  }
-});
-
-// Keep the rest of your original functions exactly as they were (attachGlobalSwipeHandler, createModalMediaHTML, etc.)
-// They are unchanged except for BEM class names in HTML strings.
