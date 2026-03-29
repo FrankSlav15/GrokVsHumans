@@ -133,3 +133,32 @@ window.filterCategory = function(cat) {
     card.style.display = (cat === 'all' || cats.includes(cat)) ? 'flex' : 'none';
   });
 };
+
+// Restore live vote tallies from Firebase
+window.updateGridVoteUI = function(id) {
+  const grokBtn = document.getElementById(`grok-btn-${id}`);
+  const humanBtn = document.getElementById(`human-btn-${id}`);
+  if (!grokBtn || !humanBtn) return;
+  
+  const total = (window.allBattles[id].grokVotes || 0) + (window.allBattles[id].humanVotes || 0);
+  if (total === 0) return;
+  
+  const grokPct = Math.round(((window.allBattles[id].grokVotes || 0) / total) * 100);
+  const humanPct = 100 - grokPct;
+  
+  grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
+  humanBtn.innerHTML = `Human Won <span class="vote-tally">${humanPct}%</span>`;
+};
+
+// Call this after rendering battles grid
+window.renderBattleGrid = function() {
+  const grid = document.getElementById('battle-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.keys(window.allBattles || {})
+    .sort((a,b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
+    .forEach(id => grid.insertAdjacentHTML('beforeend', createContentCard('battles', id, window.allBattles[id])));
+  
+  // Update vote tallies
+  Object.keys(window.allBattles || {}).forEach(id => updateGridVoteUI(id));
+};
