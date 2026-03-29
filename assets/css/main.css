@@ -131,12 +131,15 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .share-overlay__link:hover { background: #3b3b40; }
 .share-overlay__close { position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: #fff; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-/* THREAD EMULATOR (added for battle/category modals) */
-.thread-emulator { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+/* THREAD EMULATOR – exact old-site chat bubble style */
+.thread-emulator { max-width: 620px; margin: 0 auto; }
 .thread-post { display: flex; gap: 12px; margin-bottom: 24px; }
-.grok-bubble { background: #27272a; border: 1px solid #622776; color: #fff; padding: 16px 20px; border-radius: 20px 20px 20px 4px; max-width: 80%; }
+.thread-post.grok { justify-content: flex-end; }
+.thread-post.human { justify-content: flex-start; }
+.grok-bubble { background: #27272a; color: #fff; padding: 16px 20px; border-radius: 20px 20px 20px 4px; max-width: 80%; }
 .human-bubble { background: #3b3b40; color: #fff; padding: 16px 20px; border-radius: 20px 20px 4px 20px; max-width: 80%; }
 .thread-text { line-height: 1.6; font-size: 15px; }
+.thread-post img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
 
 /* Battle voting buttons (added for battles modal) */
 .modal__vote-buttons { display: flex; gap: 1rem; padding: 1rem 1.5rem; }
