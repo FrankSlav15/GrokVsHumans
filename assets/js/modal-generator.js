@@ -82,44 +82,6 @@ window.closeMemeModal = function() {
   window.currentGenreList = null;
 };
 
-// MAIN NAVIGATION – arrows now work in correct direction
-window.nextMeme = function() {
-  const keys = Object.keys(window.allMemes || {}).sort((a, b) => parseInt(a) - parseInt(b));
-  let pos = keys.indexOf(window.currentMemeId);
-  if (pos === -1) pos = 0;
-  const nextPos = (pos + 1) % keys.length;
-  closeMemeModal();
-  setTimeout(() => openMemeModal(keys[nextPos]), 280);
-};
-
-window.prevMeme = function() {
-  const keys = Object.keys(window.allMemes || {}).sort((a, b) => parseInt(a) - parseInt(b));
-  let pos = keys.indexOf(window.currentMemeId);
-  if (pos === -1) pos = 0;
-  const prevPos = (pos - 1 + keys.length) % keys.length;
-  closeMemeModal();
-  setTimeout(() => openMemeModal(keys[prevPos]), 280);
-};
-
-// GENRE SKIPPING – fully restored
-window.prevGenreMeme = function() {
-  if (!window.currentGenreList || window.currentGenreList.length <= 1) return;
-  let pos = window.currentGenreIndex;
-  pos = (pos - 1 + window.currentGenreList.length) % window.currentGenreList.length;
-  window.currentGenreIndex = pos;
-  closeMemeModal();
-  setTimeout(() => openMemeModal(window.currentGenreList[pos]), 280);
-};
-
-window.nextGenreMeme = function() {
-  if (!window.currentGenreList || window.currentGenreList.length <= 1) return;
-  let pos = window.currentGenreIndex;
-  pos = (pos + 1) % window.currentGenreList.length;
-  window.currentGenreIndex = pos;
-  closeMemeModal();
-  setTimeout(() => openMemeModal(window.currentGenreList[pos]), 280);
-};
-
 // Context & Share helpers
 window.showContextPanel = function() {
   const panel = document.getElementById('context-panel');
@@ -136,27 +98,45 @@ window.hideContextPanel = function() {
 };
 
 window.showMemeShareMenu = function() {
-  if (!window.currentMemeId) return;
-  const data = window.allMemes[window.currentMemeId];
-  const baseUrl = window.location.origin + window.location.pathname;
-  const shareUrl = `${baseUrl}#${window.currentMemeIndex}`;
-  const text = `Check out this meme from the GrokVsHumans Meme Vault: ${data.title} 🔥`;
-  const shareHTML = `
-    <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[99999]" onclick="closeMemeShareMenu()">
-      <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
-        <h3 class="text-2xl font-semibold mb-8 text-center">Share this meme</h3>
-        <div class="grid grid-cols-3 gap-6 text-center">
-          <button onclick="copyMemeDeepLink('${shareUrl}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-link text-4xl text-purple-400"></i><span class="text-xs mt-1">Our Site</span></button>
-          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-facebook text-4xl text-blue-500"></i><span class="text-xs mt-1">Facebook</span></a>
-          <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-4xl text-pink-500"></i><span class="text-xs mt-1">Instagram</span></a>
-          <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-4xl"></i><span class="text-xs mt-1">TikTok</span></a>
-          <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + '\\n' + shareUrl)}" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-envelope text-4xl text-green-400"></i><span class="text-xs mt-1">Email</span></a>
+  let overlay = document.getElementById('share-overlay');
+  
+  // Create the overlay ONLY the first time
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'share-overlay';
+    overlay.className = 'share-overlay';
+    overlay.innerHTML = `
+      <div class="share-overlay__content">
+        <h3 class="share-overlay__title">Share this meme</h3>
+        <div class="share-overlay__links">
+          <a href="#" onclick="copyMemeLink(); return false;" class="share-overlay__link">
+            <i class="fa-solid fa-link"></i> Copy Link
+          </a>
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(window.allMemes[window.currentMemeId].title)}" target="_blank" class="share-overlay__link">
+            <i class="fa-brands fa-x-twitter"></i> Share on X
+          </a>
         </div>
-        <button onclick="closeMemeShareMenu()" class="mt-10 w-full py-4 border border-zinc-700 rounded-2xl hover:bg-zinc-800 font-medium">Cancel</button>
+        <button onclick="closeMemeShareMenu()" class="share-overlay__close">✕</button>
       </div>
-    </div>`;
-  document.body.insertAdjacentHTML('beforeend', shareHTML);
+    `;
+    document.body.appendChild(overlay);
+  }
+  
+  overlay.style.display = 'flex';
+};
+
+window.closeMemeShareMenu = function() {
+  const overlay = document.getElementById('share-overlay');
+  if (overlay) overlay.style.display = 'none';
+};
+
+// Optional helper for copy link
+window.copyMemeLink = function() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('Link copied to clipboard!');
+    closeMemeShareMenu();
+  });
 };
 
 window.checkDeepLink = function() {
