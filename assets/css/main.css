@@ -544,7 +544,7 @@ body::before {
 
 .page__subtitle {
   margin-top: 0.5rem; /* space between title and subtitle */
-  margin-bottom: 2rem; /* space between subtitle and tabs */
+  margin-bottom: 10rem; /* space between subtitle and tabs */
 }
 
 /* End of main.css */
