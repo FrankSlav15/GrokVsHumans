@@ -526,4 +526,20 @@ body::before {
 /* ============================================= */
 .hidden { display: none !important; }
 
+/* ============================================= */
+/* Final Memes Page Tweaks */
+/* ============================================= */
+
+/* Reduce top padding + add space between sticky tabs and title */
+.page__section {
+  padding-top: 16rem; /* was 20rem → smaller top space */
+}
+
+@media (min-width: 768px) { .page__section { padding-top: 11rem; } }
+@media (min-width: 1024px) { .page__section { padding-top: 13rem; } }
+
+.page__container {
+  margin-top: 2rem; /* nice breathing room between tabs and title */
+}
+
 /* End of main.css */
