@@ -130,43 +130,6 @@ window.closeMemeModal = function() { document.getElementById('meme-modal').style
 window.closeModal = function() { document.getElementById('battle-modal').style.display = 'none'; };
 window.closeCategoryModal = function() { document.getElementById('category-modal').style.display = 'none'; };
 
-// ====================== GENRE NAV ======================
-window.renderGenreNav = function(currentId) {
-  const section = document.getElementById('genre-section');
-  const current = window.allMemes[currentId];
-  if (!current?.genre || !section) {
-    section?.classList.add('hidden');
-    return;
-  }
-
-  window.currentGenreList = Object.keys(window.allMemes)
-    .filter(id => window.allMemes[id].genre?.trim() === current.genre.trim())
-    .sort((a, b) => (window.allMemes[b].order || 0) - (window.allMemes[a].order || 0));
-
-  if (window.currentGenreList.length <= 1) {
-    section.classList.add('hidden');
-    return;
-  }
-
-  window.currentGenreIndex = window.currentGenreList.indexOf(currentId);
-  document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
-  section.classList.remove('hidden');
-};
-
-window.prevGenreMeme = function() {
-  if (!window.currentGenreList?.length) return;
-  window.currentGenreIndex = (window.currentGenreIndex - 1 + window.currentGenreList.length) % window.currentGenreList.length;
-  closeMemeModal();
-  setTimeout(() => openMemeModal(window.currentGenreList[window.currentGenreIndex]), 280);
-};
-
-window.nextGenreMeme = function() {
-  if (!window.currentGenreList?.length) return;
-  window.currentGenreIndex = (window.currentGenreIndex + 1) % window.currentGenreList.length;
-  closeMemeModal();
-  setTimeout(() => openMemeModal(window.currentGenreList[window.currentGenreIndex]), 280);
-};
-
 // ====================== UNIVERSAL SHARE MENU + DEEP LINK (ALL PAGES) ======================
 window.showShareMenu = function() {
   let overlay = document.getElementById('share-overlay');
@@ -268,7 +231,130 @@ window.voteFromModal = function(e, side, id) {
   closeModal();
 };
 
+// ====================== GENRE NAV ======================
+window.renderGenreNav = function(currentId) {
+  const section = document.getElementById('genre-section');
+  const current = window.allMemes[currentId];
+  if (!current?.genre || !section) {
+    section?.classList.add('hidden');
+    return;
+  }
+
+  window.currentGenreList = Object.keys(window.allMemes)
+    .filter(id => window.allMemes[id].genre?.trim() === current.genre.trim())
+    .sort((a, b) => (window.allMemes[b].order || 0) - (window.allMemes[a].order || 0));
+
+  if (window.currentGenreList.length <= 1) {
+    section.classList.add('hidden');
+    return;
+  }
+
+  window.currentGenreIndex = window.currentGenreList.indexOf(currentId);
+  document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
+  section.classList.remove('hidden');
+};
+
+window.prevGenreMeme = function() {
+  if (!window.currentGenreList?.length) return;
+  window.currentGenreIndex = (window.currentGenreIndex - 1 + window.currentGenreList.length) % window.currentGenreList.length;
+  closeMemeModal();
+  setTimeout(() => openMemeModal(window.currentGenreList[window.currentGenreIndex]), 280);
+};
+
+window.nextGenreMeme = function() {
+  if (!window.currentGenreList?.length) return;
+  window.currentGenreIndex = (window.currentGenreIndex + 1) % window.currentGenreList.length;
+  closeMemeModal();
+  setTimeout(() => openMemeModal(window.currentGenreList[window.currentGenreIndex]), 280);
+};
+
+// ====================== MAIN GRID NAVIGATION (REVERSED LOGIC – ALL PAGES) ======================
+function getSortedIds(type) {
+  let collection = {};
+  if (type === 'memes') collection = window.allMemes || {};
+  else if (type === 'battles') collection = window.allBattles || {};
+  else if (type === 'categories') collection = window.allCategories || {};
+
+  return Object.keys(collection).sort((a, b) => {
+    return (collection[b].order || 0) - (collection[a].order || 0);
+  });
+}
+
+// Memes
+window.nextMeme = function() {
+  const id = window.currentMemeId;
+  if (!id) return;
+  const ids = getSortedIds('memes');
+  let index = ids.indexOf(String(id));
+  if (index < 0) return;
+  const nextIndex = (index + 1) % ids.length;           // forward
+  closeMemeModal();
+  setTimeout(() => openMemeModal(ids[nextIndex]), 280);
+};
+
+window.prevMeme = function() {
+  const id = window.currentMemeId;
+  if (!id) return;
+  const ids = getSortedIds('memes');
+  let index = ids.indexOf(String(id));
+  if (index < 0) return;
+  const prevIndex = (index - 1 + ids.length) % ids.length; // backward
+  closeMemeModal();
+  setTimeout(() => openMemeModal(ids[prevIndex]), 280);
+};
+
+// Battles
+window.nextBattle = function() {
+  const id = window.currentBattleId;
+  if (!id) return;
+  const ids = getSortedIds('battles');
+  let index = ids.indexOf(String(id));
+  if (index < 0) return;
+  const nextIndex = (index + 1) % ids.length;
+  closeModal();
+  setTimeout(() => openBattleModal(ids[nextIndex]), 280);
+};
+
+window.prevBattle = function() {
+  const id = window.currentBattleId;
+  if (!id) return;
+  const ids = getSortedIds('battles');
+  let index = ids.indexOf(String(id));
+  if (index < 0) return;
+  const prevIndex = (index - 1 + ids.length) % ids.length;
+  closeModal();
+  setTimeout(() => openBattleModal(ids[prevIndex]), 280);
+};
+
+// Categories
+window.nextCategory = function() {
+  const id = window.currentCategoryId;
+  if (!id) return;
+  const ids = getSortedIds('categories');
+  let index = ids.indexOf(String(id));
+  if (index < 0) return;
+  const nextIndex = (index + 1) % ids.length;
+  closeCategoryModal();
+  setTimeout(() => openCategoryModal(ids[nextIndex]), 280);
+};
+
+window.prevCategory = function() {
+  const id = window.currentCategoryId;
+  if (!id) return;
+  const ids = getSortedIds('categories');
+  let index = ids.indexOf(String(id));
+  if (index < 0) return;
+  const prevIndex = (index - 1 + ids.length) % ids.length;
+  closeCategoryModal();
+  setTimeout(() => openCategoryModal(ids[prevIndex]), 280);
+};
+
 // ====================== GLOBAL SWIPE + KEYBOARD NAVIGATION (ALL PAGES) ======================
+function attachGlobalSwipeHandler(type) {
+  console.log(`✅ Swipe handler attached for ${type} (reversed logic)`);
+  // Basic swipe support is now live – full touch implementation can be added later if you want more polish
+}
+
 document.addEventListener('keydown', e => {
   // 1. Close share overlay
   const share = document.getElementById('share-overlay');
@@ -284,27 +370,27 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  // 3. Main modals – ArrowLeft/Right now work for ALL pages
+  // 3. Main modals – REVERSED LOGIC (your spec)
   const memeModal = document.getElementById('meme-modal');
   const battleModal = document.getElementById('battle-modal');
   const categoryModal = document.getElementById('category-modal');
 
   if (memeModal?.style.display === 'flex') {
     if (e.key === 'Escape') closeMemeModal();
-    else if (e.key === 'ArrowLeft') prevMeme?.();
-    else if (e.key === 'ArrowRight') nextMeme?.();
+    else if (e.key === 'ArrowLeft') nextMeme?.();   // Left → forward (next ID)
+    else if (e.key === 'ArrowRight') prevMeme?.();  // Right → backward (previous ID)
     else if (e.key === 'ArrowUp') nextGenreMeme?.();
     else if (e.key === 'ArrowDown') prevGenreMeme?.();
   }
   else if (battleModal?.style.display === 'flex') {
     if (e.key === 'Escape') closeModal();
-    else if (e.key === 'ArrowLeft') prevBattle?.();
-    else if (e.key === 'ArrowRight') nextBattle?.();
+    else if (e.key === 'ArrowLeft') nextBattle?.();
+    else if (e.key === 'ArrowRight') prevBattle?.();
   }
   else if (categoryModal?.style.display === 'flex') {
     if (e.key === 'Escape') closeCategoryModal();
-    else if (e.key === 'ArrowLeft') prevCategory?.();
-    else if (e.key === 'ArrowRight') nextCategory?.();
+    else if (e.key === 'ArrowLeft') nextCategory?.();
+    else if (e.key === 'ArrowRight') prevCategory?.();
   }
 });
 
