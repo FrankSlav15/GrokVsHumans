@@ -89,7 +89,7 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .modal__buttons a, .modal__buttons button, #modal-buttons a, #modal-buttons button { flex: 1; padding: 14px 24px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; color: #fff; }
 .modal-btn-view { background: #fff; border: 1px solid #000; color: #000 !important; }
 .modal-btn-context { background: #27272a; border: 1px solid #fff; color: #fff; }
-.modal__button-share { background: #000; border: 1px solid #a855f7 !important; color: #fff; font-weight: 600; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
+.modal__share-btn { background: #000; border: 1px solid #a855f7 !important; color: #fff; font-weight: 600; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
 .modal__buttons a:hover, .modal__buttons button:hover, #modal-buttons a:hover, #modal-buttons button:hover { background: #3b3b40; }
 
 /* Context panel */
@@ -105,9 +105,6 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.7); color: #fff; width: 3rem; height: 3rem; border-radius: 9999px; font-size: 2rem; display: flex; align-items: center; justify-content: center; z-index: 30; }
 .nav-arrow-left { left: 1rem; }
 .nav-arrow-right { right: 1rem; }
-
-/* Utility for buttons */
-.modal-btn-view, .modal-btn-context, .modal-btn-share { color: #fff; }
 
 /* Genre section */
 #genre-section, .genre-section { display: block !important; padding: 1rem 1.5rem; background: #27272a; border-top: 1px solid #3b3b40; }
