@@ -1,32 +1,6 @@
 // assets/js/modal-generator.js
 // FINAL FIXED VERSION – modals open, thread emulator works, Firebase voting works
 
-let allUsers = null;
-
-async function loadUsers() {
-  if (allUsers) return allUsers;
-  try {
-    const res = await fetch('/data/users.json');
-    allUsers = await res.json();
-  } catch (e) {
-    allUsers = {};
-  }
-  return allUsers;
-}
-
-function getUserData(username) {
-  if (!username || !allUsers) return {};
-  const clean = username.replace('@', '').trim();
-  return allUsers[clean] || {};
-}
-
-function getLocalAvatar(post) {
-  let username = post.username || post.user || post.avatar || post.author || '';
-  if (!username) return '/assets/images/users/@unknown.webp';
-  const clean = username.replace('@', '').trim();
-  return `/assets/images/users/@${clean}.webp`;
-}
-
 // ====================== COMMON RENDERING ======================
 function renderCommonModalParts(data, pageType) {
   const mediaContainer = document.getElementById('modal-image');
