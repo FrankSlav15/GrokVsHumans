@@ -193,21 +193,14 @@ window.nextGenreMeme = function() {
   setTimeout(() => openMemeModal(window.currentGenreList[window.currentGenreIndex]), 280);
 };
 
-// ====================== SHARE & CONTEXT ======================
-// ====================== UNIVERSAL SHARE MENU (works on ALL pages) ======================
+// ====================== UNIVERSAL SHARE MENU + DEEP LINK (ALL PAGES) ======================
 window.showShareMenu = function() {
-  // Remove old overlay if exists
   let overlay = document.getElementById('share-overlay');
   if (overlay) overlay.remove();
 
-  // Dynamic title
-  let titleText = "this";
-  if (document.getElementById('meme-modal')?.style.display === 'flex') titleText = "meme";
-  else if (document.getElementById('battle-modal')?.style.display === 'flex') titleText = "battle";
-  else if (document.getElementById('category-modal')?.style.display === 'flex') titleText = "category";
-
-  const currentTitle = document.getElementById('modal-title') ? 
-                       document.getElementById('modal-title').textContent : 'GrokVsHumans post';
+  const currentTitle = document.getElementById('modal-title') 
+    ? document.getElementById('modal-title').textContent 
+    : 'GrokVsHumans post';
 
   overlay = document.createElement('div');
   overlay.id = 'share-overlay';
@@ -215,7 +208,7 @@ window.showShareMenu = function() {
   overlay.innerHTML = `
     <div class="share-overlay__content" onclick="event.stopImmediatePropagation()">
       <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
-      <h3 class="share-overlay__title">Share this ${titleText}</h3>
+      <h3 class="share-overlay__title">Share this post</h3>
       <div class="share-overlay__grid">
         <a onclick="copyDeepLink(); return false" class="share-overlay__item">
           <i class="fa-solid fa-link fa-2x"></i>
@@ -252,10 +245,20 @@ window.closeShareMenu = function() {
   if (overlay) overlay.remove();
 };
 
-// Generic copy function used by Copy Link / Instagram / TikTok
+// NEW: Copies the actual deep link with #ID so the modal opens directly
 window.copyDeepLink = function() {
-  navigator.clipboard.writeText(location.href).then(() => {
-    showToast('✅ Link copied to clipboard!');
+  let deepLink = window.location.origin + window.location.pathname.split('#')[0];
+
+  if (document.getElementById('meme-modal')?.style.display === 'flex' && window.currentMemeId) {
+    deepLink += '#' + window.currentMemeId;
+  } else if (document.getElementById('battle-modal')?.style.display === 'flex' && window.currentBattleId) {
+    deepLink += '#' + window.currentBattleId;
+  } else if (document.getElementById('category-modal')?.style.display === 'flex' && window.currentCategoryId) {
+    deepLink += '#' + window.currentCategoryId;
+  }
+
+  navigator.clipboard.writeText(deepLink).then(() => {
+    showToast('✅ Deep link copied!');
     closeShareMenu();
   });
 };
