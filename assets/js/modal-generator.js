@@ -50,8 +50,19 @@ function renderCommonModalParts(data, pageType) {
 function renderTags(data) {
   const container = document.getElementById('modal-tags');
   if (!container) return;
-  const tags = (data.tags || '').split(',').map(t => t.trim()).filter(Boolean);
-  const html = tags.map(tag => `<span class="px-3 py-1 bg-purple-900/80 text-purple-200 text-xs rounded-full">${tag}</span>`).join('');
+
+  const tagMap = {
+    'nonsense': 'Nonsense',
+    'serious': 'Now, In All Seriousness',
+    'censorship': 'Conspiracy 1984',
+    'opinion': "Grok's Opinion"
+  };
+
+  const tags = (data.tags || '').split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+  const html = tags.map(tag => {
+    const niceName = tagMap[tag] || tag.charAt(0).toUpperCase() + tag.slice(1);
+    return `<span>${niceName}</span>`;
+  }).join('');
   container.innerHTML = html;
 }
 
@@ -184,10 +195,25 @@ window.nextGenreMeme = function() {
 
 // ====================== SHARE & CONTEXT ======================
 window.showShareMenu = function() {
-  const overlay = document.createElement('div');
+  let overlay = document.getElementById('share-overlay');
+  if (overlay) { overlay.remove(); }
+
+  overlay = document.createElement('div');
   overlay.id = 'share-overlay';
   overlay.className = 'share-overlay';
-  overlay.innerHTML = `...` ; // (your share overlay HTML from previous version - unchanged)
+  overlay.innerHTML = `
+    <div class="share-overlay__content" onclick="event.stopImmediatePropagation()">
+      <h3 class="share-overlay__title">Share this battle</h3>
+      <div class="share-overlay__links">
+        <a onclick="copyMemeDeepLink(); return false;" class="share-overlay__link"><i class="fa-solid fa-link"></i> Our Site</a>
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(document.getElementById('modal-title').textContent)}" target="_blank" class="share-overlay__link"><i class="fa-brands fa-x-twitter"></i> X</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__link"><i class="fa-brands fa-facebook"></i> Facebook</a>
+        <a onclick="copyToClipboard(); return false" class="share-overlay__link"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        <a onclick="copyToClipboard(); return false" class="share-overlay__link"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+        <a href="mailto:?subject=${encodeURIComponent(document.getElementById('modal-title').textContent)}" class="share-overlay__link"><i class="fa-solid fa-envelope"></i> Email</a>
+      </div>
+      <button onclick="closeShareMenu()" class="share-overlay__close">Cancel</button>
+    </div>`;
   document.body.appendChild(overlay);
   overlay.style.display = 'flex';
 };
