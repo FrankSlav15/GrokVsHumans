@@ -172,9 +172,16 @@ window.initPage = async function(pageType) {
 };
 
 // ====================== DOM CONTENT LOADED ======================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   setRandomBackground();
-  loadLayout();
-});
+  await loadLayout();                    // header + footer (already async)
 
+  // ── NEW: Automatic page init based on <body data-page="..."> ──
+  // This is the single source of truth for ALL pages
+  const pageType = document.body.getAttribute('data-page');
+  if (pageType) {
+    await window.initPage(pageType);     // loads JSON + renders grid + deep-link
+    console.log(`✅ Auto-initialized ${pageType} page (modals + grids now live)`);
+  }
+});
 // End of common.js
