@@ -372,4 +372,10 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .share-overlay__item i { font-size: 2.4rem; transition: transform .2s; }
 .share-overlay__item:hover i { transform: scale(1.15); }
 
+/* Share overlay – 2×2 grid (after removing IG + TikTok) */
+.share-overlay__grid--4 {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
 /* End of main.css */

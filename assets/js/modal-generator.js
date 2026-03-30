@@ -135,8 +135,8 @@ window.showShareMenu = function() {
   let overlay = document.getElementById('share-overlay');
   if (overlay) overlay.remove();
 
-  const currentTitle = document.getElementById('modal-title') 
-    ? document.getElementById('modal-title').textContent 
+  const currentTitle = document.getElementById('modal-title')
+    ? document.getElementById('modal-title').textContent.trim()
     : 'GrokVsHumans post';
 
   overlay = document.createElement('div');
@@ -146,7 +146,7 @@ window.showShareMenu = function() {
     <div class="share-overlay__content" onclick="event.stopImmediatePropagation()">
       <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
       <h3 class="share-overlay__title">Share this post</h3>
-      <div class="share-overlay__grid">
+      <div class="share-overlay__grid share-overlay__grid--4">
         <a onclick="copyDeepLink(); return false" class="share-overlay__item">
           <i class="fa-solid fa-link fa-2x"></i>
           <span>Copy Link</span>
@@ -158,14 +158,6 @@ window.showShareMenu = function() {
         <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item">
           <i class="fa-brands fa-facebook fa-2x"></i>
           <span>Facebook</span>
-        </a>
-        <a onclick="copyDeepLink(); return false" class="share-overlay__item">
-          <i class="fa-brands fa-instagram fa-2x"></i>
-          <span>Instagram</span>
-        </a>
-        <a onclick="copyDeepLink(); return false" class="share-overlay__item">
-          <i class="fa-brands fa-tiktok fa-2x"></i>
-          <span>TikTok</span>
         </a>
         <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" class="share-overlay__item">
           <i class="fa-solid fa-envelope fa-2x"></i>
