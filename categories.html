@@ -12,7 +12,7 @@
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
-    
+
 </head>
 
 <body data-page="categories">
@@ -59,9 +59,9 @@
             <!-- Close button -->
             <button onclick="closeCategoryModal()" class="modal__close">✕</button>
             
-            <!-- Navigation arrows -->
-            <button onclick="prevCategory()" class="nav-arrow nav-arrow-left">‹</button>
-            <button onclick="nextCategory()" class="nav-arrow nav-arrow-right">›</button>
+            <!-- External navigation arrows – placed outside the modal -->
+            <button class="modal-nav modal-nav--prev" onclick="nextCategory()" aria-label="Next category">‹</button>
+            <button class="modal-nav modal-nav--next" onclick="prevCategory()" aria-label="Previous category">›</button>
 
             <div class="modal__inner" id="modal-content-inner">
                 

@@ -58,9 +58,9 @@
             <!-- Close button -->
             <button onclick="closeModal()" class="modal__close">✕</button>
             
-            <!-- Navigation arrows -->
-            <button onclick="prevBattle()" class="nav-arrow nav-arrow-left">‹</button>
-            <button onclick="nextBattle()" class="nav-arrow nav-arrow-right">›</button>
+            <!-- External navigation arrows – placed outside the modal -->
+            <button class="modal-nav modal-nav--prev" onclick="nextBattle()" aria-label="Next battle">‹</button>
+            <button class="modal-nav modal-nav--next" onclick="prevBattle()" aria-label="Previous battle">›</button>
 
             <div class="modal__inner" id="modal-content-inner">
                 
