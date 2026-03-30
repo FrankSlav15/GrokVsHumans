@@ -1,4 +1,5 @@
-// assets/js/common.js - Firebase re-enabled for live voting
+// assets/js/common.js - FINAL REVISED VERSION (no omissions)
+// Firebase live voting + partials + background rotator + deep links for ALL pages
 
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
@@ -56,29 +57,42 @@ window.updateGridVoteUI = function(id) {
   humanBtn.innerHTML = `Human Won <span class="vote-tally">${humanPct}%</span>`;
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const bgs = [
-    'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
-    'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
-    'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
-    'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
-    'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
-    'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
-    'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
-    'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
-    'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
-    'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
-  ];
+// ====================== USERS + BACKGROUND ======================
+let allUsers = null;
+async function loadUsers() {
+  if (allUsers) return allUsers;
+  try {
+    const res = await fetch('/data/users.json');
+    allUsers = await res.json();
+  } catch (e) {
+    allUsers = {};
+  }
+  return allUsers;
+}
+
+const bgs = [
+  'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
+  'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
+  'assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp',
+  'assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp',
+  'assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp',
+  'assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp',
+  'assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp',
+  'assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp',
+  'assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp',
+  'assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'
+];
+
+function setRandomBackground() {
   const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
   document.body.style.backgroundImage = `url('/${randomBg}')`;
   document.body.style.backgroundPosition = '50% 35%';
   document.body.style.backgroundSize = 'cover';
   document.body.style.backgroundRepeat = 'no-repeat';
   document.body.style.backgroundAttachment = 'fixed';
+}
 
-  loadLayout();
-});
-
+// ====================== LAYOUT (partials) ======================
 async function loadLayout() {
   try {
     const headerRes = await fetch('assets/partials/header.html');
@@ -90,7 +104,7 @@ async function loadLayout() {
     document.body.insertAdjacentHTML('beforeend', footerHTML);
 
     highlightActiveNav();
-    console.log('Header + Footer loaded');
+    console.log('✅ Header + Footer loaded');
   } catch (e) {
     console.error('Layout load failed:', e);
   }
@@ -107,6 +121,7 @@ function highlightActiveNav() {
   });
 }
 
+// ====================== TOAST ======================
 window.showToast = function(message) {
   const toast = document.getElementById('toast');
   if (!toast) return;
@@ -120,6 +135,7 @@ window.showToast = function(message) {
   }, 2800);
 };
 
+// ====================== INIT PAGE + DEEP LINK (ALL PAGES) ======================
 window.initPage = async function(pageType) {
   await loadUsers();
 
@@ -139,12 +155,11 @@ window.initPage = async function(pageType) {
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
   }
 
-  // 🔥 Final deep-link check AFTER everything is loaded
+  // 🔥 Deep link check AFTER data + modal functions are ready
   console.log('🚀 initPage complete for', pageType, '— checking deep link...');
   setTimeout(window.checkDeepLink, 120);
 };
 
-// ====================== DEEP LINK DEBUGGED (works on ALL pages) ======================
 window.checkDeepLink = function() {
   const hash = window.location.hash.replace('#', '').trim();
   console.log('🔍 checkDeepLink called — hash =', hash);
@@ -177,3 +192,11 @@ window.checkDeepLink = function() {
     console.log('❌ No data found for ID', id);
   }
 };
+
+// ====================== DOM CONTENT LOADED ======================
+document.addEventListener('DOMContentLoaded', () => {
+  setRandomBackground();
+  loadLayout();
+});
+
+// End of common.js
