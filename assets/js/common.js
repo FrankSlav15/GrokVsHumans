@@ -1,5 +1,4 @@
-// assets/js/common.js - FINAL REVISED VERSION (no omissions)
-// Firebase live voting + partials + background rotator + deep links for ALL pages
+// assets/js/common.js - Firebase re-enabled for live voting + FINAL ROBUST DEEP LINK
 
 const firebaseConfig = {
   apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
@@ -135,7 +134,7 @@ window.showToast = function(message) {
   }, 2800);
 };
 
-// ====================== INIT PAGE + DEEP LINK (ALL PAGES) ======================
+// ====================== INIT PAGE ======================
 window.initPage = async function(pageType) {
   await loadUsers();
 
@@ -155,14 +154,15 @@ window.initPage = async function(pageType) {
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
   }
 
-  // 🔥 Deep link check AFTER data + modal functions are ready
+  // 🔥 Deep link check AFTER data is loaded
   console.log('🚀 initPage complete for', pageType, '— checking deep link...');
-  setTimeout(window.checkDeepLink, 120);
+  setTimeout(window.checkDeepLink, 200);
 };
 
-window.checkDeepLink = function() {
+// ====================== DEEP LINK (ROBUST RETRY VERSION) ======================
+window.checkDeepLink = function(attempt = 0) {
   const hash = window.location.hash.replace('#', '').trim();
-  console.log('🔍 checkDeepLink called — hash =', hash);
+  console.log(`🔍 checkDeepLink attempt ${attempt} — hash =`, hash);
 
   if (!hash || isNaN(hash)) {
     console.log('❌ No valid #ID in URL');
@@ -172,10 +172,14 @@ window.checkDeepLink = function() {
   const id = parseInt(hash);
   console.log('📌 Parsed ID =', id);
 
-  // Safety: wait until modal functions exist
+  // Safety check: modal functions must exist
   if (typeof openMemeModal !== 'function' || typeof openBattleModal !== 'function' || typeof openCategoryModal !== 'function') {
-    console.log('⏳ Modal functions not ready yet — retrying in 100ms');
-    setTimeout(() => window.checkDeepLink(), 100);
+    if (attempt < 8) {
+      console.log('⏳ Modal functions not ready yet — retrying in 80ms');
+      setTimeout(() => window.checkDeepLink(attempt + 1), 80);
+      return;
+    }
+    console.log('❌ Gave up after 8 attempts');
     return;
   }
 
