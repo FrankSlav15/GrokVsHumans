@@ -153,6 +153,60 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .modal-btn-grok { flex: 1; background: #6b21a8; color: #fff; padding: 1rem; border-radius: 12px; font-weight: 600; }
 .modal-btn-human { flex: 1; background: #9f1239; color: #fff; padding: 1rem; border-radius: 12px; font-weight: 600; }
 
+/* ====================== MODALS (shared) ====================== */
+/* Hide scrollbar completely but keep content scrollable if needed */
+.modal {
+  overflow: hidden;
+}
+
+.modal__content,
+#modal-image,
+#thread-container {
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.modal__content::-webkit-scrollbar,
+#modal-image::-webkit-scrollbar,
+#thread-container::-webkit-scrollbar {
+  display: none; /* Chrome / Safari / Edge */
+}
+
+/* External navigation arrows – placed OUTSIDE the modal (your request) */
+.modal-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10000;
+  width: 60px;
+  height: 60px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.85);
+  color: white;
+  font-size: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-nav:hover {
+  background: rgba(15, 23, 42, 0.95);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.modal-nav--prev { left: 24px; }
+.modal-nav--next { right: 24px; }
+
+/* Make sure genre name still shows nicely inside */
+#genre-section {
+  pointer-events: none; /* so external arrows get clicks */
+}
+
 /* End of modal styles */
 
 /* ============================================= */
