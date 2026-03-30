@@ -110,17 +110,88 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .genre-arrows button{background:none;border:none;font-size:2rem;color:#c084fc;cursor:pointer}
 .genre-arrows button:hover{color:#fff}
 
-/* Thread emulator – perfect layout */
-.thread-emulator{display:flex;flex-direction:column;gap:28px;padding:8px 0}
-.thread-post{display:flex;gap:12px;align-items:flex-start}
-.thread-post:not(.justify-end){justify-content:flex-start}
-.thread-post.justify-end{justify-content:flex-end;flex-direction:row-reverse}
-.thread-post img:first-child,.thread-post img:last-child{width:36px!important;height:36px!important;flex-shrink:0;border-radius:9999px;object-fit:cover}
-.human-bubble,.grok-bubble{max-width:85%!important;padding:20px!important;border-radius:28px;position:relative}
-.human-bubble{background:#3b3b40;color:#fff}
-.grok-bubble{background:#27272a;color:#fff;margin-left:auto}
-.thread-text{line-height:1.55;font-size:15px;white-space:pre-line}
-.human-bubble img,.grok-bubble img,.thread-emulator .human-bubble img,.thread-emulator .grok-bubble img{width:100%!important;max-height:520px;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.4);margin-top:16px;display:block}
+/* ====================== THREAD EMULATOR (matches PIC1 exactly – human bubbles have NO purple outline) ====================== */
+.thread-emulator {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 8px 0;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* Each post row */
+.thread-post {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.thread-post:not(.justify-end) { justify-content: flex-start; }
+.thread-post.justify-end { 
+  justify-content: flex-end; 
+  flex-direction: row-reverse; 
+}
+
+/* Avatars – exact size & placement from PIC1 */
+.thread-post img:first-child,
+.thread-post img:last-child {
+  width: 36px !important;
+  height: 36px !important;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  object-fit: cover;
+  margin-top: 4px;
+}
+
+/* HUMAN bubbles – dark, no purple outline, pointed left (exact PIC1) */
+.human-bubble {
+  background: #27272a !important;
+  color: #fff;
+  padding: 16px 20px;
+  border-radius: 20px 20px 4px 20px;
+  max-width: 78%;
+  align-self: flex-start;
+  border: none !important; /* ← NO purple outline as requested */
+}
+
+/* GROK bubbles – keep purple accent + pointed right (exact PIC1) */
+.grok-bubble {
+  background: #3b3b40 !important;
+  color: #fff;
+  padding: 16px 20px;
+  border-radius: 20px 20px 20px 4px;
+  max-width: 78%;
+  align-self: flex-end;
+  border: 1px solid #a855f7 !important; /* purple accent stays on Grok */
+  margin-left: auto;
+}
+
+/* Text inside bubbles */
+.thread-text {
+  line-height: 1.55;
+  font-size: 15px;
+  white-space: pre-line;
+}
+
+/* Large thread images (already full-width & sharp) */
+.human-bubble img,
+.grok-bubble img {
+  width: 100% !important;
+  max-height: 520px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+  margin-top: 16px;
+  display: block;
+}
+
+/* Thread container background */
+#thread-container {
+  padding: 20px 24px;
+  background: #18181b;
+  border-top: 1px solid #27272a;
+}
 
 /* Modal scrollbar removal */
 .modal__content,#modal-image,#thread-container{max-height:85vh;overflow-y:auto;scrollbar-width:none}
