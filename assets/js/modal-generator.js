@@ -194,12 +194,20 @@ window.nextGenreMeme = function() {
 };
 
 // ====================== SHARE & CONTEXT ======================
+// ====================== UNIVERSAL SHARE MENU (works on ALL pages) ======================
 window.showShareMenu = function() {
+  // Remove old overlay if exists
   let overlay = document.getElementById('share-overlay');
   if (overlay) overlay.remove();
 
-  const title = document.getElementById('modal-title') ? 
-                document.getElementById('modal-title').textContent : 'this post';
+  // Dynamic title
+  let titleText = "this";
+  if (document.getElementById('meme-modal')?.style.display === 'flex') titleText = "meme";
+  else if (document.getElementById('battle-modal')?.style.display === 'flex') titleText = "battle";
+  else if (document.getElementById('category-modal')?.style.display === 'flex') titleText = "category";
+
+  const currentTitle = document.getElementById('modal-title') ? 
+                       document.getElementById('modal-title').textContent : 'GrokVsHumans post';
 
   overlay = document.createElement('div');
   overlay.id = 'share-overlay';
@@ -207,14 +215,32 @@ window.showShareMenu = function() {
   overlay.innerHTML = `
     <div class="share-overlay__content" onclick="event.stopImmediatePropagation()">
       <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
-      <h3 class="share-overlay__title">Share this ${title.includes('meme') ? 'meme' : 'battle'}</h3>
+      <h3 class="share-overlay__title">Share this ${titleText}</h3>
       <div class="share-overlay__grid">
-        <a onclick="copyMemeDeepLink(); return false;" class="share-overlay__item"><div class="share-icon">🔗</div><span>Our Site</span></a>
-        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}" target="_blank" class="share-overlay__item"><div class="share-icon">𝕏</div><span>X</span></a>
-        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item"><div class="share-icon">📘</div><span>Facebook</span></a>
-        <a onclick="copyToClipboard(); return false" class="share-overlay__item"><div class="share-icon">📸</div><span>Instagram</span></a>
-        <a onclick="copyToClipboard(); return false" class="share-overlay__item"><div class="share-icon">🎵</div><span>TikTok</span></a>
-        <a href="mailto:?subject=${encodeURIComponent(title)}" class="share-overlay__item"><div class="share-icon">✉️</div><span>Email</span></a>
+        <a onclick="copyDeepLink(); return false" class="share-overlay__item">
+          <i class="fa-solid fa-link fa-2x"></i>
+          <span>Copy Link</span>
+        </a>
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" class="share-overlay__item">
+          <i class="fa-brands fa-x-twitter fa-2x"></i>
+          <span>X</span>
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item">
+          <i class="fa-brands fa-facebook fa-2x"></i>
+          <span>Facebook</span>
+        </a>
+        <a onclick="copyDeepLink(); return false" class="share-overlay__item">
+          <i class="fa-brands fa-instagram fa-2x"></i>
+          <span>Instagram</span>
+        </a>
+        <a onclick="copyDeepLink(); return false" class="share-overlay__item">
+          <i class="fa-brands fa-tiktok fa-2x"></i>
+          <span>TikTok</span>
+        </a>
+        <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" class="share-overlay__item">
+          <i class="fa-solid fa-envelope fa-2x"></i>
+          <span>Email</span>
+        </a>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -224,6 +250,14 @@ window.showShareMenu = function() {
 window.closeShareMenu = function() {
   const overlay = document.getElementById('share-overlay');
   if (overlay) overlay.remove();
+};
+
+// Generic copy function used by Copy Link / Instagram / TikTok
+window.copyDeepLink = function() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    showToast('✅ Link copied to clipboard!');
+    closeShareMenu();
+  });
 };
 
 // Context panel
