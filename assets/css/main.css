@@ -110,87 +110,87 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .genre-arrows button{background:none;border:none;font-size:2rem;color:#c084fc;cursor:pointer}
 .genre-arrows button:hover{color:#fff}
 
-/* ====================== THREAD EMULATOR (exact PIC1 – Grok avatar RIGHT, human bubbles NO purple outline) ====================== */
+/* ====================== THREAD EMULATOR (Grok avatar FORCED to RIGHT – matches PIC1 exactly) ====================== */
 .thread-emulator {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  padding: 8px 0;
-  max-width: 620px;
-  margin: 0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+  padding:8px 0;
+  max-width:620px;
+  margin:0 auto;
 }
 
 /* Each post row */
 .thread-post {
-  display: flex !important;
-  gap: 12px !important;
-  align-items: flex-start !important;
+  display:flex !important;
+  gap:12px !important;
+  align-items:flex-start !important;
 }
-.thread-post:not(.justify-end) { justify-content: flex-start !important; }
+.thread-post:not(.justify-end) { justify-content:flex-start !important; }
 
-/* GROK posts – avatar forced to RIGHT */
+/* GROK posts – avatar FORCED to RIGHT */
 .thread-post.justify-end {
-  justify-content: flex-end !important;
-  flex-direction: row-reverse !important;
+  justify-content:flex-end !important;
+  flex-direction:row-reverse !important;
 }
 
-/* Avatars – exact 36px from PIC1 */
+/* Avatars – exact size from PIC1 */
 .thread-post img:first-child,
 .thread-post img:last-child {
-  width: 36px !important;
-  height: 36px !important;
-  flex-shrink: 0 !important;
-  border-radius: 9999px !important;
-  object-fit: cover !important;
-  margin-top: 4px !important;
+  width:36px !important;
+  height:36px !important;
+  flex-shrink:0 !important;
+  border-radius:9999px !important;
+  object-fit:cover !important;
+  margin-top:4px !important;
 }
 
-/* HUMAN bubbles – dark, NO purple outline (your request) */
+/* HUMAN bubbles – dark, NO purple outline */
 .human-bubble {
-  background: #27272a !important;
-  color: #fff !important;
-  padding: 16px 20px !important;
-  border-radius: 20px 20px 4px 20px !important;
-  max-width: 78% !important;
-  align-self: flex-start !important;
-  border: none !important; /* ← no purple outline */
+  background:#27272a !important;
+  color:#fff !important;
+  padding:16px 20px !important;
+  border-radius:20px 20px 4px 20px !important;
+  max-width:78% !important;
+  align-self:flex-start !important;
+  border:none !important;
 }
 
-/* GROK bubbles – purple accent stays, pointed right */
+/* GROK bubbles – purple accent stays */
 .grok-bubble {
-  background: #3b3b40 !important;
-  color: #fff !important;
-  padding: 16px 20px !important;
-  border-radius: 20px 20px 20px 4px !important;
-  max-width: 78% !important;
-  align-self: flex-end !important;
-  border: 1px solid #a855f7 !important;
-  margin-left: auto !important;
+  background:#3b3b40 !important;
+  color:#fff !important;
+  padding:16px 20px !important;
+  border-radius:20px 20px 20px 4px !important;
+  max-width:78% !important;
+  align-self:flex-end !important;
+  border:1px solid #a855f7 !important;
+  margin-left:auto !important;
 }
 
-/* Text & images inside bubbles */
+/* Text & images */
 .thread-text {
-  line-height: 1.55 !important;
-  font-size: 15px !important;
-  white-space: pre-line !important;
+  line-height:1.55 !important;
+  font-size:15px !important;
+  white-space:pre-line !important;
 }
 .human-bubble img,
 .grok-bubble img {
-  width: 100% !important;
-  max-height: 520px !important;
-  height: auto !important;
-  object-fit: contain !important;
-  border-radius: 14px !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,.4) !important;
-  margin-top: 16px !important;
-  display: block !important;
+  width:100% !important;
+  max-height:520px !important;
+  height:auto !important;
+  object-fit:contain !important;
+  border-radius:14px !important;
+  box-shadow:0 4px 20px rgba(0,0,0,.4) !important;
+  margin-top:16px !important;
+  display:block !important;
 }
 
-/* Thread container background */
+/* Thread container */
 #thread-container {
-  padding: 20px 24px !important;
-  background: #18181b !important;
-  border-top: 1px solid #27272a !important;
+  padding:20px 24px !important;
+  background:#18181b !important;
+  border-top:1px solid #27272a !important;
 }
 
 /* Modal scrollbar removal */
