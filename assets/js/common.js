@@ -127,15 +127,18 @@ window.initPage = async function(pageType) {
     const res = await fetch('/data/memes.json');
     window.allMemes = await res.json();
     if (typeof renderMemeGrid === 'function') renderMemeGrid();
-  } else if (pageType === 'battles') {
+    checkDeepLink();                    // ← opens modal if #ID present
+  } 
+  else if (pageType === 'battles') {
     const res = await fetch('/data/battles.json');
     window.allBattles = await res.json();
     if (typeof renderBattleGrid === 'function') renderBattleGrid();
-  } else if (pageType === 'categories') {
+    checkDeepLink();                    // ← opens modal if #ID present
+  } 
+  else if (pageType === 'categories') {
     const res = await fetch('/data/categories.json');
     window.allCategories = await res.json();
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
+    checkDeepLink();                    // ← opens modal if #ID present
   }
-    // Auto-open modal from deep link (#ID) after data is fully loaded
-  setTimeout(checkDeepLink, 150);
 };
