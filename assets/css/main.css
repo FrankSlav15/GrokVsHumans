@@ -144,6 +144,8 @@ body::before { content: ''; position: fixed; inset: 0; background: rgba(10, 10, 
 .grok-bubble { background: #27272a !important; border: 1px solid #a855f7 !important; color: #fff; padding: 16px 20px; border-radius: 20px 20px 20px 4px; max-width: 78%; align-self: flex-end; }
 .human-bubble { background: #3b3b40 !important; border: 1px solid #6b7280 !important; color: #fff; padding: 16px 20px; border-radius: 20px 20px 4px 20px; max-width: 78%; align-self: flex-start; }
 .thread-text { line-height: 1.55; font-size: 15px; white-space: pre-line; }
+.human-bubble, .grok-bubble { padding: 20px !important; }
+.thread-emulator img { width: 100% !important; max-height: 520px; height: auto; object-fit: contain; border-radius: 14px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); margin-top: 16px; display: block; }
 
 /* Battle voting buttons (added for battles modal) */
 .modal__vote-buttons { display: flex; gap: 1rem; padding: 1rem 1.5rem; }

@@ -65,7 +65,7 @@ function renderThread(threadPosts, containerId) {
             <span class="text-zinc-500 text-xs">${post.date || ''}</span>
           </div>
           <div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>
-          ${post.image && !post.image.includes('youtube') ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : `<img src="${post.image}" class="mt-4 rounded-2xl" alt="">`) : ''}
+          ${post.image && !post.image.includes('youtube') ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : `<img src="${post.image}" class="mt-4 w-full rounded-2xl block" alt="">`) : ''}
         `}
       </div>
       ${!isDeleted && post.author === 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
