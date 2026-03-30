@@ -196,23 +196,26 @@ window.nextGenreMeme = function() {
 // ====================== SHARE & CONTEXT ======================
 window.showShareMenu = function() {
   let overlay = document.getElementById('share-overlay');
-  if (overlay) { overlay.remove(); }
+  if (overlay) overlay.remove();
+
+  const title = document.getElementById('modal-title') ? 
+                document.getElementById('modal-title').textContent : 'this post';
 
   overlay = document.createElement('div');
   overlay.id = 'share-overlay';
   overlay.className = 'share-overlay';
   overlay.innerHTML = `
     <div class="share-overlay__content" onclick="event.stopImmediatePropagation()">
-      <h3 class="share-overlay__title">Share this battle</h3>
-      <div class="share-overlay__links">
-        <a onclick="copyMemeDeepLink(); return false;" class="share-overlay__link"><i class="fa-solid fa-link"></i> Our Site</a>
-        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(document.getElementById('modal-title').textContent)}" target="_blank" class="share-overlay__link"><i class="fa-brands fa-x-twitter"></i> X</a>
-        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__link"><i class="fa-brands fa-facebook"></i> Facebook</a>
-        <a onclick="copyToClipboard(); return false" class="share-overlay__link"><i class="fa-brands fa-instagram"></i> Instagram</a>
-        <a onclick="copyToClipboard(); return false" class="share-overlay__link"><i class="fa-brands fa-tiktok"></i> TikTok</a>
-        <a href="mailto:?subject=${encodeURIComponent(document.getElementById('modal-title').textContent)}" class="share-overlay__link"><i class="fa-solid fa-envelope"></i> Email</a>
+      <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
+      <h3 class="share-overlay__title">Share this ${title.includes('meme') ? 'meme' : 'battle'}</h3>
+      <div class="share-overlay__grid">
+        <a onclick="copyMemeDeepLink(); return false;" class="share-overlay__item"><div class="share-icon">🔗</div><span>Our Site</span></a>
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}" target="_blank" class="share-overlay__item"><div class="share-icon">𝕏</div><span>X</span></a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item"><div class="share-icon">📘</div><span>Facebook</span></a>
+        <a onclick="copyToClipboard(); return false" class="share-overlay__item"><div class="share-icon">📸</div><span>Instagram</span></a>
+        <a onclick="copyToClipboard(); return false" class="share-overlay__item"><div class="share-icon">🎵</div><span>TikTok</span></a>
+        <a href="mailto:?subject=${encodeURIComponent(title)}" class="share-overlay__item"><div class="share-icon">✉️</div><span>Email</span></a>
       </div>
-      <button onclick="closeShareMenu()" class="share-overlay__close">Cancel</button>
     </div>`;
   document.body.appendChild(overlay);
   overlay.style.display = 'flex';
@@ -254,17 +257,47 @@ window.voteFromModal = function(e, side, id) {
   closeModal();
 };
 
-// ====================== SWIPE & KEYBOARD ======================
+// ====================== GLOBAL SWIPE + KEYBOARD NAVIGATION (ALL PAGES) ======================
 function attachGlobalSwipeHandler(type) {
   console.log(`Swipe handler attached for ${type}`);
 }
 
 document.addEventListener('keydown', e => {
+  // 1. Close share overlay
+  const share = document.getElementById('share-overlay');
+  if (share && e.key === 'Escape') {
+    closeShareMenu();
+    return;
+  }
+
+  // 2. Close context panel
+  const context = document.getElementById('context-panel');
+  if (context && context.style.display === 'block' && e.key === 'Escape') {
+    hideContextPanel();
+    return;
+  }
+
+  // 3. Main modals – Left/Right for previous/next card on ANY page
   const memeModal = document.getElementById('meme-modal');
+  const battleModal = document.getElementById('battle-modal');
+  const categoryModal = document.getElementById('category-modal');
+
   if (memeModal?.style.display === 'flex') {
     if (e.key === 'Escape') closeMemeModal();
-    else if (e.key === 'ArrowLeft') prevMeme?.();
-    else if (e.key === 'ArrowRight') nextMeme?.();
+    else if (e.key === 'ArrowLeft') nextMeme?.();
+    else if (e.key === 'ArrowRight') prevMeme?.();
+    else if (e.key === 'ArrowUp') nextGenreMeme?.();
+    else if (e.key === 'ArrowDown') prevGenreMeme?.();
+  }
+  else if (battleModal?.style.display === 'flex') {
+    if (e.key === 'Escape') closeModal();
+    else if (e.key === 'ArrowLeft') nextBattle?.();
+    else if (e.key === 'ArrowRight') prevBattle?.();
+  }
+  else if (categoryModal?.style.display === 'flex') {
+    if (e.key === 'Escape') closeCategoryModal();
+    else if (e.key === 'ArrowLeft') nextCategory?.();
+    else if (e.key === 'ArrowRight') prevCategory?.();
   }
 });
 
