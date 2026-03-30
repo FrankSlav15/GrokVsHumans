@@ -136,4 +136,6 @@ window.initPage = async function(pageType) {
     window.allCategories = await res.json();
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
   }
+    // Auto-open modal from deep link (#ID) after data is fully loaded
+  setTimeout(checkDeepLink, 150);
 };
