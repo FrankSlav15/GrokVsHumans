@@ -134,7 +134,17 @@ window.showToast = function(message) {
   }, 2800);
 };
 
-// ====================== INIT PAGE ======================
+window.checkDeepLink = function() {
+  const hash = window.location.hash.replace('#', '').trim();
+  if (!hash || isNaN(hash)) return;
+  const id = parseInt(hash);
+
+  if (window.allMemes && window.allMemes[id]) openMemeModal(id);
+  else if (window.allBattles && window.allBattles[id]) openBattleModal(id);
+  else if (window.allCategories && window.allCategories[id]) openCategoryModal(id);
+};
+
+// ====================== DEEP LINK (ROBUST RETRY VERSION) ======================
 window.initPage = async function(pageType) {
   await loadUsers();
 
@@ -154,47 +164,11 @@ window.initPage = async function(pageType) {
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
   }
 
-  // 🔥 Deep link check AFTER data is loaded
-  console.log('🚀 initPage complete for', pageType, '— checking deep link...');
-  setTimeout(window.checkDeepLink, 200);
-};
-
-// ====================== DEEP LINK (ROBUST RETRY VERSION) ======================
-window.checkDeepLink = function(attempt = 0) {
-  const hash = window.location.hash.replace('#', '').trim();
-  console.log(`🔍 checkDeepLink attempt ${attempt} — hash =`, hash);
-
-  if (!hash || isNaN(hash)) {
-    console.log('❌ No valid #ID in URL');
-    return;
-  }
-
-  const id = parseInt(hash);
-  console.log('📌 Parsed ID =', id);
-
-  // Safety check: modal functions must exist
-  if (typeof openMemeModal !== 'function' || typeof openBattleModal !== 'function' || typeof openCategoryModal !== 'function') {
-    if (attempt < 8) {
-      console.log('⏳ Modal functions not ready yet — retrying in 80ms');
-      setTimeout(() => window.checkDeepLink(attempt + 1), 80);
-      return;
-    }
-    console.log('❌ Gave up after 8 attempts');
-    return;
-  }
-
-  if (window.allMemes && window.allMemes[id]) {
-    console.log('✅ Opening MEME modal #', id);
-    openMemeModal(id);
-  } else if (window.allBattles && window.allBattles[id]) {
-    console.log('✅ Opening BATTLE modal #', id);
-    openBattleModal(id);
-  } else if (window.allCategories && window.allCategories[id]) {
-    console.log('✅ Opening CATEGORY modal #', id);
-    openCategoryModal(id);
-  } else {
-    console.log('❌ No data found for ID', id);
-  }
+  // Safe deep link (no retry loop that can break anything)
+  console.log('🚀 initPage complete for', pageType);
+  setTimeout(() => {
+    if (typeof window.checkDeepLink === 'function') window.checkDeepLink();
+  }, 150);
 };
 
 // ====================== DOM CONTENT LOADED ======================
