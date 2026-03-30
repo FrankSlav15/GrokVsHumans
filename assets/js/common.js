@@ -127,18 +127,53 @@ window.initPage = async function(pageType) {
     const res = await fetch('/data/memes.json');
     window.allMemes = await res.json();
     if (typeof renderMemeGrid === 'function') renderMemeGrid();
-    checkDeepLink();                    // ← opens modal if #ID present
   } 
   else if (pageType === 'battles') {
     const res = await fetch('/data/battles.json');
     window.allBattles = await res.json();
     if (typeof renderBattleGrid === 'function') renderBattleGrid();
-    checkDeepLink();                    // ← opens modal if #ID present
   } 
   else if (pageType === 'categories') {
     const res = await fetch('/data/categories.json');
     window.allCategories = await res.json();
     if (typeof renderCategoryGrid === 'function') renderCategoryGrid();
-    checkDeepLink();                    // ← opens modal if #ID present
+  }
+
+  // 🔥 Final deep-link check AFTER everything is loaded
+  console.log('🚀 initPage complete for', pageType, '— checking deep link...');
+  setTimeout(window.checkDeepLink, 120);
+};
+
+// ====================== DEEP LINK DEBUGGED (works on ALL pages) ======================
+window.checkDeepLink = function() {
+  const hash = window.location.hash.replace('#', '').trim();
+  console.log('🔍 checkDeepLink called — hash =', hash);
+
+  if (!hash || isNaN(hash)) {
+    console.log('❌ No valid #ID in URL');
+    return;
+  }
+
+  const id = parseInt(hash);
+  console.log('📌 Parsed ID =', id);
+
+  // Safety: wait until modal functions exist
+  if (typeof openMemeModal !== 'function' || typeof openBattleModal !== 'function' || typeof openCategoryModal !== 'function') {
+    console.log('⏳ Modal functions not ready yet — retrying in 100ms');
+    setTimeout(() => window.checkDeepLink(), 100);
+    return;
+  }
+
+  if (window.allMemes && window.allMemes[id]) {
+    console.log('✅ Opening MEME modal #', id);
+    openMemeModal(id);
+  } else if (window.allBattles && window.allBattles[id]) {
+    console.log('✅ Opening BATTLE modal #', id);
+    openBattleModal(id);
+  } else if (window.allCategories && window.allCategories[id]) {
+    console.log('✅ Opening CATEGORY modal #', id);
+    openCategoryModal(id);
+  } else {
+    console.log('❌ No data found for ID', id);
   }
 };
