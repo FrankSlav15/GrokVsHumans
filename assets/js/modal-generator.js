@@ -269,10 +269,6 @@ window.voteFromModal = function(e, side, id) {
 };
 
 // ====================== GLOBAL SWIPE + KEYBOARD NAVIGATION (ALL PAGES) ======================
-function attachGlobalSwipeHandler(type) {
-  console.log(`Swipe handler attached for ${type}`);
-}
-
 document.addEventListener('keydown', e => {
   // 1. Close share overlay
   const share = document.getElementById('share-overlay');
@@ -288,27 +284,27 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  // 3. Main modals – Left/Right for previous/next card on ANY page
+  // 3. Main modals – ArrowLeft/Right now work for ALL pages
   const memeModal = document.getElementById('meme-modal');
   const battleModal = document.getElementById('battle-modal');
   const categoryModal = document.getElementById('category-modal');
 
   if (memeModal?.style.display === 'flex') {
     if (e.key === 'Escape') closeMemeModal();
-    else if (e.key === 'ArrowLeft') nextMeme?.();
-    else if (e.key === 'ArrowRight') prevMeme?.();
+    else if (e.key === 'ArrowLeft') prevMeme?.();
+    else if (e.key === 'ArrowRight') nextMeme?.();
     else if (e.key === 'ArrowUp') nextGenreMeme?.();
     else if (e.key === 'ArrowDown') prevGenreMeme?.();
   }
   else if (battleModal?.style.display === 'flex') {
     if (e.key === 'Escape') closeModal();
-    else if (e.key === 'ArrowLeft') nextBattle?.();
-    else if (e.key === 'ArrowRight') prevBattle?.();
+    else if (e.key === 'ArrowLeft') prevBattle?.();
+    else if (e.key === 'ArrowRight') nextBattle?.();
   }
   else if (categoryModal?.style.display === 'flex') {
     if (e.key === 'Escape') closeCategoryModal();
-    else if (e.key === 'ArrowLeft') nextCategory?.();
-    else if (e.key === 'ArrowRight') prevCategory?.();
+    else if (e.key === 'ArrowLeft') prevCategory?.();
+    else if (e.key === 'ArrowRight') nextCategory?.();
   }
 });
 
