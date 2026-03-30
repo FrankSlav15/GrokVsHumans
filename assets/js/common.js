@@ -58,6 +58,7 @@ window.updateGridVoteUI = function(id) {
 
 // ====================== USERS + BACKGROUND ======================
 let allUsers = null;
+
 async function loadUsers() {
   if (allUsers) return allUsers;
   try {
@@ -69,6 +70,18 @@ async function loadUsers() {
   return allUsers;
 }
 
+function getUserData(username) {
+  if (!username || !allUsers) return {};
+  const clean = username.replace('@', '').trim();
+  return allUsers[clean] || {};
+}
+
+function getLocalAvatar(post) {
+  let username = post.username || post.user || post.avatar || post.author || '';
+  if (!username) return '/assets/images/users/@unknown.webp';
+  const clean = username.replace('@', '').trim();
+  return `/assets/images/users/@${clean}.webp`;
+}
 const bgs = [
   'assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp',
   'assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp',
