@@ -85,7 +85,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 }
 .grok-bar { background: #6b21a8; color: #fff; }
 .human-bar { background: #9f1239; color: #fff; }
-.vote-count { font-size: 2rem; font-weight: 700; margin-left: 0 6px; }
+.vote-count { font-size: 2rem; font-weight: 700; padding: 0 30px; }
 
 /* ============================================= */
 /* Modals (shared) */
