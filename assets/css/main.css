@@ -205,4 +205,10 @@ body::after{content:'';position:fixed;inset:0;background:rgba(0,0,0,.65);z-index
 .thread-post a{color:#c084fc;text-decoration:none!important}
 .thread-post a:hover{text-decoration:underline!important}
 
+/* Final Grok avatar hug (tighter on right side) + scrollbar hidden */
+.thread-post.justify-end{gap:8px!important}
+.thread-post.justify-end .thread-avatar{margin-right:-4px!important}
+.modal__scroll-area{scrollbar-width:none}
+.modal__scroll-area::-webkit-scrollbar{display:none}
+
 /* End of main.css */
