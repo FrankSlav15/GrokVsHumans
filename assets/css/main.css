@@ -370,6 +370,13 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 
   .footer{padding:2rem 1rem 1.5rem!important;font-size:.75rem!important}
   .footer__links{gap:1rem!important;margin:1rem 0!important}
+
+  .sticky-tabs{top:4rem!important;position:sticky!important}
+  .tabs-wrapper{overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;gap:.5rem;padding:0 .75rem}
+  .tabs-wrapper::-webkit-scrollbar{display:none}
+  .tab{flex-shrink:0}
+  .tab-active{scroll-margin-left:1rem}
+
 }
 
 /* End of main.css */
