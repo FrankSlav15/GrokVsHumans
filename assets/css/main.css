@@ -395,7 +395,7 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   body[data-page="memes"] .modal__title{font-size:1.15rem!important;margin-bottom:.4rem!important}
   body[data-page="memes"] .modal__description{margin-bottom:.75rem!important;font-size:.9rem!important}
   body[data-page="memes"] .genre-section{margin-top:.5rem!important;padding:.75rem 1rem!important}
-  body[data-page="memes"] .modal__buttons{padding:.75rem 1rem!important;gap:.75rem!important}
+  body[data-page="memes"] .modal__buttons{padding:.4rem!important;gap:.4rem!important;margin:.4rem}
   body[data-page="memes"] .modal__buttons a,
   body[data-page="memes"] .modal__buttons button{padding:11px 16px!important;font-size:.95rem!important}
 
