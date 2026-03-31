@@ -378,6 +378,8 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   .tab{padding:.55rem 1.1rem!important;font-size:.9rem!important;white-space:nowrap!important;flex-shrink:0!important}
   .tab-active{scroll-margin-inline-start:20px!important}
 
+  .modal__vote-bar{padding:.4rem 0}
+
 }
 
 /* End of main.css */
