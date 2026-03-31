@@ -100,7 +100,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 /* Thread emulator – avatars & media now completely separate */
 /* ============================================= */
 .thread-emulator{display:flex;flex-direction:column;gap:28px;padding:8px 0;max-width:620px;margin:0 auto}
-.thread-post{display:flex!important;gap:12px!important;align-items:flex-start!important}
+.thread-post{display:flex!important;align-items:flex-start!important}
 .thread-post.justify-end{justify-content:flex-end!important;flex-direction:row-reverse!important}
 .thread-post__header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .thread-container{padding-top:4rem;padding-bottom:4rem}
