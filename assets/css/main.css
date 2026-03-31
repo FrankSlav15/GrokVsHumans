@@ -228,4 +228,10 @@ body::after{content:'';position:fixed;inset:0;background:rgba(0,0,0,.65);z-index
 .share-overlay__content{display:block!important}
 .share-overlay__grid--4{display:grid!important}
 
+/* Memes modal – image fits without scrolling + old style mapping */
+body[data-page="memes"] .modal__image-container{flex-shrink:0}
+body[data-page="memes"] .modal__image{max-height:65vh;object-fit:contain}
+body[data-page="memes"] .modal__body-content{padding-top:0}
+.genre-section{margin-top:1rem;border-top:1px solid #27272a;padding-top:1rem}
+
 /* End of main.css */

@@ -42,7 +42,7 @@
 
     <div id="toast" class="toast"></div>
 
-    <!-- MEME MODAL – simple version (image fits without scrolling) -->
+    <!-- MEME MODAL – shared global unified BEM structure (image fits without forced scrolling) -->
     <div id="meme-modal" class="modal" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal__content" onclick="event.stopImmediatePropagation()">
             
@@ -53,22 +53,21 @@
             <button class="modal-nav modal-nav--prev" onclick="nextMeme()" aria-label="Next meme">‹</button>
             <button class="modal-nav modal-nav--next" onclick="prevMeme()" aria-label="Previous meme">›</button>
 
-            <!-- Image fits without scrolling -->
-            <div id="modal-image" class="modal__image-container"></div>
-
-            <!-- Content -->
-            <div class="modal__body">
-                <h2 id="modal-title" class="modal__title"></h2>
-                <p id="modal-desc" class="modal__description"></p>
-            </div>
-
-            <!-- Genre section – only shows when JSON has genre field -->
-            <div id="genre-section" class="genre-section">
-                <div class="genre-header">SEE OTHER VARIATIONS OF</div>
-                <div class="genre-arrows">
-                    <button onclick="prevGenreMeme()" class="genre-arrow">↓</button>
-                    <div id="genre-name" class="genre-name"></div>
-                    <button onclick="nextGenreMeme()" class="genre-arrow">↑</button>
+            <!-- Single scrollable area -->
+            <div class="modal__scroll-area">
+                <!-- Image fits without forcing scroll -->
+                <div id="modal-image" class="modal__image-container"></div>
+                
+                <!-- Sticky header (always visible) -->
+                <div class="modal__sticky-header">
+                    <div id="modal-tags" class="tags-area"></div>
+                    <h2 id="modal-title" class="modal__title"></h2>
+                    <p id="modal-desc" class="modal__description"></p>
+                </div>
+                
+                <!-- Scrollable content (genre only) -->
+                <div class="modal__body-content">
+                    <div id="genre-section" class="genre-section"></div>
                 </div>
             </div>
 
@@ -83,7 +82,7 @@
                 </button>
             </div>
 
-            <!-- Bottom buttons always visible -->
+            <!-- Fixed bottom buttons (always visible) -->
             <div id="modal-buttons" class="modal__buttons">
                 <a id="base-x-link" href="#" target="_blank" class="modal-btn-view">
                     <i class="fa-brands fa-x-twitter"></i> View
