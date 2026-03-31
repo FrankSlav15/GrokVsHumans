@@ -55,9 +55,10 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .card__media{position:relative;height:200px;flex-shrink:0;background:#27272a}
 .card__media img,.card__media video{width:100%;height:100%;object-fit:cover}
 .card__content{padding:1rem;flex:1;display:flex;flex-direction:column}
-.tags-area{display:flex;flex-wrap:wrap;gap:.25rem;margin-bottom:.75rem;max-height:2.2rem;overflow:hidden}
-.tags-area span{padding:.15rem .75rem;background:rgba(168,85,247,.15);color:#c084fc;font-size:.75rem;border-radius:9999px;white-space:nowrap}
-.card__title{font-size:1.125rem;font-weight:600;line-height:1.3;margin-bottom:.5rem;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tag { padding: .15rem .75rem; background: rgba(168, 85, 247, .15); color: #c084fc; font-size: .75rem; border-radius: 9999px; white-space: nowrap; line-height: 1.2; }
+.tags-area{ display:flex; flex-wrap:wrap; gap:.25rem; margin-bottom:.75rem; }
+.tags-area span { padding:.15rem .75rem; background:rgba(168,85,247,.15); color:#c084fc; font-size:.75rem; border-radius:9999px; white-space:nowrap }
+.card__title { font-size:1.125rem; font-weight:600; line-height:1.3; margin-top: auto; margin-bottom:.5rem; min-height: 2.6rem; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
 .card__description{font-size:.875rem;color:#a1a1aa;line-height:1.4;flex:1;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 
 /* Battles cards */
