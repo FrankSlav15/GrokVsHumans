@@ -53,9 +53,9 @@ window.vote = async function(e, side, id) {
 };
 
 window.updateGridVoteUI = function(id) {
-  const grokBtn = document.getElementById(`grok-btn-${id}`);
-  const humanBtn = document.getElementById(`human-btn-${id}`);
-  if (!grokBtn || !humanBtn || !window.allBattles[id]) return;
+  const grokCount = document.getElementById(`grok-count-${id}`);
+  const humanCount = document.getElementById(`human-count-${id}`);
+  if (!grokCount || !humanCount || !window.allBattles[id]) return;
 
   const grokVotes = window.allBattles[id].grok || 0;
   const humanVotes = window.allBattles[id].human || 0;
@@ -66,8 +66,8 @@ window.updateGridVoteUI = function(id) {
   const grokPct = Math.round((grokVotes / total) * 100);
   const humanPct = 100 - grokPct;
 
-  grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
-  humanBtn.innerHTML = `Human Won <span class="vote-tally">${humanPct}%</span>`;
+  grokCount.textContent = grokVotes;
+  humanCount.textContent = humanVotes;
 };
 
 // ====================== USERS + BACKGROUND ======================
