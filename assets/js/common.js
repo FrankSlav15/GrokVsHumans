@@ -148,7 +148,7 @@ window.initPage = async function(pageType) {
   }, 150);
 };
 
-// ====================== BATTLES VOTING SYSTEM (Firebase + localStorage) ======================
+// ====================== BATTLES VOTING SYSTEM – SCOREBOARD STYLE ======================
 window.vote = function(event, winner, id) {
   event.stopImmediatePropagation();
   event.preventDefault();
@@ -183,21 +183,16 @@ function updateGridVoteUI(id) {
 
   database.ref('battles/' + id).once('value', snapshot => {
     const data = snapshot.val() || { grok: 0, human: 0 };
-    const total = data.grok + data.human;
 
-    if (hasVoted && total > 0) {
-      const grokPct = Math.round((data.grok / total) * 100);
-      grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
-      humanBtn.innerHTML = `Human Won <span class="vote-tally">${100 - grokPct}%</span>`;
+    if (hasVoted) {
+      // SCOREBOARD STYLE – exactly like your screenshot
+      grokBtn.innerHTML = `Grok ${data.grok}`;
+      humanBtn.innerHTML = `${data.human} Human`;
     } else {
       grokBtn.textContent = 'Grok Won';
       humanBtn.textContent = 'Human Won';
     }
   });
-}
-
-function updateAllBattleVoteUIs() {
-  Object.keys(window.allBattles || {}).forEach(id => updateGridVoteUI(id));
 }
 
 window.updateModalVoteUI = function() {
@@ -212,11 +207,8 @@ window.updateModalVoteUI = function() {
   if (hasVoted) {
     database.ref('battles/' + id).once('value', snapshot => {
       const data = snapshot.val() || { grok: 0, human: 0 };
-      const total = data.grok + data.human;
-      const grokPct = total ? Math.round((data.grok / total) * 100) : 0;
-
-      grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
-      humanBtn.innerHTML = `Human Won <span class="vote-tally">${100 - grokPct}%</span>`;
+      grokBtn.innerHTML = `Grok ${data.grok}`;
+      humanBtn.innerHTML = `${data.human} Human`;
       grokBtn.disabled = true;
       humanBtn.disabled = true;
     });
