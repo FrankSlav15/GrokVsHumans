@@ -350,4 +350,24 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   color:#000;
 }
 
+/* ============================================= */
+/* Hero LIVE badge – final vertical centering + breathing room */
+/* ============================================= */
+.hero__live-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 auto 2rem auto !important;
+  width: fit-content !important;
+  padding: .5rem 1.25rem !important;   /* more breathing room */
+}
+
+.hero__live-dot {
+  width: 8px !important;
+  height: 8px !important;
+  background: #22c55e !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
 /* End of main.css */
