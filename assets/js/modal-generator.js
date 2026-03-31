@@ -26,17 +26,33 @@ function renderTags(data) {
   if (!container) return;
 
   const tagMap = {
-    'nonsense': 'Nonsense',
-    'serious': 'Now, In All Seriousness',
-    'censorship': 'Conspiracy 1984',
-    'opinion': "Grok's Opinion"
+    nonsense: "Nonsense",
+    political: "Political",
+    serious: "Now, In All Seriousness",
+    citation: "(UN)Popular Citations",
+    joke: "Joke Battles",
+    censorship: "Conspiracy 1984",
+    // categories + memes (kept for future pages)
+    lazy: "Grok, Think For Me",
+    politics: "Politics",
+    photo: "Photo Requests",
+    opinion: "Grok's Opinion",
+    avoids: "Grok Avoids Request",
+    other: "Miscellaneous",
+    'grok-memes': "Grok Memes",
+    'political-memes': "Political Memes",
+    'misc-memes': "Miscellaneous Memes",
+    gifs: "GIFs",
+    'ai-tech': "AI Meme Tech",
+    videos: "Videos"
   };
 
-  const tags = (data.tags || '').split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+  const tags = (data.tags || '').split(',').map(t => t.trim()).filter(Boolean);
   const html = tags.map(tag => {
-    const niceName = tagMap[tag] || tag.charAt(0).toUpperCase() + tag.slice(1);
-    return `<span>${niceName}</span>`;
+    const label = tagMap[tag] || tag;
+    return `<span class="tag">${label}</span>`;
   }).join('');
+  
   container.innerHTML = html;
 }
 
