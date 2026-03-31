@@ -371,11 +371,11 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   .footer{padding:2rem 1rem 1.5rem!important;font-size:.75rem!important}
   .footer__links{gap:1rem!important;margin:1rem 0!important}
 
-  .sticky-tabs{top:4rem!important;position:sticky!important;z-index:41!important}
+  .sticky-tabs{top:4rem!important;position:sticky!important;z-index:41!important;background:rgba(10,10,31,.98)!important}
   .sticky-tabs-container{padding:0!important}
-  .tabs-wrapper{overflow-x:auto!important;scrollbar-width:none!important;scroll-behavior:smooth!important;justify-content:flex-start!important;padding:0.75rem 1rem!important;gap:0.5rem!important}
+  .tabs-wrapper{overflow-x:auto!important;scrollbar-width:none!important;scroll-behavior:smooth!important;justify-content:flex-start!important;padding:0.5rem 0.75rem!important;gap:0.4rem!important}
   .tabs-wrapper::-webkit-scrollbar{display:none!important}
-  .tab{flex-shrink:0!important;white-space:nowrap!important}
+  .tab{padding:.55rem 1.1rem!important;font-size:.9rem!important;white-space:nowrap!important;flex-shrink:0!important}
   .tab-active{scroll-margin-inline-start:20px!important}
 
 }
