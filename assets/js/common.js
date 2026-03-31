@@ -148,6 +148,90 @@ window.initPage = async function(pageType) {
   }, 150);
 };
 
+// ====================== BATTLES VOTING SYSTEM (Firebase + localStorage) ======================
+window.vote = function(event, winner, id) {
+  event.stopImmediatePropagation();
+  event.preventDefault();
+
+  const votedKey = `voted_battle_${id}`;
+  if (localStorage.getItem(votedKey)) {
+    window.showToast("You've already voted on this battle! 🏆");
+    return;
+  }
+
+  const ref = database.ref('battles/' + id);
+  ref.transaction(current => {
+    if (current === null) current = { grok: 0, human: 0 };
+    if (winner === 'grok') current.grok = (current.grok || 0) + 1;
+    else current.human = (current.human || 0) + 1;
+    return current;
+  });
+
+  localStorage.setItem(votedKey, 'true');
+  window.showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
+
+  updateGridVoteUI(id);
+  if (window.currentBattleId === id) updateModalVoteUI();
+};
+
+function updateGridVoteUI(id) {
+  const grokBtn = document.getElementById(`grok-btn-${id}`);
+  const humanBtn = document.getElementById(`human-btn-${id}`);
+  if (!grokBtn || !humanBtn) return;
+
+  const hasVoted = !!localStorage.getItem(`voted_battle_${id}`);
+
+  database.ref('battles/' + id).once('value', snapshot => {
+    const data = snapshot.val() || { grok: 0, human: 0 };
+    const total = data.grok + data.human;
+
+    if (hasVoted && total > 0) {
+      const grokPct = Math.round((data.grok / total) * 100);
+      grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
+      humanBtn.innerHTML = `Human Won <span class="vote-tally">${100 - grokPct}%</span>`;
+    } else {
+      grokBtn.textContent = 'Grok Won';
+      humanBtn.textContent = 'Human Won';
+    }
+  });
+}
+
+function updateAllBattleVoteUIs() {
+  Object.keys(window.allBattles || {}).forEach(id => updateGridVoteUI(id));
+}
+
+window.updateModalVoteUI = function() {
+  if (!window.currentBattleId) return;
+  const id = window.currentBattleId;
+  const hasVoted = !!localStorage.getItem(`voted_battle_${id}`);
+  const grokBtn = document.getElementById('modal-grok-btn');
+  const humanBtn = document.getElementById('modal-human-btn');
+
+  if (!grokBtn || !humanBtn) return;
+
+  if (hasVoted) {
+    database.ref('battles/' + id).once('value', snapshot => {
+      const data = snapshot.val() || { grok: 0, human: 0 };
+      const total = data.grok + data.human;
+      const grokPct = total ? Math.round((data.grok / total) * 100) : 0;
+
+      grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
+      humanBtn.innerHTML = `Human Won <span class="vote-tally">${100 - grokPct}%</span>`;
+      grokBtn.disabled = true;
+      humanBtn.disabled = true;
+    });
+  } else {
+    grokBtn.innerHTML = 'Grok Won';
+    humanBtn.innerHTML = 'Human Won';
+    grokBtn.disabled = false;
+    humanBtn.disabled = false;
+  }
+};
+
+window.voteFromModal = function(event, winner) {
+  if (window.currentBattleId) vote(event, winner, window.currentBattleId);
+};
+
 // ====================== DOM CONTENT LOADED ======================
 document.addEventListener('DOMContentLoaded', async () => {
   setRandomBackground();

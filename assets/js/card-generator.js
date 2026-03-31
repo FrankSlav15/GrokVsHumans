@@ -1,8 +1,10 @@
 // assets/js/card-generator.js
-// CLEAN REWRITE – BEM only, no Tailwind, nice display names for pills
+// FULL CLEAN REWRITE – BEM only, supports memes + categories + battles, no Tailwind, no inline styles
 
-function generateMediaHTML(imageUrl, pageType) {
-  if (!imageUrl) return '<div class="card__media"><div class="flex items-center justify-center h-full bg-[#27272a] text-zinc-500 text-sm">No media</div></div>';
+function generateMediaHTML(imageUrl) {
+  if (!imageUrl) {
+    return `<div class="card__media"><div class="flex items-center justify-center h-full bg-[#27272a] text-zinc-500 text-sm">No media</div></div>`;
+  }
   
   const lower = imageUrl.toLowerCase();
   const isVideo = lower.endsWith('.mp4') || lower.endsWith('.webm') || lower.endsWith('.mov');
@@ -22,25 +24,8 @@ function getShortDescription(data, pageType) {
   return (desc || '').substring(0, 160);
 }
 
-function getCardFooter(pageType, id) {
-  if (pageType === 'battles') {
-    return `<div class="flex border-t border-[#27272a] rounded-b-3xl overflow-hidden">
-      <button id="grok-btn-${id}" onclick="voteFromModal(event, 'grok', ${id});" class="flex-1 py-5 bg-[#6b21a8] text-white font-semibold text-base">Grok Won</button>
-      <button id="human-btn-${id}" onclick="voteFromModal(event, 'human', ${id});" class="flex-1 py-5 bg-[#9f1239] text-white font-semibold text-base">Human Won</button>
-    </div>`;
-  }
-  return '';
-}
-
-function renderCardTags(data, pageType) {
+function renderCardTags(data) {
   const tagMap = {
-    // categories
-    lazy: "Grok, Think For Me",
-    politics: "Politics",
-    photo: "Photo Requests",
-    opinion: "Grok's Opinion",
-    avoids: "Grok Avoids Request",
-    other: "Miscellaneous",
     // battles
     nonsense: "Nonsense",
     political: "Political",
@@ -48,6 +33,13 @@ function renderCardTags(data, pageType) {
     citation: "(UN)Popular Citations",
     joke: "Joke Battles",
     censorship: "Conspiracy 1984",
+    // categories
+    lazy: "Grok, Think For Me",
+    politics: "Politics",
+    photo: "Photo Requests",
+    opinion: "Grok's Opinion",
+    avoids: "Grok Avoids Request",
+    other: "Miscellaneous",
     // memes
     'grok-memes': "Grok Memes",
     'political-memes': "Political Memes",
@@ -66,14 +58,25 @@ function renderCardTags(data, pageType) {
   return html ? `<div class="tags-area">${html}</div>` : '';
 }
 
+// BEM-only battle footer (matches main.css exactly)
+function getBattleCardFooter(id) {
+  return `
+    <div class="card__vote-bar">
+      <button id="grok-btn-${id}" onclick="vote(event, 'grok', '${id}'); event.stopImmediatePropagation();" class="grok-bar">Grok Won</button>
+      <button id="human-btn-${id}" onclick="vote(event, 'human', '${id}'); event.stopImmediatePropagation();" class="human-bar">Human Won</button>
+    </div>`;
+}
+
 window.createContentCard = function(pageType, id, data) {
-  const mediaHTML = generateMediaHTML(data.image, pageType);
+  const mediaHTML = generateMediaHTML(data.image);
   const shortDesc = getShortDescription(data, pageType);
-  const footerHTML = getCardFooter(pageType, id);
-  const tagsHTML = renderCardTags(data, pageType);
+  const tagsHTML = renderCardTags(data);
+  const footerHTML = pageType === 'battles' ? getBattleCardFooter(id) : '';
+
   const modalOpener = pageType === 'battles' ? `openBattleModal('${id}')` : 
                       pageType === 'categories' ? `openCategoryModal('${id}')` : 
                       `openMemeModal('${id}')`;
+
   const cardClass = pageType === 'battles' ? 'card card--battle' : 
                     pageType === 'categories' ? 'card card--category' : 
                     'card card--meme';
@@ -87,8 +90,22 @@ window.createContentCard = function(pageType, id, data) {
         <p class="card__description">${shortDesc}</p>
       </div>
       ${footerHTML}
-    </div>
-  `;
+    </div>`;
+};
+
+// ====================== RENDER FUNCTIONS FOR ALL 3 PAGES ======================
+window.renderBattleGrid = function() {
+  const grid = document.getElementById('battle-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  Object.keys(window.allBattles || {})
+    .sort((a, b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
+    .forEach(id => {
+      grid.insertAdjacentHTML('beforeend', createContentCard('battles', id, window.allBattles[id]));
+    });
+
+  updateAllBattleVoteUIs();   // live vote tallies
 };
 
 window.renderCategoryGrid = function() {
@@ -96,7 +113,7 @@ window.renderCategoryGrid = function() {
   if (!grid) return;
   grid.innerHTML = '';
   Object.keys(window.allCategories || {})
-    .sort((a,b) => (window.allCategories[b].order || 0) - (window.allCategories[a].order || 0))
+    .sort((a, b) => (window.allCategories[b].order || 0) - (window.allCategories[a].order || 0))
     .forEach(id => grid.insertAdjacentHTML('beforeend', createContentCard('categories', id, window.allCategories[id])));
 };
 
@@ -105,11 +122,11 @@ window.renderMemeGrid = function() {
   if (!grid) return;
   grid.innerHTML = '';
   Object.keys(window.allMemes || {})
-    .sort((a,b) => (window.allMemes[b].order || 0) - (window.allMemes[a].order || 0))
+    .sort((a, b) => (window.allMemes[b].order || 0) - (window.allMemes[a].order || 0))
     .forEach(id => grid.insertAdjacentHTML('beforeend', createContentCard('memes', id, window.allMemes[id])));
 };
 
-// Shared filter
+// Shared filter (works on all pages)
 window.filterCategory = function(cat) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
   const active = document.getElementById('tab-' + cat);
@@ -122,33 +139,4 @@ window.filterCategory = function(cat) {
     const cats = (card.getAttribute('data-categories') || '').split(',').map(c => c.trim());
     card.style.display = (cat === 'all' || cats.includes(cat)) ? 'flex' : 'none';
   });
-};
-
-// Restore live vote tallies from Firebase
-window.updateGridVoteUI = function(id) {
-  const grokBtn = document.getElementById(`grok-btn-${id}`);
-  const humanBtn = document.getElementById(`human-btn-${id}`);
-  if (!grokBtn || !humanBtn) return;
-  
-  const total = (window.allBattles[id].grokVotes || 0) + (window.allBattles[id].humanVotes || 0);
-  if (total === 0) return;
-  
-  const grokPct = Math.round(((window.allBattles[id].grokVotes || 0) / total) * 100);
-  const humanPct = 100 - grokPct;
-  
-  grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}%</span>`;
-  humanBtn.innerHTML = `Human Won <span class="vote-tally">${humanPct}%</span>`;
-};
-
-// Call this after rendering battles grid
-window.renderBattleGrid = function() {
-  const grid = document.getElementById('battle-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  Object.keys(window.allBattles || {})
-    .sort((a,b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
-    .forEach(id => grid.insertAdjacentHTML('beforeend', createContentCard('battles', id, window.allBattles[id])));
-  
-  // Update vote tallies
-  Object.keys(window.allBattles || {}).forEach(id => updateGridVoteUI(id));
 };
