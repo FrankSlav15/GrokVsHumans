@@ -54,52 +54,45 @@
         <span id="toast-text"></span>
     </div>
 
-    <!-- BATTLE MODAL (clean BEM only) -->
+    <!-- BATTLE MODAL (updated structure) -->
     <div id="battle-modal" class="modal" onclick="if(event.target === this) closeModal()">
-        <div class="modal__content" onclick="event.stopImmediatePropagation()">
-            
-            <!-- Close button -->
-            <button onclick="closeModal()" class="modal__close">✕</button>
-            
-            <!-- External navigation arrows – placed outside the modal -->
-            <button class="modal-nav modal-nav--prev" onclick="nextBattle()" aria-label="Next battle">‹</button>
-            <button class="modal-nav modal-nav--next" onclick="prevBattle()" aria-label="Previous battle">›</button>
+    <div class="modal__content" onclick="event.stopImmediatePropagation()">
+        
+        <!-- Close + arrows -->
+        <button onclick="closeModal()" class="modal__close">✕</button>
+        <button class="modal-nav modal-nav--prev" onclick="prevBattle()" aria-label="Previous battle">‹</button>
+        <button class="modal-nav modal-nav--next" onclick="nextBattle()" aria-label="Next battle">›</button>
 
-            <div class="modal__inner" id="modal-content-inner">
-                
-                <!-- Image -->
-                <div id="modal-image" class="modal__image-container"></div>
+        <!-- Media (fixed top) -->
+        <div id="modal-image" class="modal__image-container"></div>
 
-                <!-- Content -->
-                <div class="modal__body">
-                    <!-- Tags -->
-                    <div id="modal-tags" class="tags-area"></div>
-                    
-                    <!-- Title -->
-                    <h2 id="modal-title" class="modal__title"></h2>
-                    
-                    <!-- Thread container -->
-                    <div id="thread-container" class="thread-container" data-entry-id=""></div>
+        <!-- Scrollable content area -->
+        <div class="modal__body">
+        <!-- Tags + Title + Description -->
+        <div id="modal-tags" class="tags-area"></div>
+        <h2 id="modal-title" class="modal__title"></h2>
+        <p id="modal-description" class="modal__description"></p>
 
-                    <!-- Voting buttons -->
-                    <div class="modal__vote-buttons">
-                        <button id="modal-grok-btn" onclick="voteFromModal(event, 'grok')" class="modal-btn-grok">Grok Won</button>
-                        <button id="modal-human-btn" onclick="voteFromModal(event, 'human')" class="modal-btn-human">Human Won</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom buttons -->
-            <div id="modal-buttons" class="modal__buttons">
-                <a id="modal-x-link" href="#" target="_blank" class="modal-btn-view">
-                    <i class="fa-brands fa-x-twitter"></i> Participate
-                </a>
-                <button onclick="showShareMenu()" class="modal__share-btn">
-                    <i class="fa-solid fa-share-from-square"></i>
-                    Share
-                </button>  
-            </div>
+        <!-- Thread -->
+        <div id="thread-container" class="thread-container"></div>
         </div>
+
+        <!-- ALWAYS-VISIBLE BOTTOM BAR 1: Scoreboard voting -->
+        <div class="modal__vote-bar">
+        <button id="modal-grok-btn" onclick="voteFromModal(event, 'grok')" class="modal-btn-grok">Grok Won</button>
+        <button id="modal-human-btn" onclick="voteFromModal(event, 'human')" class="modal-btn-human">Human Won</button>
+        </div>
+
+        <!-- ALWAYS-VISIBLE BOTTOM BAR 2: Participate + Share -->
+        <div id="modal-buttons" class="modal__buttons">
+        <a id="modal-x-link" href="#" target="_blank" class="modal-btn-view">
+            <i class="fa-brands fa-x-twitter"></i> Participate
+        </a>
+        <button onclick="showShareMenu()" class="modal__share-btn">
+            <i class="fa-solid fa-share-from-square"></i> Share
+        </button>
+        </div>
+    </div>
     </div>
 
     <!-- assets/partials/footer.html -->
