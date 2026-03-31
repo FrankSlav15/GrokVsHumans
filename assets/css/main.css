@@ -224,4 +224,8 @@ body::after{content:'';position:fixed;inset:0;background:rgba(0,0,0,.65);z-index
 .share-overlay__item span{font-size:0.9rem;margin-top:4px}
 .share-overlay__item button{background:transparent!important;border:none!important;padding:0!important;cursor:pointer!important}
 
+.share-overlay{display:flex!important}
+.share-overlay__content{display:block!important}
+.share-overlay__grid--4{display:grid!important}
+
 /* End of main.css */
