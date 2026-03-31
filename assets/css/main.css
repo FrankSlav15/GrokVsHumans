@@ -93,8 +93,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 /* ============================================= */
 /* Modal base */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);align-items:center;justify-content:center;z-index:10000;padding:0;overflow:hidden}
-.modal__content{background:#18181b;border-radius:1.5rem;max-width:1024px;width:100%;max-height:94vh;margin:1rem;border:1px solid var(--border-purple);box-shadow:0 25px 50px -12px rgb(0 0 0 / .25);overflow:hidden;position:relative;display:flex;flex-direction:column}
-.modal__image-container{flex:none;background:#27272a;padding:.5rem;display:flex;align-items:center;justify-content:center;min-height:0}
+.modal__content{background:#18181b;border-radius:1.5rem;max-width:1024px;width:100%;max-height:94vh;margin:1rem;border:1px solid var(--border-purple);box-shadow:0 25px 50px -12px rgb(0 0 0 / .25);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.modal__image-container{flex:none;background:#27272a;padding:.5rem;display:flex;align-items:center;justify-content:center;min-height:0;flex-shrink: 0;}
 .modal__image{max-height:65vh;width:100%;object-fit:contain}
 @media(max-width:640px){.modal__image{max-height:55vh}}
 .modal__title{font-size:1.25rem;font-weight:700;padding:.5rem 1.5rem 0}
@@ -107,6 +107,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .modal-btn-context{background:#27272a;border:1px solid #fff;color:#fff}
 .modal__share-btn{background:#000;border:1px solid #a855f7!important;color:#fff;font-weight:600;padding:14px 24px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(.4,0,.2,1)}
 .modal__buttons a:hover,.modal__buttons button:hover,#modal-buttons a:hover,#modal-buttons button:hover{background:#3b3b40}
+.modal__buttons {flex-shrink: 0; }
 
 /* Context panel */
 #context-panel,.modal__context{display:none;padding:1.5rem;background:#27272a;border-top:1px solid #3b3b40}
@@ -229,45 +230,18 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 
 /* Battle voting buttons */
 .modal__vote-buttons{display:flex;gap:1rem;padding:1rem 1.5rem}
-.modal-btn-grok{flex:1;background:#6b21a8;color:#fff;padding:1rem;border-radius:12px;font-weight:600}
-.modal-btn-human{flex:1;background:#9f1239;color:#fff;padding:1rem;border-radius:12px;font-weight:600}
+.modal-btn-grok { background: #6b21a8; color: #fff; }
+.modal-btn-human { background: #9f1239; color: #fff; }
 .vote-tally { font-size: 0.85rem; opacity: 0.9; margin-left: 6px; }
-.modal-btn-grok, .modal-btn-human { min-height: 58px; font-size: 1.05rem; }
+.modal-btn-grok, .modal-btn-human { flex: 1; padding: 1rem 1.5rem; font-weight: 600; font-size: 1.1rem; min-height: 62px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
 /* ============================================= */
 /* Modals – Battles improvements */
 /* ============================================= */
 
 /* Bottom scoreboard bar (always visible) */
-.modal__vote-bar {
-  display: flex;
-  gap: 0;
-  border-top: 1px solid #27272a;
-  overflow: hidden;
-}
-
-.modal-btn-grok,
-.modal-btn-human {
-  flex: 1;
-  padding: 1rem 1.5rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-  min-height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.modal-btn-grok {
-  background: #6b21a8;
-  color: #fff;
-}
-
-.modal-btn-human {
-  background: #9f1239;
-  color: #fff;
-}
+.modal__vote-bar { flex-shrink: 0; display: flex; gap: 0; border-top: 1px solid #27272a; overflow: hidden; }
+.modal__body { flex: 1 1 auto; overflow-y: auto; min-height: 0; padding: 1.5rem 1.5rem 0; }
 
 /* Better thread layout – Grok on RIGHT */
 .thread-post {
