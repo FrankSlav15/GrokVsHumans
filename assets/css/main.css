@@ -378,13 +378,9 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   .tab{padding:.55rem 1.1rem!important;font-size:.9rem!important;white-space:nowrap!important;flex-shrink:0!important}
   .tab-active{scroll-margin-inline-start:20px!important}
 
-  /* Hide sticky header on phone – full scroll */
-  .modal__sticky-header{display:none!important}
-
-  /* Hide nav arrows on phone – swipe only */
+ /* Modal – Mobile: title/tags/description visible but NOT sticky (scrolls normally), no arrows, tight bars */
+  .modal__sticky-header{position:static!important;top:auto!important}
   .modal-nav{display:none!important}
-
-  /* Tighten voting bar and bottom buttons */
   .modal__vote-bar{padding:0.75rem 1rem!important;gap:0!important}
   .modal-btn-grok,.modal-btn-human{padding:0.75rem 1rem!important;font-size:1rem!important}
   .modal__buttons{padding:1rem!important;gap:.75rem!important}
