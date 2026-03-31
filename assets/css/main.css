@@ -401,6 +401,7 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   body[data-page="memes"] .genre-name{font-size:.4rem}
   body[data-page="memes"] .genre-section{padding:.4rem}
   body[data-page="memes"] .genre-header{font-size: .4rem;}
+  body[data-page="memes"] .genre-arrows{margin:.4rem}
 
 }
 
