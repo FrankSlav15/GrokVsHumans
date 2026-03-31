@@ -398,9 +398,9 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   body[data-page="memes"] .modal__buttons{padding:.4rem!important;gap:.4rem!important;margin:.4rem}
   body[data-page="memes"] .modal__buttons a,
   body[data-page="memes"] .modal__buttons button{padding:11px 16px!important;font-size:.95rem!important}
-  body[data-page="memes"] .genre-name{font-size:.5rem}
+  body[data-page="memes"] .genre-name{font-size:.7rem}
   body[data-page="memes"] .genre-section{padding:.4rem}
-  body[data-page="memes"] .genre-header{font-size: .7rem;}
+  body[data-page="memes"] .genre-header{font-size: .5rem;}
   body[data-page="memes"] .genre-arrows{margin:.4rem}
 
 }
