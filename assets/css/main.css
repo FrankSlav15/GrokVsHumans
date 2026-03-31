@@ -211,4 +211,7 @@ body::after{content:'';position:fixed;inset:0;background:rgba(0,0,0,.65);z-index
 .modal__scroll-area{scrollbar-width:none}
 .modal__scroll-area::-webkit-scrollbar{display:none}
 
+.thread-post.justify-end{gap:4px!important}
+.thread-post.justify-end .thread-avatar{margin-right:-18px!important}
+
 /* End of main.css */
