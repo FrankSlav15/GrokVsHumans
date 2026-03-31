@@ -103,6 +103,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .thread-post{display:flex!important;gap:12px!important;align-items:flex-start!important}
 .thread-post.justify-end{justify-content:flex-end!important;flex-direction:row-reverse!important}
 .thread-post__header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.thread-container{padding-top:4rem;padding-bottom:4rem}
 
 /* AVATARS – dedicated class only (no bleed into thread images) */
 .thread-avatar{width:36px!important;height:36px!important;flex-shrink:0!important;border-radius:9999px!important;object-fit:cover!important;margin-top:4px!important}
