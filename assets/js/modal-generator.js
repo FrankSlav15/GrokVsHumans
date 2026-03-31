@@ -176,6 +176,17 @@ window.showShareMenu = function() {
     overlay.remove();
   }
 
+  // Build the exact deep link (same logic as copyDeepLink)
+  let deepLink = window.location.origin + window.location.pathname.split('#')[0];
+
+  if (document.getElementById('meme-modal')?.style.display === 'flex' && window.currentMemeId) {
+    deepLink += '#' + window.currentMemeId;
+  } else if (document.getElementById('battle-modal')?.style.display === 'flex' && window.currentBattleId) {
+    deepLink += '#' + window.currentBattleId;
+  } else if (document.getElementById('category-modal')?.style.display === 'flex' && window.currentCategoryId) {
+    deepLink += '#' + window.currentCategoryId;
+  }
+
   const currentTitle = document.getElementById('modal-title')
     ? document.getElementById('modal-title').textContent.trim()
     : 'GrokVsHumans post';
@@ -192,13 +203,16 @@ window.showShareMenu = function() {
           <button onclick="copyDeepLink(); closeShareMenu(); return false" class="share-overlay__item">
             <i class="fa-solid fa-link fa-2x"></i><span>Copy Link</span>
           </button>
-          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" onclick="closeShareMenu()" class="share-overlay__item">
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}&url=${encodeURIComponent(deepLink)}" 
+             target="_blank" onclick="closeShareMenu()" class="share-overlay__item">
             <i class="fa-brands fa-x-twitter fa-2x"></i><span>X</span>
           </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" onclick="closeShareMenu()" class="share-overlay__item">
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(deepLink)}" 
+             target="_blank" onclick="closeShareMenu()" class="share-overlay__item">
             <i class="fa-brands fa-facebook fa-2x"></i><span>Facebook</span>
           </a>
-          <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" onclick="closeShareMenu()" class="share-overlay__item">
+          <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(deepLink)}" 
+             onclick="closeShareMenu()" class="share-overlay__item">
             <i class="fa-solid fa-envelope fa-2x"></i><span>Email</span>
           </a>
         </div>
