@@ -176,26 +176,24 @@ window.showShareMenu = function() {
   overlay.id = 'share-overlay';
   overlay.className = 'share-overlay';
   overlay.innerHTML = `
-    <div class="share-overlay__content" onclick="event.stopImmediatePropagation()">
-      <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
-      <h3 class="share-overlay__title">Share this post</h3>
-      <div class="share-overlay__grid share-overlay__grid--4">
-        <a onclick="copyDeepLink(); return false" class="share-overlay__item">
-          <i class="fa-solid fa-link fa-2x"></i>
-          <span>Copy Link</span>
-        </a>
-        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" class="share-overlay__item">
-          <i class="fa-brands fa-x-twitter fa-2x"></i>
-          <span>X</span>
-        </a>
-        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item">
-          <i class="fa-brands fa-facebook fa-2x"></i>
-          <span>Facebook</span>
-        </a>
-        <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" class="share-overlay__item">
-          <i class="fa-solid fa-envelope fa-2x"></i>
-          <span>Email</span>
-        </a>
+    <div onclick="if(event.target === this) closeShareMenu()" class="share-overlay">
+      <div onclick="event.stopImmediatePropagation()" class="share-overlay__content">
+        <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
+        <h3 class="share-overlay__title">Share this post</h3>
+        <div class="share-overlay__grid share-overlay__grid--4">
+          <button onclick="copyDeepLink(); return false" class="share-overlay__item">
+            <i class="fa-solid fa-link fa-2x"></i><span>Copy Link</span>
+          </button>
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" class="share-overlay__item">
+            <i class="fa-brands fa-x-twitter fa-2x"></i><span>X</span>
+          </a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item">
+            <i class="fa-brands fa-facebook fa-2x"></i><span>Facebook</span>
+          </a>
+          <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" class="share-overlay__item">
+            <i class="fa-solid fa-envelope fa-2x"></i><span>Email</span>
+          </a>
+        </div>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -405,6 +403,13 @@ document.addEventListener('keydown', e => {
     else if (e.key === 'ArrowLeft') nextCategory?.();
     else if (e.key === 'ArrowRight') prevCategory?.();
   }
+
+  const shareOverlay = document.getElementById('share-overlay');
+  if (shareOverlay && e.key === 'Escape') {
+    closeShareMenu();
+    return;
+  }
+
 });
 
 // End of modal-generator.js
