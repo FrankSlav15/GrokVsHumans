@@ -356,6 +356,9 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 .hero__live-badge{display:inline-flex!important;align-items:center!important;gap:8px!important;padding:.5rem 1.25rem!important}
 .hero__live-dot{flex-shrink:0!important;margin:0!important}
 
+.card__vote-bar, .modal__vote-bar{border:none!important}
+.grok-bar, .human-bar, .modal-btn-grok, .modal-btn-human{border:none!important}
+
 /* ============================================= */
 /* Responsive – Mobile (max-width 640px) */
 /* ============================================= */
