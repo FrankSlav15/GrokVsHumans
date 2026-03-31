@@ -107,6 +107,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .thread-text{line-height:1.55!important;font-size:15px!important;white-space:pre-line!important}
 .thread-post img,
 .thread-post video{max-height:450px;width:100%!important;max-width:100%;height:auto!important;object-fit:contain;border-radius:14px;margin-top:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);display:block!important}
+.thread-container { padding-bottom: 4rem; }
 
 /* Share overlay */
 .share-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;align-items:center;justify-content:center;z-index:10001}
