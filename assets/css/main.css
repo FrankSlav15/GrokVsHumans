@@ -101,12 +101,11 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 /* ============================================= */
 .thread-emulator{display:flex;flex-direction:column;gap:28px;padding:8px 0;max-width:620px;margin:0 auto}
 .thread-post{display:flex!important;align-items:flex-start!important}
-.thread-post.justify-end{justify-content:flex-end!important;flex-direction:row-reverse!important}
 .thread-post__header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .thread-container{padding-top:4rem;padding-bottom:4rem}
 
 /* AVATARS – dedicated class only (no bleed into thread images) */
-.thread-avatar{width:36px!important;height:36px!important;flex-shrink:0!important;border-radius:9999px!important;object-fit:cover!important;margin-top:4px!important;margin-right:1rem}
+.thread-avatar{width:36px!important;height:36px!important;flex-shrink:0!important;border-radius:9999px!important;object-fit:cover!important;margin-top:4px!important;margin-right:1rem;margin-left:1rem}
 
 /* LARGE MEDIA IMAGES + VIDEOS inside thread posts */
 .thread-post img:not(.thread-avatar),.thread-post video{max-height:450px;width:100%!important;max-width:100%;height:auto!important;object-fit:contain;border-radius:14px;margin-top:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);display:block!important}
