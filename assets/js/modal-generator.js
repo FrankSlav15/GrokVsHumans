@@ -165,39 +165,48 @@ window.closeCategoryModal = function() { document.getElementById('category-modal
 
 // ====================== UNIVERSAL SHARE MENU + DEEP LINK (ALL PAGES) ======================
 window.showShareMenu = function() {
+  // Remove any existing overlay
   let overlay = document.getElementById('share-overlay');
   if (overlay) overlay.remove();
 
-  const currentTitle = document.getElementById('modal-title')
-    ? document.getElementById('modal-title').textContent.trim()
+  const currentTitle = document.getElementById('modal-title') 
+    ? document.getElementById('modal-title').textContent.trim() 
     : 'GrokVsHumans post';
 
+  // Create backdrop
   overlay = document.createElement('div');
   overlay.id = 'share-overlay';
   overlay.className = 'share-overlay';
-  overlay.innerHTML = `
-    <div onclick="closeShareMenu()" class="share-overlay">
-      <div onclick="event.stopImmediatePropagation()" class="share-overlay__content">
-        <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
-        <h3 class="share-overlay__title">Share this post</h3>
-        <div class="share-overlay__grid share-overlay__grid--4">
-          <button onclick="copyDeepLink(); return false" class="share-overlay__item">
-            <i class="fa-solid fa-link fa-2x"></i><span>Copy Link</span>
-          </button>
-          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" class="share-overlay__item">
-            <i class="fa-brands fa-x-twitter fa-2x"></i><span>X</span>
-          </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item">
-            <i class="fa-brands fa-facebook fa-2x"></i><span>Facebook</span>
-          </a>
-          <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" class="share-overlay__item">
-            <i class="fa-solid fa-envelope fa-2x"></i><span>Email</span>
-          </a>
-        </div>
+  overlay.style.display = 'flex';
+
+  // Create content box
+  const contentHTML = `
+    <div class="share-overlay__content">
+      <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
+      <h3 class="share-overlay__title">Share this post</h3>
+      <div class="share-overlay__grid share-overlay__grid--4">
+        <button onclick="copyDeepLink(); return false" class="share-overlay__item">
+          <i class="fa-solid fa-link fa-2x"></i><span>Copy Link</span>
+        </button>
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" class="share-overlay__item">
+          <i class="fa-brands fa-x-twitter fa-2x"></i><span>X</span>
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item">
+          <i class="fa-brands fa-facebook fa-2x"></i><span>Facebook</span>
+        </a>
+        <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" class="share-overlay__item">
+          <i class="fa-solid fa-envelope fa-2x"></i><span>Email</span>
+        </a>
       </div>
     </div>`;
+
+  overlay.innerHTML = contentHTML;
   document.body.appendChild(overlay);
-  overlay.style.display = 'flex';
+
+  // Clicking outside the box closes it
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeShareMenu();
+  });
 };
 
 window.closeShareMenu = function() {
