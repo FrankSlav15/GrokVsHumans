@@ -242,4 +242,54 @@ body[data-page="memes"] .modal__image{max-height:65vh;object-fit:contain}
 body[data-page="memes"] .modal__body-content{padding-top:0}
 .genre-section{margin-top:1rem;border-top:1px solid #27272a;padding-top:1rem}
 
+/* ============================================= */
+/* Genre Navigation – Memes Modal (matches Pic 3) */
+/* ============================================= */
+.genre-section {
+  background:#18181b;
+  border-top:1px solid #27272a;
+  padding:1.25rem 1.5rem;
+  text-align:center;
+}
+
+.genre-header {
+  color:#c084fc;
+  font-size:.85rem;
+  font-weight:600;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:.75rem;
+}
+
+.genre-arrows {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  max-width:420px;
+  margin:0 auto;
+}
+
+.genre-arrow {
+  background:none;
+  border:none;
+  color:#c084fc;
+  font-size:2rem;
+  line-height:1;
+  cursor:pointer;
+  padding:0 .75rem;
+  transition:color .2s;
+}
+
+.genre-arrow:hover {
+  color:#a855f7;
+}
+
+.genre-name {
+  font-size:1.15rem;
+  font-weight:600;
+  color:#fff;
+  flex:1;
+  padding:0 1rem;
+}
+
 /* End of main.css */
