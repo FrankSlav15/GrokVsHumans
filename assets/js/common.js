@@ -148,7 +148,7 @@ window.initPage = async function(pageType) {
   }, 150);
 };
 
-// ====================== BATTLES VOTING SYSTEM – SCOREBOARD STYLE ======================
+// ====================== BATTLES VOTING SYSTEM – PERSISTENT SCOREBOARD ======================
 window.vote = function(event, winner, id) {
   event.stopImmediatePropagation();
   event.preventDefault();
@@ -183,14 +183,24 @@ function updateGridVoteUI(id) {
 
   database.ref('battles/' + id).once('value', snapshot => {
     const data = snapshot.val() || { grok: 0, human: 0 };
+    const total = data.grok + data.human;
 
-    if (hasVoted) {
-      // SCOREBOARD STYLE – exactly like your screenshot
-      grokBtn.innerHTML = `Grok ${data.grok}`;
-      humanBtn.innerHTML = `${data.human} Human`;
+    if (total > 0) {
+      // PERSISTENT SCOREBOARD – exactly like your screenshot
+      grokBtn.innerHTML = `Grok <span class="vote-count">${data.grok}</span>`;
+      humanBtn.innerHTML = `<span class="vote-count">${data.human}</span> Human`;
     } else {
       grokBtn.textContent = 'Grok Won';
       humanBtn.textContent = 'Human Won';
+    }
+
+    // Disable only for the current user who already voted
+    if (hasVoted) {
+      grokBtn.disabled = true;
+      humanBtn.disabled = true;
+    } else {
+      grokBtn.disabled = false;
+      humanBtn.disabled = false;
     }
   });
 }
@@ -201,28 +211,37 @@ window.updateModalVoteUI = function() {
   const hasVoted = !!localStorage.getItem(`voted_battle_${id}`);
   const grokBtn = document.getElementById('modal-grok-btn');
   const humanBtn = document.getElementById('modal-human-btn');
-
   if (!grokBtn || !humanBtn) return;
 
-  if (hasVoted) {
-    database.ref('battles/' + id).once('value', snapshot => {
-      const data = snapshot.val() || { grok: 0, human: 0 };
-      grokBtn.innerHTML = `Grok ${data.grok}`;
-      humanBtn.innerHTML = `${data.human} Human`;
+  database.ref('battles/' + id).once('value', snapshot => {
+    const data = snapshot.val() || { grok: 0, human: 0 };
+    const total = data.grok + data.human;
+
+    if (total > 0) {
+      grokBtn.innerHTML = `Grok <span class="vote-count">${data.grok}</span>`;
+      humanBtn.innerHTML = `<span class="vote-count">${data.human}</span> Human`;
+    } else {
+      grokBtn.textContent = 'Grok Won';
+      humanBtn.textContent = 'Human Won';
+    }
+
+    if (hasVoted) {
       grokBtn.disabled = true;
       humanBtn.disabled = true;
-    });
-  } else {
-    grokBtn.innerHTML = 'Grok Won';
-    humanBtn.innerHTML = 'Human Won';
-    grokBtn.disabled = false;
-    humanBtn.disabled = false;
-  }
+    } else {
+      grokBtn.disabled = false;
+      humanBtn.disabled = false;
+    }
+  });
 };
 
 window.voteFromModal = function(event, winner) {
   if (window.currentBattleId) vote(event, winner, window.currentBattleId);
 };
+
+function updateAllBattleVoteUIs() {
+  Object.keys(window.allBattles || {}).forEach(id => updateGridVoteUI(id));
+}
 
 // ====================== DOM CONTENT LOADED ======================
 document.addEventListener('DOMContentLoaded', async () => {
