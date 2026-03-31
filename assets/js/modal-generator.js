@@ -121,6 +121,7 @@ window.openBattleModal = function(id) {
 
   const modal = document.getElementById('battle-modal');
   modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 
   attachGlobalSwipeHandler('battles');
   updateModalVoteUI();
@@ -137,6 +138,7 @@ window.openCategoryModal = function(id) {
 
   const modal = document.getElementById('category-modal');
   modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
   const buttons = document.getElementById('modal-buttons');
   if (buttons) buttons.style.display = 'flex';
 
@@ -153,15 +155,16 @@ window.openMemeModal = function(id) {
   renderGenreNav(id);
 
   document.getElementById('meme-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
   document.getElementById('modal-buttons').style.display = 'flex';
   document.getElementById('context-panel').style.display = 'none';
 
   attachGlobalSwipeHandler('memes');
 };
 
-window.closeMemeModal = function() { document.getElementById('meme-modal').style.display = 'none'; };
-window.closeModal = function() { document.getElementById('battle-modal').style.display = 'none'; };
-window.closeCategoryModal = function() { document.getElementById('category-modal').style.display = 'none'; };
+window.closeMemeModal = function() { document.getElementById('meme-modal').style.display = 'none'; document.body.style.overflow = 'visible';};
+window.closeModal = function() { document.getElementById('battle-modal').style.display = 'none'; document.body.style.overflow = 'visible';};
+window.closeCategoryModal = function() { document.getElementById('category-modal').style.display = 'none'; document.body.style.overflow = 'visible';};
 
 // ====================== UNIVERSAL SHARE MENU + DEEP LINK (ALL PAGES) ======================
 window.showShareMenu = function() {
