@@ -372,7 +372,7 @@ body::before{content:'';position:fixed;inset:0;background:rgba(10,10,31,.65);z-i
 body::after{content:'';position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:-1;pointer-events:none}
 
 /* Fixed card line heights */
-.tags-area{max-height:2.2rem;overflow:hidden}
+.tags-area{max-height:2.2rem}
 .card__title{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6rem}
 .card__description{display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;min-height:5.6rem}
 
