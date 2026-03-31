@@ -154,7 +154,7 @@ body::before{content:'';position:fixed;inset:0;background:rgba(10,10,31,.65);z-i
 .page__section.hero{padding-top:20rem;padding-bottom:5rem}
 @media(min-width:768px){.page__section.hero{padding-top:13rem}}
 @media(min-width:1024px){.page__section.hero{padding-top:15rem}}
-.hero__live-badge{display: block !important; margin: 0 auto 2rem auto !important; background: rgba(255, 255, 255, .1); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, .2); border-radius: 9999px; font-size: .875rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; color: #fff; width: fit-content}
+.hero__live-badge{background: rgba(255, 255, 255, .1); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, .2); border-radius: 9999px; font-size: .875rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; color: #fff;}
 .hero__live-badge:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4)}
 .hero__live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:live-pulse 2s infinite ease-in-out}
 @keyframes live-pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -353,14 +353,6 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 /* ============================================= */
 /* Hero LIVE badge – final vertical centering + breathing room */
 /* ============================================= */
-.hero__live-badge {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin: 0 auto 2rem auto !important;
-  width: fit-content !important;
-  padding: .5rem 1.25rem !important;   /* more breathing room */
-}
 
 .hero__live-dot {
   width: 8px !important;
@@ -369,5 +361,7 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   border-radius: 50% !important;
   flex-shrink: 0 !important;
 }
+
+.hero__live-badge{display:block!important;margin:0 auto 2rem auto!important;width:fit-content!important;padding:.5rem 1.25rem!important}
 
 /* End of main.css */
