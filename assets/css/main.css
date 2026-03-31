@@ -388,13 +388,16 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   .thread-text{word-break:break-word;overflow-wrap:break-word;white-space:pre-wrap}
   .grok-bubble,.human-bubble{max-width:85%!important}
 
-  body[data-page="memes"] .modal__image-container{max-height:52vh!important}
-  body[data-page="memes"] .modal__image{max-height:52vh!important}
-  body[data-page="memes"] .modal__body{padding:1rem 1rem 0!important}
-  body[data-page="memes"] .genre-section{margin-top:.5rem!important;padding:1rem!important}
+  body[data-page="memes"] .modal__image-container{max-height:38vh!important}
+  body[data-page="memes"] .modal__image{max-height:38vh!important}
+  body[data-page="memes"] .modal__body{padding:0.75rem 1rem 0.5rem!important}
+  body[data-page="memes"] .tags-area{margin-bottom:.5rem!important}
+  body[data-page="memes"] .modal__title{font-size:1.15rem!important;margin-bottom:.4rem!important}
+  body[data-page="memes"] .modal__description{margin-bottom:.75rem!important;font-size:.9rem!important}
+  body[data-page="memes"] .genre-section{margin-top:.5rem!important;padding:.75rem 1rem!important}
   body[data-page="memes"] .modal__buttons{padding:.75rem 1rem!important;gap:.75rem!important}
   body[data-page="memes"] .modal__buttons a,
-  body[data-page="memes"] .modal__buttons button{padding:12px 16px!important;font-size:.95rem!important}
+  body[data-page="memes"] .modal__buttons button{padding:11px 16px!important;font-size:.95rem!important}
 
 }
 
