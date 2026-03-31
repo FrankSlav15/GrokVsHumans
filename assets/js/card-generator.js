@@ -91,10 +91,6 @@ window.createContentCard = function(pageType, id, data) {
   `;
 };
 
-// Render functions (called by common.js)
-// ====================== BATTLE GRID RENDERER (exact match to your screenshot) ======================
-
-
 window.renderCategoryGrid = function() {
   const grid = document.getElementById('category-grid');
   if (!grid) return;
