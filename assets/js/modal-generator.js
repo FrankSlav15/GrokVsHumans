@@ -46,6 +46,7 @@ function renderThread(threadPosts, containerId) {
 
   let html = `<div class="thread-emulator">`;
   threadPosts.forEach((post) => {
+    const isGrok = post.author === 'grok';
     const isDeleted = post.deleted === true || !post.author;
     const avatarSrc = getLocalAvatar(post);
     const rawUsername = post.username || post.user || post.author || '';
@@ -53,23 +54,28 @@ function renderThread(threadPosts, containerId) {
     const displayName = userData.displayName || rawUsername;
     const verifiedBadge = userData.verified ? `<i class="fa-solid fa-circle-check text-blue-400 ml-1 text-sm"></i>` : '';
     const displayNameHTML = rawUsername ? `<a href="https://x.com/${rawUsername.replace('@','')}" target="_blank" class="text-[#c084fc] hover:underline">${displayName}${verifiedBadge}</a>` : '';
-    let textWithLinks = (post.text || '').replace(/\n/g, '<br>');
-    textWithLinks = textWithLinks.replace(/@(\w+)/g, '<a href="https://x.com/$1" target="_blank" class="text-[#c084fc] hover:underline">@$1</a>');
 
-    html += `<div class="thread-post flex gap-3 ${post.author === 'grok' ? 'justify-end' : 'justify-start'}">
-      ${!isDeleted && post.author !== 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
-      <div class="${post.author === 'grok' ? 'grok-bubble' : 'human-bubble'} max-w-[85%] p-5 rounded-3xl">
-        ${isDeleted ? `<div class="deleted-post bg-[#27272a] text-[#71717a] p-4 rounded-2xl text-sm">This Post is from an account that no longer exists.</div>` : `
-          <div class="flex items-center gap-2 mb-2">
-            <span class="font-semibold text-sm">${displayNameHTML}</span>
-            <span class="text-zinc-500 text-xs">${post.date || ''}</span>
-          </div>
-          <div class="thread-text text-[15px] leading-relaxed">${textWithLinks}</div>
-          ${post.image && !post.image.includes('youtube') ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) ? `<video src="${post.image}" class="mt-4 w-full rounded-2xl block" controls preload="metadata" playsinline></video>` : `<img src="${post.image}" class="mt-4 w-full rounded-2xl block" alt="">`) : ''}
-        `}
-      </div>
-      ${!isDeleted && post.author === 'grok' ? `<img src="${avatarSrc}" class="w-9 h-9 rounded-full flex-shrink-0 mt-1" alt="">` : ''}
-    </div>`;
+    html += `
+      <div class="thread-post ${isGrok ? 'justify-end' : ''}">
+        ${!isDeleted && !isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="">` : ''}
+        <div class="${isGrok ? 'grok-bubble' : 'human-bubble'}">
+          ${isDeleted 
+            ? `<div class="deleted-post">This Post is from an account that no longer exists.</div>` 
+            : `
+              <div class="flex items-center gap-2 mb-2">
+                <span class="font-semibold text-sm">${displayNameHTML}</span>
+                <span class="text-zinc-500 text-xs">${post.date || ''}</span>
+              </div>
+              <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>
+              ${post.image 
+                ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) 
+                    ? `<video src="${post.image}" class="thread-media" controls preload="metadata" playsinline></video>` 
+                    : `<img src="${post.image}" class="thread-media" alt="">`)
+                : ''}
+            `}
+        </div>
+        ${!isDeleted && isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="">` : ''}
+      </div>`;
   });
   html += `</div>`;
   container.innerHTML = html;
@@ -97,18 +103,30 @@ window.openBattleModal = function(id) {
   if (!data) return;
   window.currentBattleId = id;
 
-  renderCommonModalParts(data, 'battles');
-  renderTags(data);
-  renderThread(data.threadPosts || [], "thread-container");
+  // Media
+  const mediaContainer = document.getElementById('modal-image');
+  const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+  mediaContainer.innerHTML = isVideo
+    ? `<video src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
+    : `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
 
+  // Tags
+  renderTags(data);
+
+  // Title + Description (new)
+  document.getElementById('modal-title').textContent = data.title || '';
+  const descEl = document.getElementById('modal-description');
+  descEl.textContent = data.description || data.human || data.grok || ''; // fallback to old fields if needed
+
+  // Thread
+  renderThread(data.threadPosts || [], 'thread-container');
+
+  // Open modal
   const modal = document.getElementById('battle-modal');
   modal.style.display = 'flex';
-  const buttons = document.getElementById('modal-buttons');
-  if (buttons) buttons.style.display = 'flex';
 
   attachGlobalSwipeHandler('battles');
-
-  updateModalVoteUI();
+  updateModalVoteUI();   // scoreboard updates
 };
 
 window.openCategoryModal = function(id) {
