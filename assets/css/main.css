@@ -403,6 +403,13 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   body[data-page="memes"] .genre-header{font-size: .5rem;}
   body[data-page="memes"] .genre-arrows{margin:.4rem}
 
+  .card__vote-bar,
+  .modal__vote-bar{border:none!important}
+  .grok-bar,
+  .human-bar,
+  .modal-btn-grok,
+  .modal-btn-human{border:none!important}
+
 }
 
 /* End of main.css */
