@@ -353,4 +353,7 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   color:#000;
 }
 
+.hero__live-badge{align-items:center!important}
+.hero__live-dot{margin:0!important}
+
 /* End of main.css */
