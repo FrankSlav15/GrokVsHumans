@@ -271,7 +271,8 @@ window.renderGenreNav = function(currentId) {
   }
 
   window.currentGenreIndex = window.currentGenreList.indexOf(currentId);
-  document.getElementById('genre-name').textContent = `"${current.genre.toUpperCase()}"`;
+  const genreNameEl = document.getElementById('genre-name');
+  if (genreNameEl) genreNameEl.textContent = `"${current.genre.toUpperCase()}"`;
   section.classList.remove('hidden');
 };
 
