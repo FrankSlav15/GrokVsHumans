@@ -42,7 +42,7 @@
 
     <div id="toast" class="toast"></div>
 
-    <!-- MEME MODAL – simple version (image fits without scrolling) -->
+    <!-- MEME MODAL – simple version (image fits without scrolling, genre only when present) -->
     <div id="meme-modal" class="modal" onclick="if(event.target === this) closeMemeModal()">
         <div class="modal__content" onclick="event.stopImmediatePropagation()">
             
@@ -53,7 +53,7 @@
             <button class="modal-nav modal-nav--prev" onclick="nextMeme()" aria-label="Next meme">‹</button>
             <button class="modal-nav modal-nav--next" onclick="prevMeme()" aria-label="Previous meme">›</button>
 
-            <!-- Image fits without scrolling -->
+            <!-- Image – large and fits without scrolling -->
             <div id="modal-image" class="modal__image-container"></div>
 
             <!-- Content -->
@@ -62,15 +62,8 @@
                 <p id="modal-desc" class="modal__description"></p>
             </div>
 
-            <!-- Genre section – only shows when JSON has genre field -->
-            <div id="genre-section" class="genre-section">
-                <div class="genre-header">SEE OTHER VARIATIONS OF</div>
-                <div class="genre-arrows">
-                    <button onclick="prevGenreMeme()" class="genre-arrow">↓</button>
-                    <div id="genre-name" class="genre-name"></div>
-                    <button onclick="nextGenreMeme()" class="genre-arrow">↑</button>
-                </div>
-            </div>
+            <!-- Genre section – only shows when genre exists in JSON -->
+            <div id="genre-section" class="genre-section"></div>
 
             <!-- Context panel -->
             <div id="context-panel" class="modal__context">
