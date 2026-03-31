@@ -33,14 +33,13 @@ function renderCardTags(data) {
     citation: "(UN)Popular Citations",
     joke: "Joke Battles",
     censorship: "Conspiracy 1984",
-    // categories
+    // categories + memes (kept for future pages)
     lazy: "Grok, Think For Me",
     politics: "Politics",
     photo: "Photo Requests",
     opinion: "Grok's Opinion",
     avoids: "Grok Avoids Request",
     other: "Miscellaneous",
-    // memes
     'grok-memes': "Grok Memes",
     'political-memes': "Political Memes",
     'misc-memes': "Miscellaneous Memes",
@@ -52,7 +51,7 @@ function renderCardTags(data) {
   const tags = (data.tags || '').split(',').map(t => t.trim()).filter(Boolean);
   const html = tags.map(tag => {
     const label = tagMap[tag] || tag;
-    return `<span class="px-3 py-0.5 bg-purple-900/80 text-purple-200 text-xs rounded-full">${label}</span>`;
+    return `<span class="tag">${label}</span>`;
   }).join('');
   
   return html ? `<div class="tags-area">${html}</div>` : '';
