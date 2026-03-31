@@ -20,49 +20,27 @@ try {
   console.warn("Firebase init failed (normal on some pages)", e);
 }
 
-// ====================== LIVE VOTING HELPERS (matches your real Firebase structure) ======================
-// ====================== DEBUG VERSION – VOTING HELPERS ======================
+// ====================== LIVE VOTING HELPERS (matches your real Firebase data) ======================
 window.vote = async function(e, side, id) {
-  console.log('🔥 VOTE FUNCTION CALLED');
-  console.log('   side:', side);
-  console.log('   id:', id);
-
   e.stopImmediatePropagation();
   e.preventDefault();
 
-  console.log('   database exists?', !!database);
-  console.log('   allBattles exists?', !!window.allBattles);
-  console.log('   battle data for this id?', window.allBattles ? window.allBattles[id] : null);
-
-  if (!database) {
-    console.error('❌ DATABASE IS NULL – Firebase not initialized on this page');
-    return;
-  }
-  if (!window.allBattles || !window.allBattles[id]) {
-    console.error('❌ allBattles or battle data missing for id', id);
-    return;
-  }
+  if (!database || !window.allBattles || !window.allBattles[id]) return;
 
   const ref = database.ref(`battles/${id}`);
-  console.log('   Writing to path:', ref.path.toString());
 
   try {
     const snapshot = await ref.once('value');
     const current = snapshot.val() || { grok: 0, human: 0 };
-    console.log('   Current data before vote:', current);
 
     if (side === 'grok') current.grok = (current.grok || 0) + 1;
     else current.human = (current.human || 0) + 1;
 
-    console.log('   New data after vote:', current);
-
     await ref.update(current);
-    console.log('✅ SUCCESS – Vote written to Firebase');
-
     showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
     updateGridVoteUI(id);
   } catch (err) {
-    console.error('❌ Firebase write FAILED:', err);
+    console.error('Firebase write failed', err);
   }
 };
 
