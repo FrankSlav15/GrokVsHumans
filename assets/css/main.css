@@ -361,6 +361,7 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 /* ============================================= */
 
 @media (max-width: 640px) {
+  .header{height:auto!important;min-height:4rem!important}
   .header__inner{flex-direction:column;gap:1rem;align-items:center;padding:1rem .75rem}
   .header__logo-row{justify-content:center;width:100%}
   .header__nav{gap:.75rem;flex-wrap:wrap;justify-content:center}
