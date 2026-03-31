@@ -381,7 +381,6 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
  /* Modal – Mobile: title/tags/description visible but NOT sticky (scrolls normally), no arrows, tight bars */
   .modal__sticky-header{position:static!important;top:auto!important}
   .modal-nav{display:none!important}
-  .modal__vote-bar{padding:0.75rem 1rem!important;gap:0!important}
   .modal-btn-grok,.modal-btn-human{padding:0.75rem 1rem!important;font-size:1rem!important}
   .modal__buttons{padding:1rem!important;gap:.75rem!important}
   .modal__buttons a,.modal__buttons button{padding:12px 16px!important;font-size:.95rem!important}
