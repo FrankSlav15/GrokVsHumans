@@ -92,13 +92,50 @@ window.createContentCard = function(pageType, id, data) {
 };
 
 // Render functions (called by common.js)
+// ====================== BATTLE GRID RENDERER (exact match to your screenshot) ======================
 window.renderBattleGrid = function() {
   const grid = document.getElementById('battle-grid');
   if (!grid) return;
   grid.innerHTML = '';
-  Object.keys(window.allBattles || {})
-    .sort((a,b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
-    .forEach(id => grid.insertAdjacentHTML('beforeend', createContentCard('battles', id, window.allBattles[id])));
+
+  Object.keys(window.allBattles)
+    .sort((a, b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
+    .forEach(id => {
+      const b = window.allBattles[id];
+      const hasVoted = !!localStorage.getItem('voted_' + id);   // only for UI state – real limit is in Firebase rules
+
+      const cardHTML = `
+        <div onclick="openBattleModal(${id});" class="card card--battle">
+          <div class="card__media">
+            ${b.image ? `<img src="${b.image}" alt="${b.title}">` : ''}
+          </div>
+          <div class="card__content">
+            <div class="tags-area">
+              ${(b.tags || '').split(',').map(t => `<span>${t.trim()}</span>`).join('')}
+            </div>
+            <h4 class="card__title">${b.title}</h4>
+            <p class="card__description">${(b.description || b.human || '').substring(0, 130)}...</p>
+          </div>
+
+          <!-- Voting bar – exact visual from your screenshot -->
+          <div class="card__buttons flex" id="vote-bar-${id}">
+            <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" 
+                    id="grok-btn-${id}" 
+                    class="flex-1 bg-[#6b21a8] text-white font-semibold py-4 flex items-center justify-center gap-2">
+              Grok <span id="grok-count-${id}" class="vote-tally">0</span>
+            </button>
+            <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" 
+                    id="human-btn-${id}" 
+                    class="flex-1 bg-[#9f1239] text-white font-semibold py-4 flex items-center justify-center gap-2">
+              <span id="human-count-${id}" class="vote-tally">0</span> Human
+            </button>
+          </div>
+        </div>`;
+      grid.insertAdjacentHTML('beforeend', cardHTML);
+
+      // Initial tally display
+      updateGridVoteUI(id);
+    });
 };
 
 window.renderCategoryGrid = function() {
