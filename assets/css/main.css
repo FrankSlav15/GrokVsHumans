@@ -183,6 +183,12 @@ body::before{content:'';position:fixed;inset:0;background:rgba(10,10,31,.65);z-i
 .hero__featured-name{color:#fff}
 .hero__featured-handle{color:#fff}
 .hero__live-badge {
+  display: block !important;
+  margin: 0 auto !important;
+  width: fit-content !important;
+}
+
+.hero__live-badge {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
