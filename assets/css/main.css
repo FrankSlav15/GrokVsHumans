@@ -292,4 +292,56 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   padding:0 1rem;
 }
 
+/* ============================================= */
+/* Context Panel – Memes Modal (matches Pic 3 clean dark bar) */
+/* ============================================= */
+.modal__context {
+  background:#18181b;
+  border-top:1px solid #27272a;
+  padding:1.25rem 1.5rem;
+  position:relative;
+}
+
+.context-inner {
+  margin-bottom:1rem;
+}
+
+.context-text {
+  color:#e5e7eb;
+  font-size:1rem;
+  line-height:1.4;
+}
+
+.context-close {
+  position:absolute;
+  top:1rem;
+  right:1.5rem;
+  background:none;
+  border:none;
+  color:#a1a1aa;
+  font-size:1.5rem;
+  cursor:pointer;
+  z-index:10;
+}
+
+.context-search-btn {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.75rem;
+  background:#fff;
+  color:#000;
+  border:none;
+  border-radius:9999px;
+  padding:.75rem 1.5rem;
+  font-weight:600;
+  width:100%;
+  max-width:420px;
+  margin:0 auto;
+}
+
+.context-search-btn i {
+  color:#000;
+}
+
 /* End of main.css */
