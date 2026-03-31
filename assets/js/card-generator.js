@@ -93,44 +93,7 @@ window.createContentCard = function(pageType, id, data) {
 
 // Render functions (called by common.js)
 // ====================== BATTLE GRID RENDERER (exact match to your screenshot) ======================
-window.renderBattleGrid = function() {
-  const grid = document.getElementById('battle-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
 
-  Object.keys(window.allBattles)
-    .sort((a, b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
-    .forEach(id => {
-      const b = window.allBattles[id];
-
-      const cardHTML = `
-        <div onclick="openBattleModal(${id});" class="card card--battle">
-          <div class="card__media">
-            ${b.image ? `<img src="${b.image}" alt="${b.title}">` : ''}
-          </div>
-          <div class="card__content">
-            <div class="tags-area">
-              ${(b.tags || '').split(',').map(t => `<span>${t.trim()}</span>`).join('')}
-            </div>
-            <h4 class="card__title">${b.title}</h4>
-            <p class="card__description">${(b.description || b.human || '').substring(0, 130)}...</p>
-          </div>
-
-          <!-- Strict BEM split voting bar – exact match to your screenshot -->
-          <div class="card__vote-bar" id="vote-bar-${id}">
-            <div class="grok-bar" id="grok-bar-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();">
-              Grok <span id="grok-count-${id}" class="vote-count">0</span>
-            </div>
-            <div class="human-bar" id="human-bar-${id}" onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();">
-              <span id="human-count-${id}" class="vote-count">0</span> Human
-            </div>
-          </div>
-        </div>`;
-      grid.insertAdjacentHTML('beforeend', cardHTML);
-
-      updateGridVoteUI(id);
-    });
-};
 
 window.renderCategoryGrid = function() {
   const grid = document.getElementById('category-grid');

@@ -213,51 +213,6 @@ window.hideContextPanel = function() {
   }
 };
 
-// ====================== BATTLE VOTING TALLY (Firebase live counts – exact old preview behaviour) ======================
-window.voteFromModal = function(e, side) {
-  e.stopImmediatePropagation();
-  e.preventDefault();
-  if (typeof vote === 'function' && window.currentBattleId) {
-    vote(e, side, window.currentBattleId);
-    setTimeout(() => {
-      updateModalVoteUI();
-      updateGridVoteUI(window.currentBattleId);
-    }, 700);
-  }
-};
-
-window.updateModalVoteUI = async function() {
-  if (!window.currentBattleId || !database) return;
-
-  const grokBtn = document.getElementById('modal-grok-btn');
-  const humanBtn = document.getElementById('modal-human-btn');
-  if (!grokBtn || !humanBtn) return;
-
-  try {
-    const snapshot = await database.ref(`content/battles/${window.currentBattleId}`).once('value');
-    const data = snapshot.val() || { grokVotes: 0, humanVotes: 0 };
-
-    const grokVotes = data.grokVotes || 0;
-    const humanVotes = data.humanVotes || 0;
-    const total = grokVotes + humanVotes;
-
-    if (total > 0) {
-      const grokPct = Math.round((grokVotes / total) * 100);
-      const humanPct = 100 - grokPct;
-      grokBtn.innerHTML = `Grok Won <span class="vote-tally">${grokPct}% (${grokVotes})</span>`;
-      humanBtn.innerHTML = `Human Won <span class="vote-tally">${humanPct}% (${humanVotes})</span>`;
-    } else {
-      grokBtn.textContent = 'Grok Won';
-      humanBtn.textContent = 'Human Won';
-    }
-
-    grokBtn.disabled = true;
-    humanBtn.disabled = true;
-  } catch (e) {
-    console.error('Vote tally update failed', e);
-  }
-};
-
 // ====================== GENRE NAV ======================
 window.renderGenreNav = function(currentId) {
   const section = document.getElementById('genre-section');

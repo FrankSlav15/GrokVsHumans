@@ -20,50 +20,6 @@ try {
   console.warn("Firebase init failed (normal on some pages)", e);
 }
 
-// ====================== LIVE VOTING HELPERS (final clean version) ======================
-window.vote = async function(e, side, id) {
-  e.stopImmediatePropagation();
-  e.preventDefault();
-
-  const votedKey = 'voted_' + id;
-  if (localStorage.getItem(votedKey)) {
-    showToast("You've already voted on this battle! 🏆");
-    return;
-  }
-
-  if (!database || !window.allBattles || !window.allBattles[id]) return;
-
-  const ref = database.ref(`battles/${id}`);
-
-  try {
-    const snapshot = await ref.once('value');
-    const current = snapshot.val() || { grok: 0, human: 0 };
-
-    if (side === 'grok') current.grok = (current.grok || 0) + 1;
-    else current.human = (current.human || 0) + 1;
-
-    await ref.update(current);
-
-    localStorage.setItem(votedKey, 'true');
-    showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
-    updateGridVoteUI(id);
-  } catch (err) {
-    console.error('Firebase write failed', err);
-  }
-};
-
-window.updateGridVoteUI = function(id) {
-  const grokCount = document.getElementById(`grok-count-${id}`);
-  const humanCount = document.getElementById(`human-count-${id}`);
-  if (!grokCount || !humanCount || !window.allBattles[id]) return;
-
-  const grokVotes = window.allBattles[id].grok || 0;
-  const humanVotes = window.allBattles[id].human || 0;
-
-  grokCount.textContent = grokVotes;
-  humanCount.textContent = humanVotes;
-};
-
 // ====================== USERS + BACKGROUND ======================
 let allUsers = null;
 
