@@ -168,8 +168,13 @@ window.closeCategoryModal = function() { document.getElementById('category-modal
 
 // ====================== UNIVERSAL SHARE MENU + DEEP LINK (ALL PAGES) ======================
 window.showShareMenu = function() {
+  console.log('🔥 showShareMenu called');
+
   let overlay = document.getElementById('share-overlay');
-  if (overlay) overlay.remove();
+  if (overlay) {
+    console.log('Existing overlay removed');
+    overlay.remove();
+  }
 
   const currentTitle = document.getElementById('modal-title')
     ? document.getElementById('modal-title').textContent.trim()
@@ -201,9 +206,11 @@ window.showShareMenu = function() {
     </div>`;
   document.body.appendChild(overlay);
   overlay.style.display = 'flex';
+  console.log('Share overlay appended and displayed');
 };
 
 window.closeShareMenu = function() {
+  console.log('closeShareMenu called');
   const overlay = document.getElementById('share-overlay');
   if (overlay) overlay.remove();
 };
