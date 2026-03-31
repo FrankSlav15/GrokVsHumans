@@ -367,6 +367,9 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   .header__nav{gap:.75rem;flex-wrap:wrap;justify-content:center}
   .header__submit-row{display:none}
   .header__submit-btn{display:none}
+
+  .footer{padding:2rem 1rem 1.5rem!important;font-size:.75rem!important}
+  .footer__links{gap:1rem!important;margin:1rem 0!important}
 }
 
 /* End of main.css */
