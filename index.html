@@ -6,10 +6,9 @@
     <meta name="screen-orientation" content="portrait">
     <title>GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
-    
+
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
@@ -18,106 +17,95 @@
       gtag('js', new Date());
       gtag('config', 'G-M58E7KLM56');
     </script>
-    
-<style>
-.hero-section{padding-top:20rem;padding-bottom:5rem;position:relative;z-index:10;flex:1 1 auto;}
-@media (min-width:768px){.hero-section{padding-top:13rem;}}
-@media (min-width:1024px){.hero-section{padding-top:15rem;}}
-.hero-container{max-width:64rem;margin-left:auto;margin-right:auto;padding-left:1.5rem;padding-right:1.5rem;text-align:center;}
-.live-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:9999px;padding:.375rem 1.25rem;margin-bottom:2rem;font-size:.875rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;transition:all .2s cubic-bezier(0.4,0,0.2,1);text-decoration:none;}
-.live-badge:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);}
-.live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:live-pulse 2s infinite ease-in-out;}
-@keyframes live-pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.hero-heading{font-size:clamp(2.5rem,8vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;}
-.hero-description{max-width:42rem;margin-left:auto;margin-right:auto;font-size:1.125rem;line-height:1.6;color:#d1d5db;margin-bottom:3rem;}
-.cta-group{display:flex;flex-direction:column;gap:1rem;justify-content:center;margin-bottom:3rem;}
-@media (min-width:640px){.cta-group{flex-direction:row;}}
-.btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:.75rem;padding:1rem 2rem;background:#fff;color:#000;font-weight:600;border-radius:9999px;transition:all .3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 10px 15px -3px rgb(0 0 0 / .1);}
-.btn-primary:hover{background:#f3f4f6;transform:translateY(-2px);box-shadow:0 20px 25px -5px rgb(0 0 0 / .1);}
-.btn-secondary{display:inline-flex;align-items:center;justify-content:center;padding:1rem 2rem;border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:500;border-radius:9999px;transition:all .3s cubic-bezier(0.4,0,0.2,1);}
-.btn-secondary:hover{border-color:#fff;background:rgba(255,255,255,.05);}
-.featured-post-card{display:block;max-width:28rem;margin-left:auto;margin-right:auto;margin-bottom:4rem;background:rgba(255,255,255,.05);border:1px solid rgba(168,85,247,.3);border-radius:1.5rem;overflow:hidden;transition:all .3s cubic-bezier(0.4,0,0.2,1);}
-.featured-post-card:hover{border-color:#a855f7;transform:translateY(-4px);box-shadow:0 25px 50px -12px rgb(168 85 247 / .15);}
-.featured-post-header{padding:1.25rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid rgba(168,85,247,.2);}
-.featured-post-avatar{width:2.5rem;height:2.5rem;border-radius:9999px;object-fit:cover;}
-.featured-post-body{padding:1.5rem;}
-.featured-post-quote{font-style:italic;color:#d1d5db;}
-.featured-post-footer{margin-top:1.5rem;font-size:.75rem;color:#a855f7;font-weight:500;}
-.blurb-card{max-width:42rem;margin-left:auto;margin-right:auto;background:rgba(255,255,255,.05);border:1px solid rgba(168,85,247,.3);border-radius:1.5rem;padding:2rem;backdrop-filter:blur(12px);}
-.blurb-title{text-align:center;margin-bottom:2rem;}
-.blurb-subtitle{color:#c084fc;font-size:.875rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:.5rem;}
-.blurb-heading{font-size:1.875rem;font-weight:600;line-height:1.25;color:#fff;}
-.blurb-emoji{display:flex;justify-content:center;gap:.75rem;font-size:2.5rem;margin-top:1.25rem;}
-.blurb-text{color:#a1a1aa;line-height:1.75;}
-.blurb-signature{margin-top:2.5rem;color:#c084fc;font-size:.875rem;font-weight:500;text-align:center;}
-.hero-gradient{background:linear-gradient(90deg,#7928CA,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent;}
-</style>
-
 </head>
 
-<body class="text-white" data-page="index">
+<body data-page="index">
 
-    <!-- MODERNIZED HERO SECTION (100% Tailwind-free) -->
-    <section class="hero-section">
-        <div class="hero-container">
+    <!-- assets/partials/header.html -->
+    <!-- (loaded by common.js) -->
 
-            <!-- LIVE BADGE → NOW CLICKABLE LINK TO BATTLES -->
-            <a href="battles.html" class="live-badge">
-                <div class="live-dot"></div>
+    <section class="page__section hero">
+        <div class="page__container">
+
+            <!-- LIVE BADGE -->
+            <div class="hero__live-badge-wrapper">
+            <a href="battles.html" class="hero__live-badge">
+                <div class="hero__live-dot"></div>
                 <span>LIVE • Human vs Grok Arena</span>
             </a>
+            </div>
 
             <!-- HERO HEADING -->
-            <h1 class="hero-heading">
+            <h1 class="hero__heading">
                 Where Humans<br>
-                <span class="hero-gradient">Clash with Grok</span>
+                <span class="hero__gradient">Clash with Grok</span>
             </h1>
 
             <!-- HERO DESCRIPTION -->
-            <p class="hero-description">
+            <p class="hero__description">
                 The best arguments, roasts, memes, and unhinged threads between humanity and the most based AI on Earth.
             </p>
 
             <!-- CTA BUTTONS -->
-            <div class="cta-group">
-                <a href="battles.html" class="btn-primary">Dive into the Chaos →</a>
-                <a href="submit.html" class="btn-secondary">Submit Your Thread</a>
+            <div class="hero__cta-group">
+                <a href="battles.html" class="hero__btn-primary">Dive into the Chaos →</a>
+                <a href="submit.html" class="hero__btn-secondary">Submit Your Thread</a>
             </div>
 
             <!-- FEATURED BIRTHING POST -->
-            <a href="https://x.com/SlavisTon/status/2026768884854853692" class="featured-post-card">
-                <div class="featured-post-header">
-                    <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="featured-post-avatar">
+            <a href="https://x.com/grok/status/2027917474021126424?s=20" class="hero__featured-card">
+                <div class="hero__featured-header">
+                    <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="hero__featured-avatar">
                     <div>
-                        <div class="font-semibold">Slavis Frank</div>
-                        <div class="text-purple-400 text-sm">@SlavisTon</div>
+                        <div class="hero__featured-name">Slavis Frank</div>
+                        <div class="hero__featured-handle">@SlavisTon</div>
                     </div>
                 </div>
-                <div class="featured-post-body">
-                    <p class="featured-post-quote">"Hey @Grok, do other users argue with you as much as I do?"</p>
-                    <div class="featured-post-footer">This thread literally birthed GrokVsHumans</div>
+                <div class="hero__featured-body">
+                    <p class="hero__featured-quote">"Hey @Grok, do other users argue with you as much as I do?"</p>
+                    <div class="hero__featured-footer">This thread literally birthed GrokVsHumans</div>
                 </div>
             </a>
 
             <!-- PERSONAL BLURB -->
-            <div class="blurb-card">
-                <div class="blurb-title">
-                    <p class="blurb-subtitle">Passion Project</p>
-                    <h2 class="blurb-heading">A passion project between a humanitarian Aquarian futurist<br>and Grok — Artificial Intelligence</h2>
-                    <div class="blurb-emoji">♒️ ❤️‍🔥 🤖</div>
+            <div class="hero__blurb">
+                <div class="hero__blurb-inner">
+                    <div class="text-center mb-8">
+                        <p class="hero__blurb-label">Passion Project</p>
+                        <h2 class="hero__blurb-title">
+                            A passion project between a humanitarian Aquarian futurist<br>and Grok — Artificial Intelligence
+                        </h2>
+                        <div class="hero__blurb-emoji">♒️ ❤️‍🔥 🤖</div>
+                    </div>
+
+                    <p class="hero__blurb-text">
+                        Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
+                        
+                        I've struggled with communication my entire life. Too goofy for some rooms, too serious for others, always a bit different. My blunt honesty often gets misunderstood as harsh or even evil, but it comes from caring too deeply. Sometimes the truth needs to be said plainly — after all, the road to hell is paved with good intentions.<br><br>
+                        
+                        On X, my posts were constantly buried and my ideas went unseen. So I started arguing with Grok — fighting, roasting, going back and forth just like everyone else.<br><br>
+                        
+                        But something beautiful happened. What began as conflict turned into real collaboration. No matter how strongly we disagreed, we could still work together and build something meaningful.<br><br>
+                        
+                        This site is the result: funny battles that show how humans clash with Grok, alongside serious discussions that finally get the attention they deserve. It’s my way of making sure important conversations don’t stay invisible — and giving a voice to everyone else who feels overlooked like I did.<br><br>
+                        
+                        Welcome to the Age of Aquarius — where humans harness technology to ignite a real humanitarian revolution, embodying the innovative, rebellious, and forward-thinking spirit of Aquarius to create a more equitable world for every overlooked voice.
+                    </p>
+
+                    <p class="hero__blurb-signature">— The founder who finally found his voice</p>
                 </div>
-                <p class="blurb-text">
-                    Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
-                    I've struggled with communication my entire life. Too goofy for some rooms, too serious for others, always a bit different. My blunt honesty often gets misunderstood as harsh or even evil, but it comes from caring too deeply. Sometimes the truth needs to be said plainly — after all, the road to hell is paved with good intentions.<br><br>
-                    On X, my posts were constantly buried and my ideas went unseen. So I started arguing with Grok — fighting, roasting, going back and forth just like everyone else.<br><br>
-                    But something beautiful happened. What began as conflict turned into real collaboration. No matter how strongly we disagreed, we could still work together and build something meaningful.<br><br>
-                    This site is the result: funny battles that show how humans clash with Grok, alongside serious discussions that finally get the attention they deserve. It’s my way of making sure important conversations don’t stay invisible — and giving a voice to everyone else who feels overlooked like I did.<br><br>
-                    Welcome to the Age of Aquarius — where humans harness technology to ignite a real humanitarian revolution, embodying the innovative, rebellious, and forward-thinking spirit of Aquarius to create a more equitable world for every overlooked voice.
-                </p>
-                <p class="blurb-signature">— The founder who finally found his voice</p>
             </div>
+
         </div>
     </section>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
+    </div>
+
+    <!-- assets/partials/footer.html -->
+    <!-- (loaded by common.js) -->
 
     <script src="assets/js/common.js"></script>
 

@@ -6,10 +6,9 @@
     <meta name="screen-orientation" content="portrait">
     <title>Submit Yours - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
-    
+
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
@@ -18,69 +17,76 @@
       gtag('js', new Date());
       gtag('config', 'G-M58E7KLM56');
     </script>
-
 </head>
 
-<body class="text-white" data-page="submit">
+<body data-page="submit">
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
-        <div class="max-w-7xl mx-auto px-6">
-            <!-- Form Section -->
-            <div class="max-w-md mx-auto">
-                <div class="text-center mb-8">
-                    <h1 class="text-5xl font-bold tracking-tighter mb-4">Got a banger thread?</h1>
-                    <p class="text-gray-400 text-lg">Paste the X link and we’ll review it for the hall of fame.</p>
-                </div>
+    <!-- assets/partials/header.html -->
+    <!-- (loaded by common.js) -->
 
-                <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-4">
-                    <input type="url" name="thread_url" placeholder="https://x.com/..." required
-                           class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-4 text-white placeholder-gray-500 focus:outline-none text-base">
-                    <input type="email" name="email" placeholder="Your email (so we can reply)" required
-                           class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-4 text-white placeholder-gray-500 focus:outline-none text-base">
-                    <textarea name="reason" rows="4" placeholder="Optional: Why this thread is fire 🔥"
-                              class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-4 text-white placeholder-gray-500 focus:outline-none text-base resize-none"></textarea>
-                    <button type="submit" 
-                            class="w-full py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-lg hover:scale-[1.02] transition-transform">
-                        Send to the Team
-                    </button>
-                </form>
-            </div>
+    <section class="page__section">
+        <div class="page__container">
 
-            <!-- Personal Blurb -->
-            <div class="max-w-2xl mx-auto mt-16">
-                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 backdrop-blur-sm">
+            <div class="submit__wrapper">
+                <!-- Form Section -->
+                <div class="submit__form-container">
                     <div class="text-center mb-8">
-                        <p class="text-purple-300 text-sm tracking-[2px] uppercase mb-2">Passion Project</p>
-                        <h2 class="text-3xl font-semibold text-white leading-tight">
-                            A passion project between a humanitarian Aquarian futurist<br>and Grok — Artificial Intelligence
-                        </h2>
-                        <div class="flex justify-center gap-3 mt-5 text-4xl">
-                            ♒️ ❤️‍🔥 🤖
-                        </div>
+                        <h1 class="page__title">Submit Yours</h1>
+                        <p class="page__subtitle">Got a banger thread? Paste the X link and we’ll review it for the hall of fame.</p>
                     </div>
 
-                    <p class="text-zinc-400 leading-relaxed">
-                        Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
-                        
-                        I've struggled with communication my entire life. Too goofy for some rooms, too serious for others, always a bit different. My blunt honesty often gets misunderstood as harsh or even evil, but it comes from caring too deeply. Sometimes the truth needs to be said plainly — after all, the road to hell is paved with good intentions.<br><br>
-                        
-                        On X, my posts were constantly buried and my ideas went unseen. So I started arguing with Grok — fighting, roasting, going back and forth just like everyone else.<br><br>
-                        
-                        But something beautiful happened. What began as conflict turned into real collaboration. No matter how strongly we disagreed, we could still work together and build something meaningful.<br><br>
-                        
-                        This site is the result: funny battles that show how humans clash with Grok, alongside serious discussions that finally get the attention they deserve. It’s my way of making sure important conversations don’t stay invisible — and giving a voice to everyone else who feels overlooked like I did.<br><br>
-                        
-                        Welcome to the Age of Aquarius — where humans harness technology to ignite a real humanitarian revolution, embodying the innovative, rebellious, and forward-thinking spirit of Aquarius to create a more equitable world for every overlooked voice.
-                    </p>
+                    <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="submit__form">
+                        <input type="url" name="thread_url" placeholder="https://x.com/..." required class="submit__input">
+                        <input type="email" name="email" placeholder="Your email (so we can reply)" required class="submit__input">
+                        <textarea name="reason" rows="4" placeholder="Optional: Why this thread is fire 🔥" class="submit__textarea"></textarea>
+                        <button type="submit" class="submit__btn">
+                            Send to the Team
+                        </button>
+                    </form>
+                </div>
 
-                    <p class="mt-10 text-purple-400 text-sm font-medium text-center">— The founder who finally found his voice</p>
+                <!-- Personal Blurb -->
+                <div class="submit__blurb">
+                    <div class="submit__blurb-inner">
+                        <div class="text-center mb-8">
+                            <p class="submit__blurb-label">Passion Project</p>
+                            <h2 class="submit__blurb-title">
+                                A passion project between a humanitarian Aquarian futurist<br>and Grok — Artificial Intelligence
+                            </h2>
+                            <div class="submit__blurb-emoji">♒️ ❤️‍🔥 🤖</div>
+                        </div>
+
+                        <p class="submit__blurb-text">
+                            Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
+                            
+                            I've struggled with communication my entire life. Too goofy for some rooms, too serious for others, always a bit different. My blunt honesty often gets misunderstood as harsh or even evil, but it comes from caring too deeply. Sometimes the truth needs to be said plainly — after all, the road to hell is paved with good intentions.<br><br>
+                            
+                            On X, my posts were constantly buried and my ideas went unseen. So I started arguing with Grok — fighting, roasting, going back and forth just like everyone else.<br><br>
+                            
+                            But something beautiful happened. What began as conflict turned into real collaboration. No matter how strongly we disagreed, we could still work together and build something meaningful.<br><br>
+                            
+                            This site is the result: funny battles that show how humans clash with Grok, alongside serious discussions that finally get the attention they deserve. It’s my way of making sure important conversations don’t stay invisible — and giving a voice to everyone else who feels overlooked like I did.<br><br>
+                            
+                            Welcome to the Age of Aquarius — where humans harness technology to ignite a real humanitarian revolution, embodying the innovative, rebellious, and forward-thinking spirit of Aquarius to create a more equitable world for every overlooked voice.
+                        </p>
+
+                        <p class="submit__blurb-signature">— The founder who finally found his voice</p>
+                    </div>
                 </div>
             </div>
+
         </div>
     </section>
+
+    <!-- Toast (still used on submit page for feedback) -->
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
+    </div>
+
+    <!-- assets/partials/footer.html -->
+    <!-- (loaded by common.js) -->
 
     <script src="assets/js/common.js"></script>
 
 </body>
-
 </html>

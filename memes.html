@@ -1,78 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <meta name="screen-orientation" content="portrait">
-        <title>Memes - GrokVsHumans</title>
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <link rel="stylesheet" href="assets/css/main.css">
-        <!-- other scripts -->
-        <script src="assets/js/common.js"></script>
-        <script src="assets/js/card-generator.js"></script>
-        <script src="assets/js/modal-generator.js"></script>
-        
-        <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
-        <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
-        
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="portrait">
+    <title>Memes - GrokVsHumans</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <script src="assets/js/common.js" defer></script>
+    <script src="assets/js/card-generator.js" defer></script>
+    <script src="assets/js/modal-generator.js" defer></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
+</head>
+<body data-page="memes">
 
-    <style>
-        /* PAGE-SPECIFIC ONLY – Memes page (modernization branch) */
-        .nav-arrow { position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.75);color:white;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:42px;border-radius:9999px;z-index:75;transition:all .2s ease;box-shadow:0 10px 30px rgba(0,0,0,.6); }
-        .nav-arrow:hover { background:rgba(0,0,0,.95);transform:translateY(-50%) scale(1.1); }
-        .nav-arrow-left { left:-58px; }
-        .nav-arrow-right { right:-58px; }
-        @media (max-width:640px) { .nav-arrow-left { left:-42px; } .nav-arrow-right { right:-42px; } .nav-arrow { width:44px;height:44px;font-size:36px; } }
-        .meme-card { transition:all .3s ease;cursor:pointer;background:rgba(255,255,255,.03);border:1px solid rgba(168,85,247,.2);display:flex;flex-direction:column;height:100%;overflow:hidden;border-radius:1.5rem;position:relative; }
-        .meme-card:hover { transform:translateY(-8px);box-shadow:0 0 40px rgba(168,85,247,.5);border-color:rgb(168 85 247); }
-        .meme-card .aspect-video { flex-shrink:0;height:15.5rem;width:100%;overflow:hidden; }
-        .meme-card .content { flex:1;padding:1.25rem;background:#18181b;display:flex;flex-direction:column;min-height:6rem; }
-        .video-card::after { content:'';position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;pointer-events:none;z-index:1; }
-        .video-card:hover::after { opacity:1; }
-        .video-card::after i { font-size:3.8rem;color:white;filter:drop-shadow(0 4px 15px rgba(0,0,0,.7)); }
-        #modal-buttons { border-top:1px solid #27272a;padding:16px 16px !important;display:flex;gap:8px;flex-shrink:0; }
-        .modal-btn-view { background:#fff !important;color:#000 !important;font-weight:600;padding:14px 24px !important;border-radius:12px !important;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(0.4,0,0.2,1); }
-        .modal-btn-context { background:#27272a !important;color:#fff !important;font-weight:600;padding:14px 24px !important;border-radius:12px !important;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(0.4,0,0.2,1); }
-        .modal-btn-share { border:1px solid #a855f7 !important;color:#fff !important;font-weight:600;padding:14px 24px !important;border-radius:12px !important;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(0.4,0,0.2,1); }
-        @media (max-width:640px) { #modal-buttons { gap:6px;padding:12px 12px !important; } }
-        .tab { padding:.75rem 1.25rem;font-weight:500;font-size:.875rem;transition:all .2s ease;white-space:nowrap; }
-        .tab-active { border-bottom:3px solid rgb(168 85 247);color:white; }
-
-        #meme-modal #modal-image {
-            flex: 0 0 auto !important; display: flex !important; align-items: center !important; justify-content: center !important;
-            background: #18181b !important; padding: 12px !important; max-height: 65vh !important;
-        }
-        #meme-modal #modal-image img,
-        #meme-modal #modal-image video { width: 100% !important; object-fit: contain !important; }
-        #meme-modal .plyr { max-height: 100% !important; width: 100% !important; }
-
-        #modal-content-inner > div:nth-child(2), #genre-section { flex-shrink: 0 !important; }
-
-        #genre-section { flex-shrink: 0; padding: 12px 16px; border-top: 1px solid #27272a; background: #18181b; text-align: center; }
-        .genre-header { font-size: 13px; font-weight: 600; color: #c084fc; margin-bottom: 6px; }
-        .genre-arrows { display: flex; align-items: center; justify-content: center; gap: 24px; }
-        #genre-name { font-size: 15px; font-weight: 600; color: #fff; flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        @media (max-width: 640px) {
-          .modal-content { max-height: 100dvh !important; border-radius: 20px !important; margin: 0 !important; width: 100% !important; }
-          #meme-modal .modal-content { overflow: hidden; padding-bottom: 0; }
-          #meme-modal #modal-image { max-height: 55vh !important; }
-          #modal-buttons { flex-shrink: 0; padding: 12px 12px !important; }
-        }
-    </style>
-
-<body class="text-white" data-page="memes">
-
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
-        <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Meme Vault</h1>
-            <p class="text-center text-zinc-400 text-lg">Grok cooks humanity — the best of the best</p>
+    <section class="page__section">
+        <div class="page__container">
+            <h1 class="page__title">Meme Vault</h1>
+            <p class="page__subtitle">Grok cooks humanity — the best of the best</p>
 
             <div class="sticky-tabs">
                 <div class="sticky-tabs-container">
@@ -89,58 +36,64 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="meme-grid"></div>
+            <div class="content-grid" id="meme-grid"></div>
         </div>
     </section>
 
-    <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900 border border-purple-500 px-8 py-4 rounded-3xl shadow-2xl z-[100] transition-all duration-300">
-        <span id="toast-text" class="font-medium text-white"></span>
-    </div>
+    <div id="toast" class="toast"></div>
 
-    <!-- MEME MODAL -->
-    <div id="meme-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[10000] p-0" onclick="if(event.target === this) closeMemeModal()">
-        <div class="modal-content bg-zinc-950 rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-            <button onclick="closeMemeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
-            <button onclick="event.stopImmediatePropagation(); prevMeme()" class="nav-arrow nav-arrow-left">‹</button>
-            <button onclick="event.stopImmediatePropagation(); nextMeme()" class="nav-arrow nav-arrow-right">›</button>
+    <!-- MEME MODAL – SIMPLE (no scrolling at all) -->
+    <div id="meme-modal" class="modal" onclick="if(event.target === this) closeMemeModal()">
+        <div class="modal__content" onclick="event.stopImmediatePropagation()">
+            
+            <!-- Locked close button -->
+            <button onclick="closeMemeModal()" class="modal__close">✕</button>
+            
+            <!-- External navigation arrows -->
+            <button class="modal-nav modal-nav--prev" onclick="nextMeme()" aria-label="Next meme">‹</button>
+            <button class="modal-nav modal-nav--next" onclick="prevMeme()" aria-label="Previous meme">›</button>
 
-            <div class="flex flex-col flex-1" id="modal-content-inner">
-                <div id="modal-image" class="flex-none bg-zinc-900 flex items-center justify-center min-h-0 p-2"></div>
+            <!-- Image/Video – fits fully, no scrolling -->
+            <div id="modal-image" class="modal__image-container"></div>
 
-                <div class="px-6 pt-4 pb-3 border-t border-zinc-800 flex-shrink-0">
-                    <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
-                    <p id="modal-desc" class="text-gray-400 text-sm mt-1 leading-relaxed"></p>
-                </div>
+            <!-- Tags + Title + Description -->
+            <div class="modal__body">
+                <div id="modal-tags" class="tags-area"></div>
+                <h2 id="modal-title" class="modal__title"></h2>
+                <p id="modal-desc" class="modal__description"></p>
+            </div>
 
-                <div id="genre-section" class="hidden flex-shrink-0">
-                    <div class="genre-header">SEE OTHER VARIATIONS OF</div>
-                    <div class="genre-arrows">
-                        <button onclick="prevGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↓</button>
-                        <div id="genre-name" class="text-white font-medium"></div>
-                        <button onclick="nextGenreMeme()" class="text-4xl text-purple-400 hover:text-white">↑</button>
-                    </div>
+            <!-- Genre section – only when JSON has genre -->
+            <div id="genre-section" class="genre-section">
+                <div class="genre-header">SEE OTHER VARIATIONS OF</div>
+                <div class="genre-arrows">
+                    <button onclick="prevGenreMeme()" class="genre-arrow">↓</button>
+                    <div id="genre-name" class="genre-name"></div>
+                    <button onclick="nextGenreMeme()" class="genre-arrow">↑</button>
                 </div>
             </div>
 
-            <div id="context-panel" class="hidden p-6 bg-zinc-900 border-t border-purple-500/40">
-                <div class="flex justify-between items-start gap-4">
-                    <p id="context-text" class="text-gray-300 text-sm leading-relaxed flex-1"></p>
-                    <button onclick="hideContextPanel()" class="text-3xl text-zinc-400 hover:text-white">✕</button>
+            <!-- Context panel -->
+            <div id="context-panel" class="modal__context">
+                <div class="context-inner">
+                    <p id="context-text" class="context-text"></p>
+                    <button onclick="hideContextPanel()" class="context-close">✕</button>
                 </div>
-                <button onclick="searchMemeImage()" class="mt-5 w-full bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
+                <button onclick="searchMemeImage()" class="context-search-btn">
                     <i class="fa-solid fa-magnifying-glass"></i> Google Image Search
                 </button>
             </div>
 
-            <div id="modal-buttons">
-                <a id="base-x-link" href="#" target="_blank" class="modal-btn-view flex-1">
+            <!-- Bottom buttons (always visible) -->
+            <div id="modal-buttons" class="modal__buttons">
+                <a id="base-x-link" href="#" target="_blank" class="modal-btn-view">
                     <i class="fa-brands fa-x-twitter"></i> View
                 </a>
-                <button onclick="showContextPanel()" class="modal-btn-context flex-1">
+                <button onclick="showContextPanel()" class="modal-btn-context">
                     <i class="fa-solid fa-info-circle"></i> Context
                 </button>
-                <button onclick="showMemeShareMenu()" class="modal-btn-share flex-1">
-                    <i class="fa-solid fa-share-nodes"></i> Share
+                <button onclick="showShareMenu()" class="modal__share-btn">
+                    <i class="fa-solid fa-share-from-square"></i> Share
                 </button>
             </div>
         </div>
@@ -151,6 +104,5 @@
             initPage('memes');
         });
     </script>
-    
 </body>
 </html>
