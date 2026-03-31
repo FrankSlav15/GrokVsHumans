@@ -101,7 +101,14 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .thread-post{display:flex!important;gap:12px!important;align-items:flex-start!important}
 .thread-post.justify-end{justify-content:flex-end!important;flex-direction:row-reverse!important}
 .thread-post img:first-child,
-.thread-post img:last-child{width:36px!important;height:36px!important;flex-shrink:0!important;border-radius:9999px!important;object-fit:cover!important;margin-top:4px!important}
+.thread-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    flex-shrink: 0 !important;
+    border-radius: 9999px !important;
+    object-fit: cover !important;
+    margin-top: 4px !important;
+}
 .human-bubble{background:#27272a!important;color:#fff!important;padding:16px 20px!important;border-radius:20px 20px 4px 20px!important;max-width:78%!important;align-self:flex-start!important;border:none!important}
 .grok-bubble{background:#3b3b40!important;color:#fff!important;padding:16px 20px!important;border-radius:20px 20px 20px 4px!important;max-width:78%!important;align-self:flex-end!important;border:1px solid #a855f7!important;margin-left:auto!important}
 .thread-text{line-height:1.55!important;font-size:15px!important;white-space:pre-line!important}
