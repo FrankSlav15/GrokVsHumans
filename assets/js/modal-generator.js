@@ -189,16 +189,16 @@ window.showShareMenu = function() {
         <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
         <h3 class="share-overlay__title">Share this post</h3>
         <div class="share-overlay__grid share-overlay__grid--4">
-          <button onclick="copyDeepLink(); return false" class="share-overlay__item">
+          <button onclick="copyDeepLink(); closeShareMenu(); return false" class="share-overlay__item">
             <i class="fa-solid fa-link fa-2x"></i><span>Copy Link</span>
           </button>
-          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" class="share-overlay__item">
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(currentTitle)}" target="_blank" onclick="closeShareMenu()" class="share-overlay__item">
             <i class="fa-brands fa-x-twitter fa-2x"></i><span>X</span>
           </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" class="share-overlay__item">
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}" target="_blank" onclick="closeShareMenu()" class="share-overlay__item">
             <i class="fa-brands fa-facebook fa-2x"></i><span>Facebook</span>
           </a>
-          <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" class="share-overlay__item">
+          <a href="mailto:?subject=${encodeURIComponent(currentTitle)}&body=${encodeURIComponent(location.href)}" onclick="closeShareMenu()" class="share-overlay__item">
             <i class="fa-solid fa-envelope fa-2x"></i><span>Email</span>
           </a>
         </div>
