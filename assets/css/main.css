@@ -363,7 +363,6 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 }
 
 .hero__live-badge{display:block!important;margin:0 auto 2rem auto!important;width:fit-content!important;padding:.5rem 1.25rem!important}
-.hero__live-badge{display:inline-flex!important;align-items:center!important;gap:8px!important;margin:0 auto 2rem auto!important;width:fit-content!important;padding:.5rem 1.25rem!important}
 .hero__live-dot{flex-shrink:0!important}
 
 /* End of main.css */
