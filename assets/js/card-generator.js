@@ -117,18 +117,14 @@ window.renderBattleGrid = function() {
             <p class="card__description">${(b.description || b.human || '').substring(0, 130)}...</p>
           </div>
 
-          <!-- Voting bar – exact purple/red style from your screenshot -->
-          <div class="card__buttons flex" id="vote-bar-${id}">
-            <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" 
-                    id="grok-btn-${id}" 
-                    class="flex-1 bg-[#6b21a8] text-white font-semibold py-4 flex items-center justify-center gap-2">
-              Grok <span id="grok-count-${id}" class="vote-tally">0</span>
-            </button>
-            <button onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" 
-                    id="human-btn-${id}" 
-                    class="flex-1 bg-[#9f1239] text-white font-semibold py-4 flex items-center justify-center gap-2">
-              <span id="human-count-${id}" class="vote-tally">0</span> Human
-            </button>
+          <!-- Single split voting bar – exact match to your screenshot -->
+          <div class="card__vote-bar" id="vote-bar-${id}">
+            <div class="grok-bar" id="grok-bar-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();">
+              Grok <span id="grok-count-${id}" class="vote-count">0</span>
+            </div>
+            <div class="human-bar" id="human-bar-${id}" onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();">
+              <span id="human-count-${id}" class="vote-count">0</span> Human
+            </div>
           </div>
         </div>`;
       grid.insertAdjacentHTML('beforeend', cardHTML);
