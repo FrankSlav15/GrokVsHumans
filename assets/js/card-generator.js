@@ -120,9 +120,30 @@ window.renderMemeGrid = function() {
   const grid = document.getElementById('meme-grid');
   if (!grid) return;
   grid.innerHTML = '';
-  Object.keys(window.allMemes || {})
+
+  const visibleIds = new Set();
+  const genreMap = new Map();
+
+  // 1. Collect unique genres + non-genre cards
+  Object.keys(window.allMemes || {}).forEach(id => {
+    const m = window.allMemes[id];
+    if (!m.genre || m.genre.trim() === '') {
+      visibleIds.add(id);                    // unique memes (no genre)
+    } else if (!genreMap.has(m.genre) || 
+               (window.allMemes[genreMap.get(m.genre)].order || 0) < (m.order || 0)) {
+      genreMap.set(m.genre, id);             // keep only the highest-order card per genre
+    }
+  });
+
+  // 2. Add the chosen genre representatives
+  genreMap.forEach(id => visibleIds.add(id));
+
+  // 3. Render only the visible (deduplicated) cards, newest first
+  Array.from(visibleIds)
     .sort((a, b) => (window.allMemes[b].order || 0) - (window.allMemes[a].order || 0))
-    .forEach(id => grid.insertAdjacentHTML('beforeend', createContentCard('memes', id, window.allMemes[id])));
+    .forEach(id => {
+      grid.insertAdjacentHTML('beforeend', createContentCard('memes', id, window.allMemes[id]));
+    });
 };
 
 // Shared filter (works on all pages)
