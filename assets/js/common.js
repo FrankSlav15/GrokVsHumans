@@ -20,18 +20,19 @@ try {
   console.warn("Firebase init failed (normal on some pages)", e);
 }
 
-// ====================== LIVE VOTING HELPERS ======================
+// ====================== LIVE VOTING HELPERS (matches your old preview branch exactly) ======================
 window.vote = async function(e, side, id) {
   e.stopImmediatePropagation();
   e.preventDefault();
   if (!database || !window.allBattles || !window.allBattles[id]) return;
 
-  const ref = database.ref(`content/battles/${id}`);
-  const snapshot = await ref.once('value');
-  const current = snapshot.val() || { grokVotes: 0, humanVotes: 0 };
+  const ref = database.ref(`battles/${id}`);   // ← changed back to match old preview
 
-  if (side === 'grok') current.grokVotes = (current.grokVotes || 0) + 1;
-  else current.humanVotes = (current.humanVotes || 0) + 1;
+  const snapshot = await ref.once('value');
+  const current = snapshot.val() || { grok: 0, human: 0 };
+
+  if (side === 'grok') current.grok = (current.grok || 0) + 1;
+  else current.human = (current.human || 0) + 1;
 
   await ref.update(current);
   showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
@@ -43,8 +44,8 @@ window.updateGridVoteUI = function(id) {
   const humanBtn = document.getElementById(`human-btn-${id}`);
   if (!grokBtn || !humanBtn || !window.allBattles[id]) return;
 
-  const grokVotes = window.allBattles[id].grokVotes || 0;
-  const humanVotes = window.allBattles[id].humanVotes || 0;
+  const grokVotes = window.allBattles[id].grok || 0;
+  const humanVotes = window.allBattles[id].human || 0;
   const total = grokVotes + humanVotes;
 
   if (total === 0) return;
