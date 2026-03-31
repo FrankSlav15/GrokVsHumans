@@ -65,11 +65,11 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .card--battle .card__media{height:260px}
 .card--battle .flex.border-t{border-radius:0 0 1rem 1rem;overflow:hidden}
 .card--battle button{border-radius:0;font-weight:600;font-size:1.05rem}
-.card--battle button:first-child{background:#6b21a8;color:#fff}
-.card--battle button:last-child{background:#9f1239;color:#fff}
-.vote-tally { font-size: 1.25rem; font-weight: 700; margin-left: 6px; }
-.card__buttons { display: flex; border-top: 1px solid #27272a; border-radius: 0 0 1rem 1rem; overflow: hidden; }
-.card__buttons button { flex: 1; padding: 1rem 1.25rem; font-size: 1.1rem; font-weight: 600; transition: all .2s; }
+.card__buttons { display:flex; border-top:1px solid #27272a; border-radius:0 0 1rem 1rem; overflow:hidden; }
+.card__buttons button { flex:1; padding:1rem 1.25rem; font-size:1.1rem; font-weight:600; transition:all .2s; }
+.card__buttons button:first-child { background:#6b21a8; }
+.card__buttons button:last-child { background:#9f1239; }
+.vote-tally { font-size:1.25rem; font-weight:700; margin-left:6px; }
 
 /* ============================================= */
 /* Modals (shared) */

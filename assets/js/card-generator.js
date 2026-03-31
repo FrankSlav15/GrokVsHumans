@@ -102,7 +102,7 @@ window.renderBattleGrid = function() {
     .sort((a, b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
     .forEach(id => {
       const b = window.allBattles[id];
-      const hasVoted = !!localStorage.getItem('voted_' + id);   // only for UI state – real limit is in Firebase rules
+      const hasVoted = !!localStorage.getItem('voted_' + id);
 
       const cardHTML = `
         <div onclick="openBattleModal(${id});" class="card card--battle">
@@ -117,7 +117,7 @@ window.renderBattleGrid = function() {
             <p class="card__description">${(b.description || b.human || '').substring(0, 130)}...</p>
           </div>
 
-          <!-- Voting bar – exact visual from your screenshot -->
+          <!-- Voting bar – exact purple/red style from your screenshot -->
           <div class="card__buttons flex" id="vote-bar-${id}">
             <button onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" 
                     id="grok-btn-${id}" 
@@ -133,7 +133,6 @@ window.renderBattleGrid = function() {
         </div>`;
       grid.insertAdjacentHTML('beforeend', cardHTML);
 
-      // Initial tally display
       updateGridVoteUI(id);
     });
 };

@@ -20,10 +20,16 @@ try {
   console.warn("Firebase init failed (normal on some pages)", e);
 }
 
-// ====================== LIVE VOTING HELPERS (matches your real Firebase data) ======================
+// ====================== LIVE VOTING HELPERS (Firebase + one-vote-per-browser limitation) ======================
 window.vote = async function(e, side, id) {
   e.stopImmediatePropagation();
   e.preventDefault();
+
+  const votedKey = 'voted_' + id;
+  if (localStorage.getItem(votedKey)) {
+    showToast("You've already voted on this battle! 🏆");
+    return;
+  }
 
   if (!database || !window.allBattles || !window.allBattles[id]) return;
 
@@ -37,6 +43,8 @@ window.vote = async function(e, side, id) {
     else current.human = (current.human || 0) + 1;
 
     await ref.update(current);
+
+    localStorage.setItem(votedKey, 'true');   // prevents multiple votes from same browser
     showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
     updateGridVoteUI(id);
   } catch (err) {
