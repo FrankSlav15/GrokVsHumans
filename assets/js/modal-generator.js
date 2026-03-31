@@ -218,10 +218,10 @@ window.voteFromModal = function(e, side) {
   e.stopImmediatePropagation();
   e.preventDefault();
   if (typeof vote === 'function' && window.currentBattleId) {
-    vote(e, side, window.currentBattleId);   // calls the real Firebase function in common.js
+    vote(e, side, window.currentBattleId);
     setTimeout(() => {
       updateModalVoteUI();
-      updateGridVoteUI(window.currentBattleId);   // sync grid cards instantly
+      updateGridVoteUI(window.currentBattleId);
     }, 700);
   }
 };

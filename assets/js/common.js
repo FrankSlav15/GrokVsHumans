@@ -20,7 +20,7 @@ try {
   console.warn("Firebase init failed (normal on some pages)", e);
 }
 
-// ====================== LIVE VOTING HELPERS (Firebase + one-vote-per-browser limitation) ======================
+// ====================== LIVE VOTING HELPERS (final clean version – matches old preview) ======================
 window.vote = async function(e, side, id) {
   e.stopImmediatePropagation();
   e.preventDefault();
@@ -44,9 +44,10 @@ window.vote = async function(e, side, id) {
 
     await ref.update(current);
 
-    localStorage.setItem(votedKey, 'true');   // prevents multiple votes from same browser
+    localStorage.setItem(votedKey, 'true');
     showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
     updateGridVoteUI(id);
+    if (window.currentBattleId === id) updateModalVoteUI();
   } catch (err) {
     console.error('Firebase write failed', err);
   }
@@ -59,9 +60,6 @@ window.updateGridVoteUI = function(id) {
 
   const grokVotes = window.allBattles[id].grok || 0;
   const humanVotes = window.allBattles[id].human || 0;
-  const total = grokVotes + humanVotes;
-
-  if (total === 0) return;
 
   grokCount.textContent = grokVotes;
   humanCount.textContent = humanVotes;
