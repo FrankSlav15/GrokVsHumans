@@ -20,13 +20,14 @@ try {
   console.warn("Firebase init failed (normal on some pages)", e);
 }
 
-// ====================== LIVE VOTING HELPERS (matches your old preview branch exactly) ======================
+// ====================== LIVE VOTING HELPERS (matches your real Firebase structure) ======================
 window.vote = async function(e, side, id) {
   e.stopImmediatePropagation();
   e.preventDefault();
   if (!database || !window.allBattles || !window.allBattles[id]) return;
 
-  const ref = database.ref(`battles/${id}`);   // ← changed back to match old preview
+  // This path + fields exactly match what you see in the Firebase console
+  const ref = database.ref(`battles/${id}`);
 
   const snapshot = await ref.once('value');
   const current = snapshot.val() || { grok: 0, human: 0 };
