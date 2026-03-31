@@ -63,7 +63,14 @@
             </div>
 
             <!-- Genre section – only shows when JSON has genre field -->
-            <div id="genre-section" class="genre-section"></div>
+            <div id="genre-section" class="genre-section">
+                <div class="genre-header">SEE OTHER VARIATIONS OF</div>
+                <div class="genre-arrows">
+                    <button onclick="prevGenreMeme()" class="genre-arrow">↓</button>
+                    <div id="genre-name" class="genre-name"></div>
+                    <button onclick="nextGenreMeme()" class="genre-arrow">↑</button>
+                </div>
+            </div>
 
             <!-- Context panel -->
             <div id="context-panel" class="modal__context">
