@@ -20,7 +20,7 @@ try {
   console.warn("Firebase init failed (normal on some pages)", e);
 }
 
-// ====================== LIVE VOTING HELPERS (final clean version – matches old preview) ======================
+// ====================== LIVE VOTING HELPERS (final clean version) ======================
 window.vote = async function(e, side, id) {
   e.stopImmediatePropagation();
   e.preventDefault();
@@ -47,7 +47,6 @@ window.vote = async function(e, side, id) {
     localStorage.setItem(votedKey, 'true');
     showToast(side === 'grok' ? 'Grok Won!' : 'Human Won!');
     updateGridVoteUI(id);
-    if (window.currentBattleId === id) updateModalVoteUI();
   } catch (err) {
     console.error('Firebase write failed', err);
   }
