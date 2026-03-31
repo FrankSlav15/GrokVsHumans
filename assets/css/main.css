@@ -65,7 +65,14 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .human-bar{background:#9f1239;color:#fff}
 .vote-count{font-size:2rem;font-weight:700;padding:0 30px}
 .tag{padding:.2rem .8rem;background:rgba(168,85,247,.15);color:#c084fc;font-size:.8rem;border-radius:9999px;white-space:nowrap;line-height:1.3}
-.tags-area{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1rem}
+.tags-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin-bottom: 1rem;
+    margin-left: 2rem;
+    padding-top: 0.5rem;
+}
 
 /* ============================================= */
 /* Modals (shared) – GLOBAL UNIFIED SCROLL + FIXED BUTTONS */
