@@ -235,6 +235,94 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:#0a
 .modal-btn-grok, .modal-btn-human { min-height: 58px; font-size: 1.05rem; }
 
 /* ============================================= */
+/* Modals – Battles improvements */
+/* ============================================= */
+
+/* Bottom scoreboard bar (always visible) */
+.modal__vote-bar {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid #27272a;
+  overflow: hidden;
+}
+
+.modal-btn-grok,
+.modal-btn-human {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.modal-btn-grok {
+  background: #6b21a8;
+  color: #fff;
+}
+
+.modal-btn-human {
+  background: #9f1239;
+  color: #fff;
+}
+
+/* Better thread layout – Grok on RIGHT */
+.thread-post {
+  display: flex !important;
+  gap: 12px !important;
+  align-items: flex-start !important;
+}
+
+.thread-post.justify-end {
+  justify-content: flex-end !important;
+  flex-direction: row-reverse !important;
+}
+
+/* Readable images + videos in thread */
+.thread-post img,
+.thread-post video {
+  max-height: 320px;
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+  object-fit: contain;
+  border-radius: 14px;
+  margin-top: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+  display: block;
+}
+
+/* Tags now wrap cleanly and never clip */
+.tags-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  padding: .2rem .8rem;
+  background: rgba(168, 85, 247, .15);
+  color: #c084fc;
+  font-size: .8rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+/* Description text under title */
+.modal__description {
+  color: #a1a1aa;
+  font-size: .95rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  white-space: pre-line;
+}
+
+/* ============================================= */
 /* Footer (global) */
 /* ============================================= */
 .footer{background:#0a0a1f;border-top:1px solid rgba(168,85,247,.2);padding:3rem 1.5rem 2rem;text-align:center;font-size:.875rem;color:var(--text-muted);position:relative;z-index:10}
