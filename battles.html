@@ -54,45 +54,46 @@
         <span id="toast-text"></span>
     </div>
 
-    <!-- BATTLE MODAL (updated structure) -->
+    <!-- BATTLE MODAL (global sticky header version) -->
     <div id="battle-modal" class="modal" onclick="if(event.target === this) closeModal()">
-    <div class="modal__content" onclick="event.stopImmediatePropagation()">
-        
-        <!-- Close + arrows -->
-        <button onclick="closeModal()" class="modal__close">✕</button>
-        <button class="modal-nav modal-nav--prev" onclick="prevBattle()" aria-label="Previous battle">‹</button>
-        <button class="modal-nav modal-nav--next" onclick="nextBattle()" aria-label="Next battle">›</button>
+        <div class="modal__content" onclick="event.stopImmediatePropagation()">
+            
+            <!-- Close + arrows -->
+            <button onclick="closeModal()" class="modal__close">✕</button>
+            <button class="modal-nav modal-nav--prev" onclick="prevBattle()" aria-label="Previous battle">‹</button>
+            <button class="modal-nav modal-nav--next" onclick="nextBattle()" aria-label="Next battle">›</button>
 
-        <!-- Media (fixed top) -->
-        <div id="modal-image" class="modal__image-container"></div>
+            <!-- Media (scrolls away) -->
+            <div id="modal-image" class="modal__image-container"></div>
 
-        <!-- Scrollable content area -->
-        <div class="modal__body">
-        <!-- Tags + Title + Description -->
-        <div id="modal-tags" class="tags-area"></div>
-        <h2 id="modal-title" class="modal__title"></h2>
-        <p id="modal-description" class="modal__description"></p>
+            <!-- Sticky header (tags + title + description) -->
+            <div class="modal__sticky-header">
+            <div id="modal-tags" class="tags-area"></div>
+            <h2 id="modal-title" class="modal__title"></h2>
+            <p id="modal-description" class="modal__description"></p>
+            </div>
 
-        <!-- Thread -->
-        <div id="thread-container" class="thread-container"></div>
+            <!-- Scrollable thread area -->
+            <div class="modal__body">
+            <div id="thread-container" class="thread-container"></div>
+            </div>
+
+            <!-- Fixed scoreboard voting bar -->
+            <div class="modal__vote-bar">
+            <button id="modal-grok-btn" onclick="voteFromModal(event, 'grok')" class="modal-btn-grok">Grok Won</button>
+            <button id="modal-human-btn" onclick="voteFromModal(event, 'human')" class="modal-btn-human">Human Won</button>
+            </div>
+
+            <!-- Fixed action buttons -->
+            <div id="modal-buttons" class="modal__buttons">
+            <a id="modal-x-link" href="#" target="_blank" class="modal-btn-view">
+                <i class="fa-brands fa-x-twitter"></i> Participate
+            </a>
+            <button onclick="showShareMenu()" class="modal__share-btn">
+                <i class="fa-solid fa-share-from-square"></i> Share
+            </button>
+            </div>
         </div>
-
-        <!-- ALWAYS-VISIBLE BOTTOM BAR 1: Scoreboard voting -->
-        <div class="modal__vote-bar">
-        <button id="modal-grok-btn" onclick="voteFromModal(event, 'grok')" class="modal-btn-grok">Grok Won</button>
-        <button id="modal-human-btn" onclick="voteFromModal(event, 'human')" class="modal-btn-human">Human Won</button>
-        </div>
-
-        <!-- ALWAYS-VISIBLE BOTTOM BAR 2: Participate + Share -->
-        <div id="modal-buttons" class="modal__buttons">
-        <a id="modal-x-link" href="#" target="_blank" class="modal-btn-view">
-            <i class="fa-brands fa-x-twitter"></i> Participate
-        </a>
-        <button onclick="showShareMenu()" class="modal__share-btn">
-            <i class="fa-solid fa-share-from-square"></i> Share
-        </button>
-        </div>
-    </div>
     </div>
 
     <!-- assets/partials/footer.html -->
