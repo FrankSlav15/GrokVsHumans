@@ -176,7 +176,7 @@ window.showShareMenu = function() {
   overlay.id = 'share-overlay';
   overlay.className = 'share-overlay';
   overlay.innerHTML = `
-    <div onclick="if(event.target === this) closeShareMenu()" class="share-overlay">
+    <div onclick="closeShareMenu()" class="share-overlay">
       <div onclick="event.stopImmediatePropagation()" class="share-overlay__content">
         <button onclick="closeShareMenu()" class="share-overlay__close">✕</button>
         <h3 class="share-overlay__title">Share this post</h3>
