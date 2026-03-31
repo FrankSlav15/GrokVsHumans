@@ -82,51 +82,32 @@ function renderThread(threadPosts, containerId) {
 }
 
 // ====================== OPEN / CLOSE ======================
-window.openMemeModal = function(id) {
-  const data = window.allMemes[id];
-  if (!data) return;
-  window.currentMemeId = id;
-
-  renderCommonModalParts(data, 'memes');
-  renderTags(data);
-  renderGenreNav(id);
-
-  document.getElementById('meme-modal').style.display = 'flex';
-  document.getElementById('modal-buttons').style.display = 'flex';
-  document.getElementById('context-panel').style.display = 'none';
-
-  attachGlobalSwipeHandler('memes');
-};
-
 window.openBattleModal = function(id) {
   const data = window.allBattles[id];
   if (!data) return;
   window.currentBattleId = id;
 
-  // Media
+  // Media (now scrolls away)
   const mediaContainer = document.getElementById('modal-image');
   const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
   mediaContainer.innerHTML = isVideo
     ? `<video src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
     : `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
 
-  // Tags
+  // Sticky header content
   renderTags(data);
-
-  // Title + Description (new)
   document.getElementById('modal-title').textContent = data.title || '';
   const descEl = document.getElementById('modal-description');
-  descEl.textContent = data.description || data.human || data.grok || ''; // fallback to old fields if needed
+  descEl.textContent = data.description || data.human || data.grok || '';
 
-  // Thread
+  // Thread (scrolls)
   renderThread(data.threadPosts || [], 'thread-container');
 
-  // Open modal
   const modal = document.getElementById('battle-modal');
   modal.style.display = 'flex';
 
   attachGlobalSwipeHandler('battles');
-  updateModalVoteUI();   // scoreboard updates
+  updateModalVoteUI();
 };
 
 window.openCategoryModal = function(id) {
@@ -144,6 +125,22 @@ window.openCategoryModal = function(id) {
   if (buttons) buttons.style.display = 'flex';
 
   attachGlobalSwipeHandler('categories');
+};
+
+window.openMemeModal = function(id) {
+  const data = window.allMemes[id];
+  if (!data) return;
+  window.currentMemeId = id;
+
+  renderCommonModalParts(data, 'memes');
+  renderTags(data);
+  renderGenreNav(id);
+
+  document.getElementById('meme-modal').style.display = 'flex';
+  document.getElementById('modal-buttons').style.display = 'flex';
+  document.getElementById('context-panel').style.display = 'none';
+
+  attachGlobalSwipeHandler('memes');
 };
 
 window.closeMemeModal = function() { document.getElementById('meme-modal').style.display = 'none'; };
