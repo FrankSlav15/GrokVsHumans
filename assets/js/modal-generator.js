@@ -62,7 +62,7 @@ function renderThread(threadPosts, containerId) {
           ${isDeleted 
             ? `<div class="deleted-post">This Post is from an account that no longer exists.</div>` 
             : `
-              <div class="flex items-center gap-2 mb-2">
+              <div class="thread-post__header">
                 <span class="font-semibold text-sm">${displayNameHTML}</span>
                 <span class="text-zinc-500 text-xs">${post.date || ''}</span>
               </div>
