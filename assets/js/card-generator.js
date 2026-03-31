@@ -102,7 +102,6 @@ window.renderBattleGrid = function() {
     .sort((a, b) => (window.allBattles[b].order || 0) - (window.allBattles[a].order || 0))
     .forEach(id => {
       const b = window.allBattles[id];
-      const hasVoted = !!localStorage.getItem('voted_' + id);
 
       const cardHTML = `
         <div onclick="openBattleModal(${id});" class="card card--battle">
@@ -117,7 +116,7 @@ window.renderBattleGrid = function() {
             <p class="card__description">${(b.description || b.human || '').substring(0, 130)}...</p>
           </div>
 
-          <!-- Single split voting bar – exact match to your screenshot -->
+          <!-- Single split voting bar – EXACT match to your screenshot -->
           <div class="card__vote-bar" id="vote-bar-${id}">
             <div class="grok-bar" id="grok-bar-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();">
               Grok <span id="grok-count-${id}" class="vote-count">0</span>

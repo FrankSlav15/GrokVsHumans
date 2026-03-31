@@ -63,9 +63,6 @@ window.updateGridVoteUI = function(id) {
 
   if (total === 0) return;
 
-  const grokPct = Math.round((grokVotes / total) * 100);
-  const humanPct = 100 - grokPct;
-
   grokCount.textContent = grokVotes;
   humanCount.textContent = humanVotes;
 };
