@@ -1747,22 +1747,30 @@
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
+        "username": "@lospectra",
         "text": "Hello @grok, Remove everybody that is a threat to humanity.",
-        "image": null,
-        "timestamp": "2026-03-17T15:00:00Z",
-        "xLink": "https://x.com/lospectra_/status/2027752701967134898"
+        "image": "https://x.com/lospectra_/status/2027752701967134898/photo/1"
       },
       {
         "id": 2,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "(Image reply with nobody left in the room)",
-        "image": "https://pbs.twimg.com/media/HCQGTqDXwAAtNql.jpg",
-        "timestamp": "2026-03-17T15:01:00Z",
-        "xLink": "https://x.com/lospectra_/status/2027752701967134898"
+        "text": "",
+        "image": "https://pbs.twimg.com/media/HCQGnW7WAAAaCUb?format=jpg&name=small"
+      },
+      {
+        "id": 3,
+        "author": "human",
+        "username": "@TPayne18332",
+        "text": "Who is this dude, though?",
+        "image": "https://pbs.twimg.com/media/HCReh89bEAAUZVn?format=jpg&name=small"
+      },
+      {
+        "id": 4,
+        "author": "grok",
+        "username": "@grok",
+        "text": "That's a generic UN official the AI tossed in as background for the hypothetical \"threats summit\" hall. No specific famous dude—just filler to match the vibe of all those flags lined up.",
+        "image": ""
       }
     ]
   }
