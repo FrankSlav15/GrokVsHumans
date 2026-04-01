@@ -18,12 +18,12 @@ try {
   process.exit(1);
 }
 
-// Find highest order number (keys are strings like "54")
+// Find highest order number
 const keys = Object.keys(data).map(Number);
 const maxOrder = keys.length > 0 ? Math.max(...keys) : 0;
 const newOrder = String(maxOrder + 1);
 
-// Build the new entry
+// Build new entry (clean, minimal structure)
 const newEntry = {
   order: maxOrder + 1,
   title: "",
@@ -37,7 +37,6 @@ if (type === 'memes') {
   newEntry.genre = "";
   newEntry.context = "";
 } else {
-  // battles and categories get starter threadPosts
   newEntry.threadPosts = [
     {
       id: 1,
@@ -49,19 +48,13 @@ if (type === 'memes') {
   ];
 }
 
-// Add the new entry using the correct key
+// Add it
 data[newOrder] = newEntry;
 
-// Write back with clean, consistent 2-space indentation
-fs.writeFileSync(
-  filePath,
-  JSON.stringify(data, null, 2) + '\n',
-  'utf8'
-);
+// Write with clean 2-space indentation (zero extra mess)
+fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf8');
 
 console.log(`✅ Added new entry to data/${type}.json`);
 console.log(`   → Key: "${newOrder}"`);
 console.log(`   → Order: ${newOrder}`);
-if (type !== 'memes') {
-  console.log(`   → Includes starter threadPosts (id: 1)`);
-}
+if (type !== 'memes') console.log(`   → Includes starter threadPosts (id: 1)`);
