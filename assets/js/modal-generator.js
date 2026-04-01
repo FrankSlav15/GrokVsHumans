@@ -14,7 +14,8 @@ function renderCommonModalParts(data, pageType) {
         src="${data.image}" 
         class="modal__image" 
         autoplay 
-        loop 
+        loop
+        muted 
         playsinline 
         preload="metadata" 
         controls>
