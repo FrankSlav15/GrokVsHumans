@@ -1,53 +1,73 @@
-{
+{ 
+  "56": {
+    "order": 56,
+    "title": "Which do you choose?",
+    "description": "This guy makes a straightforward presentation to put that sweet coffee drink you have every day in perspective.",
+    "image": "https://files.catbox.moe/34ctu2.mp4",
+    "tags": "videos",
+    "genre": "",
+    "xLink": "https://x.com/dmmsell/status/2039233164254621718?s=20",
+    "context": ""
+  },
+  "55": {
+    "order": 55,
+    "title": "The Ames Window",
+    "description": "Adelbert Ames Jr. developed this mind-bending optical illusion in 1951",
+    "image": "https://files.catbox.moe/aq7l6i.mp4",
+    "tags": "videos",
+    "genre": "",
+    "xLink": "https://x.com/historyinmemes/status/2039344531879989485?s=20",
+    "context": ""
+  },
   "54": {
     "order": 54,
     "title": "Animation Vs Geometry",
     "description": "A mezemerizing animation by Alan Becker",
-    "image": "assets/images/memes/AnimationVsGeometry.mp4",
+    "image": "https://files.catbox.moe/bflkzt.mp4",
     "tags": "videos",
     "genre": "",
     "xLink": "https://x.com/InterestingSTEM/status/2036775066029940896?s=20",
-    "context": "A mezemerizing animation by Alan Becker"
+    "context": ""
   },
   "53": {
     "order": 53,
     "title": "The Perfect Biden Video Doesn't Exi...",
     "description": "The world according to Joe Biden",
-    "image": "assets/images/memes/PerfectBiden.mp4",
+    "image": "https://files.catbox.moe/98sxyt.mp4",
     "tags": "videos,political-memes",
     "genre": "",
     "xLink": "https://x.com/Cloud1a7/status/2037589246114979867?s=20",
-    "context": "The world according to Joe Biden"
+    "context": ""
   },
   "52": {
     "order": 52,
     "title": "Admin Party 3",
     "description": "The Trump administration celebrates to different tunes.",
-    "image": "assets/images/memes/AdminParty3.mp4",
+    "image": "https://files.catbox.moe/te3v0g.mp4",
     "tags": "ai-tech,videos,political-memes",
     "genre": "Admin Party",
     "xLink": "https://x.com/saltinesnack/status/2037334235506208934?s=20",
-    "context": "The Trump administration celebrates to different tunes."
+    "context": ""
   },
   "51": {
     "order": 51,
     "title": "Admin Party 2",
     "description": "The Trump administration celebrates to different tunes.",
-    "image": "assets/images/memes/AdminParty2.mp4",
+    "image": "https://files.catbox.moe/eh3vi5.mp4",
     "tags": "ai-tech,videos,political-memes",
     "genre": "Admin Party",
     "xLink": "https://x.com/TheRoyalSerf/status/2037265022565670969?s=20",
-    "context": "The Trump administration celebrates to different tunes."
+    "context": ""
   },
   "50": {
     "order": 50,
     "title": "Admin Party 1",
     "description": "The Trump administration celebrates to different tunes.",
-    "image": "assets/images/memes/AdminParty1.mp4",
+    "image": "https://files.catbox.moe/ofz1om.mp4",
     "tags": "ai-tech,videos,political-memes",
     "genre": "Admin Party",
     "xLink": "https://x.com/drefanzor/status/2037200123827212799?s=20",
-    "context": "The Trump administration celebrates to different tunes."
+    "context": ""
   },
   "49": {
     "order": 49,
