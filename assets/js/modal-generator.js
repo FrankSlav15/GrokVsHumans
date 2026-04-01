@@ -4,11 +4,23 @@
 // ====================== COMMON RENDERING ======================
 function renderCommonModalParts(data, pageType) {
   const mediaContainer = document.getElementById('modal-image');
-  if (mediaContainer) {
-    const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
-    mediaContainer.innerHTML = isVideo
-      ? `<video src="${data.image}" class="modal__image" autoplay loop playsinline preload="metadata" controls></video>`
-      : `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
+  if (!mediaContainer) return;
+
+  const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+
+  if (isVideo) {
+    mediaContainer.innerHTML = `
+      <video 
+        src="${data.image}" 
+        class="modal__image" 
+        autoplay 
+        loop 
+        playsinline 
+        preload="metadata" 
+        controls>
+      </video>`;
+  } else {
+    mediaContainer.innerHTML = `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
   }
 
   const titleEl = document.getElementById('modal-title');
