@@ -1,4 +1,35 @@
 {
+
+  "52": {
+    "order": 52,
+    "title": "Admin Party 3",
+    "description": "The Trump administration celebrates to different tunes.",
+    "image": "https://files.catbox.moe/jsn6c2.mov",
+    "tags": "ai-tech,videos,political-memes",
+    "genre": "Admin Party",
+    "xLink": "https://x.com/saltinesnack/status/2037334235506208934?s=20",
+    "context": "The Trump administration celebrates to different tunes."
+  },
+  "51": {
+    "order": 51,
+    "title": "Admin Party 2",
+    "description": "The Trump administration celebrates to different tunes.",
+    "image": "https://files.catbox.moe/eg7t23.mov",
+    "tags": "ai-tech,videos,political-memes",
+    "genre": "Admin Party",
+    "xLink": "https://x.com/TheRoyalSerf/status/2037265022565670969?s=20",
+    "context": "The Trump administration celebrates to different tunes."
+  },
+  "50": {
+    "order": 50,
+    "title": "Admin Party 1",
+    "description": "The Trump administration celebrates to different tunes.",
+    "image": "https://files.catbox.moe/5fi6ar.mov",
+    "tags": "ai-tech,videos,political-memes",
+    "genre": "Admin Party",
+    "xLink": "https://x.com/drefanzor/status/2037200123827212799?s=20",
+    "context": "The Trump administration celebrates to different tunes."
+  },
   "49": {
     "order": 49,
     "title": "Grok, is this real?",
