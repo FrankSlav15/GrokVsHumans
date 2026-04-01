@@ -115,11 +115,11 @@ window.openBattleModal = function(id) {
   if (!data) return;
   window.currentBattleId = id;
 
-  // Media (now scrolls away)
+    // Media (now with sound + controls)
   const mediaContainer = document.getElementById('modal-image');
   const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
   mediaContainer.innerHTML = isVideo
-    ? `<video src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
+    ? `<video src="${data.image}" class="modal__image" autoplay loop playsinline preload="metadata" controls></video>`
     : `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
 
   // Sticky header content
@@ -174,9 +174,26 @@ window.openMemeModal = function(id) {
   attachGlobalSwipeHandler('memes');
 };
 
-window.closeMemeModal = function() { document.getElementById('meme-modal').style.display = 'none'; document.body.style.overflow = 'visible';};
-window.closeModal = function() { document.getElementById('battle-modal').style.display = 'none'; document.body.style.overflow = 'visible';};
-window.closeCategoryModal = function() { document.getElementById('category-modal').style.display = 'none'; document.body.style.overflow = 'visible';};
+window.closeMemeModal = function() {
+  const video = document.querySelector('#meme-modal video');
+  if (video) video.pause();
+  document.getElementById('meme-modal').style.display = 'none';
+  document.body.style.overflow = 'visible';
+};
+
+window.closeModal = function() {   // battles
+  const video = document.querySelector('#battle-modal video');
+  if (video) video.pause();
+  document.getElementById('battle-modal').style.display = 'none';
+  document.body.style.overflow = 'visible';
+};
+
+window.closeCategoryModal = function() {
+  const video = document.querySelector('#category-modal video');
+  if (video) video.pause();
+  document.getElementById('category-modal').style.display = 'none';
+  document.body.style.overflow = 'visible';
+};
 
 // ====================== UNIVERSAL SHARE MENU + DEEP LINK (ALL PAGES) ======================
 window.showShareMenu = function() {
