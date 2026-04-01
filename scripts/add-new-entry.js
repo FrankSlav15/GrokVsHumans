@@ -10,7 +10,7 @@ if (!['memes', 'battles', 'categories'].includes(type)) {
 
 const filePath = path.join('data', `${type}.json`);
 
-let data = [];
+let data;
 try {
   data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 } catch (e) {
@@ -18,12 +18,13 @@ try {
   process.exit(1);
 }
 
-// Find highest order number
-const maxOrder = data.length > 0 
-  ? Math.max(...data.map(item => item.order || 0)) 
-  : 0;
+// Find highest order number (keys are strings like "54")
+const keys = Object.keys(data).map(Number);
+const maxOrder = keys.length > 0 ? Math.max(...keys) : 0;
+const newOrder = String(maxOrder + 1);
 
-let newEntry = {
+// Build the new entry
+const newEntry = {
   order: maxOrder + 1,
   title: "",
   description: "",
@@ -48,11 +49,19 @@ if (type === 'memes') {
   ];
 }
 
-data.push(newEntry);
+// Add the new entry using the correct key
+data[newOrder] = newEntry;
 
-fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n');
+// Write back with clean, consistent 2-space indentation
+fs.writeFileSync(
+  filePath,
+  JSON.stringify(data, null, 2) + '\n',
+  'utf8'
+);
 
-console.log(`✅ Added new entry to data/${type}.json with order = ${newEntry.order}`);
+console.log(`✅ Added new entry to data/${type}.json`);
+console.log(`   → Key: "${newOrder}"`);
+console.log(`   → Order: ${newOrder}`);
 if (type !== 'memes') {
   console.log(`   → Includes starter threadPosts (id: 1)`);
 }
