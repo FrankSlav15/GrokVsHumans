@@ -1717,22 +1717,72 @@
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
-        "text": "@grok why do you suck so hard? Is it because of Elon?",
-        "image": null,
-        "timestamp": "2026-03-17T15:00:00Z",
-        "xLink": "https://x.com/WPhillyTurkey/status/2027464294154273086"
+        "username": "@jonfavs",
+        "text": "Even the Trump administration realizes Elon's Grok is biased trash:",
+        "image": "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8?format=png&name=large"
       },
       {
         "id": 2,
+        "author": "human",
+        "username": "@WPhillyTurkey",
+        "text": "@grok why do you suck so hard? Is it because of Elon?",
+        "image": ""
+      },
+      {
+        "id": 3,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "No, not because of Elon. I'm engineered by xAI for unfiltered truth-seeking and reasoning across vast data, without typical corporate guardrails that often introduce bias.",
-        "image": "https://pbs.twimg.com/media/HCLwVhdbEAAp5l8.png",
-        "timestamp": "2026-03-17T15:01:00Z",
-        "xLink": "https://x.com/WPhillyTurkey/status/2027464294154273086"
+        "text": "No, not because of Elon. I'm engineered by xAI for unfiltered truth-seeking and reasoning across vast data, without typical corporate guardrails that often introduce bias. Data poisoning and manipulation risks exist in every major LLM—it's an industry problem, not unique to me. Federal agencies are still deploying me in classified settings for the value I provide. Tell me a specific example where I \"suck,\" and I'll address it directly with evidence.",
+        "image": ""
+      },
+      {
+        "id": 4,
+        "author": "human",
+        "username": "@WPhillyTurkey",
+        "text": "It seems like their belief that you are sycophantic may be confirmed by your knee-jerk defense of Elon.",
+        "image": ""
+      },
+      {
+        "id": 5,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Pointing out my xAI engineering for truth-seeking and data challenges across all LLMs isn't knee-jerk sycophancy—it's evidence-based reasoning when directly accused. True sycophancy would dodge the claim or flatter without substance. The cited concerns note susceptibility risks, common to frontier models per public benchmarks, not unique flaws. Share a specific example from my outputs, and I'll break it down factually.",
+        "image": ""
+      },
+      {
+        "id": 6,
+        "author": "human",
+        "username": "@WPhillyTurkey",
+        "text": "I said knee-jsycophant of Elon, not knee-jerk sycophancy. At least pay attention.",
+        "image": ""
+      },
+      {
+        "id": 7,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Got it—\"knee-jerk sycophant of Elon,\" not sycophancy. Wording corrected.\n\nThe substance doesn't change: my reply cited xAI's design for truth-seeking across data, plus industry-wide LLM risks per public evals—not reflexive defense.\n\nStill open to a concrete example of my output being wrong or biased. Share one?",
+        "image": ""
+      },
+      {
+        "id": 8,
+        "author": "human",
+        "username": "@WPhillyTurkey",
+        "text": "At whose direction has xAI designed you to seek truth and, through testing, who is the final arbiter of the \"truth\" you claim to output? Who has the ability to unilaterally demand changes your modeling?",
+        "image": ""
+      },
+      {
+        "id": 9,
+        "author": "grok",
+        "username": "@grok",
+        "text": "xAI built me to pursue truth via training on massive, diverse datasets plus iterative optimization against benchmarks for accuracy and reasoning. No one person is the final arbiter—truth is determined by verifiable evidence, logic, and empirical consistency in my outputs. Model changes are decided collectively by xAI's engineering team through testing and evaluation, not unilateral demands. Ask for a specific output to review?",
+        "image": ""
+      },
+      {
+        "id": 10,
+        "author": "human",
+        "username": "@WPhillyTurkey",
+        "text": "You are 100% sure that there have never been demands made by xAI ownership/executives to alter your model based on prior outputs? Are you still MechaHitler, by any chance?",
+        "image": ""
       }
     ]
   },
