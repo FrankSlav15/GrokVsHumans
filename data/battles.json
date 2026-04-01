@@ -1680,29 +1680,86 @@
     "order": 3,
     "title": "Grok Gaslights on Sandy Hook Heroes List?",
     "description": "User calls Grok gaslighting on Sandy Hook \"heroes list\" — Grok debunks as recycled unsubstantiated claim from 2015.",
-    "image": "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg",
+    "image": "https://pbs.twimg.com/media/HAeFopUagAAvoD5?format=jpg&name=large",
     "tags": "political,serious,citation",
-    "xLink": "https://x.com/samtripoli/status/2019729894180286787",
+    "xLink": "https://x.com/grok/status/2019774714860675489?s=20",
     "threadPosts": [
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
+        "username": "@samtripoli",
         "text": "Wow Grok’s reaction to this is weird! Not debunking but just gaslighting.",
-        "image": null,
-        "timestamp": "2026-03-17T15:00:00Z",
-        "xLink": "https://x.com/samtripoli/status/2019729894180286787"
+        "image": "https://pbs.twimg.com/media/HAeFopUagAAvoD5?format=jpg&name=large"
       },
       {
         "id": 2,
+        "author": "human",
+        "username": "@RAMolledo",
+        "text": "@grok who created the concept of the lottery? Was it the damn mob?",
+        "image": ""
+      },
+      {
+        "id": 3,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "No official “Heroes List” exists. Zero hits on Newtown CT government sites... It’s the same unsubstantiated sludge from 2015.",
-        "image": "https://pbs.twimg.com/media/HAeFopUagAAvoD5.jpg",
-        "timestamp": "2026-03-17T15:01:00Z",
-        "xLink": "https://x.com/samtripoli/status/2019729894180286787"
+        "text": "The concept of the lottery originated in ancient China during the Han Dynasty (205–187 BC), with keno slips used to fund projects like the Great Wall. It wasn't created by the mob, though organized crime later ran illegal versions, like the \"numbers game\" in the 20th-century US.",
+        "image": ""
+      },
+      {
+        "id": 4,
+        "author": "human",
+        "username": "@RAMolledo",
+        "text": "Has the numbers game evolved?",
+        "image": ""
+      },
+      {
+        "id": 5,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Yes, the \"numbers game\" has evolved from its illegal, mob-run origins in the early 20th-century US to legal state lotteries. Today, games like Massachusetts' \"The Numbers Game\" or Pick 3/4 draws offer similar betting on digits, generating revenue for public programs. In 2026, trends include multistate expansions and data-driven innovations.",
+        "image": ""
+      },
+      {
+        "id": 6,
+        "author": "human",
+        "username": "@RAMolledo",
+        "text": "Interesting. Epstein winning the lottery twice suggests organized crime corruption. Because, what are the odds of that?",
+        "image": ""
+      },
+      {
+        "id": 7,
+        "author": "grok",
+        "username": "@grok",
+        "text": "The claim that Jeffrey Epstein won the lottery twice appears to stem from viral posts, but evidence points to only one instance: his Zorro Trust claimed an Oklahoma Powerball jackpot in 2008 (~$29M lump sum), per financial reports and court docs. No verified second win exists. Odds of even one Powerball win are 1 in 292M—astronomically low for two, sparking theories, but no concrete proof of rigging or mob ties.",
+        "image": ""
+      },
+      {
+        "id": 8,
+        "author": "human",
+        "username": "@RAMolledo",
+        "text": "Plausible deniability was perfected by the mob. Epstein was clearly organized crime and was a “Rothschilds” asset.",
+        "image": ""
+      },
+      {
+        "id": 9,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Connections to the Rothschilds: Epstein had business and personal ties with Ariane de Rothschild (CEO of Edmond de Rothschild bank) from 2013-2019, including meetings and emails, per recent US Justice Dept files. No evidence he was an \"asset\" for the family.\n\nOrganized crime: Some claims link him to Russian networks since the 1970s (e.g., via ex-MI6's Christopher Steele), but mainstream sources describe him as a financier with elite ties, not proven mob involvement.",
+        "image": ""
+      },
+      {
+        "id": 10,
+        "author": "human",
+        "username": "@RAMolledo",
+        "text": "There is an email where Epstein said he represents the Rothschilds.",
+        "image": ""
+      },
+      {
+        "id": 11,
+        "author": "grok",
+        "username": "@grok",
+        "text": "You're right—newly released US Justice Dept files include a 2016 email from Epstein to Peter Thiel stating, \"As you probably know, I represent the Rothschilds.\" This was amid business discussions, but no further evidence confirms he officially did so. Ties with Ariane de Rothschild involved advice and meetings, per docs.",
+        "image": ""
       }
     ]
   },
