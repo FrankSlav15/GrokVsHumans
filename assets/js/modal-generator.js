@@ -7,7 +7,7 @@ function renderCommonModalParts(data, pageType) {
   if (mediaContainer) {
     const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
     mediaContainer.innerHTML = isVideo
-      ? `<video src="${data.image}" class="modal__image" autoplay loop muted playsinline preload="metadata" controls></video>`
+      ? `<video src="${data.image}" class="modal__image" autoplay loop playsinline preload="metadata" controls></video>`
       : `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
   }
 
