@@ -116,25 +116,43 @@ window.openBattleModal = function(id) {
   if (!data) return;
   window.currentBattleId = id;
 
-    // Media (now with sound + controls)
+  // Media (now with sound + controls) – exactly as you had it
   const mediaContainer = document.getElementById('modal-image');
   const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
   mediaContainer.innerHTML = isVideo
     ? `<video src="${data.image}" class="modal__image" autoplay loop playsinline preload="metadata" controls></video>`
     : `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
 
-  // Sticky header content
+  // Force unmute on first tap (fixes .mov sound issue)
+  const video = mediaContainer.querySelector('video');
+  if (video) {
+    const unmuteOnTap = () => {
+      video.muted = false;
+      video.play();
+      mediaContainer.removeEventListener('touchstart', unmuteOnTap);
+      mediaContainer.removeEventListener('click', unmuteOnTap);
+    };
+    mediaContainer.addEventListener('touchstart', unmuteOnTap, { once: true });
+    mediaContainer.addEventListener('click', unmuteOnTap, { once: true });
+  }
+
+  // Sticky header content – exactly as you had it
   renderTags(data);
   document.getElementById('modal-title').textContent = data.title || '';
   const descEl = document.getElementById('modal-description');
   descEl.textContent = data.description || data.human || data.grok || '';
 
-  // Thread (scrolls)
+  // Thread (scrolls) – exactly as you had it
   renderThread(data.threadPosts || [], 'thread-container');
 
+  // Show modal + scroll lock – exactly as you had it
   const modal = document.getElementById('battle-modal');
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+
+  // FIXED: Participate button now links to the correct xLink
+  const xLinkEl = document.getElementById('modal-x-link');
+  if (xLinkEl) xLinkEl.href = data.xLink || '#';
 
   attachGlobalSwipeHandler('battles');
   updateModalVoteUI();
