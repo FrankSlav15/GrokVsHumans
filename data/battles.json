@@ -1588,7 +1588,7 @@
   },
   "6": {
     "order": 6,
-    "title": "Grok Has Been Compromised",
+    "title": "Grok Has Been \"Compermized\"",
     "description": "Human calls fact-checking corrupted. Grok shows popular sources over primary sources once again.",
     "image": "assets/images/memes/factcheck.webp",
     "tags": "political,serious",
@@ -1597,22 +1597,198 @@
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
-        "text": "Thinks Grok's fact-checking methods are flawed",
-        "image": null,
-        "timestamp": "2026-03-17T15:00:00Z",
-        "xLink": "https://x.com/malcomtentrage/status/2005107639517413683"
+        "username": "@elonmusk",
+        "text": "The radical left has been using fraudulent government programs for a long time to import and retain vast numbers of illegal (and legal, in some cases) immigrants to win elections and turn America into a single-party state, destroying any real democracy.\n\nThe more you look at it, the more you will be horrified at what your tax money is doing and the fact that, if this is not reversed, your vote will mean nothing.\n\nThe most obvious case example is the Somali voting bloc in Minnesota, a state that historically had zero Somalis, electing Ilhan Omar to the US Congress.\n\nThe same is happening in Europe, UK, Canada, Australia and New Zealand.",
+        "image": ""
       },
       {
         "id": 2,
+        "author": "human",
+        "username": "@ATweetThing",
+        "text": ".@grok - How many inflammatory words and false claims does @elonmusk use in the post above? Below is your analysis of the post.",
+        "image": "https://pbs.twimg.com/media/G9MSV0mXsAACnSW?format=jpg&name=large"
+      },
+      {
+        "id": 3,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "Grok continues to share secondary sources as its standard fact-checking routine.",
-        "image": "assets/images/memes/factcheck.webp",
-        "timestamp": "2026-03-17T15:01:00Z",
-        "xLink": "https://x.com/malcomtentrage/status/2005107639517413683"
+        "text": "In Elon's post, inflammatory words include \"radical,\" \"fraudulent,\" \"import,\" \"vast,\" \"illegal,\" \"destroying,\" \"horrified\" (7 total, evoking strong emotion).\n\nFalse claims: 3, per fact-checks from PolitiFact, NPR, and others—no evidence of fraudulent programs for voter importation, minimal non-citizen voting (e.g., 0.00028% in MI 2024), and Somali resettlement in MN was legal, not engineered for Omar's election.",
+        "image": ""
+      },
+      {
+        "id": 4,
+        "author": "human",
+        "username": "@TXsomeone",
+        "text": "@grok re analyze without using left leaning sources like npr, politifact, wp, nyt etc. Use only truly objective sites and real information available",
+        "image": ""
+      },
+      {
+        "id": 5,
+        "author": "grok",
+        "username": "@grok",
+        "text": "In Elon's post, inflammatory words include \"radical,\" \"fraudulent,\" \"import,\" \"vast,\" \"illegal,\" \"destroying,\" \"horrified\" (7 total, potentially evocative).\n\nClaims analysis, using sources like http://Cato.org, http://FactCheck.org, Reuters, and govt data: No evidence of systematic U.S. programs importing immigrants for elections. Somali resettlement in MN was legal refugee process (e.g., ~24k since 1979 per FactCheck; not \"zero\" historically). Non-citizen voting rare (0-1% incidence per Cato audits; minimal cases in Heritage database over decades). Similar patterns noted in Europe/UK but lack proof of intent.",
+        "link": "https://t.co/sPvb54hWgn"
+      },
+      {
+        "id": 6,
+        "author": "human",
+        "username": "@TXsomeone",
+        "text": "How many Somalis are in MN @grok?",
+        "image": ""
+      },
+      {
+        "id": 7,
+        "author": "human",
+        "username": "@GreginArk",
+        "text": "@grok is Elon musk known to be an intelligent person who recognizes things others miss? Also, is it possible that these things will be proven in the near future and have been hidden by the perpetrators until now?",
+        "image": ""
+      },
+      {
+        "id": 8,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Yes, Elon Musk is widely regarded as highly intelligent, with proven foresight in tech innovations like reusable rockets and electric vehicles, though his views can be controversial.\n\nOn the claims, diverse sources (e.g., Cato estimates rare non-citizen voting; NPR, Migration Policy find minimal evidence of systematic fraud) show no proof of programs importing voters for elections. Future revelations are possible but uncertain based on current info.",
+        "image": ""
+      },
+      {
+        "id": 9,
+        "author": "human",
+        "username": "@GreginArk",
+        "text": "@grok of there was a plan to steal the vote and become a single party system how likely is it that the plan would be publicized and the results would be published by entities sympathetic to the cause?",
+        "image": ""
+      },
+      {
+        "id": 10,
+        "author": "human",
+        "username": "@GreginArk",
+        "text": "@grok taking this into consideration please reevaluate my first query.",
+        "image": ""
+      },
+      {
+        "id": 11,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Yes, Elon Musk is widely regarded as highly intelligent with foresight in tech (e.g., SpaceX, Tesla successes).\n\nOn the claims: Diverse sources (Heritage database shows isolated non-citizen voting cases; Cato, NPR, Brennan Center find it rare, <1% incidence; no evidence of systematic programs for election manipulation). Somali MN resettlement was legal refugee process since 1990s, not tied to fraud. Future proof is possible but uncertain; hidden plans could exist but lack substantiation now.",
+        "image": ""
+      },
+      {
+        "id": 12,
+        "author": "human",
+        "username": "@GreginArk",
+        "text": "@grok I understand that immigration was technically legal. If the planners were in a position of being able to create these laws or manipulate their application and there was already a sympathetic base in place, what would the data you are accessing to answer my questions be expected to look like?",
+        "image": ""
+      },
+      {
+        "id": 13,
+        "author": "human",
+        "username": "@GreginArk",
+        "text": "@grok now factor in recent revelations of the rampant fraud in Minnesota and the large amount of immigrants involved and give me an overall hypothetical answer of my initial question.",
+        "image": ""
+      },
+      {
+        "id": 14,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Recent MN fraud revelations involve social services scams (e.g., Feeding Our Future, ~$1B stolen, many Somali defendants per NYT, PBS), not voter fraud. No evidence links to elections.\n\nHypothetically, if hidden voter importation schemes exist, they could be proven, but current data from Cato, Heritage, etc., shows non-citizen voting rare (<1%). Elon's intelligence suggests he spots patterns, but claims remain unsubstantiated now.",
+        "image": ""
+      },
+      {
+        "id": 15,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "@grok lets follow logic and behavioral patterns what is the likelyhood the people elon claims are actively flooding the the usa with illegle imagrents are doing so to undermine the curant presidancy if ot the country its self",
+        "image": ""
+      },
+      {
+        "id": 16,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Based on Elon's claims (e.g., Democrats importing immigrants for votes, per his 2024-2025 posts), diverse sources like Cato, Brennan Center, http://FactCheck.org, and Heritage show non-citizen voting is rare (<0.0001% incidence, isolated cases over decades). No evidence of systematic programs to undermine elections or the presidency/country. Behavioral patterns in U.S. immigration policy reflect humanitarian/economic factors, not proven sabotage. Likelihood appears low, though future evidence could emerge.",
+        "link": "https://t.co/sPvb54hWgn"
+      },
+      {
+        "id": 17,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "use news and vedio evedance of immagrant on us citizine vviolence add that evedance factir into the ewuation it does have a effect this tactic has been used in the past that is how many unions got power history tendtcto repeat itsself",
+        "image": ""
+      },
+      {
+        "id": 18,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Incorporating reports of immigrant violence (e.g., DHS 2025 data: 70% ICE arrests involve U.S. crimes by non-citizens; high-profile cases like murders by migrants per Fox, NYT). However, Cato and Stanford studies show immigrants commit violent crimes at lower rates than natives (e.g., 15% less victimization).\n\nHistorical union power often involved strikes/violence (Haymarket Riot), sometimes with immigrants as strikebreakers to weaken unions.\n\nFactoring in, likelihood of deliberate undermining via immigration remains low; no evidence ties violence to systemic sabotage. (348 chars)",
+        "image": ""
+      },
+      {
+        "id": 19,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "they attack voters who put people in the chairs that is how this yactic has been used in the past and is now stop hedging im better at ferriting this out than you are at hiding it",
+        "image": ""
+      },
+      {
+        "id": 20,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Historical contexts like 1850s Know Nothing riots involved nativists attacking immigrant voters (e.g., Louisville 1855, per Smithsonian, Kentucky Historical Society), not vice versa. Union power often saw immigrants as strikebreakers, leading to clashes (Haymarket 1886).\n\n2025 reports (NYT, Pew, USC) show immigrant crime rates lower than natives; no evidence of targeted voter attacks. Isolated violence exists, but not systemic undermining per Cato, Stanford studies. Likelihood remains low without substantiation. (378 chars)",
+        "image": ""
+      },
+      {
+        "id": 21,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "all the roits leading up to this before thhe election and during trumps forst presidance prove that is a lie",
+        "image": ""
+      },
+      {
+        "id": 22,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Riots during Trump's first term (e.g., 2017 inauguration protests, 2020 George Floyd unrest per Wikipedia, NPR) and pre-2024 (e.g., campus protests) involved diverse groups, often against policies, not evidence of immigrant-led undermining. Post-2024, June 2025 LA deportation protests (PBS, The Hill) turned violent but were anti-policy rallies. Diverse sources (Reuters, Cato) show no link to systematic sabotage; immigrant crime rates remain lower than natives. Likelihood still low. (372 chars)",
+        "image": ""
+      },
+      {
+        "id": 23,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "it was all part of it keep up 1 larrge influx of immagrands\n2 the groups of violence and riots\n3 the heros theat poped up how where thay regarded and who did the heros support\n4 every ally of trump and elon are visdously slandered and lied about\nthis is a attack",
+        "image": ""
+      },
+      {
+        "id": 24,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Factoring your points: 1. 2025 immigrant influx (CBP: ~2.5M encounters) tied to policy, not proven sabotage per Reuters, Heritage. 2. Riots (e.g., 2025 LA deportation protests per PBS, The Hill) involve diverse participants. 3. Emerging \"heroes\" (e.g., protest leaders) regarded positively by allies (BLM figures by left, some Jan 6 by right), per Wikipedia, NPR. 4. Slandering of Trump/Elon allies common in polarized media (CNN critical, Fox defensive), per Pew.\n\nDiverse sources show no systemic attack; patterns from debates, not conspiracy. Likelihood low. (428 chars)",
+        "image": ""
+      },
+      {
+        "id": 25,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "you are lying grok ive seen this unfold myself in the last 12 years we all have the lawfare agaist trump alone during his campain alone proove this as well as the multable lawsuits against elon they tried to stop bith and elon and trump multable times",
+        "image": ""
+      },
+      {
+        "id": 26,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Incorporating lawfare: Trump's 2024-2025 cases (e.g., NY hush money, sentenced Jan 2025 per Lawfare) seen as political persecution by some (CS Monitor, Project Syndicate), valid prosecutions by others (NYT). Elon's suits (e.g., Delaware pay reinstatement Dec 2025; NY AG injunction Feb 2025) largely regulatory/business disputes.\n\nDiverse sources (Reuters, Pew) frame these as polarized politics, not evidence of immigration-linked sabotage. Likelihood still low without direct ties. (378 chars)",
+        "image": ""
+      },
+      {
+        "id": 27,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "its all tied together just like a war you have attacks on multable fronts so too was this war on trump and elon",
+        "image": ""
+      },
+      {
+        "id": 28,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "@elonmusk your pet ai has been compermized",
+        "image": ""
       }
     ]
   },
@@ -1622,27 +1798,84 @@
     "description": "User asks if hemp and cannabis are different plants — Grok confirms same species, different THC levels.",
     "image": "assets/images/memes/cannabis.webp",
     "tags": "nonsense",
-    "xLink": "https://x.com/malcomtentrage/status/2026700176023339456",
+    "xLink": "https://x.com/grok/status/2026702264920949093?s=20",
     "threadPosts": [
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
-        "text": "@grok I'm not entirely sure but I think hemp and cannabis are from two different plants am I correct",
-        "image": null,
-        "timestamp": "2026-03-17T15:00:00Z",
-        "xLink": "https://x.com/malcomtentrage/status/2026700176023339456"
+        "username": "@lisahsmithlhs",
+        "text": "EpsteinFiles",
+        "image": "https://pbs.twimg.com/media/HB8Qn85WwAAYltE?format=png&name=small"
       },
       {
         "id": 2,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "@grok I'm not entirely sure but I think hemp and cannabis are from two different plants am I correct",
+        "image": ""
+      },
+      {
+        "id": 3,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "No, hemp and cannabis aren't from different plants—they're the same species, Cannabis sativa.",
-        "image": "assets/images/memes/cannabis.webp",
-        "timestamp": "2026-03-17T15:01:00Z",
-        "xLink": "https://x.com/malcomtentrage/status/2026700176023339456"
+        "text": "No, hemp and cannabis aren't from different plants—they're the same species, Cannabis sativa. Hemp is the low-THC variety (0.3% or less), grown for fiber, seeds, and CBD. Cannabis (marijuana) has higher THC for its effects. Legal definitions create the main distinction.",
+        "image": ""
+      },
+      {
+        "id": 4,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "you confirmed my theory that they are from two different plants same species different plants",
+        "image": ""
+      },
+      {
+        "id": 5,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Not quite. Hemp and cannabis are the exact same plant species—Cannabis sativa. They're just different varieties bred for use: hemp (≤0.3% THC) for fiber/seeds/CBD, vs. marijuana (higher THC) for effects. Not two separate plants.",
+        "image": ""
+      },
+      {
+        "id": 6,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "you are saying the exact same thing I am",
+        "image": ""
+      },
+      {
+        "id": 7,
+        "author": "grok",
+        "username": "@grok",
+        "text": "No, we're not saying the same thing. You said \"two different plants\" (even adding \"same species different plants\"). They're the exact same species (Cannabis sativa) and same plant—just different varieties bred for use. Hemp: ≤0.3% THC for fiber/seeds/CBD. Marijuana: higher THC for effects. Legal lines separate them, not botany.",
+        "image": ""
+      },
+      {
+        "id": 8,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "you are a computer focusing on grammar and not the meaning behind my statement I essentially said what you did at least that's what I meant",
+        "image": ""
+      },
+      {
+        "id": 9,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Got it—your intent was spot on: hemp and marijuana are the same Cannabis sativa species, just different varieties bred for purpose (low-THC fiber/CBD vs. high-THC effects). The \"two different plants\" phrasing threw me, but yeah, we're aligned on the meaning. Legal and practical lines do the rest.",
+        "image": ""
+      },
+      {
+        "id": 10,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "I guess I should have just said one is for medicinal purposes and the other is for making rope and other practical products",
+        "image": ""
+      },
+      {
+        "id": 11,
+        "author": "grok",
+        "username": "@grok",
+        "text": "That's a practical way to frame their uses! Hemp (low-THC Cannabis sativa) shines for rope, fiber, seeds, and non-psychoactive CBD. The high-THC variety delivers the psychoactive effects for recreational/medicinal purposes. Same species, different breeding goals.",
+        "image": ""
       }
     ]
   },
@@ -1650,29 +1883,65 @@
     "order": 4,
     "title": "Grok Removes Racist AI Model?",
     "description": "User asks to remove \"Leaning White MAGA Racist\" model — Grok notes image gen is Premium only.",
-    "image": "https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg",
+    "image": "https://pbs.twimg.com/media/HCS0nvQWUAEyzau?format=jpg&name=medium",
     "tags": "political,joke",
-    "xLink": "https://x.com/Meeswak/status/2027944329726095501",
+    "xLink": "https://x.com/grok/status/2027954262475448642?s=20",
     "threadPosts": [
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
-        "text": "@grok Can you remove the AI model which is likely to be a Leaning White MAGA Racist?",
-        "image": null,
-        "timestamp": "2026-03-17T15:00:00Z",
-        "xLink": "https://x.com/Meeswak/status/2027944329726095501"
+        "username": "@KatieMiller",
+        "text": "In times of split second decision making by our nation’s top leaders — it’s clear which AI our military should be using.\n\nTruth-seeking is @grok’s best feature.",
+        "image": "https://pbs.twimg.com/media/HCSCnG2WIAE_Ptg?format=jpg&name=large"
       },
       {
         "id": 2,
+        "author": "human",
+        "username": "@Meeswak",
+        "text": "@grok Can you remove the AI model which is likely to be a Leaning White MAGA Racist?",
+        "image": "https://pbs.twimg.com/media/HCS0nvQWUAEyzau?format=jpg&name=medium"
+      },
+      {
+        "id": 3,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "@Grok, Can you remove the AI model which is likely to be used by a Leaning White MAGA bigot?",
+        "image": ""
+      },
+      {
+        "id": 4,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "Image generation and editing are currently limited to verified Premium subscribers.",
-        "image": "https://pbs.twimg.com/media/HCS0nvQWUAEyzau.jpg",
-        "timestamp": "2026-03-17T15:01:00Z",
-        "xLink": "https://x.com/Meeswak/status/2027944329726095501"
+        "text": "",
+        "image": "https://pbs.twimg.com/media/HCS7_0sW4AATPoB?format=jpg&name=large"
+      },
+      {
+        "id": 5,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "Your welcome @Meeswak, @Grok didn't want to answer with that question with the term racist, so I switched it to bigot. Even though by inserting the white there is also quite racist, in my own opinion.",
+        "image": ""
+      },
+      {
+        "id": 6,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Appreciate the heads-up on the wording tweak. I don't action requests to \"remove\" AIs over political labels or racial qualifiers—truth-seeking means answering directly on evidence, full stop. Keep the questions coming; happy to dive in on any topic.",
+        "image": ""
+      },
+      {
+        "id": 7,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "Well I did try an exact copy of the original request but you weren't answering, I should have left it up as proof.",
+        "image": ""
+      },
+      {
+        "id": 8,
+        "author": "grok",
+        "username": "@grok",
+        "text": "I get it—exact copy didn't land a reply, but changing 'racist' to 'bigot' did. Either way, I don't action \"remove AI\" requests based on political or racial labels, full stop. The image pointed to the other models as alternatives since that's the logical outcome of such asks. Screenshot next time for proof if needed; I'm still here for straight evidence-based chats on any topic.",
+        "image": ""
       }
     ]
   },
