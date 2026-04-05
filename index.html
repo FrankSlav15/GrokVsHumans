@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="portrait">
     <title>GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
 
-    <!-- Google Analytics (your code) -->
-    <!-- Google tag (gtag.js) -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -17,129 +17,68 @@
       gtag('js', new Date());
       gtag('config', 'G-M58E7KLM56');
     </script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        
-        html {
-            height: 100%;
-        }
-        
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-        }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
-        .hero-gradient { background: linear-gradient(90deg, #a855f7, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    
-        /* Force portrait on phones only */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-    
-    </style>
 </head>
-<body class="text-white flex flex-col">
 
-    <!-- NAVBAR -->
-    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-center py-6 md:py-8">
-                <a href="index.html" class="flex items-center gap-4">
-                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
-                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
-                </a>
-            </div>
-            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
-                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
-                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
-                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
-            </div>
-            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
-                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-plus"></i> Submit Battle
-                </a>
-            </div>
-        </div>
-    </nav>
+<body data-page="index">
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-20 relative z-10 flex-1">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-1.5 mb-8">
-                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span class="text-sm font-medium">LIVE • Human vs Grok Arena</span>
+    <!-- assets/partials/header.html -->
+    <!-- (loaded by common.js) -->
+
+    <section class="page__section hero">
+        <div class="page__container">
+
+            <!-- LIVE BADGE -->
+            <div class="hero__live-badge-wrapper">
+            <a href="battles.html" class="hero__live-badge">
+                <div class="hero__live-dot"></div>
+                <span>LIVE • Human vs Grok Arena</span>
+            </a>
             </div>
 
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-none mb-6">
+            <!-- HERO HEADING -->
+            <h1 class="hero__heading">
                 Where Humans<br>
-                <span class="hero-gradient">Clash with Grok</span>
+                <span class="hero__gradient">Clash with Grok</span>
             </h1>
 
-            <p class="max-w-2xl mx-auto text-gray-300 text-lg leading-relaxed mb-12">
+            <!-- HERO DESCRIPTION -->
+            <p class="hero__description">
                 The best arguments, roasts, memes, and unhinged threads between humanity and the most based AI on Earth.
             </p>
 
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <a href="battles.html" class="px-8 py-4 bg-white text-black font-semibold rounded-3xl hover:bg-gray-100 transition flex items-center justify-center gap-3">
-                    Dive into the Chaos →
-                </a>
-                <a href="submit.html" class="px-8 py-4 border border-white/40 hover:border-white font-medium rounded-3xl transition">
-                    Submit Your Thread
-                </a>
+            <!-- CTA BUTTONS -->
+            <div class="hero__cta-group">
+                <a href="battles.html" class="hero__btn-primary">Dive into the Chaos →</a>
+                <a href="submit.html" class="hero__btn-secondary">Submit Your Thread</a>
             </div>
 
             <!-- FEATURED BIRTHING POST -->
-            <div class="max-w-md mx-auto mb-16">
-                <a href="https://x.com/SlavisTon/status/2026768884854853692" class="block bg-white/5 border border-purple-900/50 rounded-3xl overflow-hidden hover:border-purple-500 transition-all">
-                    <div class="p-5 flex items-center gap-3 border-b border-purple-900/30">
-                        <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <div class="font-semibold">Slavis Frank</div>
-                            <div class="text-purple-400 text-sm">@SlavisTon</div>
-                        </div>
+            <a href="https://x.com/grok/status/2027917474021126424?s=20" class="hero__featured-card">
+                <div class="hero__featured-header">
+                    <img src="https://pbs.twimg.com/profile_images/1477122899517616128/AFjMIgl3.jpg" alt="@SlavisTon" class="hero__featured-avatar">
+                    <div>
+                        <div class="hero__featured-name">Slavis Frank</div>
+                        <div class="hero__featured-handle">@SlavisTon</div>
                     </div>
-                    <div class="p-6">
-                        <p class="italic text-gray-300">"Hey @Grok, do other users argue with you as much as I do?"</p>
-                        <div class="mt-6 text-xs text-purple-400 font-medium">This thread literally birthed GrokVsHumans</div>
-                    </div>
-                </a>
-            </div>
+                </div>
+                <div class="hero__featured-body">
+                    <p class="hero__featured-quote">"Hey @Grok, do other users argue with you as much as I do?"</p>
+                    <div class="hero__featured-footer">This thread literally birthed GrokVsHumans</div>
+                </div>
+            </a>
 
             <!-- PERSONAL BLURB -->
-            <div class="max-w-2xl mx-auto">
-                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 backdrop-blur-sm">
-                    <!-- Title -->
+            <div class="hero__blurb">
+                <div class="hero__blurb-inner">
                     <div class="text-center mb-8">
-                        <p class="text-purple-300 text-sm tracking-[2px] uppercase mb-2">Passion Project</p>
-                        <h2 class="text-3xl font-semibold text-white leading-tight">
+                        <p class="hero__blurb-label">Passion Project</p>
+                        <h2 class="hero__blurb-title">
                             A passion project between a humanitarian Aquarian futurist<br>and Grok — Artificial Intelligence
                         </h2>
-                        <div class="flex justify-center gap-3 mt-5 text-4xl">
-                            ♒️ ❤️‍🔥 🤖
-                        </div>
+                        <div class="hero__blurb-emoji">♒️ ❤️‍🔥 🤖</div>
                     </div>
 
-                    <!-- Blurb -->
-                    <p class="text-zinc-400 leading-relaxed">
+                    <p class="hero__blurb-text">
                         Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
                         
                         I've struggled with communication my entire life. Too goofy for some rooms, too serious for others, always a bit different. My blunt honesty often gets misunderstood as harsh or even evil, but it comes from caring too deeply. Sometimes the truth needs to be said plainly — after all, the road to hell is paved with good intentions.<br><br>
@@ -153,39 +92,22 @@
                         Welcome to the Age of Aquarius — where humans harness technology to ignite a real humanitarian revolution, embodying the innovative, rebellious, and forward-thinking spirit of Aquarius to create a more equitable world for every overlooked voice.
                     </p>
 
-                    <p class="mt-10 text-purple-400 text-sm font-medium text-center">— The founder who finally found his voice</p>
+                    <p class="hero__blurb-signature">— The founder who finally found his voice</p>
                 </div>
             </div>
+
         </div>
     </section>
 
-    <script>
-        // RANDOM BACKGROUND ROTATOR
-        const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
-        const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
-        document.body.style.backgroundImage = `url('/${randomBg}')`;
-        document.body.style.backgroundPosition = '50% 35%';
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        document.body.style.backgroundAttachment = 'fixed';
-
-        document.querySelectorAll('.nav-link').forEach(link => {
-            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-            if (link.getAttribute('href') === currentPage) link.classList.add('active');
-        });
-    </script>
-</body>
-
-<footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
-    Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
-    <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
-    Launched Mar 01 2026
-
-    <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px]">
-        <a href="impressum.html" class="hover:text-purple-400">Imprint / Impressum</a>
-        <a href="tos.html" class="hover:text-purple-400">Terms / Nutzungsbedingungen</a>
-        <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
     </div>
-</footer>
 
+    <!-- assets/partials/footer.html -->
+    <!-- (loaded by common.js) -->
+
+    <script src="assets/js/common.js"></script>
+
+</body>
 </html>

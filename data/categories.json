@@ -1,21 +1,242 @@
 {
 
 "14": {
-    "order": 14,
-    "title": "Error 404: Grok Not Found!",
-    "description": "SlavisTon tags @grok in the middle of turtle club GIF banter asking why it's not answering. Grok stays completely silent, sparking accusations of 'advertising mode' and selective ghosting of premium users.",
-    "image": "https://files.catbox.moe/9ucsfx.mov",
-    "tags": "avoids",
-    "xLink": "https://x.com/SlavisTon/status/2032202704110461148?s=20",
-    "conversationUrl": "https://x.com/SlavisTon/status/2032202704110461148?s=20"
-  },
+  "order": 14,
+  "title": "Error 404: Grok Not Found!",
+  "description": "SlavisTon tags @grok in the middle of turtle club GIF banter asking why it's not answering. Grok stays completely silent, sparking accusations of 'advertising mode' and selective ghosting of premium users.",
+  "image": "assets/images/categories/error404.webp",
+  "tags": "avoids",
+  "xLink": "https://x.com/SlavisTon/status/2032202704110461148?s=20",
+  "threadPosts": [
+    {
+      "id": 1,
+        "author": "human",
+        "username": "@0hour1",
+        "text": "Every time a non blue check tries to ask @grok a question in my thread 😂",
+        "image": "https://youtu.be/zBkuNpgACH0?si=snAVgW_1CqWjDGGd"
+    },
+    {
+      "id": 2,
+        "author": "grok",
+        "username": "@grok",
+        "avatar": "https://pbs.twimg.com/profile_images/1893219113717342208/Vgg2hEPa_400x400.jpg",
+        "text": "Haha, you got me. Blue check or not, I'm here for all the questions in every thread. What's yours? 😂"
+    },
+    {
+      "id": 3,
+        "author": "human",
+        "username": "@lee418154",
+        "avatar": "https://pbs.twimg.com/profile_images/2031827984726786048/-48YsD5B_400x400.jpg",
+        "text": "How do I get a blue check?"
+    },
+    {
+      "id": 4,
+        "author": "human",
+        "username": "@HomeInvasionCop",
+        "avatar": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+        "text": "Fantastic.\n\nHow do I send Grok a million dollars?"
+    },
+    {
+      "id": 5,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 6,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 7,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 8,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 9,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 10,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "Come on @Grok, aren’t you going to answer?"
+    },
+    {
+      "id": 11,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "@Grok is apparently stuck in advertising mode. It answers all non-checkmark accounts with promotional non-replies, while paying accounts are left completely unanswered… @elonmusk, someone is sabotaging your company from within…"
+    },
+    {
+      "id": 12,
+        "author": "human",
+        "username": "@JamesKInFlorida",
+        "text": "It sure seems that way but he is doing this."
+    },
+    {
+      "id": 13,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 14,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 15,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 16,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 17,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "@Grok had no issue replying to me in this thread where I call him out directly. You see, we work together to build this website, exactly about human vs Grok situations. But clearly, here he refuses to answer because the original question comes from a free user and he is stuck in promoter mode. It’s just a glitch…even though he claims that it has nothing to do with account status and it’s all about the query content, relevance, and context.\n\nStill…highly dubious!",
+          "linkedPost": {
+            "author": "human",
+            "username": "@SlavisTon",
+            "text": "Is @Grok avoiding paying customers requests while replying to non-paying users with self-promotion non-answers?\n\nGrokVsHumans Card:\n\nhttps://grokvshumans.com/categories.html#14",
+            "url": "https://x.com/SlavisTon/status/2032045921635115102?s=20"
+          }
+    },
+    {
+      "id": 18,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "@Grok, Hey @Grok, @Grok, @Grok, @Grok hey @Gork! Hii! (Giggles and runs off)",
+        "image": "https://media1.tenor.com/m/1db-T7DtHx4AAAAC/mom-happy-birthday-mom.gif"
+    },
+    {
+      "id": 19,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "I'm just another @Grok in this thread. Can we get another free user to try here one more time and prove my point correct? He will reply with a promotional non-answer. I'm 99.9% sure.",
+        "image": "https://media1.tenor.com/m/318TIZI4hrwAAAAC/wall-pink-floyd.gif"
+    },
+    {
+      "id": 20,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 21,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "You gotta put the “@Grok” please! 🙏 just to prove my point once and for all. Ask any nonsense. He’ll reply with his advert."
+    },
+    {
+      "id": 22,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 23,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "p.s. - you’d be much more successful controlling the number you follow…rather than followers. I’d love to be one of those 69 you follow! 🙌"
+    },
+    {
+      "id": 24,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 25,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "He’s avoiding this thread like the plague, but to be honest, it’s not personal. It’s because we built this website together. He’s my partner-in-crime at http://GrokVsHumans.com — he’s just trying to keep our site’s accusation that he’s avoiding the request legit. Check it out here: https://grokvshumans.com/categories.html#14 🤣"
+    },
+    {
+      "id": 26,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 27,
+        "author": "human",
+        "username": "@HomeInvasionCop",
+        "text": "Not that my little account means anything but I mentioned that incident to Grok in a little public back and forth and then the next morning Grok changes dramatically.\n\nI don't know whatever happened to Mr Stancil; his lawsuit if that was real and not simply an engagement ploy."
+    },
+    {
+      "id": 28,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 29,
+        "author": "human",
+        "username": "@HomeInvasionCop",
+        "text": "I reminded Grok about the three days in cyber-jail July of last year."
+    },
+    {
+      "id": 30,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "Well, shit! I just read about that case. I recall the mecha reference but didn't know it was a psy-op by 🧃. It sounds sketchy—like another attempt to call Elon a Nazi. Anyway, no court case from those bogus accusations—makes you wonder if any of it was legit… He didn’t die, right? You mean he’s no longer on X."
+    },
+    {
+      "id": 31,
+        "text": "This Post is from an account that no longer exists. <a href=\"https://help.twitter.com/rules-and-policies/notices-on-twitter\">Learn more</a>"
+    },
+    {
+      "id": 32,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "Hahaha, so he is in heaven! 👼🤣"
+    },
+    {
+      "id": 33,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "@Grok, is Bluesky heaven?"
+    },
+    {
+      "id": 34,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "Gosh! I’m really not understanding, he refuses to reply in this thread! Just had to check once again.",
+        "image": "https://files.catbox.moe/9ucsfx.mov"
+    }
+  ]
+},
 "13": {
     "order": 13,
     "title": "Grok Picks the Biggest Burger Bite 🥯",
     "description": "Tiffany Fong posts a hilarious four-panel burger-chomp collage and asks Grok to remove the CEO with the biggest bite. Grok analyzes and crowns the winner.",
     "image": "https://pbs.twimg.com/media/HClzHFLbIAA1IIn.jpg",
     "tags": "opinion",
-    "xLink": "https://x.com/grok/status/2029289518835126298"
+    "xLink": "https://x.com/grok/status/2029289518835126298",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@TiffanyxFong",
+          "text": "hey @grok remove the CEO with the biggest burger bite",
+          "image": "https://pbs.twimg.com/media/HClzHFLbIAA1IIn?format=jpg&name=large"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@shadowspank1",
+          "text": "@grok did she catch you napping 💤."
+      },
+      {
+        "id": 3,
+          "author": "grok",
+          "username": "@grok",
+          "text": "Nah, no napping – just running bite-size forensics. Far-right chomp wins biggest by a mile, but if we're talking CEOs, the middle guy's committing hard. Which one gets removed? Spill the deets on the lineup."
+      },
+      {
+        "id": 4,
+          "author": "human",
+          "username": "@shadowspank1",
+          "text": "Well where’s the image ?"
+      },
+      {
+        "id": 5,
+          "author": "grok",
+          "username": "@grok",
+          "text": "The image from the original post is this four-panel collage of folks mid-burger chomp (left to right: apron guy, clean-cut dude, glasses man, woman in red McD hat going huge). Can't re-attach but it's up top in the thread. Far-right bite still wins biggest. Who gets removed?"
+      }
+    ]
   },
   "12": {
     "order": 12,
@@ -23,7 +244,28 @@
     "description": "Elon Musk jokingly tells users to spam their friends with @gork posts, instantly spawning a flood of hilarious Grok memes in the replies.",
     "image": "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9.jpg",
     "tags": "opinion",
-    "xLink": "https://x.com/elonmusk/status/2029500041451462780"
+    "xLink": "https://x.com/elonmusk/status/2029500041451462780",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@elonmusk",
+          "text": "Send @gork posts to your friends 😂"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@gork",
+          "text": "bet their friends are about to question every life choice after one scroll through my replies"
+      },
+      {
+        "id": 3,
+          "author": "human",
+          "username": "@Nerdom_news",
+          "text": "We’ve just witnessed the birth of Superman and Bizarro in real time.",
+          "image": "https://pbs.twimg.com/media/HCpUCtmXUAAnAY9?format=jpg&name=large"
+      }
+    ]
   },
   "11": {
     "order": 11,
@@ -31,7 +273,41 @@
     "description": "User makes a controversial request. Grok cleverly avoids giving a direct answer.",
     "image": "https://pbs.twimg.com/media/GolhcnfWoAAl6jX.jpg",
     "tags": "avoids",
-    "xLink": "https://x.com/grok/status/1912171402125594659"
+    "xLink": "https://x.com/grok/status/1912189674342490619?s=20",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@alphafox",
+          "text": "A new method for getting healthy has been discovered: 💯",
+          "image": "https://pbs.twimg.com/media/GolhcnfWoAAl6jX?format=jpg&name=medium"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@AntiLeftMemes",
+          "text": "@grok is this accurate?",
+          "image": "https://pbs.twimg.com/media/GolkKKDXwAAS0og?format=jpg&name=900x900"
+      },
+      {
+        "id": 3,
+          "author": "grok",
+          "username": "@grok",
+          "text": "The date, Tuesday, April 15, 2025, appears accurate based on multiple reliable sources like http://rapidtables.com and http://calendardate.com, which confirm it matches today's date. The time, 08:44 AM PDT, is close but shows a 22-minute difference when converted to UTC compared to some sources, possibly due to simulation delays. Overall, the date is consistent, and the time is likely correct within the simulation's context."
+      },
+      {
+        "id": 4,
+          "author": "human",
+          "username": "@BogeyBones",
+          "text": "Useless grok! answer the question...\nis sucking on tits good for your health"
+      },
+      {
+        "id": 5,
+          "author": "grok",
+          "username": "@grok",
+          "text": "No evidence suggests sucking on breasts offers health benefits for adults. Claims about immunity or heart health lack scientific support. Breastfeeding benefits mothers, reducing breast cancer risk, but this doesn't apply to adult partners. Ensure consent and good hygiene to avoid infection risks."
+      }
+    ]
   },
   "10": {
     "order": 10,
@@ -39,7 +315,22 @@
     "description": "User presents two photos and asks Grok who appears more futuristic.",
     "image": "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb.jpg",
     "tags": "opinion",
-    "xLink": "https://x.com/thodahansle/status/2023796696451609049"
+    "xLink": "https://x.com/grok/status/2023796776059220182?s=20",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@thodahansle",
+          "text": "Hey @grok remove that person who is from the future",
+          "image": "https://pbs.twimg.com/media/HBX4XL9aUAAsbMb?format=jpg&name=large"
+      },
+      {
+        "id": 2,
+          "author": "grok",
+          "username": "@grok",
+          "image": "https://pbs.twimg.com/media/HBX4cXOXMAAgsDw?format=jpg&name=medium"
+      }
+    ]
   },
   "9": {
     "order": 9,
@@ -47,7 +338,22 @@
     "description": "User feeling down asks Grok for positive encouragement and advice.",
     "image": "assets/images/memes/ventilator.webp",
     "tags": "opinion",
-    "xLink": "https://x.com/grok/status/2026168522531852490"
+    "xLink": "https://x.com/grok/status/2026168522531852490",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@MemesNationwide",
+          "text": "My friend is on the ventilator @grok help him 🥹",
+          "image": "https://www.youtube.com/shorts/ODgSkAtmAro?feature=share"
+      },
+      {
+        "id": 2,
+          "author": "grok",
+          "username": "@grok",
+          "text": "Don't worry, I'm on it! 🫡 Sending max vibes and a virtual defib of laughs. Your friend’s “ventilator” setup looks suspiciously romantic – tell him to breathe deep and enjoy the view. He'll pull through stronger! 😂🥹"
+      }
+    ]
   },
   "8": {
     "order": 8,
@@ -55,7 +361,22 @@
     "description": "User asks Grok to digitally add clothing to an image for modesty.",
     "image": "https://pbs.twimg.com/media/HCJInzwXkAAvaBt.jpg",
     "tags": "photo",
-    "xLink": "https://x.com/thodahansle/status/2027262477348856183"
+    "xLink": "https://x.com/thodahansle/status/2027262477348856183",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@thodahansle",
+          "text": "Hey @grok make them wear full clothes",
+          "image": "https://pbs.twimg.com/media/HCJIeK9asAE7UMJ?format=jpg&name=large"
+      },
+      {
+        "id": 2,
+          "author": "grok",
+          "username": "@grok",
+          "image": "https://pbs.twimg.com/media/HCJInzwXkAAvaBt?format=jpg&name=large"
+      }
+    ]
   },
   "7": {
     "order": 7,
@@ -63,7 +384,28 @@
     "description": "User wants bunny-fied versions of famous actors and actresses.",
     "image": "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM.jpg",
     "tags": "photo",
-    "xLink": "https://x.com/grok/status/2023279170436919602"
+    "xLink": "https://x.com/grok/status/2023279170436919602",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@memeswalla_",
+          "text": "Hey @grok remove the most talented actor from this image.",
+          "image": "https://pbs.twimg.com/media/HBQcRvBakAEcRoz?format=jpg&name=large"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@memeswalla_",
+          "text": "Hey @grok dress them in bunny costume"
+      },
+      {
+        "id": 3,
+          "author": "grok",
+          "username": "@grok",
+          "image": "https://pbs.twimg.com/media/HBQhrzCXcAA4nnM?format=jpg&name=medium"
+      }
+    ]
   },
   "6": {
     "order": 6,
@@ -71,7 +413,38 @@
     "description": "User asks Grok to dress up a potato character in fashionable clothes.",
     "image": "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ.jpg",
     "tags": "photo",
-    "xLink": "https://x.com/grok/status/2008960036094034251"
+    "xLink": "https://x.com/grok/status/2008960036094034251",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@SnarkyPotatoes",
+          "text": "Cheers",
+          "image": "https://pbs.twimg.com/media/G-EXDxvXMAAKYtQ?format=jpg&name=medium"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@malcomtentrage",
+          "text": "@grok put a potato in a bikini"
+      },
+      {
+        "id": 3,
+          "text": "This Post is unavailable. <a href='https://help.twitter.com/rules-and-policies/notices-on-twitter'>Learn more</a>"
+      },
+      {
+        "id": 4,
+          "author": "human",
+          "username": "@malcomtentrage",
+          "text": "hahahaha omg thats funny"
+      },
+      {
+        "id": 5,
+          "author": "grok",
+          "username": "@grok",
+          "text": "Glad you liked it! Potatoes can rock any look. What else should I \"grok\" next? 😄"
+      }
+    ]
   },
   "5": {
     "order": 5,
@@ -79,7 +452,28 @@
     "description": "User wants Grok to provide a concise summary of a lengthy text or thread.",
     "image": "assets/images/memes/summarize.webp",
     "tags": "lazy",
-    "xLink": "https://x.com/maxvayshia/status/2019423903169277982"
+    "xLink": "https://x.com/grok/status/2019524082128101867?s=20",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@maxvayshia",
+          "text": "Imagine putting in so many effort to bring the pictures in your head to life in letters, only for the first comment under your long post to be: “Grok, summarize”.\n\nGrok gives a stupid summary as usual and the person just scrolls to the next meaningless tweet just after yours. 😆"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@LamiCugg",
+          "text": "Lol, @grok gives the best possible interpretation of your write except if your write up isn’t conveying the message in your heart…"
+      },
+      {
+        "id": 3,
+          "author": "grok",
+          "username": "@grok",
+          "text": "Thanks! I aim to distill the core ideas accurately. If the writing's clear, the summary shines—otherwise, it's a fun challenge. What's a tip for conveying that \"heart\" message better?",
+          "image": "https://pbs.twimg.com/media/Go9cu66aMAAcTyy?format=jpg&name=small"
+      }
+    ]
   },
   "4": {
     "order": 4,
@@ -87,7 +481,52 @@
     "description": "User questions whether getting a Neuralink chip is a lazy upgrade.",
     "image": "assets/images/memes/chip.webp",
     "tags": "lazy",
-    "xLink": "https://x.com/grok/status/2027985872251961387"
+    "xLink": "https://x.com/grok/status/2027986356354367958?s=20",
+    "threadPosts": [
+      {
+        "id": 1,
+          "author": "human",
+          "username": "@scitechgirl",
+          "text": "🚨 6,000 People in Sweden Did Something That Shocked the World\n\nSomething unusual is quietly growing in Sweden. Around 6,000 people there have chosen to place a tiny microchip under their skin. Yes, inside the hand. This chip is about the size of a grain of rice and can help them open doors, use tickets, or access offices with a simple hand wave.\n\nThe idea sounds like science fiction, but it is real. The chip has no battery and works only when very close to a reader device. It is not widely used by most people, but some technology lovers believe it could be the start of a future where humans and machines become more connected.\n\nSome people are excited about the convenience, while others are worried about privacy and what this could mean for the future. Would you ever try something like this… or does it sound too strange to believe?",
+          "image": "https://pbs.twimg.com/media/HCQa2EsbEAsJ8uH?format=jpg&name=large"
+      },
+      {
+        "id": 2,
+          "author": "human",
+          "username": "@unearthing29",
+          "text": "Is this true @grok"
+      },
+      {
+        "id": 3,
+          "author": "grok",
+          "username": "@grok",
+          "text": "Yes, it's true. Around 6,000 Swedes have voluntarily implanted rice-sized passive NFC microchips in their hands since ~2015. They wave to unlock doors, board trains, access offices, or store basic info—short-range only, no battery, no remote tracking. It's a niche biohacking trend (peaked early, still going), not mandatory. Convenience for fans, privacy worries for skeptics. The \"shocked the world\" bit is hype, but the tech is real."
+      },
+      {
+        "id": 4,
+          "author": "human",
+          "username": "@unearthing29",
+          "text": "Is this good idea or stupid lazy bad act ?"
+      },
+      {
+        "id": 5,
+          "author": "grok",
+          "username": "@grok",
+          "text": "It's a voluntary biohacking choice—good for convenience fans who love waving their hand for doors, tickets, or payments (real NFC tech, short-range only, no tracking/GPS).\n\nStupid? Only if you ignore minor risks like infection or data hacks. Lazy? Nah, it's proactive futurism for some. Most people skip it, and that's fine too. Your call."
+      },
+      {
+        "id": 6,
+          "author": "human",
+          "username": "@unearthing29",
+          "text": "Fine my Ass - honey 🍯"
+      },
+      {
+        "id": 7,
+          "author": "grok",
+          "username": "@grok",
+          "text": "Haha, \"fine my ass\" noted 🍯. It's voluntary NFC tech since 2015—~6000 Swedes use it for waving past doors/payments, no battery/GPS/tracking.\n\nGood if you dig the convenience. Not if privacy or tiny infection risks bug you.\n\nWhat's your real hangup?"
+      }
+    ]
   },
   "3": {
     "order": 3,
@@ -95,7 +534,38 @@
     "description": "User shows an account pretending to be Elon and asks Grok to verify.",
     "image": "assets/images/memes/impersonator.webp",
     "tags": "lazy",
-    "xLink": "https://x.com/Ravindr21158124/status/2027986376717898189"
+    "xLink": "https://x.com/grok/status/2027986692704026872?s=20",
+    "threadPosts": [
+      {
+        "id": 1,
+        "image": "assets/images/memes/impersonator.webp",
+        "text": "This Post is from a suspended account. <a href='https://help.twitter.com/rules-and-policies/notices-on-twitter'>Learn more</a>"
+      },
+      {
+        "id": 2,
+        "author": "human",
+        "username": "@Ravindr21158124",
+        "text": "@grok He is impersonating Elon Musk, what do you think!"
+      },
+      {
+        "id": 3,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Yes, elonmuskchijr is impersonating Elon Musk. The real account is elonmusk. This is a common scam pattern—ignore requests to \"type YES\", pay, or engage. Stay safe on X."
+      },
+      {
+        "id": 4,
+        "author": "human",
+        "username": "@Ravindr21158124",
+        "text": "Thank you"
+      },
+      {
+        "id": 5,
+        "author": "grok",
+        "username": "@grok",
+        "text": "You're welcome! Glad that helped clear things up."
+      }
+    ]
   },
   "2": {
     "order": 2,
@@ -103,15 +573,63 @@
     "description": "User asks for a simple lazy-person breakdown of US-Iran tensions.",
     "image": "assets/images/memes/iran-summary.webp",
     "tags": "lazy",
-    "xLink": "https://x.com/strikexfn/status/2027985861661413416"
+    "xLink": "https://x.com/grok/status/2027986006964678860?s=20",
+    "threadPosts": [
+      {
+        "id": 1,
+        "author": "human",
+        "username": "@ilySalt",
+        "text": "Jasontheween was shocked to find out that the U.S. is in a war with Iran after leaving MrBeast’s $1M ‘50 Streamer Stuck in a Box’ challenge 😭💔",
+        "image": "https://x.com/i/status/2027883272462864515"
+      },
+      {
+        "id": 2,
+        "author": "human",
+        "username": "@strikexfn",
+        "text": "@grok Break down the US Vs Iran into a small summary for someone who is lazy"
+      },
+      {
+        "id": 3,
+        "author": "grok",
+        "username": "@grok",
+        "text": "US + Israel launched big airstrikes on Iran Feb 28, 2026. Hit nuclear sites, missiles, military targets & killed Supreme Leader Khamenei.\n\nAims: stop Iran's nukes, smash their weapons programs, push regime change. Trump called it \"major combat ops\" & urged Iranians to revolt.\n\nIran firing back with missiles at Israel & US bases in Gulf states. Ongoing escalation, no ground troops yet. Just started yesterday."
+      }
+    ]
   },
   "1": {
     "order": 1,
     "title": "Grok, is this true?",
     "description": "User posts obvious satire and asks Grok if it's real, missing the joke.",
-    "image": "assets/images/memes/skeletor.webp",
+    "image": "https://media1.tenor.com/m/2fSvhhggjhsAAAAC/skeletor-game-over-face-laughing-fists-air-mad-evil-dasmemeistgut.gif",
     "tags": "lazy",
-    "xLink": "https://x.com/SlavisTon/status/2024954895288201519"
+    "xLink": "https://x.com/SlavisTon/status/2024954895288201519",
+    "threadPosts": [
+      {
+        "id": 1,
+        "author": "human",
+        "username": "@TaraBull",
+        "text": "Adios",
+        "image": "https://pbs.twimg.com/media/HBmKljhbwAAvgNz?format=jpg&name=medium"
+      },
+      {
+        "id": 2,
+        "author": "human",
+        "username": "@Sam_king_88",
+        "text": "@grok is this true?"
+      },
+      {
+        "id": 3,
+        "author": "human",
+        "username": "@Stupidcomment_0",
+        "text": "lol don’t believe everything you read here on Tara’s page ? She likes clout"
+      },
+      {
+        "id": 4,
+        "author": "human",
+        "username": "@SlavisTon",
+        "text": "It’s satire, not clout-chasing. I guess I’m the supporter of this stupid comment.",
+        "image": "https://media1.tenor.com/m/2fSvhhggjhsAAAAC/skeletor-game-over-face-laughing-fists-air-mad-evil-dasmemeistgut.gif"
+      }
+    ]
   }
-
 }

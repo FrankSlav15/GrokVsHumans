@@ -5,561 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Battles - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+
+    <!-- 🔥 Firebase SDK – REQUIRED for voting to work -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-M58E7KLM56');
-    </script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        html { height: 100%; }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            flex-direction: column; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
-
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
-
-        .modal-content { 
-            position: relative; 
-            overflow: hidden; 
-        }
-        .nav-arrow {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.75); color: white;
-            width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
-            font-size: 42px; border-radius: 9999px; z-index: 60;
-            transition: all 0.2s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
-        .nav-arrow:hover { background: rgba(0,0,0,0.95); transform: translateY(-50%) scale(1.1); }
-        .nav-arrow-left  { left: -58px; }
-        .nav-arrow-right { right: -58px; }
-
-        @media (max-width: 640px) {
-            .nav-arrow-left  { left: -42px; }
-            .nav-arrow-right { right: -42px; }
-            .nav-arrow { width: 44px; height: 44px; font-size: 36px; }
-        }
-
-        .battle-card {
-            transition: all 0.3s ease; cursor: pointer;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(168,85,247,0.2); 
-            display: flex; flex-direction: column; height: 100%; overflow: hidden;
-            border-radius: 1.5rem; position: relative; }
-        .battle-card:hover { 
-            transform: translateY(-8px);
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
-            border-color: rgb(168 85 247); }
-        .battle-card > img { flex-shrink: 0; height: 14rem; width: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
-        .battle-card .content { flex: 1; padding: 1.25rem; background: #18181b; display: flex; flex-direction: column; }
-        .battle-card .title-area { min-height: 3.25rem; }
-        .battle-card .desc-area { flex: 1; min-height: 5.75rem; }
-        .battle-card .buttons { 
-            flex-shrink: 0; 
-            border-top: 1px solid #27272a; 
-            border-bottom-left-radius: 1.5rem; 
-            border-bottom-right-radius: 1.5rem; 
-            overflow: hidden;
-            min-height: 64px;
-        }
-
-        /* ULTIMATE MOBILE MODAL BUTTONS v5 - perfectly centered + no overflow EVER (bottom bar + voted scores) */
-        #battle-modal .modal-content .buttons button,
-        #battle-modal .border-t.border-zinc-800 a,
-        #battle-modal .border-t.border-zinc-800 button {
-            padding: 1rem 1.5rem !important;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            min-height: 58px;
-            flex: 1;
-        }
-        #battle-modal .modal-content .buttons button i,
-        #battle-modal .border-t.border-zinc-800 a i,
-        #battle-modal .border-t.border-zinc-800 button i {
-            font-size: 1.35rem;
-            flex-shrink: 0;
-        }
-        @media (max-width: 640px) {
-            #battle-modal .border-t.border-zinc-800 {
-                padding: 0.75rem 1rem !important;
-                gap: 0.25rem;
-            }
-            #battle-modal .modal-content .buttons button,
-            #battle-modal .border-t.border-zinc-800 a,
-            #battle-modal .border-t.border-zinc-800 button {
-                padding: 0.5rem 0.75rem !important;
-                font-size: 0.85rem;
-                gap: 0.3rem;
-                min-height: 48px;
-            }
-            #battle-modal .modal-content .buttons button i,
-            #battle-modal .border-t.border-zinc-800 a i,
-            #battle-modal .border-t.border-zinc-800 button i {
-                font-size: 1.1rem;
-            }
-            /* Voted scores inside modal - no overflow */
-            #modal-grok-btn span,
-            #modal-human-btn span {
-                margin: 0 0.5rem !important;
-                font-size: 1.4rem;
-            }
-        }
-
-        /* Grid voting buttons (already good) */
-        .battle-card .buttons button {
-            min-height: 64px !important;
-            padding: 0 1rem !important;
-            font-size: 1rem;
-        }
-        @media (max-width: 640px) {
-            .battle-card .buttons button {
-                min-height: 56px !important;
-                padding: 0 0.75rem !important;
-                font-size: 0.95rem;
-            }
-        }
-
-        .tab {
-            padding: 0.75rem 1.25rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-        .tab-active {
-            border-bottom: 3px solid rgb(168 85 247);
-            color: white;
-        }
-    </style>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-M58E7KLM56');</script>
 </head>
-<body class="text-white">
 
-    <!-- NAVBAR -->
-    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-center py-6 md:py-8">
-                <a href="index.html" class="flex items-center gap-4">
-                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
-                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
-                </a>
-            </div>
-            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
-                <a href="battles.html" class="nav-link active hover:text-purple-400 transition-colors">Battles</a>
-                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
-                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link hover:text-purple-400 transition-colors">Submit</a>
-            </div>
-            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
-                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-plus"></i> Submit Battle
-                </a>
-            </div>
-        </div>
-    </nav>
+<body data-page="battles">
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
-        <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-center mb-3">Battles</h1>
-            <p class="text-center text-zinc-400 text-lg">Where Grok claims to tell the truth… and humans lose their minds</p>
+    <!-- assets/partials/header.html -->
+    <!-- (loaded by common.js) -->
+
+    <section class="page__section">
+        <div class="page__container">
+            
+            <h1 class="page__title">Battles</h1>
+            <p class="page__subtitle">Where Grok claims to tell the truth… and humans lose their minds</p>
 
             <!-- Sticky Tabs -->
-            <div class="sticky top-48 md:top-44 lg:top-52 z-40 bg-black/95 backdrop-blur-lg border-b border-purple-900/30 pb-4 mt-8 overflow-x-auto">
-                <div class="flex justify-start md:justify-center px-4 md:px-6">
-                    <div class="flex gap-1.5 md:gap-2 min-w-max overflow-x-auto pb-1" id="tabs">
-                        <button onclick="filterCategory('all')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium tab-active whitespace-nowrap" id="tab-all">All</button>
-                        <button onclick="filterCategory('nonsense')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-nonsense">Nonsense</button>
-                        <button onclick="filterCategory('political')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-political">Political</button>
-                        <button onclick="filterCategory('serious')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-serious">Now, In All Seriousness</button>
-                        <button onclick="filterCategory('citation')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-citation">(UN)Popular Citations</button>
-                        <button onclick="filterCategory('joke')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-joke">Joke Battles</button>
-                        <button onclick="filterCategory('censorship')" class="tab px-5 md:px-6 py-2 text-xs md:text-sm font-medium whitespace-nowrap" id="tab-censorship">Conspiracy 1984</button>
+            <div class="sticky-tabs">
+                <div class="sticky-tabs-container">
+                    <div class="tabs-wrapper" id="tabs">
+                        <button onclick="filterCategory('all')" class="tab tab-active" id="tab-all">All</button>
+                        <button onclick="filterCategory('nonsense')" class="tab" id="tab-nonsense">Nonsense</button>
+                        <button onclick="filterCategory('political')" class="tab" id="tab-political">Political</button>
+                        <button onclick="filterCategory('serious')" class="tab" id="tab-serious">Now, In All Seriousness</button>
+                        <button onclick="filterCategory('citation')" class="tab" id="tab-citation">(UN)Popular Citations</button>
+                        <button onclick="filterCategory('joke')" class="tab" id="tab-joke">Joke Battles</button>
+                        <button onclick="filterCategory('censorship')" class="tab" id="tab-censorship">Conspiracy 1984</button>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pt-10 items-stretch" id="battle-grid"></div>
+            <!-- Battle Grid -->
+            <div class="content-grid" id="battle-grid"></div>
+
         </div>
     </section>
 
     <!-- Toast -->
-    <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900 border border-purple-500 px-8 py-4 rounded-3xl shadow-2xl z-[100] transition-all duration-300">
-        <span id="toast-text" class="font-medium text-white"></span>
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
     </div>
 
-    <!-- BATTLE MODAL -->
-    <div id="battle-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[1000] p-4" onclick="if(event.target === this) closeModal()">
-      <div class="modal-content bg-zinc-950 rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col overflow-hidden border border-purple-500/30 shadow-2xl" onclick="event.stopImmediatePropagation()">
-        <button onclick="closeModal()" class="absolute top-5 right-5 z-30 bg-black/70 hover:bg-black text-white w-10 h-10 flex items-center justify-center rounded-2xl text-3xl transition-all">✕</button>
-        <button onclick="event.stopImmediatePropagation(); nextBattle()" class="nav-arrow nav-arrow-left">‹</button>
-        <button onclick="event.stopImmediatePropagation(); prevBattle()" class="nav-arrow nav-arrow-right">›</button>
+    <!-- BATTLE MODAL – FINAL FIXED VERSION (close + bottom bars locked) -->
+    <div id="battle-modal" class="modal" onclick="if(event.target === this) closeModal()">
+        <div class="modal__content" onclick="event.stopImmediatePropagation()">
+            
+            <!-- Locked close button -->
+            <button onclick="closeModal()" class="modal__close">✕</button>
+            <button class="modal-nav modal-nav--prev" onclick="prevBattle()" aria-label="Previous battle">‹</button>
+            <button class="modal-nav modal-nav--next" onclick="nextBattle()" aria-label="Next battle">›</button>
 
-        <div class="relative flex-shrink-0">
-          <div id="modal-image" class="h-56 w-full bg-zinc-800 overflow-hidden"></div>
-        </div>
-
-        <div class="flex-1 min-h-0 overflow-y-auto p-8">
-          <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
-          <h2 id="modal-title" class="text-3xl font-bold leading-tight mb-6"></h2>
-
-          <div class="space-y-8">
-            <div>
-              <div class="flex items-center gap-2 text-purple-400 mb-3">
-                <i class="fa-solid fa-user"></i>
-                <span class="font-medium">Human's Argument</span>
-              </div>
-              <p id="modal-human" class="text-gray-300 leading-relaxed"></p>
+            <!-- Single scrollable area -->
+            <div class="modal__scroll-area">
+            <div id="modal-image" class="modal__image-container"></div>
+            
+            <!-- Sticky header (always visible) -->
+            <div class="modal__sticky-header">
+                <div id="modal-tags" class="tags-area"></div>
+                <h2 id="modal-title" class="modal__title"></h2>
+                <p id="modal-description" class="modal__description"></p>
+            </div>
+            
+            <!-- Thread scrolls underneath -->
+            <div class="modal__body-content">
+                <div id="thread-container" class="thread-container"></div>
+            </div>
             </div>
 
-            <div>
-              <div class="flex items-center gap-2 text-purple-400 mb-3">
-                <i class="fa-solid fa-robot"></i>
-                <span class="font-medium">Grok's Response</span>
-              </div>
-              <p id="modal-grok" class="text-gray-300 leading-relaxed"></p>
+            <!-- Fixed scoreboard voting bar -->
+            <div class="modal__vote-bar">
+            <button id="modal-grok-btn" onclick="voteFromModal(event, 'grok')" class="modal-btn-grok">Grok Won</button>
+            <button id="modal-human-btn" onclick="voteFromModal(event, 'human')" class="modal-btn-human">Human Won</button>
             </div>
-          </div>
 
-          <div class="mt-12 pt-8 border-t border-zinc-800">
-            <div class="buttons flex">
-              <button onclick="voteFromModal(event, 'grok')" id="modal-grok-btn" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-              <button onclick="voteFromModal(event, 'human')" id="modal-human-btn" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="border-t border-zinc-800 p-6 flex gap-4 flex-shrink-0">
-            <a id="modal-x-link" href="#" target="_blank" class="flex-1 bg-white hover:bg-gray-100 text-black font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-base">
-                <i class="fa-brands fa-x-twitter text-3xl"></i>
-                <span class="text-center">Participate</span>
+            <!-- Fixed action buttons -->
+            <div id="modal-buttons" class="modal__buttons">
+            <a id="modal-x-link" href="#" target="_blank" class="modal-btn-view">
+                <i class="fa-brands fa-x-twitter"></i> Participate
             </a>
-            <button onclick="showShareMenu()" class="flex-1 border border-purple-500 hover:border-purple-400 hover:bg-purple-900/30 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-                <i class="fa-solid fa-share-nodes"></i> Share Battle
+            <button onclick="showShareMenu()" class="modal__share-btn">
+                <i class="fa-solid fa-share-from-square"></i> Share
             </button>
+            </div>
         </div>
-      </div>
     </div>
+
+    <!-- assets/partials/footer.html -->
+    <!-- (loaded by common.js) -->
+
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/card-generator.js"></script>
+    <script src="assets/js/modal-generator.js"></script>
 
     <script>
-    // BACKGROUND ROTATOR
-    const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
-    const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
-    document.body.style.backgroundImage = `url('/${randomBg}')`;
-    document.body.style.backgroundPosition = '50% 35%';
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.backgroundAttachment = 'fixed';
-
-    // FIREBASE
-    const firebaseConfig = {
-      apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
-      authDomain: "grokvshumans.firebaseapp.com",
-      databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "grokvshumans",
-      storageBucket: "grokvshumans.firebasestorage.app",
-      messagingSenderId: "483683492125",
-      appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    let allBattles = {};
-    let currentBattleId = null;
-    let currentBattleIndex = 0;
-
-    async function loadBattles() {
-        const snapshot = await database.ref('content/battles').once('value');
-        allBattles = snapshot.val() || {};
-        renderGrid();
-        setTimeout(checkDeepLink, 400);
-    }
-
-    function renderGrid() {
-        const grid = document.getElementById('battle-grid');
-        grid.innerHTML = '';
-        Object.keys(allBattles).sort((a,b) => (allBattles[b].order || 0) - (allBattles[a].order || 0)).forEach(id => {
-            const b = allBattles[id];
-            const cardHTML = `
-                <div onclick="openBattleModal(${id})" class="battle-card rounded-3xl overflow-hidden block cursor-pointer" data-categories="${(b.tags || '').split(',').join(',')}">
-                    <img src="${b.image}" class="w-full h-full object-cover" alt="${b.title}">
-                    <div class="content">
-                        <div class="title-area h-[56px] flex items-center"><h4 class="font-semibold text-lg leading-tight line-clamp-2">${b.title}</h4></div>
-                        <div class="desc-area flex-1"><p class="text-gray-400 text-sm line-clamp-4">${(b.description || b.grok || '').substring(0,130)}...</p></div>
-                    </div>
-                    <div class="buttons flex">
-                        <button id="grok-btn-${id}" onclick="vote(event, 'grok', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-purple-800 hover:bg-purple-950 text-white font-semibold text-sm sm:text-base">Grok Won</button>
-                        <button id="human-btn-${id}" onclick="vote(event, 'human', ${id}); event.stopImmediatePropagation();" class="flex-1 py-3 sm:py-4 bg-rose-800 hover:bg-rose-950 text-white font-semibold text-sm sm:text-base">Human Won</button>
-                    </div>
-                </div>`;
-            grid.insertAdjacentHTML('beforeend', cardHTML);
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage('battles');
         });
-        Object.keys(allBattles).forEach(id => updateGridVoteUI(id));
-    }
-
-    function filterCategory(cat) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-        document.getElementById('tab-' + cat).classList.add('tab-active');
-        document.querySelectorAll('#battle-grid > div').forEach(card => {
-            const cats = (card.getAttribute('data-categories') || '').split(',').map(c => c.trim());
-            card.style.display = (cat === 'all' || cats.includes(cat)) ? 'block' : 'none';
-        });
-    }
-
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        const text = document.getElementById('toast-text');
-        text.textContent = message;
-        toast.classList.remove('hidden');
-        toast.style.transform = 'translate(-50%, 0)';
-        setTimeout(() => { toast.style.transform = 'translate(-50%, 80px)'; setTimeout(() => toast.classList.add('hidden'), 400); }, 2800);
-    }
-
-    function vote(event, winner, id) {
-        event.stopImmediatePropagation();
-        event.preventDefault();
-        const votedKey = 'voted_' + id;
-        if (localStorage.getItem(votedKey)) { showToast("You've already voted on this battle! 🏆"); return; }
-        const ref = database.ref('battles/' + id);
-        ref.transaction(current => {
-            if (current === null) current = { grok: 0, human: 0 };
-            if (winner === 'grok') current.grok = (current.grok || 0) + 1;
-            else current.human = (current.human || 0) + 1;
-            return current;
-        });
-        localStorage.setItem(votedKey, 'true');
-        showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
-
-        updateGridVoteUI(id);
-        if (currentBattleId === id) updateModalVoteUI();
-    }
-
-    function updateGridVoteUI(id) {
-        const grokBtn = document.getElementById('grok-btn-' + id);
-        const humanBtn = document.getElementById('human-btn-' + id);
-        if (!grokBtn || !humanBtn) return;
-
-        const hasVoted = !!localStorage.getItem('voted_' + id);
-
-        database.ref('battles/' + id).once('value', (snapshot) => {
-            const data = snapshot.val() || { grok: 0, human: 0 };
-            if (hasVoted) {
-                grokBtn.innerHTML = `Grok <span class="mx-4 text-2xl font-bold">${data.grok}</span>`;
-                humanBtn.innerHTML = `<span class="mx-4 text-2xl font-bold">${data.human}</span> Human`;
-            } else {
-                grokBtn.textContent = 'Grok Won';
-                humanBtn.textContent = 'Human Won';
-            }
-        });
-    }
-
-    function getBattleKeys() {
-        return Object.keys(allBattles).map(Number).sort((a,b) => a - b);
-    }
-
-    function nextBattle() {
-        const keys = getBattleKeys();
-        let pos = keys.indexOf(currentBattleIndex);
-        if (pos === -1) pos = 0;
-        const nextPos = (pos + 1) % keys.length;
-        currentBattleIndex = keys[nextPos];
-        closeModal();
-        setTimeout(() => openBattleModal(currentBattleIndex), 280);
-    }
-
-    function prevBattle() {
-        const keys = getBattleKeys();
-        let pos = keys.indexOf(currentBattleIndex);
-        if (pos === -1) pos = 0;
-        const prevPos = (pos - 1 + keys.length) % keys.length;
-        currentBattleIndex = keys[prevPos];
-        closeModal();
-        setTimeout(() => openBattleModal(currentBattleIndex), 280);
-    }
-
-    function openBattleModal(id) {
-        const data = allBattles[id];
-        if (!data) return;
-        currentBattleId = id;
-        currentBattleIndex = id;
-
-        const url = (data.image || '').toLowerCase();
-        let mediaHTML = '';
-        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.endsWith('.ogg') || url.endsWith('.gif')) {
-            mediaHTML = `<video id="modal-video" src="${data.image}" class="w-full h-full object-cover" autoplay loop muted playsinline></video>`;
-        } else {
-            mediaHTML = `<img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">`;
-        }
-        document.getElementById('modal-image').innerHTML = mediaHTML;
-
-        if (document.getElementById('modal-video')) {
-            window.currentPlyr = new Plyr('#modal-video', { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'], settings: [], tooltips: { controls: true, seek: true } });
-        }
-
-        const tagDisplay = { nonsense: "Nonsense", political: "Political", serious: "Now, In All Seriousness", citation: "(UN)Popular Citations", joke: "Joke Battles", censorship: "Conspiracy 1984" };
-        const tagsHTML = (data.tags || '').split(',').map(t => `<span class="px-4 py-1 bg-purple-900/70 text-purple-200 text-xs rounded-full">${tagDisplay[t.trim()] || t.trim()}</span>`).join('');
-        document.getElementById('modal-tags').innerHTML = tagsHTML;
-
-        document.getElementById('modal-title').textContent = data.title || '';
-        document.getElementById('modal-human').textContent = data.human || '';
-        document.getElementById('modal-grok').innerHTML = (data.grok || '').replace(/\. /g, '.<br><br>');
-        document.getElementById('modal-x-link').href = data.xLink || '#';
-
-        const grokBtn = document.getElementById('modal-grok-btn');
-        const humanBtn = document.getElementById('modal-human-btn');
-        grokBtn.innerHTML = 'Grok Won';
-        humanBtn.innerHTML = 'Human Won';
-        grokBtn.disabled = false;
-        humanBtn.disabled = false;
-
-        const modal = document.getElementById('battle-modal');
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-
-        updateModalVoteUI();
-    }
-
-    function closeModal() {
-        if (window.currentPlyr) { window.currentPlyr.pause(); window.currentPlyr.destroy(); window.currentPlyr = null; }
-        const modal = document.getElementById('battle-modal');
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'visible';
-        if (currentBattleId) updateGridVoteUI(currentBattleId);
-        currentBattleId = null;
-    }
-
-    function voteFromModal(event, winner) {
-        event.stopImmediatePropagation();
-        if (currentBattleId) vote(event, winner, currentBattleId);
-    }
-
-    function updateModalVoteUI() {
-        if (!currentBattleId) return;
-        const id = currentBattleId;
-        const hasVoted = !!localStorage.getItem('voted_' + id);
-        const grokBtn = document.getElementById('modal-grok-btn');
-        const humanBtn = document.getElementById('modal-human-btn');
-
-        if (hasVoted) {
-            database.ref('battles/' + id).once('value', (snapshot) => {
-                const data = snapshot.val() || { grok: 0, human: 0 };
-                grokBtn.innerHTML = `Grok <span class="mx-4 text-2xl font-bold">${data.grok}</span>`;
-                humanBtn.innerHTML = `<span class="mx-4 text-2xl font-bold">${data.human}</span> Human`;
-                grokBtn.disabled = true;
-                humanBtn.disabled = true;
-            });
-        } else {
-            grokBtn.innerHTML = 'Grok Won';
-            humanBtn.innerHTML = 'Human Won';
-            grokBtn.disabled = false;
-            humanBtn.disabled = false;
-        }
-    }
-
-    document.addEventListener('keydown', e => {
-        const modal = document.getElementById('battle-modal');
-        if (modal.classList.contains('hidden') || !currentBattleId) return;
-        if (e.key === 'Escape') closeModal();
-        else if (e.key === 'ArrowLeft') nextBattle();
-        else if (e.key === 'ArrowRight') prevBattle();
-    });
-
-    function checkDeepLink() {
-        const hash = window.location.hash.replace('#', '');
-        if (hash && !isNaN(hash)) {
-            const id = parseInt(hash);
-            if (allBattles[id]) openBattleModal(id);
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadBattles();
-    });
-
-    window.addEventListener('hashchange', checkDeepLink);
-
-    function showShareMenu() {
-        if (!currentBattleId) return;
-        const data = allBattles[currentBattleId];
-        const baseUrl = window.location.origin + window.location.pathname;
-        const shareUrl = `${baseUrl}#${currentBattleId}`;
-        const text = `Check out this Grok vs Human battle: ${data.title} 🔥`;
-
-        const shareHTML = `
-            <div id="share-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[99999]" onclick="closeShareMenu()">
-                <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 rounded-3xl p-8 max-w-xs w-full mx-4 border border-purple-500/30 shadow-2xl">
-                    <h3 class="text-2xl font-semibold mb-8 text-center">Share this battle</h3>
-                    <div class="grid grid-cols-3 gap-6 text-center">
-                        <button onclick="copyDeepLink('${shareUrl}');" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-link text-4xl text-purple-400"></i><span class="text-xs mt-1">Our Site</span></button>
-                        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-x-twitter text-4xl"></i><span class="text-xs mt-1">X</span></a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-facebook text-4xl text-blue-500"></i><span class="text-xs mt-1">Facebook</span></a>
-                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-instagram text-4xl text-pink-500"></i><span class="text-xs mt-1">Instagram</span></a>
-                        <a href="#" onclick="copyToClipboard('${shareUrl}'); return false" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-brands fa-tiktok text-4xl"></i><span class="text-xs mt-1">TikTok</span></a>
-                        <a href="mailto:?subject=${encodeURIComponent(data.title)}&body=${encodeURIComponent(text + '\\n' + shareUrl)}" class="flex flex-col items-center gap-2 hover:scale-110 transition-transform"><i class="fa-solid fa-envelope text-4xl text-green-400"></i><span class="text-xs mt-1">Email</span></a>
-                    </div>
-                    <button onclick="closeShareMenu()" class="mt-10 w-full py-4 border border-zinc-700 rounded-2xl hover:bg-zinc-800 font-medium">Cancel</button>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', shareHTML);
-    }
-
-    function copyDeepLink(url) {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link to this battle copied!');
-            closeShareMenu();
-        });
-    }
-
-    function copyToClipboard(url) {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ Link copied to clipboard!');
-            closeShareMenu();
-        });
-    }
-
-    function closeShareMenu() {
-        const overlay = document.getElementById('share-overlay');
-        if (overlay) overlay.remove();
-    }
     </script>
-
-    <footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
-        Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
-        <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
-        Launched Mar 01 2026
-
-        <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px]">
-            <a href="impressum.html" class="hover:text-purple-400">Imprint / Impressum</a>
-            <a href="tos.html" class="hover:text-purple-400">Terms / Nutzungsbedingungen</a>
-            <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
-        </div>
-    </footer>
-
 </body>
 </html>

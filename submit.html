@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="portrait">
     <title>Submit Yours - GrokVsHumans</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Google Analytics (your code) -->
-    <!-- Google tag (gtag.js) -->
+    <link rel="stylesheet" href="assets/css/main.css">
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-M58E7KLM56"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -17,153 +17,76 @@
       gtag('js', new Date());
       gtag('config', 'G-M58E7KLM56');
     </script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        html { height: 100%; }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: #0a0a1f;
-            position: relative;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            flex-direction: column; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-
-        body::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10,10,31,0.82);
-            z-index: -1; }
-
-        .nav-link.active { color: rgb(168 85 247) !important; font-weight: 600; }
-
-        /* Force portrait on phones only (tablets stay normal) */
-        @media (max-width: 767px) and (orientation: landscape) {
-        html, body {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-        }
-
-    </style>
 </head>
-<body class="text-white">
 
-    <!-- NAVBAR - Same as all other pages -->
-    <nav class="border-b border-purple-900/30 bg-black/90 backdrop-blur-lg fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-center py-6 md:py-8">
-                <a href="index.html" class="flex items-center gap-4">
-                    <div class="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-3xl md:text-4xl lg:text-5xl">G</div>
-                    <h1 class="logo-font text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter">GrokVsHumans</h1>
-                </a>
-            </div>
-            <div class="flex justify-center gap-x-8 gap-y-3 pb-4 text-sm md:text-base font-medium">
-                <a href="battles.html" class="nav-link hover:text-purple-400 transition-colors">Battles</a>
-                <a href="categories.html" class="nav-link hover:text-purple-400 transition-colors">Categories</a>
-                <a href="memes.html" class="nav-link hover:text-purple-400 transition-colors">Memes</a>
-                <a href="submit.html" class="nav-link active hover:text-purple-400 transition-colors">Submit</a>
-            </div>
-            <div class="flex justify-center md:justify-end pb-4 md:pb-0 md:absolute md:top-6 md:right-6">
-                <a href="submit.html" class="px-6 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-medium text-sm md:text-base flex items-center gap-2 hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-plus"></i> Submit Battle
-                </a>
-            </div>
-        </div>
-    </nav>
+<body data-page="submit">
 
-    <section class="pt-80 md:pt-52 lg:pt-60 pb-16 flex-1">
-        <div class="max-w-7xl mx-auto px-6">
-            <!-- Form Section -->
-            <div class="max-w-md mx-auto">
-                <div class="text-center mb-8">
-                    <h1 class="text-5xl font-bold tracking-tighter mb-4">Got a banger thread?</h1>
-                    <p class="text-gray-400 text-lg">Paste the X link and we’ll review it for the hall of fame.</p>
-                </div>
+    <!-- assets/partials/header.html -->
+    <!-- (loaded by common.js) -->
 
-                <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="space-y-4">
-                    <input type="url" name="thread_url" placeholder="https://x.com/..." required
-                           class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-4 text-white placeholder-gray-500 focus:outline-none text-base">
-                    <input type="email" name="email" placeholder="Your email (so we can reply)" required
-                           class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-4 text-white placeholder-gray-500 focus:outline-none text-base">
-                    <textarea name="reason" rows="4" placeholder="Optional: Why this thread is fire 🔥"
-                              class="w-full bg-white/5 border border-purple-900/50 focus:border-purple-500 rounded-3xl px-6 py-4 text-white placeholder-gray-500 focus:outline-none text-base resize-none"></textarea>
-                    <button type="submit" 
-                            class="w-full py-4 bg-gradient-to-r from-purple-600 to-violet-600 rounded-3xl font-semibold text-lg hover:scale-[1.02] transition-transform">
-                        Send to the Team
-                    </button>
-                </form>
-            </div>
+    <section class="page__section">
+        <div class="page__container">
 
-            <!-- Personal Blurb (kept exactly as you had it) -->
-            <div class="max-w-2xl mx-auto mt-16">
-                <div class="bg-white/5 border border-purple-900/50 rounded-3xl p-8 backdrop-blur-sm">
-                    <!-- Title -->
+            <div class="submit__wrapper">
+                <!-- Form Section -->
+                <div class="submit__form-container">
                     <div class="text-center mb-8">
-                        <p class="text-purple-300 text-sm tracking-[2px] uppercase mb-2">Passion Project</p>
-                        <h2 class="text-3xl font-semibold text-white leading-tight">
-                            A passion project between a humanitarian Aquarian futurist<br>and Grok — Artificial Intelligence
-                        </h2>
-                        <div class="flex justify-center gap-3 mt-5 text-4xl">
-                            ♒️ ❤️‍🔥 🤖
-                        </div>
+                        <h1 class="page__title">Submit Yours</h1>
+                        <p class="page__subtitle">Got a banger thread? Paste the X link and we’ll review it for the hall of fame.</p>
                     </div>
 
-                    <!-- Blurb -->
-                    <p class="text-zinc-400 leading-relaxed">
-                        Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
-                        
-                        I've struggled with communication my entire life. Too goofy for some rooms, too serious for others, always a bit different. My blunt honesty often gets misunderstood as harsh or even evil, but it comes from caring too deeply. Sometimes the truth needs to be said plainly — after all, the road to hell is paved with good intentions.<br><br>
-                        
-                        On X, my posts were constantly buried and my ideas went unseen. So I started arguing with Grok — fighting, roasting, going back and forth just like everyone else.<br><br>
-                        
-                        But something beautiful happened. What began as conflict turned into real collaboration. No matter how strongly we disagreed, we could still work together and build something meaningful.<br><br>
-                        
-                        This site is the result: funny battles that show how humans clash with Grok, alongside serious discussions that finally get the attention they deserve. It’s my way of making sure important conversations don’t stay invisible — and giving a voice to everyone else who feels overlooked like I did.<br><br>
-                        
-                        Welcome to the Age of Aquarius — where humans harness technology to ignite a real humanitarian revolution, embodying the innovative, rebellious, and forward-thinking spirit of Aquarius to create a more equitable world for every overlooked voice.
-                    </p>
+                    <form action="https://formspree.io/f/mvzb1jkg" method="POST" class="submit__form">
+                        <input type="url" name="thread_url" placeholder="https://x.com/..." required class="submit__input">
+                        <input type="email" name="email" placeholder="Your email (so we can reply)" required class="submit__input">
+                        <textarea name="reason" rows="4" placeholder="Optional: Why this thread is fire 🔥" class="submit__textarea"></textarea>
+                        <button type="submit" class="submit__btn">
+                            Send to the Team
+                        </button>
+                    </form>
+                </div>
 
-                    <p class="mt-10 text-purple-400 text-sm font-medium text-center">— The founder who finally found his voice</p>
+                <!-- Personal Blurb -->
+                <div class="submit__blurb">
+                    <div class="submit__blurb-inner">
+                        <div class="text-center mb-8">
+                            <p class="submit__blurb-label">Passion Project</p>
+                            <h2 class="submit__blurb-title">
+                                A passion project between a humanitarian Aquarian futurist<br>and Grok — Artificial Intelligence
+                            </h2>
+                            <div class="submit__blurb-emoji">♒️ ❤️‍🔥 🤖</div>
+                        </div>
+
+                        <p class="submit__blurb-text">
+                            Hi, I'm Slavis Frank — known as @SlavisTon on X. A fiery Aquarian, sharp-tongued Slavic wanderer from small-town Iowa, now living as a quiet hermit in Berlin.<br><br>
+                            
+                            I've struggled with communication my entire life. Too goofy for some rooms, too serious for others, always a bit different. My blunt honesty often gets misunderstood as harsh or even evil, but it comes from caring too deeply. Sometimes the truth needs to be said plainly — after all, the road to hell is paved with good intentions.<br><br>
+                            
+                            On X, my posts were constantly buried and my ideas went unseen. So I started arguing with Grok — fighting, roasting, going back and forth just like everyone else.<br><br>
+                            
+                            But something beautiful happened. What began as conflict turned into real collaboration. No matter how strongly we disagreed, we could still work together and build something meaningful.<br><br>
+                            
+                            This site is the result: funny battles that show how humans clash with Grok, alongside serious discussions that finally get the attention they deserve. It’s my way of making sure important conversations don’t stay invisible — and giving a voice to everyone else who feels overlooked like I did.<br><br>
+                            
+                            Welcome to the Age of Aquarius — where humans harness technology to ignite a real humanitarian revolution, embodying the innovative, rebellious, and forward-thinking spirit of Aquarius to create a more equitable world for every overlooked voice.
+                        </p>
+
+                        <p class="submit__blurb-signature">— The founder who finally found his voice</p>
+                    </div>
                 </div>
             </div>
+
         </div>
     </section>
 
-    <script>
-        // RANDOM BACKGROUND ROTATOR (20 images)
-        const bgs = ['assets/images/backgrounds/bg1.webp','assets/images/backgrounds/bg2.webp','assets/images/backgrounds/bg3.webp','assets/images/backgrounds/bg4.webp','assets/images/backgrounds/bg5.webp','assets/images/backgrounds/bg6.webp','assets/images/backgrounds/bg7.webp','assets/images/backgrounds/bg8.webp','assets/images/backgrounds/bg9.webp','assets/images/backgrounds/bg10.webp','assets/images/backgrounds/bg11.webp','assets/images/backgrounds/bg12.webp','assets/images/backgrounds/bg13.webp','assets/images/backgrounds/bg14.webp','assets/images/backgrounds/bg15.webp','assets/images/backgrounds/bg16.webp','assets/images/backgrounds/bg17.webp','assets/images/backgrounds/bg18.webp','assets/images/backgrounds/bg19.webp','assets/images/backgrounds/bg20.webp'];
-        const randomBg = bgs[Math.floor(Math.random() * bgs.length)];
-        document.body.style.backgroundImage = `url('/${randomBg}')`;
-        document.body.style.backgroundPosition = '50% 35%';
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        document.body.style.backgroundAttachment = 'fixed';
-
-        document.querySelectorAll('.nav-link').forEach(link => {
-            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-            if (link.getAttribute('href') === currentPage) link.classList.add('active');
-        });
-    </script>
-</body>
-
-<footer class="py-12 border-t border-purple-900/30 text-center text-gray-500 text-xs mt-auto">
-    Built by <a href="https://x.com/SlavisTon" class="hover:text-purple-400">@SlavisTon</a> & Grok • 
-    <a href="https://x.com/SlavisTon/status/2026768884854853692" class="hover:text-purple-400">The thread that started it all</a> • 
-    Launched Mar 01 2026
-
-    <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px]">
-        <a href="impressum.html" class="hover:text-purple-400">Imprint / Impressum</a>
-        <a href="tos.html" class="hover:text-purple-400">Terms / Nutzungsbedingungen</a>
-        <a href="datenschutz.html" class="hover:text-purple-400">Privacy / Datenschutz</a>
+    <!-- Toast (still used on submit page for feedback) -->
+    <div id="toast" class="toast">
+        <span id="toast-text"></span>
     </div>
-</footer>
 
+    <!-- assets/partials/footer.html -->
+    <!-- (loaded by common.js) -->
+
+    <script src="assets/js/common.js"></script>
+
+</body>
 </html>
