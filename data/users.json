@@ -1,11 +1,195 @@
 {
-  "SlavisTon": {
-    "displayName": "Slavis Frank",
-    "verified": false,
-    "bio": "Creator of GrokVsHumans"
-  },
   "0hour1": {
     "displayName": "0hour1",
+    "verified": false
+  },
+  "4thOfJuly365": {
+    "displayName": "4thOfJuly365",
+    "verified": false
+  },
+  "ATweetThing": {
+    "displayName": "ATweetThing",
+    "verified": false
+  },
+  "AntiLeftMemes": {
+    "displayName": "AntiLeftMemes",
+    "verified": false
+  },
+  "ApparentlyLeft": {
+    "displayName": "ApparentlyLeft",
+    "verified": false
+  },
+  "BogeyBones": {
+    "displayName": "BogeyBones",
+    "verified": false
+  },
+  "BuiltUSTough": {
+    "displayName": "BuiltUSTough",
+    "verified": false
+  },
+  "CindyLou_2022": {
+    "displayName": "CindyLou_2022",
+    "verified": false
+  },
+  "DaedeTheDJ": {
+    "displayName": "DaedeTheDJ",
+    "verified": false
+  },
+  "DeepStateAntifa": {
+    "displayName": "DeepStateAntifa",
+    "verified": false
+  },
+  "GlockfordFiles": {
+    "displayName": "GlockfordFiles",
+    "verified": false
+  },
+  "GoldenBoyBNB": {
+    "displayName": "GoldenBoyBNB",
+    "verified": false
+  },
+  "GreginArk": {
+    "displayName": "GreginArk",
+    "verified": false
+  },
+  "HomeInvasionCop": {
+    "displayName": "HomeInvasionCop",
+    "verified": false
+  },
+  "Jack_in_Hat": {
+    "displayName": "Jack_in_Hat",
+    "verified": false
+  },
+  "JamesKInFlorida": {
+    "displayName": "JamesKInFlorida",
+    "verified": false
+  },
+  "KatieMiller": {
+    "displayName": "KatieMiller",
+    "verified": false
+  },
+  "LamiCugg": {
+    "displayName": "LamiCugg",
+    "verified": false
+  },
+  "MTUltra69420": {
+    "displayName": "MTUltra69420",
+    "verified": false
+  },
+  "ManOnDaNet": {
+    "displayName": "ManOnDaNet",
+    "verified": false
+  },
+  "Meeswak": {
+    "displayName": "Meeswak",
+    "verified": false
+  },
+  "MemesNationwide": {
+    "displayName": "MemesNationwide",
+    "verified": false
+  },
+  "Nerdom_news": {
+    "displayName": "Nerdom_news",
+    "verified": false
+  },
+  "NobelRK": {
+    "displayName": "NobelRK",
+    "verified": false
+  },
+  "OG_Greengirl": {
+    "displayName": "OG_Greengirl",
+    "verified": false
+  },
+  "Oxbow99_": {
+    "displayName": "Oxbow99_",
+    "verified": false
+  },
+  "RAMolledo": {
+    "displayName": "RAMolledo",
+    "verified": false
+  },
+  "RMT1948": {
+    "displayName": "RMT1948",
+    "verified": false
+  },
+  "Ravindr21158124": {
+    "displayName": "Ravindr",
+    "verified": false
+  },
+  "Rothbard1776": {
+    "displayName": "Rothbard1776",
+    "verified": false
+  },
+  "Sam_king_88": {
+    "displayName": "Sam_king_88",
+    "verified": false
+  },
+  "ShadowofEzra": {
+    "displayName": "ShadowofEzra",
+    "verified": false
+  },
+  "SlavisTon": {
+    "displayName": "Slavis Frank",
+    "verified": true,
+    "bio": "Your custom bio text here — edit this anytime in VS Code"
+  },
+  "SnarkyPotatoes": {
+    "displayName": "SnarkyPotatoes",
+    "verified": false
+  },
+  "SoveyX": {
+    "displayName": "SoveyX",
+    "verified": false
+  },
+  "Stupidcomment_0": {
+    "displayName": "Stupidcomment_0",
+    "verified": false
+  },
+  "TPayne18332": {
+    "displayName": "TPayne18332",
+    "verified": false
+  },
+  "TXsomeone": {
+    "displayName": "TXsomeone",
+    "verified": false
+  },
+  "TaraBull": {
+    "displayName": "TaraBull",
+    "verified": false
+  },
+  "TiffanyxFong": {
+    "displayName": "TiffanyxFong",
+    "verified": false
+  },
+  "VicLagina2025": {
+    "displayName": "VicLagina2025",
+    "verified": false
+  },
+  "WPhillyTurkey": {
+    "displayName": "WPhillyTurkey",
+    "verified": false
+  },
+  "XRP369CREATOR": {
+    "displayName": "XRP369CREATOR",
+    "verified": false
+  },
+  "alphafox": {
+    "displayName": "alphafox",
+    "verified": false
+  },
+  "dogeofficialceo": {
+    "displayName": "dogeofficialceo",
+    "verified": false
+  },
+  "elonmusk": {
+    "displayName": "Elon Musk",
+    "verified": true
+  },
+  "far_middle": {
+    "displayName": "far_middle",
+    "verified": false
+  },
+  "gork": {
+    "displayName": "gork",
     "verified": false
   },
   "grok": {
@@ -13,32 +197,84 @@
     "verified": true,
     "bio": "Built by xAI"
   },
+  "iambigsee": {
+    "displayName": "iambigsee",
+    "verified": false
+  },
+  "ilySalt": {
+    "displayName": "ilySalt",
+    "verified": false
+  },
+  "jonfavs": {
+    "displayName": "jonfavs",
+    "verified": false
+  },
+  "klara_sjo": {
+    "displayName": "klara_sjo",
+    "verified": false
+  },
+  "lee418154": {
+    "displayName": "lee418154",
+    "verified": false
+  },
+  "lisahsmithlhs": {
+    "displayName": "lisahsmithlhs",
+    "verified": false
+  },
+  "lospectra": {
+    "displayName": "lospectra",
+    "verified": false
+  },
+  "malcomtentrage": {
+    "displayName": "malcomtentrage",
+    "verified": false
+  },
   "maxvayshia": {
     "displayName": "Max Vayshia",
     "verified": false
   },
-  "Ravindr21158124": {
-    "displayName": "Ravindr",
+  "memeswalla_": {
+    "displayName": "memeswalla_",
+    "verified": false
+  },
+  "nekokot_1": {
+    "displayName": "nekokot_1",
+    "verified": false
+  },
+  "samtripoli": {
+    "displayName": "samtripoli",
+    "verified": false
+  },
+  "scitechgirl": {
+    "displayName": "scitechgirl",
+    "verified": false
+  },
+  "shadowspank1": {
+    "displayName": "shadowspank1",
+    "verified": false
+  },
+  "si73ntassassin": {
+    "displayName": "si73ntassassin",
     "verified": false
   },
   "strikexfn": {
     "displayName": "Strike XFN",
     "verified": false
   },
-  "BertCComedy": {
-    "displayName": "Bert C Comedy",
+  "thelivingstone5": {
+    "displayName": "thelivingstone5",
     "verified": false
   },
-  "Bantination": {
-    "displayName": "Bantination",
+  "thodahansle": {
+    "displayName": "thodahansle",
     "verified": false
   },
-  "TiffanyFong": {
-    "displayName": "Tiffany Fong",
+  "toriaann21": {
+    "displayName": "toriaann21",
     "verified": false
   },
-  "elonmusk": {
-    "displayName": "Elon Musk",
-    "verified": true
+  "unearthing29": {
+    "displayName": "unearthing29",
+    "verified": false
   }
 }
