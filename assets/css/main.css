@@ -373,6 +373,23 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   border: none !important;
 }
 
+/* ====================== THREAD EMULATOR – Media-only from X ====================== */
+.thread-media {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 12px 0 4px !important;
+  border-radius: 12px !important;
+  object-fit: contain;
+  background-color: #1f1f1f; /* fallback while loading */
+}
+
+.grok-bubble .thread-media,
+.human-bubble .thread-media {
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
 /* ============================================= */
 /* Responsive – Mobile (max-width 640px) */
 /* ============================================= */
