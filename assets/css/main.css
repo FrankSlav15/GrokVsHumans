@@ -363,9 +363,10 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 .twitter-tweet {
   margin: 14px 0 8px !important;
   max-width: 100% !important;
+  min-height: 240px !important;   /* critical – prevents 2px collapse */
   border-radius: 12px !important;
   overflow: hidden;
-  min-height: 100px !important; /* prevents 2px collapse */
+  background: #1f1f1f;            /* visible while widget renders */
 }
 
 .grok-bubble .twitter-tweet,

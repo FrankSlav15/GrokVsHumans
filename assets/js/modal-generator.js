@@ -69,7 +69,7 @@ function renderTags(data) {
   container.innerHTML = html;
 }
 
-// ====================== THREAD RENDERING (OFFICIAL X EMBED – MEDIA RELIABLE) ======================
+// ====================== THREAD RENDERING (OFFICIAL X EMBED – COLLAPSE FIXED) ======================
 function loadTwitterWidgets() {
   if (window.twttr?.widgets) return Promise.resolve();
   if (document.getElementById('twitter-widgets-script')) return Promise.resolve();
@@ -127,7 +127,8 @@ function renderThread(threadPosts, containerId) {
                       data-media-max-width="560" 
                       data-theme="dark" 
                       data-width="100%" 
-                      data-dnt="true">
+                      data-dnt="true"
+                      data-conversation="none">
             <a href="${xUrl}"></a>
           </blockquote>`;
       } 
@@ -148,14 +149,17 @@ function renderThread(threadPosts, containerId) {
   html += `</div>`;
   container.innerHTML = html;
 
-  // Load official X widgets + small delay for reliable rendering
+  // Robust widget loading (multiple staggered calls – fixes rebrand timing)
   if (hasXEmbed) {
     loadTwitterWidgets().then(() => {
-      setTimeout(() => {
+      const loadWidgets = () => {
         if (window.twttr?.widgets?.load) {
           window.twttr.widgets.load(container);
         }
-      }, 150);
+      };
+      loadWidgets();        // immediate
+      setTimeout(loadWidgets, 220);
+      setTimeout(loadWidgets, 650); // final safety net
     });
   }
 }
