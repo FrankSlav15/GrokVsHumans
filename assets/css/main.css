@@ -359,35 +359,19 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 .card__vote-bar, .modal__vote-bar{border:none!important}
 .grok-bar, .human-bar, .modal-btn-grok, .modal-btn-human{border:none!important}
 
-/* ====================== THREAD EMULATOR – X Media-only Embed ====================== */
-.twitter-tweet.media-only-embed {
+/* ====================== THREAD EMULATOR – Official X Embed (no more collapse) ====================== */
+.twitter-tweet {
   margin: 14px 0 8px !important;
   max-width: 100% !important;
   border-radius: 12px !important;
   overflow: hidden;
+  min-height: 100px !important; /* prevents 2px collapse */
 }
 
-.grok-bubble .twitter-tweet.media-only-embed,
-.human-bubble .twitter-tweet.media-only-embed {
+.grok-bubble .twitter-tweet,
+.human-bubble .twitter-tweet {
   background-color: transparent !important;
   border: none !important;
-}
-
-/* ====================== THREAD EMULATOR – Media-only from X ====================== */
-.thread-media {
-  max-width: 100% !important;
-  width: 100% !important;
-  height: auto !important;
-  display: block !important;
-  margin: 12px 0 4px !important;
-  border-radius: 12px !important;
-  object-fit: contain;
-  background-color: #1f1f1f; /* fallback while loading */
-}
-
-.grok-bubble .thread-media,
-.human-bubble .thread-media {
-  border: 1px solid rgba(255,255,255,0.1) !important;
 }
 
 /* ============================================= */
