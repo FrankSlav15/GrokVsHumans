@@ -1,44 +1,278 @@
 {
-  "SlavisTon": {
-    "displayName": "Slavis Frank",
-    "verified": false,
-    "bio": "Creator of GrokVsHumans"
-  },
   "0hour1": {
-    "displayName": "0hour1",
+    "displayName": "0HOUR1",
+    "verified": true
+  },
+  "4thOfJuly365": {
+    "displayName": "Mr. Star Spangled MAGA",
+    "verified": true
+  },
+  "ATweetThing": {
+    "displayName": "Krista Stephens",
+    "verified": true
+  },
+  "AntiLeftMemes": {
+    "displayName": "Anti Left Memes",
+    "verified": true
+  },
+  "ApparentlyLeft": {
+    "displayName": "Said to Be Left",
+    "verified": true
+  },
+  "BogeyBones": {
+    "displayName": "BogeyBones ⛳🦴",
+    "verified": true
+  },
+  "BuiltUSTough": {
+    "displayName": "Built US Tough",
+    "verified": true
+  },
+  "CindyLou_2022": {
+    "displayName": "Cin_In_NH",
+    "verified": true
+  },
+  "DaedeTheDJ": {
+    "displayName": "Daede",
+    "verified": true
+  },
+  "DeepStateAntifa": {
+    "displayName": "DeepStateAntifa",
     "verified": false
   },
-  "grok": {
-    "displayName": "Grok",
-    "verified": true,
-    "bio": "Built by xAI"
+  "GlockfordFiles": {
+    "displayName": "Glockford Files",
+    "verified": true
   },
-  "maxvayshia": {
-    "displayName": "Max Vayshia",
+  "GoldenBoyBNB": {
+    "displayName": "GoldenBoyBNB🔶",
+    "verified": true
+  },
+  "GreginArk": {
+    "displayName": "Greg",
+    "verified": true
+  },
+  "HomeInvasionCop": {
+    "displayName": "Victim Tee",
+    "verified": false
+  },
+  "Jack_in_Hat": {
+    "displayName": "Jack Hatter",
+    "verified": false
+  },
+  "JamesKInFlorida": {
+    "displayName": "JamesKaneInFlorida",
+    "verified": true
+  },
+  "KatieMiller": {
+    "displayName": "Katie Miller",
+    "verified": true
+  },
+  "LamiCugg": {
+    "displayName": "Cugg💕",
+    "verified": true
+  },
+  "MTUltra69420": {
+    "displayName": "Nobody, Man",
+    "verified": false
+  },
+  "ManOnDaNet": {
+    "displayName": "We all should be Charlie Kirk 🙏R.I.P.",
+    "verified": false
+  },
+  "Meeswak": {
+    "displayName": "Miswak",
+    "verified": false
+  },
+  "MemesNationwide": {
+    "displayName": "Memesnation",
+    "verified": true
+  },
+  "Nerdom_news": {
+    "displayName": "Nerdom",
+    "verified": true
+  },
+  "NobelRK": {
+    "displayName": "Sunflower🔆",
+    "verified": true
+  },
+  "OG_Greengirl": {
+    "displayName": "Greengirl",
+    "verified": false
+  },
+  "Oxbow99_": {
+    "displayName": "Sgt Hulka",
+    "verified": true
+  },
+  "RAMolledo": {
+    "displayName": "Ramon",
+    "verified": true
+  },
+  "RMT1948": {
+    "displayName": "RMT",
     "verified": false
   },
   "Ravindr21158124": {
-    "displayName": "Ravindr",
+    "displayName": "I love puppies 🐶",
+    "verified": true
+  },
+  "Rothbard1776": {
+    "displayName": "Murray 🇺🇸",
+    "verified": true
+  },
+  "Sam_king_88": {
+    "displayName": "Is this thing on 🎤",
+    "verified": true
+  },
+  "ShadowofEzra": {
+    "displayName": "Shadow of Ezra",
+    "verified": true
+  },
+  "SnarkyPotatoes": {
+    "displayName": "ɴɪᴄᴏʟᴇ ᴏғ sɴᴀʀᴋ 🚫🍍🍠",
+    "verified": true
+  },
+  "SoveyX": {
+    "displayName": "Sovey",
+    "verified": true
+  },
+  "Stupidcomment_0": {
+    "displayName": "Stupidcommentsupporter",
+    "verified": false
+  },
+  "TPayne18332": {
+    "displayName": "Torvillini the Great",
+    "verified": false
+  },
+  "TXsomeone": {
+    "displayName": "TXsomeone",
+    "verified": false
+  },
+  "TaraBull": {
+    "displayName": "TaraBull",
+    "verified": true
+  },
+  "TiffanyxFong": {
+    "displayName": "tiffany fong (retarded)",
+    "verified": true
+  },
+  "VicLagina2025": {
+    "displayName": "🇺🇸 Hugh G Rekshun 🇺🇸",
+    "verified": true
+  },
+  "WPhillyTurkey": {
+    "displayName": "West Philly Turkey",
+    "verified": false
+  },
+  "XRP369CREATOR": {
+    "displayName": "XRP369CREATOR",
+    "verified": false
+  },
+  "alphafox": {
+    "displayName": "AlphaFox",
+    "verified": true
+  },
+  "dogeofficialceo": {
+    "displayName": "Sir Doge of the Coin ⚔️",
+    "verified": true
+  },
+  "elonmusk": {
+    "displayName": "Elon Musk",
+    "verified": true
+  },
+  "SlavisTon": {
+    "displayName": "Slavis Frank",
+    "verified": true
+  },
+  "far_middle": {
+    "displayName": "Far Middle",
+    "verified": true
+  },
+  "gork": {
+    "displayName": "Gork",
+    "verified": true
+  },
+  "grok": {
+    "displayName": "Grok",
+    "verified": true
+  },
+  "iambigsee": {
+    "displayName": "Big See",
+    "verified": true
+  },
+  "ilySalt": {
+    "displayName": "ily Salt",
+    "verified": false
+  },
+  "jonfavs": {
+    "displayName": "Jon Favs",
+    "verified": true
+  },
+  "klara_sjo": {
+    "displayName": "Klara Sjö",
+    "verified": false
+  },
+  "lee418154": {
+    "displayName": "Lee",
+    "verified": false
+  },
+  "lisahsmithlhs": {
+    "displayName": "Lisa Smith",
+    "verified": false
+  },
+  "lospectra": {
+    "displayName": "Lospectra",
+    "verified": false
+  },
+  "malcomtentrage": {
+    "displayName": "Malcom Tent Rage",
+    "verified": false
+  },
+  "maxvayshia": {
+    "displayName": "Max Vayshia",
+    "verified": true
+  },
+  "memeswalla_": {
+    "displayName": "Memeswalla",
+    "verified": true
+  },
+  "nekokot_1": {
+    "displayName": "Nekokot",
+    "verified": false
+  },
+  "samtripoli": {
+    "displayName": "Sam Tripoli",
+    "verified": true
+  },
+  "scitechgirl": {
+    "displayName": "SciTechGirl",
+    "verified": true
+  },
+  "shadowspank1": {
+    "displayName": "Shadow Spank",
+    "verified": false
+  },
+  "si73ntassassin": {
+    "displayName": "Silent Assassin",
     "verified": false
   },
   "strikexfn": {
     "displayName": "Strike XFN",
     "verified": false
   },
-  "BertCComedy": {
-    "displayName": "Bert C Comedy",
+  "thelivingstone5": {
+    "displayName": "The Livingstone",
     "verified": false
   },
-  "Bantination": {
-    "displayName": "Bantination",
+  "thodahansle": {
+    "displayName": "Thoda Hansle",
     "verified": false
   },
-  "TiffanyFong": {
-    "displayName": "Tiffany Fong",
+  "toriaann21": {
+    "displayName": "Toria Ann",
     "verified": false
   },
-  "elonmusk": {
-    "displayName": "Elon Musk",
-    "verified": true
+  "unearthing29": {
+    "displayName": "Unearthing",
+    "verified": false
   }
 }
