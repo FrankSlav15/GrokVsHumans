@@ -69,7 +69,7 @@ function renderTags(data) {
   container.innerHTML = html;
 }
 
-// ====================== THREAD RENDERING (OFFICIAL X EMBED – MEDIA ONLY, COLLAPSE PROOF) ======================
+// ====================== THREAD RENDERING (MODERN X createTweet API – NO MORE 0x0) ======================
 function loadTwitterWidgets() {
   if (window.twttr?.widgets) return Promise.resolve();
   if (document.getElementById('twitter-widgets-script')) return Promise.resolve();
@@ -91,6 +91,7 @@ function renderThread(threadPosts, containerId) {
 
   let html = `<div class="thread-emulator">`;
   let hasXEmbed = false;
+  let embedCount = 0;
 
   threadPosts.forEach((post) => {
     const isGrok = post.author === 'grok';
@@ -110,7 +111,7 @@ function renderThread(threadPosts, containerId) {
     if (isDeleted) {
       html += `<div class="deleted-post">This Post is from an account that no longer exists.</div>`;
     } else {
-      // Header + your manual text (full control)
+      // Header + your manual text (full control – unchanged)
       html += `
         <div class="thread-post__header">
           <span class="font-semibold text-sm">${displayNameHTML}</span>
@@ -118,19 +119,16 @@ function renderThread(threadPosts, containerId) {
         </div>
         <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
 
-      // === OFFICIAL X EMBED (media only) ===
+      // === MODERN X EMBED (media only – no more 0x0) ===
       const xUrl = post.xURL || post.xUrl;
       if (xUrl) {
         hasXEmbed = true;
-        html += `
-          <blockquote class="twitter-tweet" 
-                      data-media-max-width="560" 
-                      data-theme="dark" 
-                      data-width="100%" 
-                      data-dnt="true"
-                      data-conversation="none">
-            <a href="${xUrl}"></a>
-          </blockquote>`;
+        embedCount++;
+        const tweetId = xUrl.split('/status/')[1]?.split('?')[0] || xUrl.split('/status/')[1];
+        if (tweetId) {
+          const placeholderId = `tweet-embed-${embedCount}`;
+          html += `<div id="${placeholderId}" class="x-embed-placeholder" data-tweet-id="${tweetId}"></div>`;
+        }
       } 
       // Fallback: old local image/video
       else if (post.image) {
@@ -149,13 +147,28 @@ function renderThread(threadPosts, containerId) {
   html += `</div>`;
   container.innerHTML = html;
 
-  // Robust widget loading (fixes rebrand timing)
+  // Robust modern widget initialization
   if (hasXEmbed) {
     loadTwitterWidgets().then(() => {
-      const loadWidgets = () => window.twttr?.widgets?.load && window.twttr.widgets.load(container);
-      loadWidgets();
-      setTimeout(loadWidgets, 250);
-      setTimeout(loadWidgets, 650);
+      const createAllEmbeds = () => {
+        document.querySelectorAll('.x-embed-placeholder').forEach(placeholder => {
+          const tweetId = placeholder.getAttribute('data-tweet-id');
+          if (tweetId && window.twttr?.widgets?.createTweet) {
+            window.twttr.widgets.createTweet(tweetId, placeholder, {
+              theme: 'dark',
+              dnt: true,
+              width: '100%',
+              align: 'center'
+            });
+          }
+        });
+      };
+
+      // Multiple staggered calls – this is what finally kills the 0x0 issue in modals
+      createAllEmbeds();
+      setTimeout(createAllEmbeds, 300);
+      setTimeout(createAllEmbeds, 800);
+      setTimeout(createAllEmbeds, 1500);
     });
   }
 }

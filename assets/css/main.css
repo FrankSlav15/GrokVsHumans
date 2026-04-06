@@ -375,6 +375,21 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   border: none !important;
 }
 
+/* ====================== THREAD EMULATOR – Modern X Embed (no 0x0 collapse) ====================== */
+.x-embed-placeholder {
+  margin: 14px 0 8px !important;
+  min-height: 260px !important;   /* critical fallback while widget renders */
+  width: 100% !important;
+  background: #1f1f1f;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.grok-bubble .x-embed-placeholder,
+.human-bubble .x-embed-placeholder {
+  background-color: transparent !important;
+}
+
 /* ============================================= */
 /* Responsive – Mobile (max-width 640px) */
 /* ============================================= */
