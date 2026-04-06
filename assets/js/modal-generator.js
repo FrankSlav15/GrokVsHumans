@@ -69,11 +69,30 @@ function renderTags(data) {
   container.innerHTML = html;
 }
 
+// ====================== THREAD RENDERING (MAJOR UPGRADE) ======================
+function loadTwitterWidgets() {
+  // One-time dynamic load of official X widgets (self-contained, no HTML change needed)
+  if (window.twttr?.widgets) return Promise.resolve();
+  if (document.getElementById('twitter-widgets-script')) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.id = 'twitter-widgets-script';
+    script.src = 'https://platform.twitter.com/widgets.js';
+    script.charset = 'utf-8';
+    script.async = true;
+    script.onload = () => resolve();
+    document.head.appendChild(script);
+  });
+}
+
 function renderThread(threadPosts, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   let html = `<div class="thread-emulator">`;
+  let hasXEmbed = false;
+
   threadPosts.forEach((post) => {
     const isGrok = post.author === 'grok';
     const isDeleted = post.deleted === true || !post.author;
@@ -87,27 +106,52 @@ function renderThread(threadPosts, containerId) {
     html += `
       <div class="thread-post ${isGrok ? 'justify-end' : ''}">
         ${!isDeleted && !isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="">` : ''}
-        <div class="${isGrok ? 'grok-bubble' : 'human-bubble'}">
-          ${isDeleted 
-            ? `<div class="deleted-post">This Post is from an account that no longer exists.</div>` 
-            : `
-              <div class="thread-post__header">
-                <span class="font-semibold text-sm">${displayNameHTML}</span>
-                <span class="text-zinc-500 text-xs">${post.date || ''}</span>
-              </div>
-              <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>
-              ${post.image 
-                ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) 
-                    ? `<video src="${post.image}" class="thread-media" controls preload="metadata" playsinline></video>` 
-                    : `<img src="${post.image}" class="thread-media" alt="">`)
-                : ''}
-            `}
+        <div class="${isGrok ? 'grok-bubble' : 'human-bubble'}">`;
+
+    if (isDeleted) {
+      html += `<div class="deleted-post">This Post is from an account that no longer exists.</div>`;
+    } else {
+      // Header + text (unchanged)
+      html += `
+        <div class="thread-post__header">
+          <span class="font-semibold text-sm">${displayNameHTML}</span>
+          <span class="text-zinc-500 text-xs">${post.date || ''}</span>
         </div>
+        <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
+
+      // === NEW: Official X/Twitter embedded media + external links ===
+      if (post.xUrl) {
+        hasXEmbed = true;
+        html += `
+          <blockquote class="twitter-tweet" data-theme="dark" data-width="100%" data-dnt="true">
+            <a href="${post.xUrl}"></a>
+          </blockquote>`;
+      } 
+      // Fallback to existing single local image/video (backward compatible)
+      else if (post.image) {
+        const isVideo = post.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+        html += isVideo 
+          ? `<video src="${post.image}" class="thread-media" controls preload="metadata" playsinline></video>` 
+          : `<img src="${post.image}" class="thread-media" alt="">`;
+      }
+    }
+
+    html += `</div>
         ${!isDeleted && isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="">` : ''}
       </div>`;
   });
+
   html += `</div>`;
   container.innerHTML = html;
+
+  // Load official X widgets only when needed (once per page)
+  if (hasXEmbed) {
+    loadTwitterWidgets().then(() => {
+      if (window.twttr?.widgets?.load) {
+        window.twttr.widgets.load(container);
+      }
+    });
+  }
 }
 
 // ====================== OPEN / CLOSE ======================
