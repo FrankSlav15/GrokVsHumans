@@ -69,9 +69,9 @@ function renderTags(data) {
   container.innerHTML = html;
 }
 
-// ====================== THREAD RENDERING (MAJOR UPGRADE) ======================
+// ====================== THREAD RENDERING (MEDIA-ONLY X EMBED UPGRADE) ======================
 function loadTwitterWidgets() {
-  // One-time dynamic load of official X widgets (self-contained, no HTML change needed)
+  // One-time dynamic load of official X widgets
   if (window.twttr?.widgets) return Promise.resolve();
   if (document.getElementById('twitter-widgets-script')) return Promise.resolve();
 
@@ -111,7 +111,7 @@ function renderThread(threadPosts, containerId) {
     if (isDeleted) {
       html += `<div class="deleted-post">This Post is from an account that no longer exists.</div>`;
     } else {
-      // Header + text (unchanged)
+      // Header + your manual text (exactly as before — you keep full control)
       html += `
         <div class="thread-post__header">
           <span class="font-semibold text-sm">${displayNameHTML}</span>
@@ -119,15 +119,16 @@ function renderThread(threadPosts, containerId) {
         </div>
         <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
 
-      // === NEW: Official X/Twitter embedded media + external links ===
-      if (post.xUrl) {
+      // === NEW: Media-only X embed (your xURL field) ===
+      const xUrl = post.xURL || post.xUrl;
+      if (xUrl) {
         hasXEmbed = true;
         html += `
-          <blockquote class="twitter-tweet" data-theme="dark" data-width="100%" data-dnt="true">
-            <a href="${post.xUrl}"></a>
+          <blockquote class="twitter-tweet media-only-embed" data-theme="dark" data-width="100%" data-dnt="true">
+            <a href="${xUrl}"></a>
           </blockquote>`;
       } 
-      // Fallback to existing single local image/video (backward compatible)
+      // Fallback: old local image/video (still works for anything without xURL)
       else if (post.image) {
         const isVideo = post.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
         html += isVideo 
@@ -144,7 +145,7 @@ function renderThread(threadPosts, containerId) {
   html += `</div>`;
   container.innerHTML = html;
 
-  // Load official X widgets only when needed (once per page)
+  // Load official X widgets only when needed
   if (hasXEmbed) {
     loadTwitterWidgets().then(() => {
       if (window.twttr?.widgets?.load) {

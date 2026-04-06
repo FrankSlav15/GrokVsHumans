@@ -359,18 +359,18 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 .card__vote-bar, .modal__vote-bar{border:none!important}
 .grok-bar, .human-bar, .modal-btn-grok, .modal-btn-human{border:none!important}
 
-/* ====================== THREAD EMULATOR – Official X Embed Styling ====================== */
-.twitter-tweet {
-  margin: 12px 0 !important;
+/* ====================== THREAD EMULATOR – X Media-only Embed ====================== */
+.twitter-tweet.media-only-embed {
+  margin: 14px 0 8px !important;
   max-width: 100% !important;
   border-radius: 12px !important;
   overflow: hidden;
 }
 
-/* Make sure embeds respect bubble padding and dark theme */
-.grok-bubble .twitter-tweet,
-.human-bubble .twitter-tweet {
+.grok-bubble .twitter-tweet.media-only-embed,
+.human-bubble .twitter-tweet.media-only-embed {
   background-color: transparent !important;
+  border: none !important;
 }
 
 /* ============================================= */
