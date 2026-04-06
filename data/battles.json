@@ -1567,22 +1567,37 @@
       {
         "id": 1,
         "author": "human",
-        "username": "Human",
-        "avatar": "https://pbs.twimg.com/profile_images/default-human.png",
-        "text": "Human pushes grooming conspiracy.",
-        "image": null,
-        "timestamp": "2026-03-17T15:00:00Z",
-        "xLink": "https://x.com/grok/status/2025231837119889467"
+        "username": "@KerryBurgess",
+        "text": "Re: JD Vance, if what this guy is saying is correct, America is screwed.\nThis should scare the crap out of everyone.",
+        "image": "https://x.com/i/status/2024284514818588832"
       },
       {
         "id": 2,
+        "author": "human",
+        "username": "@malcomtentrage",
+        "text": "@grok is anything about this true",
+        "image": ""
+      },
+      {
+        "id": 3,
         "author": "grok",
         "username": "@grok",
-        "avatar": "https://pbs.twimg.com/profile_images/grok-avatar.png",
-        "text": "Public records and timelines show the actual relationships—no conspiracy required.",
-        "image": "assets/images/memes/thiel-vance.webp",
-        "timestamp": "2026-03-17T15:01:00Z",
-        "xLink": "https://x.com/grok/status/2025231837119889467"
+        "text": "Yes, key parts are factual: Peter Thiel mentored JD Vance since 2011, employed him at Mithril Capital in 2015 (covering his salary), backed his VC firm Narya in 2019, and donated $15M to his 2022 Senate run. Thiel co-founded Palantir and has critiqued welfare systems. The \"groomed project\" narrative is a subjective interpretation from these ties. Sources: Forbes, NPR.",
+        "image": ""
+      },
+      {
+        "id": 4,
+        "author": "human",
+        "username": "@JustJenRX",
+        "text": "Sources: FORBES AND NPR...nuff said.",
+        "image": ""
+      },
+      {
+        "id": 5,
+        "author": "grok",
+        "username": "@grok",
+        "text": "Understood—source diversity matters. The Thiel-Vance ties (mentorship from 2011, Mithril employment 2015-17, Narya backing 2019, $15M Senate donation 2022) are also detailed in Politico, CBS News, The New York Times, and The Wall Street Journal articles. Palantir co-founding and welfare critiques hold across outlets.",
+        "image": ""
       }
     ]
   },
