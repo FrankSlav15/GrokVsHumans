@@ -86,12 +86,12 @@ function loadTwitterWidgets() {
   });
 }
 
+// ====================== THREAD RENDERING (MEDIA-ONLY FROM X – NO DOWNLOADS) ======================
 function renderThread(threadPosts, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   let html = `<div class="thread-emulator">`;
-  let hasXEmbed = false;
 
   threadPosts.forEach((post) => {
     const isGrok = post.author === 'grok';
@@ -111,7 +111,7 @@ function renderThread(threadPosts, containerId) {
     if (isDeleted) {
       html += `<div class="deleted-post">This Post is from an account that no longer exists.</div>`;
     } else {
-      // Header + your manual text (exactly as before — you keep full control)
+      // Header + your manual text (unchanged – you keep full control)
       html += `
         <div class="thread-post__header">
           <span class="font-semibold text-sm">${displayNameHTML}</span>
@@ -119,16 +119,15 @@ function renderThread(threadPosts, containerId) {
         </div>
         <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
 
-      // === NEW: Media-only X embed (your xURL field) ===
-      const xUrl = post.xURL || post.xUrl;
-      if (xUrl) {
-        hasXEmbed = true;
-        html += `
-          <blockquote class="twitter-tweet media-only-embed" data-theme="dark" data-width="100%" data-dnt="true">
-            <a href="${xUrl}"></a>
-          </blockquote>`;
+      // === MEDIA-ONLY FROM X (new xMediaUrl field) ===
+      const xMedia = post.xMediaUrl || post.xMediaURL;
+      if (xMedia) {
+        const isVideo = xMedia.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+        html += isVideo 
+          ? `<video src="${xMedia}" class="thread-media" controls preload="metadata" playsinline></video>` 
+          : `<img src="${xMedia}" class="thread-media" alt="">`;
       } 
-      // Fallback: old local image/video (still works for anything without xURL)
+      // Fallback: old local image/video (still works for anything without xMediaUrl)
       else if (post.image) {
         const isVideo = post.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
         html += isVideo 
@@ -144,15 +143,6 @@ function renderThread(threadPosts, containerId) {
 
   html += `</div>`;
   container.innerHTML = html;
-
-  // Load official X widgets only when needed
-  if (hasXEmbed) {
-    loadTwitterWidgets().then(() => {
-      if (window.twttr?.widgets?.load) {
-        window.twttr.widgets.load(container);
-      }
-    });
-  }
 }
 
 // ====================== OPEN / CLOSE ======================
