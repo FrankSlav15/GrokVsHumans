@@ -69,7 +69,7 @@ function renderTags(data) {
   container.innerHTML = html;
 }
 
-// ====================== THREAD RENDERING (MODERN X createTweet API – NO MORE 0x0) ======================
+// ====================== THREAD RENDERING (MODERN X createTweet – DUPLICATION FIXED) ======================
 function loadTwitterWidgets() {
   if (window.twttr?.widgets) return Promise.resolve();
   if (document.getElementById('twitter-widgets-script')) return Promise.resolve();
@@ -119,15 +119,15 @@ function renderThread(threadPosts, containerId) {
         </div>
         <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
 
-      // === MODERN X EMBED (media only – no more 0x0) ===
+      // === OFFICIAL X EMBED (media only) ===
       const xUrl = post.xURL || post.xUrl;
       if (xUrl) {
         hasXEmbed = true;
         embedCount++;
-        const tweetId = xUrl.split('/status/')[1]?.split('?')[0] || xUrl.split('/status/')[1];
+        const tweetId = xUrl.split('/status/')[1]?.split('?')[0];
         if (tweetId) {
           const placeholderId = `tweet-embed-${embedCount}`;
-          html += `<div id="${placeholderId}" class="x-embed-placeholder" data-tweet-id="${tweetId}"></div>`;
+          html += `<div id="${placeholderId}" class="x-embed-placeholder" data-tweet-id="${tweetId}" data-rendered="false"></div>`;
         }
       } 
       // Fallback: old local image/video
@@ -147,11 +147,12 @@ function renderThread(threadPosts, containerId) {
   html += `</div>`;
   container.innerHTML = html;
 
-  // Robust modern widget initialization
+  // Single reliable embed creation (no more duplication)
   if (hasXEmbed) {
     loadTwitterWidgets().then(() => {
-      const createAllEmbeds = () => {
+      setTimeout(() => {
         document.querySelectorAll('.x-embed-placeholder').forEach(placeholder => {
+          if (placeholder.getAttribute('data-rendered') === 'true') return;
           const tweetId = placeholder.getAttribute('data-tweet-id');
           if (tweetId && window.twttr?.widgets?.createTweet) {
             window.twttr.widgets.createTweet(tweetId, placeholder, {
@@ -160,15 +161,10 @@ function renderThread(threadPosts, containerId) {
               width: '100%',
               align: 'center'
             });
+            placeholder.setAttribute('data-rendered', 'true');
           }
         });
-      };
-
-      // Multiple staggered calls – this is what finally kills the 0x0 issue in modals
-      createAllEmbeds();
-      setTimeout(createAllEmbeds, 300);
-      setTimeout(createAllEmbeds, 800);
-      setTimeout(createAllEmbeds, 1500);
+      }, 420);   // single sweet-spot delay that works reliably in modals
     });
   }
 }

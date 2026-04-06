@@ -375,10 +375,10 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   border: none !important;
 }
 
-/* ====================== THREAD EMULATOR – Modern X Embed (no 0x0 collapse) ====================== */
+/* ====================== THREAD EMULATOR – Modern X Embed (duplication-proof) ====================== */
 .x-embed-placeholder {
   margin: 14px 0 8px !important;
-  min-height: 260px !important;   /* critical fallback while widget renders */
+  min-height: 260px !important;
   width: 100% !important;
   background: #1f1f1f;
   border-radius: 12px !important;
