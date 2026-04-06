@@ -69,7 +69,7 @@ function renderTags(data) {
   container.innerHTML = html;
 }
 
-// ====================== THREAD RENDERING (OFFICIAL X EMBED – COLLAPSE FIXED) ======================
+// ====================== THREAD RENDERING (OFFICIAL X EMBED – MEDIA ONLY, COLLAPSE PROOF) ======================
 function loadTwitterWidgets() {
   if (window.twttr?.widgets) return Promise.resolve();
   if (document.getElementById('twitter-widgets-script')) return Promise.resolve();
@@ -85,12 +85,12 @@ function loadTwitterWidgets() {
   });
 }
 
-// ====================== THREAD RENDERING (DIRECT X MEDIA – STABLE, NO WIDGET) ======================
 function renderThread(threadPosts, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   let html = `<div class="thread-emulator">`;
+  let hasXEmbed = false;
 
   threadPosts.forEach((post) => {
     const isGrok = post.author === 'grok';
@@ -110,7 +110,7 @@ function renderThread(threadPosts, containerId) {
     if (isDeleted) {
       html += `<div class="deleted-post">This Post is from an account that no longer exists.</div>`;
     } else {
-      // Header + your manual text (exactly as you type it – full control)
+      // Header + your manual text (full control)
       html += `
         <div class="thread-post__header">
           <span class="font-semibold text-sm">${displayNameHTML}</span>
@@ -118,17 +118,23 @@ function renderThread(threadPosts, containerId) {
         </div>
         <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
 
-      // === DIRECT X MEDIA (your new xMediaUrl field) ===
-      const xMedia = post.xMediaUrl || post.xMediaURL;
-      if (xMedia) {
-        const isVideo = xMedia.toLowerCase().match(/\.(mp4|webm|mov|gif)$/i);
-        html += isVideo 
-          ? `<video src="${xMedia}" class="thread-media" controls preload="metadata" playsinline loop muted></video>` 
-          : `<img src="${xMedia}" class="thread-media" alt="">`;
+      // === OFFICIAL X EMBED (media only) ===
+      const xUrl = post.xURL || post.xUrl;
+      if (xUrl) {
+        hasXEmbed = true;
+        html += `
+          <blockquote class="twitter-tweet" 
+                      data-media-max-width="560" 
+                      data-theme="dark" 
+                      data-width="100%" 
+                      data-dnt="true"
+                      data-conversation="none">
+            <a href="${xUrl}"></a>
+          </blockquote>`;
       } 
-      // Fallback: old local image/video (still works)
+      // Fallback: old local image/video
       else if (post.image) {
-        const isVideo = post.image.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+        const isVideo = post.image.toLowerCase().match(/\.(mp4|webm|mov|gif)$/i);
         html += isVideo 
           ? `<video src="${post.image}" class="thread-media" controls preload="metadata" playsinline></video>` 
           : `<img src="${post.image}" class="thread-media" alt="">`;
@@ -142,6 +148,16 @@ function renderThread(threadPosts, containerId) {
 
   html += `</div>`;
   container.innerHTML = html;
+
+  // Robust widget loading (fixes rebrand timing)
+  if (hasXEmbed) {
+    loadTwitterWidgets().then(() => {
+      const loadWidgets = () => window.twttr?.widgets?.load && window.twttr.widgets.load(container);
+      loadWidgets();
+      setTimeout(loadWidgets, 250);
+      setTimeout(loadWidgets, 650);
+    });
+  }
 }
 
 // ====================== OPEN / CLOSE ======================
