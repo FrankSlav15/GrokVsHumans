@@ -85,13 +85,12 @@ function loadTwitterWidgets() {
   });
 }
 
+// ====================== THREAD RENDERING (MEDIA-ONLY FROM X – EXACTLY AS REQUESTED) ======================
 function renderThread(threadPosts, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   let html = `<div class="thread-emulator">`;
-  let hasXEmbed = false;
-  let embedCount = 0;
 
   threadPosts.forEach((post) => {
     const isGrok = post.author === 'grok';
@@ -111,7 +110,7 @@ function renderThread(threadPosts, containerId) {
     if (isDeleted) {
       html += `<div class="deleted-post">This Post is from an account that no longer exists.</div>`;
     } else {
-      // Header + your manual text (full control – unchanged)
+      // Header + YOUR manual text (exactly as you type it – full control)
       html += `
         <div class="thread-post__header">
           <span class="font-semibold text-sm">${displayNameHTML}</span>
@@ -119,16 +118,13 @@ function renderThread(threadPosts, containerId) {
         </div>
         <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
 
-      // === OFFICIAL X EMBED (media only) ===
-      const xUrl = post.xURL || post.xUrl;
-      if (xUrl) {
-        hasXEmbed = true;
-        embedCount++;
-        const tweetId = xUrl.split('/status/')[1]?.split('?')[0];
-        if (tweetId) {
-          const placeholderId = `tweet-embed-${embedCount}`;
-          html += `<div id="${placeholderId}" class="x-embed-placeholder" data-tweet-id="${tweetId}" data-rendered="false"></div>`;
-        }
+      // === MEDIA-ONLY FROM X (direct link – no full post, no duplication) ===
+      const xMedia = post.xMediaUrl || post.xMediaURL;
+      if (xMedia) {
+        const isVideo = xMedia.toLowerCase().match(/\.(mp4|webm|mov|gif)$/i);
+        html += isVideo 
+          ? `<video src="${xMedia}" class="thread-media" controls preload="metadata" playsinline loop muted></video>` 
+          : `<img src="${xMedia}" class="thread-media" alt="">`;
       } 
       // Fallback: old local image/video
       else if (post.image) {
@@ -146,27 +142,6 @@ function renderThread(threadPosts, containerId) {
 
   html += `</div>`;
   container.innerHTML = html;
-
-  // Single reliable embed creation (no more duplication)
-  if (hasXEmbed) {
-    loadTwitterWidgets().then(() => {
-      setTimeout(() => {
-        document.querySelectorAll('.x-embed-placeholder').forEach(placeholder => {
-          if (placeholder.getAttribute('data-rendered') === 'true') return;
-          const tweetId = placeholder.getAttribute('data-tweet-id');
-          if (tweetId && window.twttr?.widgets?.createTweet) {
-            window.twttr.widgets.createTweet(tweetId, placeholder, {
-              theme: 'dark',
-              dnt: true,
-              width: '100%',
-              align: 'center'
-            });
-            placeholder.setAttribute('data-rendered', 'true');
-          }
-        });
-      }, 420);   // single sweet-spot delay that works reliably in modals
-    });
-  }
 }
 
 // ====================== OPEN / CLOSE ======================

@@ -375,6 +375,23 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
   border: none !important;
 }
 
+/* ====================== THREAD EMULATOR – Media-only from X ====================== */
+.thread-media {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 12px 0 6px !important;
+  border-radius: 12px !important;
+  background-color: #1f1f1f;
+  object-fit: contain;
+}
+
+.grok-bubble .thread-media,
+.human-bubble .thread-media {
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
 /* ====================== THREAD EMULATOR – Modern X Embed (duplication-proof) ====================== */
 .x-embed-placeholder {
   margin: 14px 0 8px !important;
