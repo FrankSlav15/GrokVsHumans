@@ -85,7 +85,7 @@ function loadTwitterWidgets() {
   });
 }
 
-// ====================== THREAD RENDERING (MEDIA-ONLY FROM X – EXACTLY AS REQUESTED) ======================
+// ====================== THREAD RENDERING (MEDIA-ONLY FROM X – VIDEO CORS FIXED) ======================
 function renderThread(threadPosts, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -110,7 +110,7 @@ function renderThread(threadPosts, containerId) {
     if (isDeleted) {
       html += `<div class="deleted-post">This Post is from an account that no longer exists.</div>`;
     } else {
-      // Header + YOUR manual text (exactly as you type it – full control)
+      // Header + your manual text (full control – unchanged)
       html += `
         <div class="thread-post__header">
           <span class="font-semibold text-sm">${displayNameHTML}</span>
@@ -118,12 +118,12 @@ function renderThread(threadPosts, containerId) {
         </div>
         <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>`;
 
-      // === MEDIA-ONLY FROM X (direct link – no full post, no duplication) ===
+      // === MEDIA-ONLY FROM X (video CORS fix) ===
       const xMedia = post.xMediaUrl || post.xMediaURL;
       if (xMedia) {
         const isVideo = xMedia.toLowerCase().match(/\.(mp4|webm|mov|gif)$/i);
         html += isVideo 
-          ? `<video src="${xMedia}" class="thread-media" controls preload="metadata" playsinline loop muted></video>` 
+          ? `<video src="${xMedia}" class="thread-media" controls preload="metadata" playsinline loop muted crossorigin="anonymous" referrerpolicy="no-referrer"></video>` 
           : `<img src="${xMedia}" class="thread-media" alt="">`;
       } 
       // Fallback: old local image/video
