@@ -221,7 +221,7 @@ body::after{content:'';position:fixed;inset:0;background:rgba(0,0,0,.65);z-index
 .thread-post.justify-end .thread-avatar{margin-right:-18px!important}
 
 /* ============================================= */
-/* Thread emulator – Media-only from X (kept exactly as you had it) */
+/* Thread emulator – Media-only from X */
 /* ============================================= */
 /* ====================== THREAD EMULATOR – Official X Embed (media only) ====================== */
 .twitter-tweet{margin:14px 0 8px!important;max-width:100%!important;min-height:260px!important;border-radius:12px!important;overflow:hidden;background:#1f1f1f}
