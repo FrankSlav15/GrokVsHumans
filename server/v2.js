@@ -88,7 +88,8 @@ export function suggestHeadline(tweets) {
   const human = tweets.find(w => String(w.author_handle).toLowerCase() !== 'grok' && w.author_handle && w.author_handle !== '?');
   if (!human) return 'Grok vs. a human';
   const q = (human.text || '').replace(/@grok\b/gi, '').replace(/https?:\/\/\S+/g, '').replace(/^(\s*@\w+)+/, '')
-    .replace(/\s+/g, ' ').replace(/^[\s,:;.\-–—]+/, '').trim();
+    .replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').replace(/([,;:])(?=[,;:.!?])/g, '')
+    .replace(/^(hey|hi|yo|ok|okay|so)\s*[,:!.]\s*$/i, '').replace(/^[\s,:;.!\-–—]+/, '').trim();
   const head = `Grok vs. @${human.author_handle}`;
   if (!q) return head;
   let s = `${head}: ${q}`;
