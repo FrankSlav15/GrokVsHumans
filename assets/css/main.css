@@ -433,6 +433,4 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 /* Voted highlight follows the rounded card/modal corners */
 .card__vote-bar .grok-bar{border-radius:0 0 0 1rem}
 .card__vote-bar .human-bar{border-radius:0 0 1rem 0}
-.modal__vote-bar .modal-btn-grok{border-radius:0 0 0 1.5rem}
-.modal__vote-bar .modal-btn-human{border-radius:0 0 1.5rem 0}
 .vote-mine{box-shadow:inset 0 0 0 3px #fff}
