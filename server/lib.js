@@ -111,15 +111,58 @@ export function publicUser(env, u) {
   };
 }
 
-// Valid battle ids come from the deployed /data/battles.json.
-let battleIdsCache = null;
-export async function getBattleIds(env, request) {
-  if (battleIdsCache && battleIdsCache.at > Date.now() - 5 * 60 * 1000) return battleIdsCache.ids;
-  const res = await env.ASSETS.fetch(new URL('/data/battles.json', request.url));
-  if (!res.ok) throw new Error('battles.json not available');
+// Valid item ids come from the deployed /data/*.json files.
+const ITEM_FILES = { battle: '/data/battles.json', meme: '/data/memes.json' };
+const itemIdsCache = {};
+export async function getItemIds(env, request, type) {
+  const file = ITEM_FILES[type];
+  if (!file) return new Set();
+  const c = itemIdsCache[type];
+  if (c && c.at > Date.now() - 5 * 60 * 1000) return c.ids;
+  const res = await env.ASSETS.fetch(new URL(file, request.url));
+  if (!res.ok) throw new Error(file + ' not available');
   const ids = new Set(Object.keys(await res.json()));
-  battleIdsCache = { ids, at: Date.now() };
+  itemIdsCache[type] = { ids, at: Date.now() };
   return ids;
+}
+export const getBattleIds = (env, request) => getItemIds(env, request, 'battle');
+export const ITEM_TYPES = new Set(Object.keys(ITEM_FILES));
+
+// Parse a JSON body of a same-origin POST. Returns [body, errorResponse].
+export async function readJsonPost(request) {
+  if (!checkOrigin(request)) return [null, json({ error: 'bad_origin' }, 403)];
+  if (!(request.headers.get('Content-Type') || '').startsWith('application/json')) return [null, json({ error: 'bad_content_type' }, 415)];
+  try { return [await request.json(), null]; } catch { return [null, json({ error: 'bad_json' }, 400)]; }
+}
+
+// Signed-in, not banned user for write actions. Returns [user, errorResponse].
+export async function requireUser(env, request) {
+  const user = await getSessionUser(env, request);
+  if (!user) return [null, json({ error: 'sign_in_required' }, 401)];
+  if (user.banned) return [null, json({ error: 'banned' }, 403)];
+  return [user, null];
+}
+
+export async function requireAdmin(env, request) {
+  const user = await getSessionUser(env, request);
+  if (!user) return [null, json({ error: 'sign_in_required' }, 401)];
+  if (!isAdmin(env, user.x_id)) return [null, json({ error: 'forbidden' }, 403)];
+  return [user, null];
+}
+
+// Like/dislike counts for many targets of one type, plus this user's own value.
+export async function reactionCounts(env, targetType, ids, xId) {
+  const out = {};
+  for (const id of ids) out[id] = { likes: 0, dislikes: 0, mine: 0 };
+  if (!ids.length) return out;
+  const ph = ids.map((_, i) => '?' + (i + 2)).join(',');
+  const { results } = await env.DB.prepare(
+    `SELECT target_id, SUM(value = 1) AS likes, SUM(value = -1) AS dislikes,
+            MAX(CASE WHEN x_id = ?1 THEN value END) AS mine
+       FROM reactions WHERE target_type = '${targetType}' AND target_id IN (${ph}) GROUP BY target_id`
+  ).bind(xId || '', ...ids.map(String)).all();
+  for (const r of results) out[r.target_id] = { likes: r.likes || 0, dislikes: r.dislikes || 0, mine: r.mine || 0 };
+  return out;
 }
 
 // Totals per battle: legacy (anonymous Firebase) + signed-in votes.

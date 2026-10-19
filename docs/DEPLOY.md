@@ -37,3 +37,9 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 `npx wrangler pages deploy /workspace/gvh-site --project-name grokvshumans --branch main`.
 
 `_routes.json` limits Functions to `/auth/*` and `/api/*`; everything else is served as free static assets.
+
+## Phase 4 (comments, reactions, moderation)
+- Migration `0003_comments_reactions_reports.sql`.
+- Endpoints: `GET/POST /api/comments`, `POST /api/comment-delete`, `POST /api/react`, `POST /api/report`,
+  admin-only `GET /api/admin/comments`, `POST /api/admin/action`, and the `/admin` page (Function).
+- Rules live in `server/moderation.js` (500 chars, 5 per 10 min, banned words, 3 reports auto-hide).

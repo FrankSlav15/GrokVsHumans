@@ -200,15 +200,17 @@ function loadAuth() {
   return authReady;
 }
 
+window.loadAuthPromise = loadAuth;
+
 const X_LOGO_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
 
 function escapeHtml(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-window.signIn = function(event) {
-  if (event) { event.preventDefault(); event.stopPropagation(); }
-  const back = location.pathname + location.search + location.hash;
+window.signIn = function(event, returnPath) {
+  if (event && event.preventDefault) { event.preventDefault(); event.stopPropagation(); }
+  const back = returnPath || (location.pathname + location.search + location.hash);
   location.href = '/auth/login?return=' + encodeURIComponent(back);
 };
 
@@ -219,6 +221,7 @@ window.signOut = async function(event) {
   votesState.mine = {};
   renderAuthUI();
   refreshAllVoteUIs();
+  if (window.currentBattleId && window.Social && document.getElementById('battle-modal')?.style.display === 'flex') window.Social.mount(document.getElementById('battle-social'), 'battle', String(window.currentBattleId));
   window.showToast('Signed out.');
 };
 
@@ -318,7 +321,7 @@ window.vote = async function(event, winner, id) {
   await loadAuth();
   if (!window.currentUser) {
     window.showToast('Sign in with X to vote 🗳️');
-    setTimeout(() => window.signIn(), 900);
+    setTimeout(() => window.signIn(null, location.pathname + '#' + id), 900);
     return;
   }
   if (votesState.mine[id] === winner) {
