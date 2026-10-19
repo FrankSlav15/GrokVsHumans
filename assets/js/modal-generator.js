@@ -86,7 +86,7 @@ function renderThread(threadPosts, containerId) {
 
     html += `
       <div class="thread-post ${isGrok ? 'justify-end' : ''}">
-        ${!isDeleted && !isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="">` : ''}
+        ${!isDeleted && !isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="" onerror="this.onerror=null;this.style.visibility='hidden'">` : ''}
         <div class="${isGrok ? 'grok-bubble' : 'human-bubble'}">
           ${isDeleted 
             ? `<div class="deleted-post">This Post is from an account that no longer exists.</div>` 
@@ -103,7 +103,7 @@ function renderThread(threadPosts, containerId) {
                 : ''}
             `}
         </div>
-        ${!isDeleted && isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="">` : ''}
+        ${!isDeleted && isGrok ? `<img src="${avatarSrc}" class="thread-avatar" alt="" onerror="this.onerror=null;this.style.visibility='hidden'">` : ''}
       </div>`;
   });
   html += `</div>`;

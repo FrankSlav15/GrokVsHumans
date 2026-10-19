@@ -1,0 +1,52 @@
+# Cloudflare Pages headers: https://developers.cloudflare.com/pages/configuration/headers/
+#
+# Security headers for every response.
+# The enforced CSP only uses directives that cannot break the site's inline
+# scripts or CDN assets. The Report-Only CSP is the full allow-list; check the
+# browser console for violations, then promote it to the enforced header.
+# HTML pages already get "Cache-Control: public, max-age=0, must-revalidate"
+# from Pages by default, so they are not listed here.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Content-Security-Policy: base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://formspree.io
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.gstatic.com https://cdn.tailwindcss.com https://*.firebasedatabase.app; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.firebaseio.com wss://*.firebaseio.com https://formspree.io; frame-src https://*.firebasedatabase.app https://*.firebaseio.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://formspree.io
+
+# Content JSON and layout partials change with every deploy: always revalidate.
+/data/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/partials/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# CSS/JS are not fingerprinted: short cache, revalidate in the background.
+/assets/css/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/assets/js/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# Images and video rarely change.
+/assets/images/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/favicon.ico
+  Cache-Control: public, max-age=604800
+
+# Repo-only files that end up in the output directory: keep them out of search results.
+/database.rules.json
+  X-Robots-Tag: noindex
+
+/firebase.json
+  X-Robots-Tag: noindex
+
+/scripts/*
+  X-Robots-Tag: noindex
+
+/tools/*
+  X-Robots-Tag: noindex

@@ -71,19 +71,33 @@ function setRandomBackground() {
 // ====================== LAYOUT (partials) ======================
 async function loadLayout() {
   try {
-    const headerRes = await fetch('assets/partials/header.html');
+    const headerRes = await fetch('/assets/partials/header.html');
     const headerHTML = await headerRes.text();
     document.body.insertAdjacentHTML('afterbegin', headerHTML);
 
-    const footerRes = await fetch('assets/partials/footer.html');
+    const footerRes = await fetch('/assets/partials/footer.html');
     const footerHTML = await footerRes.text();
     document.body.insertAdjacentHTML('beforeend', footerHTML);
 
     highlightActiveNav();
+    initSupportLink();
     console.log('✅ Header + Footer loaded');
   } catch (e) {
     console.error('Layout load failed:', e);
   }
+}
+
+// Footer "Support this project" link: hidden until a real https URL is set
+// in data-kofi-url (assets/partials/footer.html).
+function initSupportLink() {
+  document.querySelectorAll('.footer__support-link[data-kofi-url]').forEach(link => {
+    const url = (link.getAttribute('data-kofi-url') || '').trim();
+    if (!/^https:\/\//i.test(url)) return;
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.hidden = false;
+  });
 }
 
 function highlightActiveNav() {
@@ -153,26 +167,55 @@ window.vote = function(event, winner, id) {
   event.stopImmediatePropagation();
   event.preventDefault();
 
+  if (winner !== 'grok' && winner !== 'human') return;
+  id = String(id);
+
   const votedKey = `voted_battle_${id}`;
   if (localStorage.getItem(votedKey)) {
     window.showToast("You've already voted on this battle! 🏆");
     return;
   }
 
-  const ref = database.ref('battles/' + id);
-  ref.transaction(current => {
-    if (current === null) current = { grok: 0, human: 0 };
-    if (winner === 'grok') current.grok = (current.grok || 0) + 1;
-    else current.human = (current.human || 0) + 1;
-    return current;
-  });
+  if (!database) {
+    window.showToast('Voting is unavailable right now. Please try again later.');
+    return;
+  }
 
-  localStorage.setItem(votedKey, 'true');
-  window.showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
+  // Atomic server-side increment. Matches database.rules.json: exactly one
+  // counter goes up by 1, the other is left unchanged (increment(0) creates
+  // it as 0 on the first vote), and no other fields are written.
+  const inc = firebase.database.ServerValue.increment;
+  const other = winner === 'grok' ? 'human' : 'grok';
+  const update = {};
+  update[winner] = inc(1);
+  update[other] = inc(0);
 
-  updateGridVoteUI(id);
-  if (window.currentBattleId === id) updateModalVoteUI();
+  // Disable the buttons while the write is in flight to avoid double clicks.
+  setVoteButtonsDisabled(id, true);
+
+  database.ref('battles/' + id).update(update)
+    .then(() => {
+      localStorage.setItem(votedKey, 'true');
+      window.showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
+    })
+    .catch(err => {
+      console.warn('Vote failed', err);
+      window.showToast('Vote could not be saved. Please try again later.');
+    })
+    .finally(() => {
+      updateGridVoteUI(id);
+      if (String(window.currentBattleId) === id) updateModalVoteUI();
+    });
 };
+
+function setVoteButtonsDisabled(id, disabled) {
+  const ids = [`grok-btn-${id}`, `human-btn-${id}`];
+  if (String(window.currentBattleId) === String(id)) ids.push('modal-grok-btn', 'modal-human-btn');
+  ids.forEach(elId => {
+    const el = document.getElementById(elId);
+    if (el) el.disabled = disabled;
+  });
+}
 
 function updateGridVoteUI(id) {
   const grokBtn = document.getElementById(`grok-btn-${id}`);
@@ -181,8 +224,10 @@ function updateGridVoteUI(id) {
 
   const hasVoted = !!localStorage.getItem(`voted_battle_${id}`);
 
+  if (!database) return;
   database.ref('battles/' + id).once('value', snapshot => {
-    const data = snapshot.val() || { grok: 0, human: 0 };
+    const val = snapshot.val() || {};
+    const data = { grok: Number(val.grok) || 0, human: Number(val.human) || 0 };
     const total = data.grok + data.human;
 
     if (total > 0) {
@@ -202,7 +247,8 @@ function updateGridVoteUI(id) {
       grokBtn.disabled = false;
       humanBtn.disabled = false;
     }
-  });
+  }, err => console.warn('Could not load votes for battle ' + id, err))
+    .catch(() => {}); // already handled by the cancel callback above
 }
 
 window.updateModalVoteUI = function() {
@@ -213,8 +259,10 @@ window.updateModalVoteUI = function() {
   const humanBtn = document.getElementById('modal-human-btn');
   if (!grokBtn || !humanBtn) return;
 
+  if (!database) return;
   database.ref('battles/' + id).once('value', snapshot => {
-    const data = snapshot.val() || { grok: 0, human: 0 };
+    const val = snapshot.val() || {};
+    const data = { grok: Number(val.grok) || 0, human: Number(val.human) || 0 };
     const total = data.grok + data.human;
 
     if (total > 0) {
@@ -232,7 +280,8 @@ window.updateModalVoteUI = function() {
       grokBtn.disabled = false;
       humanBtn.disabled = false;
     }
-  });
+  }, err => console.warn('Could not load votes for battle ' + id, err))
+    .catch(() => {}); // already handled by the cancel callback above
 };
 
 window.voteFromModal = function(event, winner) {
