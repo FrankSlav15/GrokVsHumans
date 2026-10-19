@@ -1,0 +1,6 @@
+# Cloudflare Pages redirects: https://developers.cloudflare.com/pages/configuration/redirects/
+# The legal pages were renamed to English URLs; keep old links working.
+/impressum.html    /imprint    301
+/impressum         /imprint    301
+/datenschutz.html  /privacy    301
+/datenschutz       /privacy    301
