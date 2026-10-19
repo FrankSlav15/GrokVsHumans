@@ -56,7 +56,8 @@ export function getCookie(request, name) {
   for (const part of header.split(';')) {
     const i = part.indexOf('=');
     if (i < 0) continue;
-    if (part.slice(0, i).trim() === name) return decodeURIComponent(part.slice(i + 1).trim());
+    if (part.slice(0, i).trim() !== name) continue;
+    try { return decodeURIComponent(part.slice(i + 1).trim()); } catch { return null; }   // malformed -> treat as absent
   }
   return null;
 }
@@ -70,11 +71,18 @@ export function clearCookie(name) {
 }
 
 // Only same-site relative paths are allowed as post-login destinations.
+// Normalise first (WHATWG URL resolves ./, ../ and %2e), then validate the result:
+// it must be "/" or start with a single "/" followed by a char that is neither "/" nor "\\".
 export function safeReturnTo(value) {
-  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.startsWith('/\\')) return '/';
-  if (value.length > 300 || /[\r\n]/.test(value)) return '/';
-  if (value.startsWith('/auth/') || value.startsWith('/api/')) return '/';
-  return value;
+  if (typeof value !== 'string' || value.length > 300 || /[\r\n\t\\]/.test(value)) return '/';
+  if (!/^\/(?![\/\\])/.test(value) && value !== '/') return '/';
+  let u;
+  try { u = new URL(value, 'https://x.invalid'); } catch { return '/'; }
+  if (u.origin !== 'https://x.invalid') return '/';
+  const out = u.pathname + u.search + u.hash;
+  if (!(out === '/' || /^\/[^\/\\]/.test(out))) return '/';
+  if (/^\/(auth|api)(\/|$)/i.test(out)) return '/';
+  return out;
 }
 
 // CSRF protection for state-changing requests: the browser-sent Origin must

@@ -3,14 +3,15 @@
 // stores the user, creates a session and throws the X tokens away.
 import {
   OAUTH_COOKIE, OAUTH_TTL, SESSION_COOKIE, SESSION_TTL,
-  getCookie, setCookie, clearCookie, randomToken, sha256hex, now,
+  getCookie, setCookie, clearCookie, randomToken, sha256hex, now, safeReturnTo,
 } from '../../server/lib.js';
 
 function back(returnTo, flag, extraCookies = []) {
-  const [path, hash] = returnTo.split('#');
+  const [path, hash] = safeReturnTo(returnTo).split('#');
   const u = new URL(path, 'https://x.invalid');
   u.searchParams.set('login', flag);
-  const location = u.pathname + u.search + (hash ? '#' + hash : '');
+  let location = u.pathname + u.search + (hash ? '#' + hash : '');
+  if (!/^\/(?![\/\\])/.test(location)) location = '/?login=' + encodeURIComponent(flag);   // never protocol-relative
   const headers = new Headers({ Location: location, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' });
   headers.append('Set-Cookie', clearCookie(OAUTH_COOKIE));
   for (const c of extraCookies) headers.append('Set-Cookie', c);
