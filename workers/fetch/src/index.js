@@ -15,13 +15,15 @@ const GROK_ID = '1720665183188922368';
 const SUB_BUDGET = 45;                       // free plan: 50 external subrequests per invocation
 
 const ymd = (d = new Date()) => d.toISOString().slice(0, 10);
+// Initial-fill boost: higher daily cap / bigger runs through BOOST_UNTIL (inclusive, UTC date); reverts automatically.
+const boosted = env => !!env.BOOST_UNTIL && ymd() <= env.BOOST_UNTIL;
 const ym = (d = new Date()) => d.toISOString().slice(0, 7);
 const now = () => Math.floor(Date.now() / 1000);
 
 class Budget {
   constructor(env, runId, opts = {}) {
     this.env = env; this.runId = runId; this.sub = 0;
-    this.dayCap = Number(env.DAILY_CAP_USD || 1.5); this.monthCap = Number(env.MONTHLY_CAP_USD || 45);
+    this.dayCap = boosted(env) ? Number(env.BOOST_DAILY_CAP_USD || 5) : Number(env.DAILY_CAP_USD || 1.5); this.monthCap = Number(env.MONTHLY_CAP_USD || 45);
     this.runCap = opts.runCap ?? null;     // seeding run: explicit budget (replaces the daily cap, month cap still applies)
     this.spent = 0;
   }
@@ -55,10 +57,12 @@ async function xGet(env, b, path, params, kind, maxPosts) {
   const posts = (j.data?.length || 0) + (j.includes?.tweets?.length || 0);
   const users = j.includes?.users?.length || 0;
   await b.log(kind, path, r.status, posts, users, 0, r.ok ? (j.meta?.next_token ? 'next:' + j.meta.next_token : null) : JSON.stringify(j).slice(0, 300));
+  if (r.status === 402 || r.status === 429) return { capped: 'x_' + r.status };   // out of credits / rate limited: stop
   return { ok: r.ok, status: r.status, json: j };
 }
 
 const TWEET_FIELDS = 'conversation_id,created_at,public_metrics,referenced_tweets,in_reply_to_user_id,context_annotations,author_id,attachments,lang';
+const EXPLICIT = /\b(penis|dick|cock|pussy|vagina|cum|cumming|jerk(ing)? off|stroke my|masturbat\w*|porn\w*|nude[sz]?|naked|boobs?|tits|horny|blowjob|anal|fuck(ing|ed)?|rape\w*|nsfw|onlyfans|sex(ual|y)?)\b/i;
 const eng = m => (m?.like_count || 0) + (m?.retweet_count || 0) + (m?.reply_count || 0) + (m?.quote_count || 0);
 
 // Stage 1: paid recent search for @grok replies -> fetch_candidates.
@@ -86,7 +90,7 @@ async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = n
       t._anchor = anchor; t._eng = e;
       stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at)
         SELECT ?1, ?2, ?3, ?4, ?5, 'new', ?6 WHERE NOT EXISTS (SELECT 1 FROM posts WHERE grok_tweet_id = ?1 OR conversation_id = ?2)`)
-        .bind(t._anchor, t.conversation_id, t.author_id === GROK_ID ? (t.in_reply_to_user_id || null) : t.author_id, JSON.stringify({ parent, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text }), t._eng, now()));
+        .bind(t._anchor, t.conversation_id, t.author_id === GROK_ID ? (t.in_reply_to_user_id || null) : t.author_id, JSON.stringify({ parent, reply_id: t.author_id === GROK_ID ? null : t.id, replier_id: t.author_id === GROK_ID ? null : t.author_id, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text }), t._eng, now()));
     }
     if (stmts.length) { const res = await env.DB.batch(stmts); added += res.reduce((a, x) => a + (x.meta?.changes || 0), 0); }
     token = r.json.meta?.next_token; if (!token) break;
@@ -120,7 +124,7 @@ async function expandOne(env, b, c) {
   const upCount = chain.length;
   if (conv && env.X_BEARER_TOKEN) {
     const r = await xGet(env, b, '/tweets/search/recent', {
-      query: `conversation_id:${conv} (from:grok OR from:${human.author_handle})`, max_results: '10',
+      query: `conversation_id:${conv} (from:grok OR from:${human.author_handle}${p.replier_id && p.replier_id !== human.author_id ? ' OR from:' + p.replier_id : ''})`, max_results: '10',
       'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id', since_id: c.grok_tweet_id,
     }, 'expand', 10);
     if (r.capped) return 'capped:' + r.capped;
@@ -139,17 +143,21 @@ async function expandOne(env, b, c) {
       }
     }
   }
+  if (p.reply_id && !chain.some(w => w.tweet_id === p.reply_id) && b.take()) {
+    const s = await syndicationTweet(p.reply_id);
+    if (s.tweet) { const w = tweetFromSyndication(s.tweet); if (chain.some(x => x.tweet_id === w.parent)) { const i = chain.findIndex(x => x.tweet_id === w.parent); chain.splice(i + 1, 0, w); } }
+  }
   const tweets = chain.slice(-MAX_CHAIN);
   const topics = suggestTopics(tweets.map(w => w.text), p.annotations);
   const id = await insertPost(env.DB, {
     grok_tweet_id: c.grok_tweet_id, conversation_id: conv, human_x_id: human.author_id, human_handle: human.author_handle,
-    headline: suggestHeadline(tweets), source: 'fetch', x_engagement: c.engagement, tweet_created_at: chain.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
+    headline: suggestHeadline(tweets), source: 'fetch', low_priority: tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0, x_engagement: c.engagement, tweet_created_at: chain.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
   });
   return id ? 'stored' : 'duplicate';
 }
 
-async function expand(env, b, max = 3) {
-  const { results } = await env.DB.prepare("SELECT * FROM fetch_candidates WHERE state = 'new' ORDER BY engagement DESC LIMIT ?1").bind(max).all();
+async function expand(env, b, max = 3, order = 'engagement') {
+  const { results } = await env.DB.prepare(`SELECT * FROM fetch_candidates WHERE state = 'new' ORDER BY ${order === 'random' ? 'random()' : 'engagement DESC'} LIMIT ?1`).bind(max).all();
   const out = {};
   for (const c of results) {
     if (b.sub > SUB_BUDGET - 12) break;              // room for up to 7 up + 1 paid + a few down
@@ -191,9 +199,11 @@ export default {
     const b = new Budget(env, 'cron-' + Date.now());
     if (event.cron === '0 11,23 * * *') {
       if (!env.X_BEARER_TOKEN) return;
-      await discover(env, b, { pages: 1, perPage: Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
+      await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
     } else {
-      await expand(env, b, 3);
+      const lim = boosted(env) ? Number(env.BOOST_EXPAND_PER_DAY || 60) : Number(env.EXPAND_PER_DAY || 20);
+      const done = (await env.DB.prepare("SELECT COUNT(*) n FROM fetch_log WHERE kind='expand' AND day=?1 AND run_id LIKE 'cron-%'").bind(ymd()).first()).n;
+      if (done < lim) await expand(env, b, Math.min(3, lim - done));
       await recheck(env, b);
     }
   },
@@ -211,7 +221,7 @@ export default {
     const b = new Budget(env, runId, { runCap: runCap == null ? null : Math.max(0, runCap - await spentInRun(env, runId)) });
     let result;
     if (o.stage === 'discover') result = await discover(env, b, { pages: Math.min(Number(o.pages) || 1, 10), perPage: Number(o.perPage) || 100, minEng: Number(o.minEng ?? 5), start: o.next || null, query: o.query || null, endHoursAgo: o.endHoursAgo ?? 48 });
-    else if (o.stage === 'expand') result = await expand(env, b, Math.min(Number(o.max) || 3, 5));
+    else if (o.stage === 'expand') result = await expand(env, b, Math.min(Number(o.max) || 3, 5), o.order);
     else if (o.stage === 'recheck') result = await recheck(env, b);
     else if (o.stage === 'usage') result = await usage(env, b);
     else result = { candidates: (await env.DB.prepare('SELECT state, COUNT(*) n FROM fetch_candidates GROUP BY state').all()).results,

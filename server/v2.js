@@ -86,10 +86,10 @@ export const hotScore = (p, nowSec) => (engagement(p) + (p.featured ? 5 : 0) + 1
 export async function insertPost(DB, p) {
   const t = Math.floor(Date.now() / 1000);
   const row = await DB.prepare(
-    `INSERT OR IGNORE INTO posts (grok_tweet_id, conversation_id, human_x_id, human_handle, headline, status, source, x_engagement, tweet_created_at, fetched_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, 'pending', ?6, ?7, ?8, ?9) RETURNING id`)
+    `INSERT OR IGNORE INTO posts (grok_tweet_id, conversation_id, human_x_id, human_handle, headline, status, source, x_engagement, tweet_created_at, fetched_at, low_priority)
+     VALUES (?1, ?2, ?3, ?4, ?5, 'pending', ?6, ?7, ?8, ?9, ?10) RETURNING id`)
     .bind(p.grok_tweet_id, p.conversation_id, p.human_x_id, p.human_handle, p.headline || null, p.source || 'fetch',
-      p.x_engagement || 0, p.tweet_created_at || null, t).first();
+      p.x_engagement || 0, p.tweet_created_at || null, t, p.low_priority ? 1 : 0).first();
   if (!row) return null;
   const stmts = p.tweets.slice(0, 10).map((w, i) => DB.prepare(
     `INSERT INTO post_tweets (post_id, pos, tweet_id, author_id, author_handle, author_name, author_avatar, verified, is_grok, text, media_json, created_at)

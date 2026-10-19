@@ -8,7 +8,7 @@ export async function onRequestGet({ request, env }) {
   const q = new URL(request.url).searchParams;
   const status = ['pending', 'approved', 'skipped', 'blocked', 'hidden'].includes(q.get('status')) ? q.get('status') : 'pending';
   const [posts, tweets, topics, counts, spend, blocked] = await env.DB.batch([
-    env.DB.prepare(`SELECT * FROM posts WHERE status = ?1 ORDER BY ${status === 'pending' ? 'x_engagement DESC, id' : 'COALESCE(approved_at, fetched_at) DESC'} LIMIT 100`).bind(status),
+    env.DB.prepare(`SELECT * FROM posts WHERE status = ?1 ORDER BY ${status === 'pending' ? 'low_priority, x_engagement DESC, id' : 'COALESCE(approved_at, fetched_at) DESC'} LIMIT 100`).bind(status),
     env.DB.prepare(`SELECT t.* FROM post_tweets t JOIN posts p ON p.id = t.post_id WHERE p.status = ?1 ORDER BY t.post_id, t.pos`).bind(status),
     env.DB.prepare(`SELECT pt.* FROM post_topics pt JOIN posts p ON p.id = pt.post_id WHERE p.status = ?1`).bind(status),
     env.DB.prepare(`SELECT status, COUNT(*) n FROM posts GROUP BY status`),
