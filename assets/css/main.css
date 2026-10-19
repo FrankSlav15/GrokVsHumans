@@ -419,3 +419,14 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 }
 
 /* End of main.css */
+/* ===== Sign in with X ===== */
+.header__auth{display:flex;align-items:center}
+.auth-btn{display:inline-flex;align-items:center;gap:.5rem;background:#000;color:#fff;border:1px solid #3f3f46;border-radius:9999px;padding:.6rem 1.2rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s}
+.auth-btn:hover{border-color:#fff;transform:scale(1.04)}
+.auth-user{display:inline-flex;align-items:center;gap:.5rem;background:#000;border:1px solid #3f3f46;border-radius:9999px;padding:.3rem .5rem .3rem .3rem;color:#fff;white-space:nowrap}
+.auth-user__avatar{width:30px;height:30px;border-radius:50%;object-fit:cover}
+.auth-user__handle{color:#fff;text-decoration:none;font-weight:600;font-size:.9rem}
+.auth-user__out{background:transparent;border:0;color:#a1a1aa;cursor:pointer;font-size:.8rem;padding:.2rem .4rem;text-decoration:underline}
+.auth-user__out:hover{color:#fff}
+.vote-mine{box-shadow:inset 0 0 0 3px #fff}
+@media (max-width:768px){.header__auth{justify-content:center}}

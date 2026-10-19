@@ -1,24 +1,4 @@
-// assets/js/common.js - Firebase re-enabled for live voting + FINAL ROBUST DEEP LINK
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB00xfM91Dc1oqy37uFt34M_0VcL0xA8sE",
-  authDomain: "grokvshumans.firebaseapp.com",
-  databaseURL: "https://grokvshumans-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "grokvshumans",
-  storageBucket: "grokvshumans.firebasestorage.app",
-  messagingSenderId: "483683492125",
-  appId: "1:483683492125:web:37d5dad0e8e8471b0b81f4"
-};
-
-let database = null;
-try {
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  database = firebase.database();
-} catch (e) {
-  console.warn("Firebase init failed (normal on some pages)", e);
-}
+// assets/js/common.js - votes and Sign in with X now run on Cloudflare (Pages Functions + D1).
 
 // ====================== VIDEO POSTERS ======================
 // iOS Safari does not paint a first frame for preload="metadata" videos, so
@@ -206,50 +186,173 @@ window.initPage = async function(pageType) {
   }, 150);
 };
 
-// ====================== BATTLES VOTING SYSTEM – PERSISTENT SCOREBOARD ======================
-window.vote = function(event, winner, id) {
+// ====================== AUTH (Sign in with X) ======================
+window.currentUser = null;
+let authReady = null;
+
+function loadAuth() {
+  if (!authReady) {
+    authReady = fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' })
+      .then(r => r.ok ? r.json() : { user: null })
+      .catch(() => ({ user: null }))
+      .then(d => { window.currentUser = d.user || null; renderAuthUI(); return window.currentUser; });
+  }
+  return authReady;
+}
+
+const X_LOGO_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+window.signIn = function(event) {
+  if (event) { event.preventDefault(); event.stopPropagation(); }
+  const back = location.pathname + location.search + location.hash;
+  location.href = '/auth/login?return=' + encodeURIComponent(back);
+};
+
+window.signOut = async function(event) {
+  if (event) event.preventDefault();
+  try { await fetch('/auth/logout', { method: 'POST', credentials: 'same-origin' }); } catch (e) { /* ignore */ }
+  window.currentUser = null;
+  votesState.mine = {};
+  renderAuthUI();
+  refreshAllVoteUIs();
+  window.showToast('Signed out.');
+};
+
+function renderAuthUI() {
+  const slot = document.getElementById('auth-slot');
+  if (!slot) return;
+  const u = window.currentUser;
+  if (u) {
+    const avatar = /^https:\/\//.test(u.avatar || '') ? u.avatar : '';
+    slot.innerHTML =
+      `<span class="auth-user" title="Signed in with X">` +
+      (avatar ? `<img class="auth-user__avatar" src="${escapeHtml(avatar)}" alt="" referrerpolicy="no-referrer">` : '') +
+      `<span class="auth-user__x" aria-hidden="true">${X_LOGO_SVG}</span>` +
+      `<a class="auth-user__handle" href="https://x.com/${encodeURIComponent(u.handle)}" target="_blank" rel="noopener noreferrer">@${escapeHtml(u.handle)}</a>` +
+      `<button type="button" class="auth-user__out" onclick="signOut(event)">Sign out</button></span>`;
+  } else {
+    slot.innerHTML = `<button type="button" class="auth-btn" onclick="signIn(event)">${X_LOGO_SVG}<span>Sign in with X</span></button>`;
+  }
+}
+
+// Message after returning from /auth/callback (?login=ok|cancelled|error|expired).
+function handleLoginReturn() {
+  const url = new URL(location.href);
+  const flag = url.searchParams.get('login');
+  if (!flag) return;
+  url.searchParams.delete('login');
+  history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
+  const msg = {
+    ok: null,
+    cancelled: 'Sign in cancelled.',
+    expired: 'Sign in took too long. Please try again.',
+    error: 'Sign in with X failed. Please try again.'
+  }[flag];
+  if (msg) setTimeout(() => window.showToast(msg), 400);
+  else if (window.currentUser) setTimeout(() => window.showToast('Signed in as @' + window.currentUser.handle + ' ✅'), 400);
+}
+
+// ====================== BATTLES VOTING SYSTEM ======================
+// Totals = anonymous legacy votes (imported from Firebase) + signed-in votes.
+// One vote per X account per battle (enforced by the database); you may change it.
+const votesState = { totals: {}, mine: {}, loaded: false };
+
+async function loadVotes() {
+  try {
+    const res = await fetch('/api/votes', { credentials: 'same-origin', cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    votesState.totals = d.totals || {};
+    votesState.mine = d.mine || {};
+    votesState.loaded = true;
+  } catch (e) {
+    console.warn('Could not load votes', e);
+  }
+}
+
+function applyVoteUI(grokBtn, humanBtn, id) {
+  if (!grokBtn || !humanBtn) return;
+  const t = votesState.totals[id] || { grok: 0, human: 0 };
+  const mine = votesState.mine[id];
+  if ((t.grok + t.human) > 0) {
+    grokBtn.innerHTML = `Grok <span class="vote-count">${t.grok}</span>`;
+    humanBtn.innerHTML = `<span class="vote-count">${t.human}</span> Human`;
+  } else {
+    grokBtn.textContent = 'Grok Won';
+    humanBtn.textContent = 'Human Won';
+  }
+  grokBtn.classList.toggle('vote-mine', mine === 'grok');
+  humanBtn.classList.toggle('vote-mine', mine === 'human');
+  grokBtn.disabled = false;
+  humanBtn.disabled = false;
+}
+
+function updateGridVoteUI(id) {
+  applyVoteUI(document.getElementById(`grok-btn-${id}`), document.getElementById(`human-btn-${id}`), String(id));
+}
+
+window.updateModalVoteUI = function() {
+  if (!window.currentBattleId) return;
+  applyVoteUI(document.getElementById('modal-grok-btn'), document.getElementById('modal-human-btn'), String(window.currentBattleId));
+};
+
+function refreshAllVoteUIs() {
+  Object.keys(window.allBattles || {}).forEach(id => updateGridVoteUI(id));
+  window.updateModalVoteUI();
+}
+
+function updateAllBattleVoteUIs() {
+  Promise.all([loadAuth(), loadVotes()]).then(refreshAllVoteUIs);
+}
+
+window.vote = async function(event, winner, id) {
   event.stopImmediatePropagation();
   event.preventDefault();
-
   if (winner !== 'grok' && winner !== 'human') return;
   id = String(id);
 
-  const votedKey = `voted_battle_${id}`;
-  if (localStorage.getItem(votedKey)) {
-    window.showToast("You've already voted on this battle! 🏆");
+  await loadAuth();
+  if (!window.currentUser) {
+    window.showToast('Sign in with X to vote 🗳️');
+    setTimeout(() => window.signIn(), 900);
+    return;
+  }
+  if (votesState.mine[id] === winner) {
+    window.showToast(`You already voted ${winner.toUpperCase()} on this battle 🏆`);
     return;
   }
 
-  if (!database) {
-    window.showToast('Voting is unavailable right now. Please try again later.');
-    return;
-  }
-
-  // Atomic server-side increment. Matches database.rules.json: exactly one
-  // counter goes up by 1, the other is left unchanged (increment(0) creates
-  // it as 0 on the first vote), and no other fields are written.
-  const inc = firebase.database.ServerValue.increment;
-  const other = winner === 'grok' ? 'human' : 'grok';
-  const update = {};
-  update[winner] = inc(1);
-  update[other] = inc(0);
-
-  // Disable the buttons while the write is in flight to avoid double clicks.
   setVoteButtonsDisabled(id, true);
-
-  database.ref('battles/' + id).update(update)
-    .then(() => {
-      localStorage.setItem(votedKey, 'true');
-      window.showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
-    })
-    .catch(err => {
-      console.warn('Vote failed', err);
-      window.showToast('Vote could not be saved. Please try again later.');
-    })
-    .finally(() => {
-      updateGridVoteUI(id);
-      if (String(window.currentBattleId) === id) updateModalVoteUI();
+  try {
+    const res = await fetch('/api/vote', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, choice: winner })
     });
+    if (res.status === 401) {
+      window.currentUser = null; renderAuthUI();
+      window.showToast('Your session expired. Please sign in with X again.');
+    } else if (!res.ok) {
+      window.showToast('Vote could not be saved. Please try again later.');
+    } else {
+      const d = await res.json();
+      votesState.totals[id] = d.totals;
+      votesState.mine[id] = d.mine;
+      window.showToast(`You voted for ${winner.toUpperCase()}! 🏆`);
+    }
+  } catch (err) {
+    console.warn('Vote failed', err);
+    window.showToast('Vote could not be saved. Please try again later.');
+  } finally {
+    setVoteButtonsDisabled(id, false);
+    updateGridVoteUI(id);
+    if (String(window.currentBattleId) === id) window.updateModalVoteUI();
+  }
 };
 
 function setVoteButtonsDisabled(id, disabled) {
@@ -261,85 +364,16 @@ function setVoteButtonsDisabled(id, disabled) {
   });
 }
 
-function updateGridVoteUI(id) {
-  const grokBtn = document.getElementById(`grok-btn-${id}`);
-  const humanBtn = document.getElementById(`human-btn-${id}`);
-  if (!grokBtn || !humanBtn) return;
-
-  const hasVoted = !!localStorage.getItem(`voted_battle_${id}`);
-
-  if (!database) return;
-  database.ref('battles/' + id).once('value', snapshot => {
-    const val = snapshot.val() || {};
-    const data = { grok: Number(val.grok) || 0, human: Number(val.human) || 0 };
-    const total = data.grok + data.human;
-
-    if (total > 0) {
-      // PERSISTENT SCOREBOARD – exactly like your screenshot
-      grokBtn.innerHTML = `Grok <span class="vote-count">${data.grok}</span>`;
-      humanBtn.innerHTML = `<span class="vote-count">${data.human}</span> Human`;
-    } else {
-      grokBtn.textContent = 'Grok Won';
-      humanBtn.textContent = 'Human Won';
-    }
-
-    // Disable only for the current user who already voted
-    if (hasVoted) {
-      grokBtn.disabled = true;
-      humanBtn.disabled = true;
-    } else {
-      grokBtn.disabled = false;
-      humanBtn.disabled = false;
-    }
-  }, err => console.warn('Could not load votes for battle ' + id, err))
-    .catch(() => {}); // already handled by the cancel callback above
-}
-
-window.updateModalVoteUI = function() {
-  if (!window.currentBattleId) return;
-  const id = window.currentBattleId;
-  const hasVoted = !!localStorage.getItem(`voted_battle_${id}`);
-  const grokBtn = document.getElementById('modal-grok-btn');
-  const humanBtn = document.getElementById('modal-human-btn');
-  if (!grokBtn || !humanBtn) return;
-
-  if (!database) return;
-  database.ref('battles/' + id).once('value', snapshot => {
-    const val = snapshot.val() || {};
-    const data = { grok: Number(val.grok) || 0, human: Number(val.human) || 0 };
-    const total = data.grok + data.human;
-
-    if (total > 0) {
-      grokBtn.innerHTML = `Grok <span class="vote-count">${data.grok}</span>`;
-      humanBtn.innerHTML = `<span class="vote-count">${data.human}</span> Human`;
-    } else {
-      grokBtn.textContent = 'Grok Won';
-      humanBtn.textContent = 'Human Won';
-    }
-
-    if (hasVoted) {
-      grokBtn.disabled = true;
-      humanBtn.disabled = true;
-    } else {
-      grokBtn.disabled = false;
-      humanBtn.disabled = false;
-    }
-  }, err => console.warn('Could not load votes for battle ' + id, err))
-    .catch(() => {}); // already handled by the cancel callback above
-};
-
 window.voteFromModal = function(event, winner) {
   if (window.currentBattleId) vote(event, winner, window.currentBattleId);
 };
-
-function updateAllBattleVoteUIs() {
-  Object.keys(window.allBattles || {}).forEach(id => updateGridVoteUI(id));
-}
 
 // ====================== DOM CONTENT LOADED ======================
 document.addEventListener('DOMContentLoaded', async () => {
   setRandomBackground();
   await loadLayout();                    // header + footer (already async)
+  await loadAuth();                      // who is signed in (renders the header button)
+  handleLoginReturn();
 
   // ── NEW: Automatic page init based on <body data-page="..."> ──
   // This is the single source of truth for ALL pages
