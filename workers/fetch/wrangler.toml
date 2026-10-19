@@ -11,7 +11,9 @@ workers_dev = true
 DAILY_CAP_USD = "1.50"
 MONTHLY_CAP_USD = "45"
 DISCOVER_PER_RUN = "50"        # recent-search results per scheduled discovery run
-MIN_ENGAGEMENT = "5"           # likes+reposts+replies+quotes on the @grok reply
+MIN_ENGAGEMENT = "0"           # engagement on X is near zero for almost all Grok threads; the admin queue decides
+# Humans replying to Grok = multi-turn exchanges (anchored on the Grok post they answered). Tested 2026-10-19: 80/98 usable.
+DISCOVER_QUERY = "to:grok -from:grok is:reply -is:retweet lang:en"
 
 [[d1_databases]]
 binding = "DB"

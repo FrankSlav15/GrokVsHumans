@@ -11,6 +11,7 @@ const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
 const POST_USD = 0.005, USER_USD = 0.010;
 const MAX_CHAIN = 10, MAX_UP = 7;
+const GROK_ID = '1720665183188922368';
 const SUB_BUDGET = 45;                       // free plan: 50 external subrequests per invocation
 
 const ymd = (d = new Date()) => d.toISOString().slice(0, 10);
@@ -61,27 +62,37 @@ const TWEET_FIELDS = 'conversation_id,created_at,public_metrics,referenced_tweet
 const eng = m => (m?.like_count || 0) + (m?.retweet_count || 0) + (m?.reply_count || 0) + (m?.quote_count || 0);
 
 // Stage 1: paid recent search for @grok replies -> fetch_candidates.
-async function discover(env, b, { pages = 1, perPage = 50, minEng = 5 } = {}) {
-  let token = null, added = 0, seen = 0;
+async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = null, query = null, endHoursAgo = 48 } = {}) {
+  let token = start, added = 0, seen = 0; const engs = []; let noParent = 0;
   for (let i = 0; i < pages; i++) {
-    const params = { query: 'from:grok is:reply -is:retweet lang:en', max_results: String(Math.min(100, Math.max(10, perPage))), sort_order: 'relevancy', 'tweet.fields': TWEET_FIELDS };
+    const params = { query: query || 'from:grok is:reply -is:retweet lang:en', max_results: String(Math.min(100, Math.max(10, perPage))), sort_order: 'relevancy', 'tweet.fields': TWEET_FIELDS };
     if (token) params.next_token = token;
+    if (endHoursAgo) params.end_time = new Date(Date.now() - endHoursAgo * 3600e3).toISOString().replace(/\.\d+Z$/, 'Z');   // let replies collect engagement first
     const r = await xGet(env, b, '/tweets/search/recent', params, 'discover', Number(params.max_results));
     if (!r.ok) break;
     const data = r.json.data || []; seen += data.length;
     const stmts = [];
     for (const t of data) {
+      engs.push(eng(t.public_metrics));
       if (eng(t.public_metrics) < minEng) continue;
-      const parent = (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id;
-      if (!parent) continue;
+      let parent = (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id;
+      if (!parent) { noParent++; continue; }
+      let anchor = t.id, e = eng(t.public_metrics);
+      if (t.author_id !== GROK_ID) {
+        // Human replying to Grok = a multi-turn exchange. Anchor on the Grok post they answered.
+        if (t.in_reply_to_user_id !== GROK_ID || cleanText(t.text).length < 40) continue;
+        anchor = parent; parent = null; e += 1;
+      }
+      t._anchor = anchor; t._eng = e;
       stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at)
         SELECT ?1, ?2, ?3, ?4, ?5, 'new', ?6 WHERE NOT EXISTS (SELECT 1 FROM posts WHERE grok_tweet_id = ?1 OR conversation_id = ?2)`)
-        .bind(t.id, t.conversation_id, t.in_reply_to_user_id || null, JSON.stringify({ parent, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text }), eng(t.public_metrics), now()));
+        .bind(t._anchor, t.conversation_id, t.author_id === GROK_ID ? (t.in_reply_to_user_id || null) : t.author_id, JSON.stringify({ parent, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text }), t._eng, now()));
     }
     if (stmts.length) { const res = await env.DB.batch(stmts); added += res.reduce((a, x) => a + (x.meta?.changes || 0), 0); }
     token = r.json.meta?.next_token; if (!token) break;
   }
-  return { seen, added };
+  engs.sort((a, b) => b - a);
+  return { seen, added, noParent, eng_top: engs.slice(0, 15), eng_median: engs[engs.length >> 1] ?? null, next: token || null };
 }
 
 // Stage 2: rebuild the chain of one candidate. Upward = free syndication; downward = one paid
@@ -180,7 +191,7 @@ export default {
     const b = new Budget(env, 'cron-' + Date.now());
     if (event.cron === '0 11,23 * * *') {
       if (!env.X_BEARER_TOKEN) return;
-      await discover(env, b, { pages: 1, perPage: Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 5) });
+      await discover(env, b, { pages: 1, perPage: Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
     } else {
       await expand(env, b, 3);
       await recheck(env, b);
@@ -199,7 +210,7 @@ export default {
     const runId = String(o.run || 'manual-' + ymd());
     const b = new Budget(env, runId, { runCap: runCap == null ? null : Math.max(0, runCap - await spentInRun(env, runId)) });
     let result;
-    if (o.stage === 'discover') result = await discover(env, b, { pages: Math.min(Number(o.pages) || 1, 10), perPage: Number(o.perPage) || 100, minEng: Number(o.minEng ?? 5) });
+    if (o.stage === 'discover') result = await discover(env, b, { pages: Math.min(Number(o.pages) || 1, 10), perPage: Number(o.perPage) || 100, minEng: Number(o.minEng ?? 5), start: o.next || null, query: o.query || null, endHoursAgo: o.endHoursAgo ?? 48 });
     else if (o.stage === 'expand') result = await expand(env, b, Math.min(Number(o.max) || 3, 5));
     else if (o.stage === 'recheck') result = await recheck(env, b);
     else if (o.stage === 'usage') result = await usage(env, b);
