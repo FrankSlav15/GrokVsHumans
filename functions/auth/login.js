@@ -44,7 +44,8 @@ export async function onRequestGet({ request, env }) {
   return new Response(null, {
     status: 302,
     headers: {
-      Location: authorize.toString(),
+      // X expects spaces in scope as %20 (URLSearchParams would emit '+').
+      Location: authorize.toString().replace(/\+/g, '%20'),
       'Set-Cookie': setCookie(OAUTH_COOKIE, state, OAUTH_TTL),
       'Cache-Control': 'no-store',
       'Referrer-Policy': 'no-referrer',
