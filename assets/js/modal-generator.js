@@ -6,17 +6,18 @@ function renderCommonModalParts(data, pageType) {
   const mediaContainer = document.getElementById('modal-image');
   if (!mediaContainer) return;
 
-  const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+  const isVideo = window.isVideoUrl(data.image);
 
   if (isVideo) {
     mediaContainer.innerHTML = `
       <video 
-        src="${data.image}" 
+        src="${data.image}"${window.videoPosterAttr(data.image, data.poster)} 
         class="modal__image" 
         autoplay 
         loop
         muted 
         playsinline 
+        webkit-playsinline 
         preload="metadata" 
         controls>
       </video>`;
@@ -97,8 +98,8 @@ function renderThread(threadPosts, containerId) {
               </div>
               <div class="thread-text">${(post.text || '').replace(/\n/g, '<br>')}</div>
               ${post.image 
-                ? (post.image.toLowerCase().match(/\.(mp4|webm|mov)$/) 
-                    ? `<video src="${post.image}" class="thread-media" controls preload="metadata" playsinline></video>` 
+                ? (window.isVideoUrl(post.image) 
+                    ? `<video src="${post.image}"${window.videoPosterAttr(post.image, post.poster)} class="thread-media" controls preload="metadata" playsinline webkit-playsinline></video>` 
                     : `<img src="${post.image}" class="thread-media" alt="">`)
                 : ''}
             `}
@@ -118,9 +119,9 @@ window.openBattleModal = function(id) {
 
   // Media (now with sound + controls) – exactly as you had it
   const mediaContainer = document.getElementById('modal-image');
-  const isVideo = data.image?.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+  const isVideo = window.isVideoUrl(data.image);
   mediaContainer.innerHTML = isVideo
-    ? `<video src="${data.image}" class="modal__image" autoplay loop playsinline preload="metadata" controls></video>`
+    ? `<video src="${data.image}"${window.videoPosterAttr(data.image, data.poster)} class="modal__image" autoplay loop playsinline webkit-playsinline preload="metadata" controls></video>`
     : `<img src="${data.image}" class="modal__image" alt="${data.title || ''}">`;
 
   // Force unmute on first tap (fixes .mov sound issue)

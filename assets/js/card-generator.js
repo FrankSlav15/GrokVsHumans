@@ -1,16 +1,15 @@
 // assets/js/card-generator.js
 // FULL CLEAN REWRITE – BEM only, supports memes + categories + battles, no Tailwind, no inline styles
 
-function generateMediaHTML(imageUrl) {
+function generateMediaHTML(imageUrl, posterUrl) {
   if (!imageUrl) {
     return `<div class="card__media"><div class="flex items-center justify-center h-full bg-[#27272a] text-zinc-500 text-sm">No media</div></div>`;
   }
   
-  const lower = imageUrl.toLowerCase();
-  const isVideo = lower.endsWith('.mp4') || lower.endsWith('.webm') || lower.endsWith('.mov');
+  const isVideo = window.isVideoUrl(imageUrl);
   
   if (isVideo) {
-    return `<div class="card__media"><video src="${imageUrl}" class="w-full h-full object-cover" loop muted playsinline preload="metadata"></video></div>`;
+    return `<div class="card__media"><video src="${imageUrl}"${window.videoPosterAttr(imageUrl, posterUrl)} class="w-full h-full object-cover" loop muted playsinline webkit-playsinline preload="metadata"></video></div>`;
   }
   
   return `<div class="card__media"><img src="${imageUrl}" loading="lazy" class="w-full h-full object-cover" alt="Preview"></div>`;
@@ -67,7 +66,7 @@ function getBattleCardFooter(id) {
 }
 
 window.createContentCard = function(pageType, id, data) {
-  const mediaHTML = generateMediaHTML(data.image);
+  const mediaHTML = generateMediaHTML(data.image, data.poster);
   const shortDesc = getShortDescription(data, pageType);
   const tagsHTML = renderCardTags(data);
   const footerHTML = pageType === 'battles' ? getBattleCardFooter(id) : '';

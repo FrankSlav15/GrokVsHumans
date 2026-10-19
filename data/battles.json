@@ -161,6 +161,7 @@
         "author": "human",
         "avatar": "https://pbs.twimg.com/profile_images/1345891496491421700/k4_EspNR_400x400.jpg",
         "id": 1,
+        "poster": "assets/images/posters/catbox-nvby4s-poster.webp",
         "image": "https://files.catbox.moe/nvby4s.mp4",
         "text": "I'm so glad we have AI to help us.",
         "timestamp": "2026-03-18T03:06:00Z",
@@ -297,6 +298,7 @@
         "username": "@SoveyX",
         "avatar": "https://pbs.twimg.com/profile_images/2035940214393475072/SLnZ-z9X_400x400.jpg",
         "text": "Hey @grok, what happens to my poop after I flush? Also, how can I ensure my poop doesn’t fraternize with anyone else’s poop? I am a bit of a snob.",
+        "poster": "assets/images/posters/catbox-ku4z5p-poster.webp",
         "image": "https://files.catbox.moe/ku4z5p.mp4",
         "timestamp": "2026-03-09T15:54:12Z"
       },

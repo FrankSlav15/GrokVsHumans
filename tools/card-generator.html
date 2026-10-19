@@ -216,7 +216,7 @@
       } else {
         const videoClass = isVideo(media) ? ' video-card' : '';
         const mediaTag = isVideo(media) 
-          ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline></video>` 
+          ? `<video src="${media}" class="w-full h-full object-cover" loop muted playsinline preload="metadata"></video>` 
           : `<img src="${media}" class="w-full h-full object-cover" alt="${title}">`;
 
         if (type === 'battle') {
