@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/assets/v2/feed.css">
 </head>
 <body>
-  <div class="mock-banner">MOCKUP · sample posts are placeholders (examples from old battles), counts are random, nothing is saved</div>
+  <div class="mock-banner">PREVIEW · v2 beta</div>
 
   <header class="top">
     <a href="/" class="top__logo"><span class="top__g">G</span><span class="top__name">Grok <em>vs.</em> Humans</span></a>
@@ -31,11 +31,12 @@
   <main class="feed" id="feed" aria-live="polite"></main>
 
   <footer class="foot">
-    <a href="/privacy">Privacy</a> · <a href="/tos">Terms</a> · <a href="/imprint">Contact</a> ·
-    <a href="#donate" class="foot__donate" onclick="return mockToast('Donate link (Ko-fi) goes here')"><i class="fa-solid fa-mug-hot"></i> Donate</a>
+    <a href="/privacy">Privacy</a> · <a href="/tos">Terms</a> · <a href="/imprint">Contact</a>
+    
     <p>Not affiliated with X or xAI · Built by <a href="https://x.com/SlavisTon">@SlavisTon</a></p>
   </footer>
 
+  <div id="sheet" hidden></div>
   <div id="toast" class="toast" role="status"></div>
   <script src="/assets/v2/feed.js"></script>
 </body>

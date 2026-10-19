@@ -15,6 +15,7 @@ export const OAUTH_HOSTS = new Set([
   'grokvshumans.pages.dev',
   'grokvshumans.com',
   'www.grokvshumans.com',
+  'v2-feed.grokvshumans.pages.dev',   // v2 preview: works only once this callback is registered in the X app
 ]);
 export const CANONICAL_HOST = 'grokvshumans.pages.dev';
 
@@ -115,6 +116,10 @@ export function publicUser(env, u) {
 const ITEM_FILES = { battle: '/data/battles.json', meme: '/data/memes.json' };
 const itemIdsCache = {};
 export async function getItemIds(env, request, type) {
+  if (type === 'post') {
+    const { results } = await env.DB.prepare("SELECT id FROM posts WHERE status = 'approved'").all();
+    return new Set(results.map(r => String(r.id)));
+  }
   const file = ITEM_FILES[type];
   if (!file) return new Set();
   const c = itemIdsCache[type];
@@ -126,7 +131,7 @@ export async function getItemIds(env, request, type) {
   return ids;
 }
 export const getBattleIds = (env, request) => getItemIds(env, request, 'battle');
-export const ITEM_TYPES = new Set(Object.keys(ITEM_FILES));
+export const ITEM_TYPES = new Set([...Object.keys(ITEM_FILES), 'post']);
 
 // Parse a JSON body of a same-origin POST. Returns [body, errorResponse].
 export async function readJsonPost(request) {

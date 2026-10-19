@@ -1,0 +1,23 @@
+# Grok vs. Humans v2 fetch Worker (separate from the Pages project).
+# Secrets (set with `wrangler secret put`, never committed):
+#   X_BEARER_TOKEN  app-only bearer token of X app "GvsHumans"
+#   RUN_KEY         random string protecting the manual POST /run endpoint
+name = "gvh-fetch"
+main = "src/index.js"
+compatibility_date = "2026-05-01"
+workers_dev = true
+
+[vars]
+DAILY_CAP_USD = "1.50"
+MONTHLY_CAP_USD = "45"
+DISCOVER_PER_RUN = "50"        # recent-search results per scheduled discovery run
+MIN_ENGAGEMENT = "5"           # likes+reposts+replies+quotes on the @grok reply
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gvh-v2"
+database_id = "d1a0f66c-826e-4394-915a-b5f93971aa85"
+
+[triggers]
+# 11:00 and 23:00 UTC: discovery (paid, capped). Every 10 min: expand queued candidates + free oEmbed re-check.
+crons = ["0 11,23 * * *", "*/10 * * * *"]
