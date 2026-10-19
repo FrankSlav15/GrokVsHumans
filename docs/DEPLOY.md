@@ -51,4 +51,4 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 - Old battles: `node scripts/v2-history-import.mjs > history.sql` (free syndication check) then `wrangler d1 execute gvh-v2 --remote --file history.sql`.
 - Fetch Worker `workers/fetch` (`gvh-fetch`): `cd workers/fetch && wrangler deploy`; secrets `wrangler secret put X_BEARER_TOKEN` and `wrangler secret put RUN_KEY`.
   Crons: 11:00/23:00 UTC discovery (50 results, ≈$0.25/run), every 10 min expand 3 candidates (≈$0.05 each) + free oEmbed re-check.
-  Caps: $1.50/day, $45/month (estimated from fetch_log, before every paid call). Manual run: `POST /run` with `Authorization: Bearer $RUN_KEY`, body `{"stage":"discover|expand|recheck|usage|status","budget":8,"run":"seed-1"}` (budget capped at $8 per run id).
+  Caps: $1.50/day, $45/month (estimated from fetch_log, before every paid call). Manual run: `POST /run` with `Authorization: Bearer $RUN_KEY`, body `{"stage":"discover|expand|recheck|usage|status","budget":8}` (budget capped at $8 per UTC day for manual runs; the run id is server-chosen, `manual-YYYY-MM-DD`; key compared in constant time).

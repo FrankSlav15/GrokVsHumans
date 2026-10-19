@@ -214,13 +214,14 @@ export default {
     const url = new URL(request.url);
     if (url.pathname !== '/run' || request.method !== 'POST') return new Response('gvh-fetch', { status: 404 });
     const auth = request.headers.get('Authorization') || '';
-    if (!env.RUN_KEY || auth !== `Bearer ${env.RUN_KEY}`) return new Response('unauthorized', { status: 401 });
+    if (!(await keyOk(auth, env.RUN_KEY))) return new Response('unauthorized', { status: 401 });
     const o = await request.json().catch(() => ({}));
-    const runCap = o.budget != null ? Math.min(Number(o.budget), 8) : null;          // hard ceiling: $8 per manual run
-    const runId = String(o.run || 'manual-' + ymd());
+    const runCap = o.budget != null ? Math.min(Math.max(Number(o.budget) || 0, 0), 8) : null;   // hard ceiling: $8 per manual run id
+    // L1: the run id is server-chosen (one per UTC day), so callers cannot reset the per-run budget by picking a new id.
+    const runId = 'manual-' + ymd();
     const b = new Budget(env, runId, { runCap: runCap == null ? null : Math.max(0, runCap - await spentInRun(env, runId)) });
     let result;
-    if (o.stage === 'discover') result = await discover(env, b, { pages: Math.min(Number(o.pages) || 1, 10), perPage: Number(o.perPage) || 100, minEng: Number(o.minEng ?? 5), start: o.next || null, query: o.query || null, endHoursAgo: o.endHoursAgo ?? 48 });
+    if (o.stage === 'discover') result = await discover(env, b, { pages: Math.min(Number(o.pages) || 1, 10), perPage: Math.min(Math.max(Number(o.perPage) || 100, 10), 100), minEng: Number(o.minEng ?? 5), start: o.next || null, query: o.query || null, endHoursAgo: o.endHoursAgo ?? 48 });
     else if (o.stage === 'expand') result = await expand(env, b, Math.min(Number(o.max) || 3, 5), o.order);
     else if (o.stage === 'recheck') result = await recheck(env, b);
     else if (o.stage === 'usage') result = await usage(env, b);
@@ -229,6 +230,14 @@ export default {
     return Response.json({ runId, spent_this_call: b.spent, subrequests: b.sub, result });
   },
 };
+// L1: constant-time comparison of the Authorization header with "Bearer <RUN_KEY>".
+async function keyOk(auth, key) {
+  if (!key) return false;
+  const enc = new TextEncoder();
+  const a = enc.encode(String(auth)), b = enc.encode('Bearer ' + key);
+  if (a.byteLength !== b.byteLength) return false;
+  return crypto.subtle.timingSafeEqual(a, b);
+}
 async function spentInRun(env, runId) {
   return (await env.DB.prepare('SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE run_id = ?1').bind(runId).first()).s;
 }
