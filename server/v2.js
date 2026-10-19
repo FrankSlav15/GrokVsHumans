@@ -75,9 +75,28 @@ export async function insertPost(DB, p) {
   return row.id;
 }
 
-export function suggestHeadline(tweets) {
+// Old format (kept to recognise auto-generated, never-edited headlines when regenerating).
+export function legacyHeadline(tweets) {
   const human = tweets.find(w => String(w.author_handle).toLowerCase() !== 'grok');
   let s = (human?.text || tweets[0]?.text || '').replace(/@grok\b/gi, '').replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').trim();
   if (s.length > 80) s = s.slice(0, 77).replace(/\s+\S*$/, '') + '…';
   return s || 'Grok vs. a human';
+}
+// "Grok vs. @handle: <question>", capped at ~90 chars on a word boundary.
+export const HEADLINE_MAX = 90;
+export function suggestHeadline(tweets) {
+  const human = tweets.find(w => String(w.author_handle).toLowerCase() !== 'grok' && w.author_handle && w.author_handle !== '?');
+  if (!human) return 'Grok vs. a human';
+  const q = (human.text || '').replace(/@grok\b/gi, '').replace(/https?:\/\/\S+/g, '').replace(/^(\s*@\w+)+/, '')
+    .replace(/\s+/g, ' ').replace(/^[\s,:;.\-–—]+/, '').trim();
+  const head = `Grok vs. @${human.author_handle}`;
+  if (!q) return head;
+  let s = `${head}: ${q}`;
+  if (s.length > HEADLINE_MAX) {
+    let cut = s.slice(0, HEADLINE_MAX - 1);
+    const sp = cut.lastIndexOf(' ');
+    if (sp > head.length + 1) cut = cut.slice(0, sp);
+    s = cut.replace(/[\s,:;.\-–—]+$/, '') + '…';
+  }
+  return s;
 }
