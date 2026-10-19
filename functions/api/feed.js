@@ -70,14 +70,13 @@ async function build({ request, env }) {
 
   // 2) details only for the page
   if (page.length) {
-    const ids = page.map(p => Number(p.id));
+    const ids = page.map(p => String(p.id));   // strings: D1 binds JS numbers as REAL, which breaks text id matches
     const ph = ids.map((_, i) => '?' + (i + 2)).join(',');
-    const phs = ids.map((_, i) => 'CAST(?' + (i + 2) + ' AS TEXT)').join(',');
     const [tweets, topics, mine] = await env.DB.batch([
       env.DB.prepare(`SELECT * FROM post_tweets WHERE post_id IN (${ph}) AND ?1 = ?1 ORDER BY post_id, pos`).bind(me, ...ids),
       env.DB.prepare(`SELECT post_id, topic FROM post_topics WHERE post_id IN (${ph}) AND ?1 = ?1`).bind(me, ...ids),
-      env.DB.prepare(`SELECT 'v' k, item_id id, choice val FROM votes WHERE item_type='post' AND x_id=?1 AND item_id IN (${phs})
-                      UNION ALL SELECT 'r', target_id, value FROM reactions WHERE target_type='post' AND x_id=?1 AND target_id IN (${phs})`).bind(me, ...ids),
+      env.DB.prepare(`SELECT 'v' k, item_id id, choice val FROM votes WHERE item_type='post' AND x_id=?1 AND item_id IN (${ph})
+                      UNION ALL SELECT 'r', target_id, value FROM reactions WHERE target_type='post' AND x_id=?1 AND target_id IN (${ph})`).bind(me, ...ids),
     ]);
     const M = {}; for (const r of mine.results) (M[r.id] ||= {})[r.k] = r.val;
     const T = {}; for (const r of topics.results) (T[r.post_id] ||= []).push(r.topic);
