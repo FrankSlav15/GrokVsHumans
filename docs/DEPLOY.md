@@ -48,7 +48,7 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 - D1 `gvh-v2` (d1a0f66c-826e-4394-915a-b5f93971aa85) is bound as `DB` in the **Preview** environment only; schema `migrations-v2/0001_v2_schema.sql`.
 - Preview vars: `X_CLIENT_ID`, `ADMIN_X_IDS`. Login on the preview also needs `X_CLIENT_SECRET` (Preview, secret) and the callback `https://v2-feed.grokvshumans.pages.dev/auth/callback` registered in the X app.
 - Deploy: `bash scripts/build-deploy.sh /workspace/gvh-site && npx -y -p node@22 -p wrangler@latest -- wrangler pages deploy /workspace/gvh-site --project-name grokvshumans --branch v2-feed`
-- Old battles: `node scripts/v2-history-import.mjs > history.sql` (free syndication check) then `wrangler d1 execute gvh-v2 --remote --file history.sql`.
+- Old battles: the one-time syndication-based history import was removed (no syndication scraping any more); posts imported earlier stay in gvh-v2. New posts come only from the fetch Worker (paid X API v2).
 - Fetch Worker `workers/fetch` (`gvh-fetch`): `cd workers/fetch && wrangler deploy`; secrets `wrangler secret put X_BEARER_TOKEN` and `wrangler secret put RUN_KEY`.
   Crons: 11:00/23:00 UTC discovery (50 results, ≈$0.25/run), every 10 min expand 3 candidates (≈$0.05 each) + free oEmbed re-check.
   Caps: $1.50/day, $45/month (estimated from fetch_log, before every paid call). Manual run: `POST /run` with `Authorization: Bearer $RUN_KEY`, body `{"stage":"discover|expand|recheck|usage|status","budget":8}` (budget capped at $8 per UTC day for manual runs; the run id is server-chosen, `manual-YYYY-MM-DD`; key compared in constant time).

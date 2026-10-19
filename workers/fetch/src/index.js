@@ -1,11 +1,11 @@
 // gvh-fetch: discovers @grok reply threads on X, rebuilds the chain, stores them as *pending*
 // posts for the /admin/queue. Nothing is public until an admin approves it.
 //
-// Cost model (X pay-per-use): $0.005 per post read. We never request user objects
-// (author names/avatars come from the free syndication endpoint), so users_read stays 0.
+// Cost model (X pay-per-use): $0.005 per post read, $0.010 per user object. All tweet data comes from
+// the paid X API v2 (no syndication scraping); the public site shows posts as official X embeds.
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
-import { suggestTopics, suggestHeadline, syndicationTweet, tweetFromSyndication, insertPost, oembedAlive, cleanText } from '../../../server/v2.js';
+import { suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText } from '../../../server/v2.js';
 
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
@@ -99,17 +99,52 @@ async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = n
   return { seen, added, noParent, eng_top: engs.slice(0, 15), eng_median: engs[engs.length >> 1] ?? null, next: token || null };
 }
 
-// Stage 2: rebuild the chain of one candidate. Upward = free syndication; downward = one paid
-// conversation search limited to the two participants (max 10 posts).
+// X API v2 tweet -> our chain row. users: id -> user object from includes.users.
+const USER_FIELDS = 'username,name,profile_image_url,verified';
+const LOOKUP_FIELDS = 'created_at,conversation_id,referenced_tweets,author_id,in_reply_to_user_id,note_tweet';
+function fromApi(t, users) {
+  const u = users[t.author_id] || {};
+  return {
+    tweet_id: t.id, author_id: t.author_id || null, author_handle: u.username || (t.author_id === GROK_ID ? 'grok' : '?'),
+    author_name: u.name || null, author_avatar: u.profile_image_url ? u.profile_image_url.replace('_normal.', '_bigger.') : null,
+    verified: u.verified ? 1 : 0, text: cleanText(t.note_tweet?.text || t.text || ''), media: [],
+    created_at: t.created_at ? Math.floor(Date.parse(t.created_at) / 1000) : null,
+    parent: (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id || null,
+    conversation_id: t.conversation_id || null,
+  };
+}
+// Paid lookup of up to N ids plus the posts they reply to (one level) and all authors. Returns Map id -> row.
+async function lookup(env, b, ids, kind) {
+  const r = await xGet(env, b, '/tweets', {
+    ids: ids.join(','), 'tweet.fields': LOOKUP_FIELDS, expansions: 'author_id,referenced_tweets.id,referenced_tweets.id.author_id', 'user.fields': USER_FIELDS,
+  }, kind, ids.length * 2 + ids.length * 4);   // estimate: posts + parents, users at 2x post price
+  if (r.capped) return { capped: r.capped };
+  const out = new Map();
+  if (!r.ok) return { rows: out };
+  const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
+  for (const t of [...(r.json.data || []), ...(r.json.includes?.tweets || [])]) out.set(t.id, fromApi(t, users));
+  return { rows: out };
+}
+
+// Stage 2: rebuild the chain of one candidate, all via the paid X API: upward with tweet lookups
+// (each call returns a post and its parent), downward with one conversation search limited to the participants.
 async function expandOne(env, b, c) {
   const p = JSON.parse(c.payload);
-  const g = await syndicationTweet(c.grok_tweet_id); b.take();
-  if (!g.tweet) return 'gone';
-  const chain = [tweetFromSyndication(g.tweet)];
-  let up = chain[0].parent;
-  while (up && chain.length < MAX_UP && b.take()) {
-    const r = await syndicationTweet(up); if (!r.tweet) break;
-    const w = tweetFromSyndication(r.tweet); chain.unshift(w); up = w.parent;
+  const first = await lookup(env, b, [c.grok_tweet_id], 'chain');
+  if (first.capped) return 'capped:' + first.capped;
+  const g = first.rows.get(c.grok_tweet_id);
+  if (!g) return 'gone';
+  const known = first.rows;
+  const chain = [g];
+  let up = g.parent;
+  while (up && chain.length < MAX_UP) {
+    if (!known.has(up)) {
+      const r = await lookup(env, b, [up], 'chain');
+      if (r.capped) break;
+      for (const [k, v] of r.rows) known.set(k, v);
+    }
+    const w = known.get(up); if (!w) break;
+    chain.unshift(w); up = w.parent;
   }
   // The human is the author Grok answered (the tweet right above Grok's reply).
   const human = chain.length > 1 ? chain[chain.length - 2] : null;
@@ -125,8 +160,9 @@ async function expandOne(env, b, c) {
   if (conv && env.X_BEARER_TOKEN) {
     const r = await xGet(env, b, '/tweets/search/recent', {
       query: `conversation_id:${conv} (from:grok OR from:${human.author_handle}${p.replier_id && p.replier_id !== human.author_id ? ' OR from:' + p.replier_id : ''})`, max_results: '10',
-      'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id', since_id: c.grok_tweet_id,
-    }, 'expand', 10);
+      'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet', since_id: c.grok_tweet_id,
+      expansions: 'author_id', 'user.fields': USER_FIELDS,
+    }, 'expand', 14);
     if (r.capped) return 'capped:' + r.capped;
     if (r.ok) {
       const have = new Set(chain.map(w => w.tweet_id));
@@ -135,17 +171,15 @@ async function expandOne(env, b, c) {
         if (chain.length - upCount >= MAX_CHAIN - 2) break;      // keep Grok's reply + the post it answered
         const parent = (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id;
         if (!parent || !have.has(parent) || have.has(t.id)) continue;   // must continue *this* branch
-        let w = null;
-        if (b.take()) { const s = await syndicationTweet(t.id); if (s.tweet) w = tweetFromSyndication(s.tweet); }
-        if (!w) { const src = t.author_id === human.author_id ? human : chain.find(x => x.author_handle.toLowerCase() === 'grok');
-          w = { ...src, tweet_id: t.id, text: cleanText(t.text), media: [], created_at: Math.floor(Date.parse(t.created_at) / 1000), parent }; }
-        chain.push(w); have.add(t.id);
+        const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
+        chain.push(fromApi(t, users)); have.add(t.id);
       }
     }
   }
-  if (p.reply_id && !chain.some(w => w.tweet_id === p.reply_id) && b.take()) {
-    const s = await syndicationTweet(p.reply_id);
-    if (s.tweet) { const w = tweetFromSyndication(s.tweet); if (chain.some(x => x.tweet_id === w.parent)) { const i = chain.findIndex(x => x.tweet_id === w.parent); chain.splice(i + 1, 0, w); } }
+  if (p.reply_id && !chain.some(w => w.tweet_id === p.reply_id)) {
+    const r = await lookup(env, b, [p.reply_id], 'chain');
+    const w = r.rows?.get(p.reply_id);
+    if (w && chain.some(x => x.tweet_id === w.parent)) { const i = chain.findIndex(x => x.tweet_id === w.parent); chain.splice(i + 1, 0, w); }
   }
   const tweets = chain.slice(-MAX_CHAIN);
   const topics = suggestTopics(tweets.map(w => w.text), p.annotations);

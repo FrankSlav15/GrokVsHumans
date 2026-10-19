@@ -1,4 +1,4 @@
-// v2 shared logic: topic suggestions, free syndication lookups, feed ranking.
+// v2 shared logic: topic suggestions, text cleanup, oEmbed existence check, feed ranking.
 // Used by Pages Functions and by the fetch Worker (workers/fetch).
 
 export const TOPICS = ['Politics', 'Technology', 'Memology', 'Sports', 'Pop Culture', 'Life Advice', 'History', 'Science', 'Money', 'Wild Card'];
@@ -37,32 +37,6 @@ export function suggestTopics(texts, annotations = []) {
   return out.length ? out : ['Wild Card'];
 }
 
-// Free public syndication endpoint (used by X's own embed widget). No API credits.
-export const synToken = id => ((Number(id) / 1e15) * Math.PI).toString(36).replace(/(0+|\.)/g, '');
-export async function syndicationTweet(id, fetchImpl = fetch) {
-  const r = await fetchImpl(`https://cdn.syndication.twimg.com/tweet-result?id=${id}&lang=en&token=${synToken(id)}`,
-    { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; GrokVsHumans/2.0)' } });
-  if (r.status === 404) return { gone: true };
-  if (!r.ok) return { error: r.status };
-  const t = await r.text();
-  if (!t || t === '{}') return { gone: true };
-  const j = JSON.parse(t);
-  if (j.__typename && j.__typename !== 'Tweet') return { gone: true };   // TweetTombstone etc.
-  return { tweet: j };
-}
-export function tweetFromSyndication(t) {
-  return {
-    tweet_id: t.id_str, author_id: t.user?.id_str || null, author_handle: t.user?.screen_name || '?',
-    author_name: t.user?.name || null, author_avatar: (t.user?.profile_image_url_https || '').replace('_normal.', '_bigger.'),
-    verified: (t.user?.is_blue_verified || t.user?.verified) ? 1 : 0,
-    text: cleanText(t.text || '', t.display_text_range),
-    media: (t.mediaDetails || []).map(m => ({ type: m.type, url: m.media_url_https,
-      video: (m.video_info?.variants || []).filter(v => v.content_type === 'video/mp4').sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0))[0]?.url || null })),
-    created_at: t.created_at ? Math.floor(Date.parse(t.created_at) / 1000) : null,
-    parent: t.in_reply_to_status_id_str || null,
-    conversation_id: t.conversation_id_str || null,
-  };
-}
 // Strip leading @mentions of reply chains and trailing t.co media links.
 export function cleanText(text, range) {
   let s = text;

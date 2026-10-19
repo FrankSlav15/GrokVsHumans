@@ -29,28 +29,30 @@
   }
   const renderChips = () => { $('#chips').innerHTML = ['All', ...S.topics].map(t => `<button class="chip ${t === S.topic ? 'is-on' : ''}" data-topic="${esc(t)}">${esc(t)}</button>`).join(''); };
 
-  function media(m, alt) {
-    return m.map(x => x.video
-      ? `<video class="msg__m" src="${esc(x.video)}" poster="${esc(x.url)}" controls preload="none" playsinline></video>`
-      : `<img class="msg__m" src="${esc(x.url)}" alt="${esc(alt)}" loading="lazy" referrerpolicy="no-referrer">`).join('');
-  }
-  function msg(w, headline) {
-    const side = w.grok ? 'grok' : 'human', long = w.text.length > 260;
-    return `<div class="msg msg--${side}">
-      <img class="msg__av" src="${esc(w.avatar)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">
-      <div class="msg__b">
-        <div class="msg__h">${w.grok ? '🤖 ' : ''}<a href="https://x.com/${encodeURIComponent(w.handle)}/status/${w.id}" target="_blank" rel="noopener noreferrer">@${esc(w.handle)}</a>${w.verified ? ' <i class="fa-solid fa-circle-check" style="color:#1d9bf0;font-size:.7rem"></i>' : ''}</div>
-        <p class="msg__t ${long ? 'clamp' : ''}">${linkify(w.text)}</p>
-        ${long ? '<button class="more" data-act="more">Show more</button>' : ''}
-        ${media(w.media || [], headline)}
-      </div></div>`;
+  // Official X embeds (blockquote.twitter-tweet + widgets.js), one per turn of the exchange.
+  // widgets.js is loaded lazily, the first time a post scrolls near the viewport.
+  function embed(w) {
+    const url = `https://twitter.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`;
+    return `<div class="emb ${w.grok ? 'emb--grok' : 'emb--human'}"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-conversation="none" data-width="550">
+      <p lang="en" dir="ltr">${esc(w.text)}</p>&mdash; @${esc(w.handle)} <a href="${url}">${w.created_at ? new Date(w.created_at * 1000).toLocaleDateString() : 'View on X'}</a></blockquote></div>`;
   }
   function thread(p) {
     const tw = p.tweets, open = S.open.has(p.id) || tw.length <= VISIBLE + 1;
     const shown = open ? tw : tw.slice(0, VISIBLE);
-    return `<div class="ex">${shown.map(w => msg(w, p.headline)).join('')}</div>` +
+    return `<div class="ex">${shown.map(embed).join('')}</div>` +
       (tw.length > VISIBLE + 1 ? `<button class="thread-more" data-act="thread">${open ? 'Show less' : `Show full thread (${tw.length})`}</button>` : '');
   }
+  let wjs = null;
+  function widgets() {
+    if (!wjs) wjs = new Promise(res => { const s = document.createElement('script'); s.src = 'https://platform.twitter.com/widgets.js'; s.async = true; s.charset = 'utf-8';
+      s.onload = () => (window.twttr && twttr.ready ? twttr.ready(() => res(window.twttr)) : res(window.twttr)); s.onerror = () => res(null); document.head.appendChild(s); });
+    return wjs;
+  }
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; io.unobserve(e.target); hydrate(e.target);
+  }), { rootMargin: '800px 0px' }) : null;
+  async function hydrate(el) { const t = await widgets(); if (t && t.widgets && el.isConnected) t.widgets.load(el); }
+  function watch(root) { (root.matches?.('.post') ? [root] : root.querySelectorAll('.post')).forEach(el => io ? io.observe(el) : hydrate(el)); }
   function card(p, rank) {
     const t = p.votes.grok + p.votes.human, gp = t ? Math.round(p.votes.grok / t * 100) : 50;
     return `<article class="post" data-id="${p.id}" id="p${p.id}">
@@ -71,8 +73,8 @@
         <button class="act ${p.mine.react === -1 ? 'is-dislike' : ''}" data-act="react" data-v="-1" aria-label="Dislike"><i class="fa-solid fa-thumbs-down"></i>${p.dislikes}</button>
         <button class="act" data-act="comments" aria-label="Comments"><i class="fa-regular fa-comment"></i>${p.comments}</button>
         <button class="act" data-act="share" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-        <a class="act" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open on X">${X_SVG} Open</a>
       </div>
+      <a class="xlink" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
     </article>`;
   }
   function render() {
@@ -82,9 +84,13 @@
     $('#feed').innerHTML = head + (S.posts.length ? S.posts.map((p, i) => card(p, S.view === 'hall' ? i + 1 : 0)).join('')
       : `<div class="empty">${S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
     document.querySelectorAll('.tab').forEach(b => b.classList.toggle('is-on', b.dataset.view === S.view));
-    renderChips();
+    renderChips(); watch($('#feed'));
   }
-  const rerender = p => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p); el.outerHTML = card(p, S.view === 'hall' ? i + 1 : 0); };
+  // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
+  const rerender = (p, full) => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p);
+    const tmp = document.createElement('div'); tmp.innerHTML = card(p, S.view === 'hall' ? i + 1 : 0); const fresh = tmp.firstElementChild;
+    if (!full) { const ex = el.querySelector('.ex'), nx = fresh.querySelector('.ex'); if (ex && nx) nx.replaceWith(ex); const tm = el.querySelector('.thread-more'), nm = fresh.querySelector('.thread-more'); if (tm && nm) nm.replaceWith(tm); }
+    el.replaceWith(fresh); if (full) watch(fresh); };
 
   async function load() {
     const q = new URLSearchParams({ view: S.view, range: S.hof });
@@ -153,8 +159,7 @@
     const hof = e.target.closest('[data-hof]'); if (hof) return setState({ hof: hof.dataset.hof });
     const a = e.target.closest('[data-act]'); if (!a) return;
     const el = a.closest('.post'), p = S.posts.find(x => x.id === el?.dataset.id), act = a.dataset.act;
-    if (act === 'more') { const t = a.previousElementSibling; t.classList.toggle('clamp'); a.textContent = t.classList.contains('clamp') ? 'Show more' : 'Show less'; return; }
-    if (act === 'thread') { S.open.has(p.id) ? S.open.delete(p.id) : S.open.add(p.id); rerender(p); if (!S.open.has(p.id)) document.getElementById('p' + p.id).scrollIntoView({ block: 'nearest' }); return; }
+        if (act === 'thread') { S.open.has(p.id) ? S.open.delete(p.id) : S.open.add(p.id); rerender(p, true); if (!S.open.has(p.id)) document.getElementById('p' + p.id).scrollIntoView({ block: 'nearest' }); return; }
     if (act === 'comments') return openSheet(p);
     if (act === 'share') {
       const url = location.origin + '/#p' + p.id;
