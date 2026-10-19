@@ -1,7 +1,8 @@
 node_modules/
 .DS_Store
 *.log
-.env__pycache__/
+.env
+__pycache__/
 
 .dev.vars
 .wrangler/
