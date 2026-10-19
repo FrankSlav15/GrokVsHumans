@@ -1,7 +1,7 @@
 // GET  /api/comments?type=battle&id=21  -> item reactions + visible comments (everyone)
 // POST /api/comments {type, id, body}    -> new comment (signed-in X users)
 import {
-  json, now, getSessionUser, requireUser, readJsonPost, getItemIds, ITEM_TYPES, reactionCounts, isAdmin,
+  json, now, getSessionUser, requireUser, readJsonPost, itemExists, ITEM_TYPES, reactionCounts, isAdmin, limitWrite,
 } from '../../server/lib.js';
 import { cleanComment, RATE_WINDOW, RATE_MAX } from '../../server/moderation.js';
 
@@ -19,7 +19,7 @@ function shape(r, react, viewer) {
 
 async function validItem(env, request, type, id) {
   if (!ITEM_TYPES.has(type) || !/^[0-9]{1,6}$/.test(id)) return false;
-  return (await getItemIds(env, request, type)).has(id);
+  return itemExists(env, request, type, id);
 }
 
 export async function onRequestGet({ request, env }) {
@@ -53,6 +53,8 @@ export async function onRequestPost({ request, env }) {
   if (bad) return bad;
   const [user, denied] = await requireUser(env, request);
   if (denied) return denied;
+  const limited = await limitWrite(env, request, user, 'comment');
+  if (limited) return limited;
 
   const type = String(body?.type || '');
   const id = String(body?.id ?? '');

@@ -1,6 +1,6 @@
 // POST /api/vote  {"id":"21","choice":"grok"|"human", "type":"battle"|"post"}  (choice null/"" on a post removes the vote)
 // Signed-in X users only; one vote per user per battle (changing it is allowed).
-import { getSessionUser, checkOrigin, getBattleIds, getItemIds, voteTotals, json, now } from '../../server/lib.js';
+import { getSessionUser, checkOrigin, getBattleIds, itemExists, voteTotals, json, now, limitWrite } from '../../server/lib.js';
 
 export async function onRequestPost({ request, env }) {
   if (!checkOrigin(request)) return json({ error: 'bad_origin' }, 403);
@@ -9,6 +9,8 @@ export async function onRequestPost({ request, env }) {
   const user = await getSessionUser(env, request);
   if (!user) return json({ error: 'sign_in_required' }, 401);
   if (user.banned) return json({ error: 'banned' }, 403);
+  const limited = await limitWrite(env, request, user, 'vote');
+  if (limited) return limited;
 
   let body;
   try { body = await request.json(); } catch { return json({ error: 'bad_json' }, 400); }
@@ -31,7 +33,7 @@ export async function onRequestPost({ request, env }) {
 
 async function postVote(env, request, user, id, choice) {
   if (!/^[0-9]{1,9}$/.test(id) || ![ 'grok', 'human', null, '' ].includes(choice ?? null)) return json({ error: 'bad_request' }, 400);
-  if (!(await getItemIds(env, request, 'post')).has(id)) return json({ error: 'unknown_item' }, 404);
+  if (!(await itemExists(env, request, 'post', id))) return json({ error: 'unknown_item' }, 404);
   const t = now();
   if (!choice) await env.DB.prepare("DELETE FROM votes WHERE item_type='post' AND item_id=?1 AND x_id=?2").bind(id, user.x_id).run();
   else await env.DB.prepare(

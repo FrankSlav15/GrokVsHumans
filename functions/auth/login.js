@@ -2,7 +2,7 @@
 // Starts "Sign in with X" (OAuth 2.0 Authorization Code Flow with PKCE).
 import {
   OAUTH_HOSTS, CANONICAL_HOST, OAUTH_COOKIE, OAUTH_TTL,
-  randomToken, sha256, b64url, setCookie, safeReturnTo, now,
+  randomToken, sha256, b64url, setCookie, safeReturnTo, now, rateLimit, rateLimited, clientIp, LIMITS,
 } from '../../server/lib.js';
 
 export async function onRequestGet({ request, env }) {
@@ -19,6 +19,9 @@ export async function onRequestGet({ request, env }) {
   if (!env.X_CLIENT_ID || !env.DB) {
     return new Response('Sign in is not configured on this deployment.', { status: 503 });
   }
+
+  // M1: every login start writes an oauth_states row, so cap it per IP.
+  if (!(await rateLimit(env, 'login:ip:' + clientIp(request), LIMITS.login))) return rateLimited(LIMITS.login.win);
 
   const state = randomToken(24);
   const codeVerifier = randomToken(48);              // 64 chars, RFC 7636 compliant

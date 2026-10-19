@@ -9,6 +9,19 @@ export const SESSION_COOKIE = '__Host-gvh_sess';
 export const OAUTH_COOKIE = '__Host-gvh_oauth';
 export const SESSION_TTL = 60 * 60 * 24 * 30;   // 30 days
 export const OAUTH_TTL = 60 * 10;               // 10 minutes
+export const ADMIN_SESSION_TTL = 60 * 60 * 24;  // admin sessions: max 24 h from sign-in (M4)
+
+// Abuse controls (M1/M3). Account age = X account creation date when known
+// (requested at login), else the first sign-in on this site.
+export const MIN_AGE_WRITE = 3 * 86400;     // votes, reactions, comments
+export const MIN_AGE_REPORT = 30 * 86400;   // a report only counts towards auto-hide from accounts this old
+export const LIMITS = {
+  login:   { max: 20,  win: 600 },   // per IP
+  vote:    { max: 120, win: 600 },   // per user (and 4x per IP)
+  react:   { max: 120, win: 600 },
+  comment: { max: 20,  win: 600 },   // per IP (per-user cap lives in moderation.js)
+  report:  { max: 20,  win: 3600 },
+};
 
 // Hosts whose /auth/callback is registered in the X app (exact match).
 export const OAUTH_HOSTS = new Set([
@@ -97,12 +110,53 @@ export async function getSessionUser(env, request) {
   if (!token || token.length > 100) return null;
   const hash = await sha256hex(token);
   const row = await env.DB.prepare(
-    `SELECT u.x_id, u.handle, u.name, u.avatar_url, u.verified, u.banned, s.expires_at
+    `SELECT u.x_id, u.handle, u.name, u.avatar_url, u.verified, u.banned, u.created_at AS user_created_at, u.x_created_at,
+            s.created_at AS session_created_at, s.expires_at
        FROM sessions s JOIN users u ON u.x_id = s.x_id
       WHERE s.token_hash = ?1`
   ).bind(hash).first();
   if (!row || row.expires_at < now()) return null;
+  if (isAdmin(env, row.x_id) && row.session_created_at < now() - ADMIN_SESSION_TTL) return null;
   return { ...row, token_hash: hash };
+}
+
+export const clientIp = request => request.headers.get('CF-Connecting-IP') || 'unknown';
+export const accountAge = u => now() - Number(u.x_created_at || u.user_created_at || now());
+
+// D1 fixed-window counter. Over-limit requests only read; under-limit ones do one upsert.
+// Fails open (logs) so a missing table or D1 hiccup never blocks the site.
+export async function rateLimit(env, key, { max, win }) {
+  try {
+    const t = now(), w = Math.floor(t / win);
+    const row = await env.DB.prepare('SELECT n FROM rate_limits WHERE key = ?1 AND win = ?2').bind(key, w).first();
+    if ((row?.n || 0) >= max) return false;
+    const stmts = [env.DB.prepare(
+      `INSERT INTO rate_limits (key, win, n, expires_at) VALUES (?1, ?2, 1, ?3)
+       ON CONFLICT(key, win) DO UPDATE SET n = n + 1`).bind(key, w, (w + 1) * win)];
+    if (Math.random() < 0.02) stmts.push(env.DB.prepare('DELETE FROM rate_limits WHERE expires_at < ?1').bind(t));
+    await env.DB.batch(stmts);
+    return true;
+  } catch (e) { console.log('rateLimit error', String(e)); return true; }
+}
+export const rateLimited = win => json({ error: 'rate_limited', retry_after: win }, 429, { 'Retry-After': String(win) });
+
+// Per-user + per-IP limit for a write action. Returns an error Response or null.
+export async function limitWrite(env, request, user, action) {
+  const l = LIMITS[action];
+  if (user && !(await rateLimit(env, `${action}:u:${user.x_id}`, l))) return rateLimited(l.win);
+  if (!(await rateLimit(env, `${action}:ip:${clientIp(request)}`, { max: l.max * 4, win: l.win }))) return rateLimited(l.win);
+  if (user && action !== 'report' && accountAge(user) < MIN_AGE_WRITE) return json({ error: 'account_too_new' }, 403);
+  return null;
+}
+
+// Is this item id valid? Posts: one indexed lookup (no full-table scan); battles/memes: static JSON ids.
+export async function itemExists(env, request, type, id) {
+  if (!ITEM_TYPES.has(type)) return false;
+  if (type === 'post') {
+    if (!/^[0-9]{1,9}$/.test(String(id))) return false;
+    return !!(await env.DB.prepare("SELECT 1 FROM posts WHERE id = ?1 AND status = 'approved'").bind(Number(id)).first());
+  }
+  return (await getItemIds(env, request, type)).has(String(id));
 }
 
 export function isAdmin(env, xId) {
@@ -168,12 +222,12 @@ export async function reactionCounts(env, targetType, ids, xId) {
   const out = {};
   for (const id of ids) out[id] = { likes: 0, dislikes: 0, mine: 0 };
   if (!ids.length) return out;
-  const ph = ids.map((_, i) => '?' + (i + 2)).join(',');
+  const ph = ids.map((_, i) => '?' + (i + 3)).join(',');
   const { results } = await env.DB.prepare(
     `SELECT target_id, SUM(value = 1) AS likes, SUM(value = -1) AS dislikes,
             MAX(CASE WHEN x_id = ?1 THEN value END) AS mine
-       FROM reactions WHERE target_type = '${targetType}' AND target_id IN (${ph}) GROUP BY target_id`
-  ).bind(xId || '', ...ids.map(String)).all();
+       FROM reactions WHERE target_type = ?2 AND target_id IN (${ph}) GROUP BY target_id`
+  ).bind(xId || '', String(targetType), ...ids.map(String)).all();
   for (const r of results) out[r.target_id] = { likes: r.likes || 0, dislikes: r.dislikes || 0, mine: r.mine || 0 };
   return out;
 }
