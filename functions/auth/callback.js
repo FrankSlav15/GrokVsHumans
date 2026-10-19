@@ -2,7 +2,7 @@
 // Finishes "Sign in with X": exchanges the code, reads /2/users/me once,
 // stores the user, creates a session and throws the X tokens away.
 import {
-  OAUTH_COOKIE, OAUTH_TTL, SESSION_COOKIE, SESSION_TTL,
+  OAUTH_COOKIE, OAUTH_TTL, SESSION_COOKIE, SESSION_TTL, ADMIN_SESSION_TTL, isAdmin,
   getCookie, setCookie, clearCookie, randomToken, sha256hex, now, safeReturnTo,
 } from '../../server/lib.js';
 
@@ -65,7 +65,7 @@ export async function onRequestGet({ request, env }) {
   // 2) the only billable X call: one User read for /2/users/me
   let me;
   try {
-    const meRes = await fetch('https://api.x.com/2/users/me?user.fields=profile_image_url,verified', {
+    const meRes = await fetch('https://api.x.com/2/users/me?user.fields=profile_image_url,verified,created_at', {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const body = await meRes.json().catch(() => ({}));
@@ -84,17 +84,20 @@ export async function onRequestGet({ request, env }) {
   const avatar = me.profile_image_url ? me.profile_image_url.replace('_normal.', '_400x400.') : null;
   const token = randomToken(32);
   const t = now();
+  const xCreated = me.created_at ? Math.floor(Date.parse(me.created_at) / 1000) || null : null;
+  const ttl = isAdmin(env, me.id) ? ADMIN_SESSION_TTL : SESSION_TTL;   // M4: admin sessions max 24 h
   await env.DB.batch([
     env.DB.prepare(
-      `INSERT INTO users (x_id, handle, name, avatar_url, verified, created_at, last_login)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6)
+      `INSERT INTO users (x_id, handle, name, avatar_url, verified, created_at, last_login, x_created_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6, ?7)
        ON CONFLICT(x_id) DO UPDATE SET handle = excluded.handle, name = excluded.name,
-         avatar_url = excluded.avatar_url, verified = excluded.verified, last_login = excluded.last_login`
-    ).bind(String(me.id), me.username, me.name || null, avatar, me.verified ? 1 : 0, t),
+         avatar_url = excluded.avatar_url, verified = excluded.verified, last_login = excluded.last_login,
+         x_created_at = COALESCE(excluded.x_created_at, users.x_created_at)`
+    ).bind(String(me.id), me.username, me.name || null, avatar, me.verified ? 1 : 0, t, xCreated),
     env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?1').bind(t),
     env.DB.prepare('INSERT INTO sessions (token_hash, x_id, created_at, expires_at) VALUES (?1, ?2, ?3, ?4)')
-      .bind(await sha256hex(token), String(me.id), t, t + SESSION_TTL),
+      .bind(await sha256hex(token), String(me.id), t, t + ttl),
   ]);
 
-  return back(returnTo, 'ok', [setCookie(SESSION_COOKIE, token, SESSION_TTL)]);
+  return back(returnTo, 'ok', [setCookie(SESSION_COOKIE, token, ttl)]);
 }

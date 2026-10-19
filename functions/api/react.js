@@ -1,11 +1,13 @@
 // POST /api/react {type: battle|meme|comment, id, value: 1|-1|0}  (0 removes your reaction)
-import { json, now, readJsonPost, requireUser, getItemIds, ITEM_TYPES, reactionCounts } from '../../server/lib.js';
+import { json, now, readJsonPost, requireUser, itemExists, reactionCounts, limitWrite } from '../../server/lib.js';
 
 export async function onRequestPost({ request, env }) {
   const [body, bad] = await readJsonPost(request);
   if (bad) return bad;
   const [user, denied] = await requireUser(env, request);
   if (denied) return denied;
+  const limited = await limitWrite(env, request, user, 'react');
+  if (limited) return limited;
 
   const type = String(body?.type || '');
   const id = String(body?.id ?? '');
@@ -15,7 +17,7 @@ export async function onRequestPost({ request, env }) {
   if (type === 'comment') {
     const c = await env.DB.prepare("SELECT 1 FROM comments WHERE id = ?1 AND status = 'visible'").bind(Number(id)).first();
     if (!c) return json({ error: 'not_found' }, 404);
-  } else if (!ITEM_TYPES.has(type) || !(await getItemIds(env, request, type)).has(id)) {
+  } else if (!(await itemExists(env, request, type, id))) {
     return json({ error: 'unknown_item' }, 404);
   }
 

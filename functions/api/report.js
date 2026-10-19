@@ -1,5 +1,6 @@
-// POST /api/report {id, reason?}  -> one report per user per comment; 3 reports auto-hide it.
-import { json, now, readJsonPost, requireUser } from '../../server/lib.js';
+// POST /api/report {id, reason?}  -> one report per user per comment. Auto-hide needs AUTO_HIDE_REPORTS distinct
+// reporters whose account is at least MIN_AGE_REPORT old (throwaway accounts are recorded for admins but do not count).
+import { json, now, readJsonPost, requireUser, limitWrite, MIN_AGE_REPORT } from '../../server/lib.js';
 import { AUTO_HIDE_REPORTS } from '../../server/moderation.js';
 
 export async function onRequestPost({ request, env }) {
@@ -7,6 +8,8 @@ export async function onRequestPost({ request, env }) {
   if (bad) return bad;
   const [user, denied] = await requireUser(env, request);
   if (denied) return denied;
+  const limited = await limitWrite(env, request, user, 'report');
+  if (limited) return limited;
 
   const id = Number(body?.id);
   if (!Number.isInteger(id) || id <= 0) return json({ error: 'bad_request' }, 400);
@@ -27,9 +30,11 @@ export async function onRequestPost({ request, env }) {
 
   const [, row] = await env.DB.batch([
     env.DB.prepare('UPDATE comments SET report_count = (SELECT COUNT(*) FROM reports WHERE comment_id = ?1) WHERE id = ?1').bind(id),
-    env.DB.prepare('SELECT report_count, status FROM comments WHERE id = ?1').bind(id),
+    env.DB.prepare(`SELECT c.status, (SELECT COUNT(*) FROM reports r JOIN users u ON u.x_id = r.x_id
+        WHERE r.comment_id = ?1 AND u.banned = 0 AND COALESCE(u.x_created_at, u.created_at) <= ?2) AS trusted
+      FROM comments c WHERE c.id = ?1`).bind(id, t - MIN_AGE_REPORT),
   ]);
-  const rc = row.results[0]?.report_count || 0;
+  const rc = row.results[0]?.trusted || 0;
   let hidden = row.results[0]?.status === 'hidden';
   if (!hidden && rc >= AUTO_HIDE_REPORTS) {
     await env.DB.prepare("UPDATE comments SET status = 'hidden', hidden_by = 'reports' WHERE id = ?1 AND status = 'visible'").bind(id).run();

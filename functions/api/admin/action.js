@@ -41,6 +41,7 @@ export async function onRequestPost({ request, env }) {
       await DB.batch([
         DB.prepare('UPDATE users SET banned = 1 WHERE x_id = ?1').bind(xId),
         DB.prepare("UPDATE comments SET status = 'hidden', hidden_by = 'ban' WHERE x_id = ?1 AND status = 'visible'").bind(xId),
+        DB.prepare('DELETE FROM sessions WHERE x_id = ?1').bind(xId),   // M4: ban signs the user out everywhere
       ]);
     } else if (action === 'unban') {
       await DB.batch([

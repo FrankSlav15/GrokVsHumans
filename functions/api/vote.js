@@ -1,6 +1,6 @@
 // POST /api/vote  {"id":"21","choice":"grok"|"human"}
 // Signed-in X users only; one vote per user per battle (changing it is allowed).
-import { getSessionUser, checkOrigin, getBattleIds, voteTotals, json, now } from '../../server/lib.js';
+import { getSessionUser, checkOrigin, getBattleIds, voteTotals, json, now, limitWrite } from '../../server/lib.js';
 
 export async function onRequestPost({ request, env }) {
   if (!checkOrigin(request)) return json({ error: 'bad_origin' }, 403);
@@ -9,6 +9,8 @@ export async function onRequestPost({ request, env }) {
   const user = await getSessionUser(env, request);
   if (!user) return json({ error: 'sign_in_required' }, 401);
   if (user.banned) return json({ error: 'banned' }, 403);
+  const limited = await limitWrite(env, request, user, 'vote');
+  if (limited) return limited;
 
   let body;
   try { body = await request.json(); } catch { return json({ error: 'bad_json' }, 400); }
