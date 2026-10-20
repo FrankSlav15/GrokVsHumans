@@ -322,7 +322,7 @@ async function runJob(env) {
       const out = JSON.parse(job.result || '{}'); let calls = 0, capped = false;
       while (calls < 5) {
         const { results } = await env.DB.prepare(`SELECT t.tweet_id FROM post_tweets t JOIN posts p ON p.id = t.post_id
-          WHERE p.status = 'pending' AND t.full_at IS NULL AND (length(t.text) BETWEEN 255 AND 300 OR t.text LIKE '%…') ORDER BY p.id DESC LIMIT 100`).all();
+          WHERE p.status IN ('pending','approved') AND t.full_at IS NULL AND (length(t.text) BETWEEN 255 AND 300 OR t.text LIKE '%…') ORDER BY p.id DESC LIMIT 100`).all();
         if (!results.length) break;
         const ids = results.map(r => r.tweet_id);
         const r = await xGet(env, b, '/tweets', { ids: ids.join(','), 'tweet.fields': 'note_tweet,attachments', expansions: 'attachments.media_keys', 'media.fields': MEDIA_FIELDS }, 'backfill', ids.length);
