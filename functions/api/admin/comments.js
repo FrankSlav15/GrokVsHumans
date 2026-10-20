@@ -1,7 +1,9 @@
-// GET /api/admin/comments?filter=reported|hidden|recent|banned   (ADMIN_X_IDS only)
+// GET /api/admin/comments?filter=auto|flagged|reported|hidden|recent|banned   (ADMIN_X_IDS only)
 import { json, requireAdmin } from '../../../server/lib.js';
 
 const FILTERS = {
+  auto: "c.hidden_by = 'auto' AND c.mod_reviewed = 0 ORDER BY c.created_at DESC",
+  flagged: "c.mod_state IN ('flagged','error') AND c.mod_reviewed = 0 ORDER BY c.mod_state = 'flagged' DESC, c.created_at DESC",
   reported: "c.report_count > 0 ORDER BY c.status = 'hidden' DESC, c.report_count DESC, c.created_at DESC",
   hidden: "c.status = 'hidden' ORDER BY c.created_at DESC",
   recent: '1 = 1 ORDER BY c.created_at DESC',
@@ -22,13 +24,15 @@ export async function onRequestGet({ request, env }) {
   const where = FILTERS[filter];
   if (!where) return json({ error: 'bad_filter' }, 400);
   const { results } = await env.DB.prepare(
-    `SELECT c.id, c.item_type, c.item_id, c.body, c.status, c.hidden_by, c.report_count, c.created_at,
+    `SELECT c.id, c.item_type, c.item_id, c.body, c.status, c.hidden_by, c.report_count, c.created_at, c.mod_state, c.mod_category, c.mod_reason, c.mod_reviewed,
             u.x_id, u.handle, u.name, u.banned,
             (SELECT GROUP_CONCAT(COALESCE(r.reason, ''), ' | ') FROM reports r WHERE r.comment_id = c.id) AS reasons
        FROM comments c JOIN users u ON u.x_id = c.x_id
       WHERE ${where} LIMIT 100`).all();
   const counts = await env.DB.prepare(
     `SELECT (SELECT COUNT(*) FROM comments WHERE report_count > 0) AS reported,
+            (SELECT COUNT(*) FROM comments WHERE hidden_by = 'auto' AND mod_reviewed = 0) AS auto,
+            (SELECT COUNT(*) FROM comments WHERE mod_state IN ('flagged','error') AND mod_reviewed = 0) AS flagged,
             (SELECT COUNT(*) FROM comments WHERE status = 'hidden') AS hidden,
             (SELECT COUNT(*) FROM comments) AS total,
             (SELECT COUNT(*) FROM users WHERE banned = 1) AS banned,

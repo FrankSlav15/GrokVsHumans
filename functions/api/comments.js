@@ -3,7 +3,7 @@
 import {
   json, now, getSessionUser, requireUser, readJsonPost, itemExists, ITEM_TYPES, reactionCounts, isAdmin, limitWrite,
 } from '../../server/lib.js';
-import { cleanComment, RATE_WINDOW, RATE_MAX } from '../../server/moderation.js';
+import { cleanComment, moderate, RATE_WINDOW, RATE_MAX } from '../../server/moderation.js';
 
 function shape(r, react, viewer) {
   return {
@@ -67,10 +67,14 @@ export async function onRequestPost({ request, env }) {
     .bind(user.x_id, t - RATE_WINDOW).first();
   if ((recent?.n || 0) >= RATE_MAX) return json({ error: 'rate_limited', retry_after: RATE_WINDOW }, 429);
 
+  // AI moderation (threats, doxxing, minors, spam only). Fails open: on model error the comment posts with a soft flag.
+  const m = await moderate(env, text, user);
+  const hide = m.state === 'hidden';
   const row = await env.DB.prepare(
-    `INSERT INTO comments (item_type, item_id, x_id, body, created_at) VALUES (?1, ?2, ?3, ?4, ?5)
+    `INSERT INTO comments (item_type, item_id, x_id, body, created_at, status, hidden_by, mod_state, mod_category, mod_reason)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
      RETURNING id, x_id, body, status, created_at`
-  ).bind(type, id, user.x_id, text, t).first();
+  ).bind(type, id, user.x_id, text, t, hide ? 'hidden' : 'visible', hide ? 'auto' : null, m.state, m.category, m.reason).first();
   return json({ ok: true, comment: shape({ ...row, handle: user.handle, name: user.name, avatar_url: user.avatar_url },
     { likes: 0, dislikes: 0, mine: 0 }, user) }, 201);
 }

@@ -5,7 +5,7 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const X_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
   const ERR = { sign_in_required: 'Sign in with X first.', banned: 'Your account cannot post or react.', rate_limited: 'Slow down: max 5 comments per 10 minutes.',
-    too_long: 'Comments are limited to 500 characters.', empty: 'Write something first.', too_many_links: 'Max 2 links per comment.', blocked_words: 'That comment contains words we do not allow.', own_comment: 'You cannot report your own comment.' };
+    too_long: 'Comments are limited to 500 characters.', empty: 'Write something first.', too_many_links: 'Max 2 links per comment.', own_comment: 'You cannot report your own comment.' };
 
   function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600); }
   window.mockToast = m => (toast(m), false);

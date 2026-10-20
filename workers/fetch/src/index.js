@@ -1,3 +1,4 @@
+import { digest, chicagoHour } from './digest.js';
 // gvh-fetch: discovers @grok reply threads on X, rebuilds the chain, stores them as *pending*
 // posts for the /admin/queue. Nothing is public until an admin approves it.
 //
@@ -427,6 +428,8 @@ async function runJob(env) {
 
 export default {
   async scheduled(event, env, ctx) {
+    // Daily moderation digest at 08:00 America/Chicago (13:00 UTC in CDT, 14:00 UTC in CST; the other run is a no-op).
+    if (event.cron === '0 13,14 * * *') { if (chicagoHour() === 8) console.log('digest', JSON.stringify(await digest(env))); return; }
     // Effective caps for the admin queue header (boost-aware).
     await env.DB.prepare("INSERT OR REPLACE INTO kv (k, v) VALUES ('caps', ?1)").bind(JSON.stringify({ day: boosted(env) ? Number(env.BOOST_DAILY_CAP_USD || 5) : Number(env.DAILY_CAP_USD || 1.5), month: Number(env.MONTHLY_CAP_USD || 45), boost_until: boosted(env) ? env.BOOST_UNTIL : null })).run().catch(() => {});
     API = env.X_API_BASE || API_DEFAULT;
@@ -460,6 +463,7 @@ export default {
     else if (o.stage === 'expand') result = await expand(env, b, Math.min(Number(o.max) || 3, 5), o.order);
     else if (o.stage === 'recheck') result = await recheck(env, b);
     else if (o.stage === 'usage') result = await usage(env, b);
+    else if (o.stage === 'digest') result = await digest(env, { send: o.send === true, force: o.force === true });   // default: dry run (store only)
     else result = { candidates: (await env.DB.prepare('SELECT state, COUNT(*) n FROM fetch_candidates GROUP BY state').all()).results,
       spend: await b.totals(), run_spent: await spentInRun(env, runId) };
     return Response.json({ runId, spent_this_call: b.spent, subrequests: b.sub, result });

@@ -1,5 +1,5 @@
 // POST /api/admin/action {kind: 'comment'|'user', id, action}   (ADMIN_X_IDS only)
-//   comment: hide | unhide | delete      user: ban | unban
+//   comment: hide | unhide (approve) | dismiss (clear flag, stays visible) | delete      user: ban | unban
 import { json, readJsonPost, requireAdmin, isAdmin } from '../../../server/lib.js';
 
 export async function onRequestPost({ request, env }) {
@@ -15,13 +15,15 @@ export async function onRequestPost({ request, env }) {
     if (!Number.isInteger(id) || id <= 0) return json({ error: 'bad_request' }, 400);
     if (!(await DB.prepare('SELECT 1 FROM comments WHERE id = ?1').bind(id).first())) return json({ error: 'not_found' }, 404);
     if (action === 'hide') {
-      await DB.prepare("UPDATE comments SET status = 'hidden', hidden_by = 'admin' WHERE id = ?1").bind(id).run();
+      await DB.prepare("UPDATE comments SET status = 'hidden', hidden_by = 'admin', mod_reviewed = 1 WHERE id = ?1").bind(id).run();
     } else if (action === 'unhide') {
       // Approving a comment clears its reports so it does not get auto-hidden again.
       await DB.batch([
         DB.prepare('DELETE FROM reports WHERE comment_id = ?1').bind(id),
-        DB.prepare("UPDATE comments SET status = 'visible', hidden_by = NULL, report_count = 0 WHERE id = ?1").bind(id),
+        DB.prepare("UPDATE comments SET status = 'visible', hidden_by = NULL, report_count = 0, mod_reviewed = 1 WHERE id = ?1").bind(id),
       ]);
+    } else if (action === 'dismiss') {
+      await DB.prepare('UPDATE comments SET mod_reviewed = 1 WHERE id = ?1').bind(id).run();
     } else if (action === 'delete') {
       await DB.batch([
         DB.prepare("DELETE FROM reactions WHERE target_type = 'comment' AND target_id = ?1").bind(String(id)),

@@ -9,7 +9,6 @@
     too_long: 'Comments are limited to 500 characters.',
     empty: 'Write something first.',
     too_many_links: 'Max 2 links per comment.',
-    blocked_words: 'That comment contains words we do not allow.',
     own_comment: 'You cannot report your own comment.',
   };
 
