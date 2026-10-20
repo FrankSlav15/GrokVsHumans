@@ -1,5 +1,6 @@
 // GET /admin/featured - user suggestions, paid featured requests and the payments ledger. Admins only.
 import { getSessionUser, isAdmin } from '../../server/lib.js';
+import { NAV_CSS, navHtml } from '../../server/adminnav.js';
 
 const HEADERS = {
   'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow',
@@ -18,9 +19,9 @@ main{padding:.8rem;max-width:720px;margin:0 auto}.card{background:#18181b;border
 .note{white-space:pre-wrap;word-break:break-word;margin:.3rem 0 .5rem}.acts{display:flex;flex-wrap:wrap;gap:.45rem}.empty{color:#a1a1aa;text-align:center;padding:2rem}
 table{width:100%;border-collapse:collapse;font-size:.8rem}td,th{border-bottom:1px solid #27272a;padding:.4rem .3rem;text-align:left;vertical-align:top}
 .toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#18181b;border:1px solid #a855f7;padding:.6rem 1rem;border-radius:1rem;display:none;z-index:9}`;
-const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Suggestions & featured · Grok vs. Humans</title><style>${CSS}</style></head><body>${b}</body></html>`;
+const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Suggestions & featured · Grok vs. Humans</title><style>${CSS}${NAV_CSS}</style></head><body>${b}</body></html>`;
 
-const APP = `<header><h1>Suggestions &amp; featured <a href="/admin/queue" style="font-size:.8rem;margin-left:.5rem">queue</a> <a href="/admin" style="font-size:.8rem;margin-left:.5rem">comments</a></h1>
+const APP = `<header>${navHtml('featured')}<h1>Suggestions &amp; featured</h1>
 <div class="row" id="tabs"></div><div class="row" id="sub"></div><div class="stats" id="stats"></div></header><main id="list"><div class="empty">Loading…</div></main><div class="toast" id="toast"></div>
 <script>
 const TABS=[['suggestions','💡 Suggestions'],['features','⭐ Featured'],['payments','💵 Payments']];
@@ -56,6 +57,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(
  if(a.dataset.s){if(a.dataset.s==='reject'&&!confirm('Reject this suggestion?'))return;return post('/api/admin/suggestions',{id,action:a.dataset.s});}
  const act=a.dataset.f;if(act==='reject'&&!confirm('Reject this featured request? If it was paid it will be marked "refund needed".'))return;
  post('/api/admin/features',{id,action:act,note:act==='reject'?prompt('Reason (optional, shown only here)')||undefined:undefined});});
+addEventListener('hashchange',()=>{const [t,u]=(location.hash.slice(1)||'suggestions').split(':');if(t!==tab||u!==sub){tab=t;sub=u;load();}});
 load();
 </script>`;
 

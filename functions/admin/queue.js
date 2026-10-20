@@ -1,6 +1,7 @@
 // GET /admin/queue - approval queue for fetched posts. Admins (ADMIN_X_IDS) only;
 // signed out -> sign-in page (401), signed in non-admin -> 404. Data via /api/admin/queue.
 import { getSessionUser, isAdmin } from '../../server/lib.js';
+import { NAV_CSS, navHtml } from '../../server/adminnav.js';
 
 const HEADERS = {
   'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow',
@@ -21,9 +22,9 @@ input.h{width:100%;font:inherit;font-weight:600;background:#09090b;color:#fff;bo
 .tops{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}.tops button{padding:.3rem .7rem;font-size:.82rem}.tops button.sug{border-style:dashed}
 .acts{display:flex;flex-wrap:wrap;gap:.45rem}.empty{color:#a1a1aa;text-align:center;padding:2rem}
 .toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#18181b;border:1px solid #a855f7;padding:.6rem 1rem;border-radius:1rem;display:none;z-index:9}`;
-const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Queue · Grok vs. Humans</title><style>${CSS}</style></head><body>${b}</body></html>`;
+const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Queue · Grok vs. Humans</title><style>${CSS}${NAV_CSS}</style></head><body>${b}</body></html>`;
 
-const APP = `<header><h1>Approval queue <a href="/" style="font-size:.8rem;margin-left:.5rem">site</a> <a href="/admin" style="font-size:.8rem;margin-left:.5rem">comments</a> <a href="/admin/featured" style="font-size:.8rem;margin-left:.5rem">suggestions &amp; featured</a></h1>
+const APP = `<header>${navHtml('queue')}<h1>Approval queue</h1>
 <div class="row" id="tabs"></div><div class="stats" id="stats"></div></header><main id="list"><div class="empty">Loading…</div></main><div class="toast" id="toast"></div>
 <script>
 const TABS=[['pending','Pending'],['approved','Approved'],['skipped','Skipped'],['blocked','Never'],['hidden','Hidden']];

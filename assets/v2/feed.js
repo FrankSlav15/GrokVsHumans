@@ -21,8 +21,10 @@
   function renderAuth() {
     const u = S.user;
     $('#auth').innerHTML = u
-      ? `${u.admin ? '<a class="queue" href="/admin/queue" aria-label="Moderation queue"><i class="fa-solid fa-inbox" aria-hidden="true"></i><span class="queue__l">Queue</span></a>' : ''}<button class="me" id="me" title="Sign out" aria-label="Signed in as @${esc(u.handle)}. Sign out"><img src="${esc(u.avatar)}" alt="" referrerpolicy="no-referrer"><span class="me__h">@${esc(u.handle)}</span><span class="me__x">${X_SVG}</span></button>`
+      ? `${u.admin ? '<a class="queue" href="/admin/queue" aria-label="Admin: post queue"><i class="fa-solid fa-inbox" aria-hidden="true"></i><span class="queue__l">Admin</span><b class="queue__n" id="qn" hidden></b></a>' : ''}<button class="me" id="me" title="Sign out" aria-label="Signed in as @${esc(u.handle)}. Sign out"><img src="${esc(u.avatar)}" alt="" referrerpolicy="no-referrer"><span class="me__h">@${esc(u.handle)}</span><span class="me__x">${X_SVG}</span></button>`
       : `<button class="btn-x" id="signin">${X_SVG} Sign in with X</button>`;
+    if (u?.admin) fetch('/api/admin/counts', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => { const n = d ? d.queue + d.moderation + d.featured : 0, b = $('#qn');
+      if (b && n > 0) { b.textContent = n > 99 ? '99+' : n; b.hidden = false; b.parentNode.setAttribute('aria-label', `Admin: ${n} items need attention`); } }).catch(() => {});
     $('#signin') && ($('#signin').onclick = () => signIn());
     $('#me') && ($('#me').onclick = async () => { if (!confirm('Sign out?')) return; await post('/auth/logout', {}); S.user = null; renderAuth(); load(); });
   }

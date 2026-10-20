@@ -2,6 +2,7 @@
 // a sign-in prompt (signed out) or a plain 404 (signed in, not admin).
 // All data comes from /api/admin/*, which check admin rights again on every call.
 import { getSessionUser, isAdmin } from '../server/lib.js';
+import { NAV_CSS, navHtml } from '../server/adminnav.js';
 
 const HEADERS = {
   'Content-Type': 'text/html; charset=utf-8',
@@ -28,11 +29,11 @@ main{padding:1rem;max-width:760px;margin:0 auto}.card{background:#18181b;border:
 
 function page(body) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Admin - GrokVsHumans</title><style>${STYLE}</style></head><body>${body}</body></html>`;
+<meta name="robots" content="noindex,nofollow"><title>Admin - GrokVsHumans</title><style>${STYLE}${NAV_CSS}</style></head><body>${body}</body></html>`;
 }
 
 const APP = `
-<header><h1>GrokVsHumans moderation</h1>
+<header>${navHtml('moderation')}<h1>GrokVsHumans moderation</h1>
 <div class="tabs" id="tabs"></div><div class="stats" id="stats"></div></header>
 <main id="list"><div class="empty">Loading…</div></main><div class="toast" id="toast"></div>
 <script>
