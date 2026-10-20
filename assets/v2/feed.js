@@ -21,12 +21,16 @@
   function renderAuth() {
     const u = S.user;
     $('#auth').innerHTML = u
-      ? `<button class="me" id="me" title="Sign out"><img src="${esc(u.avatar)}" alt="" referrerpolicy="no-referrer">@${esc(u.handle)}</button>${u.admin ? '<a class="me" href="/admin/queue" style="margin-left:.35rem">Queue</a>' : ''}`
+      ? `${u.admin ? '<a class="queue" href="/admin/queue" aria-label="Moderation queue"><i class="fa-solid fa-inbox" aria-hidden="true"></i><span class="queue__l">Queue</span></a>' : ''}<button class="me" id="me" title="Sign out" aria-label="Signed in as @${esc(u.handle)}. Sign out"><img src="${esc(u.avatar)}" alt="" referrerpolicy="no-referrer"><span class="me__h">@${esc(u.handle)}</span><span class="me__x">${X_SVG}</span></button>`
       : `<button class="btn-x" id="signin">${X_SVG} Sign in with X</button>`;
     $('#signin') && ($('#signin').onclick = () => signIn());
     $('#me') && ($('#me').onclick = async () => { if (!confirm('Sign out?')) return; await post('/auth/logout', {}); S.user = null; renderAuth(); load(); });
   }
-  const renderChips = () => { $('#chips').innerHTML = ['All', ...S.topics].map(t => `<button class="chip ${t === S.topic ? 'is-on' : ''}" data-topic="${esc(t)}">${esc(t)}</button>`).join(''); };
+  const TOPIC = { All: ['✨', 270], Politics: ['🏛️', 0], Technology: ['💻', 200], Memology: ['🐸', 120], Sports: ['⚽', 30], 'Pop Culture': ['🎬', 320], 'Life Advice': ['🧭', 170],
+    History: ['📜', 40], Science: ['🔬', 190], Money: ['💸', 140], Health: ['🩺', 350], Religion: ['🕊️', 50], Philosophy: ['🤔', 260], AI: ['🤖', 280], Space: ['🚀', 230],
+    Gaming: ['🎮', 300], Food: ['🍕', 20], Animals: ['🐾', 90], 'Wild Card': ['🃏', 330] };
+  const renderChips = () => { $('#chips').innerHTML = ['All', ...S.topics].map(t => { const [e, h] = TOPIC[t] || ['#', 270];
+    return `<button class="chip ${t === S.topic ? 'is-on' : ''}" style="--h:${h}" data-topic="${esc(t)}" aria-pressed="${t === S.topic}"><span class="chip__e" aria-hidden="true">${e}</span>${esc(t)}</button>`; }).join(''); };
 
   // Native rendering of each turn from the paid X API data (X display requirements: name, @handle, avatar,
   // X logo, timestamp linking to the post, unaltered text with only mentions/hashtags/URLs linked, API media).
