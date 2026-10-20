@@ -1,6 +1,5 @@
 // Grok vs. Humans v2 feed. Data: /api/feed (approved posts only). Actions need Sign in with X.
 (function () {
-  const VISIBLE = 4;                       // turns shown before "Show full thread (N)"
   const S = { view: 'hot', topic: 'All', hof: 'all', posts: [], topics: [], user: null, open: new Set(), sheet: null };
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -29,30 +28,34 @@
   }
   const renderChips = () => { $('#chips').innerHTML = ['All', ...S.topics].map(t => `<button class="chip ${t === S.topic ? 'is-on' : ''}" data-topic="${esc(t)}">${esc(t)}</button>`).join(''); };
 
-  // Official X embeds (blockquote.twitter-tweet + widgets.js), one per turn of the exchange.
-  // widgets.js is loaded lazily, the first time a post scrolls near the viewport.
-  function embed(w) {
-    const url = `https://twitter.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`;
-    return `<div class="emb ${w.grok ? 'emb--grok' : 'emb--human'}"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-conversation="none" data-width="550">
-      <p lang="en" dir="ltr">${esc(w.text)}</p>&mdash; @${esc(w.handle)} <a href="${url}">${w.created_at ? new Date(w.created_at * 1000).toLocaleDateString() : 'View on X'}</a></blockquote></div>`;
+  // Native rendering of each turn from the paid X API data (X display requirements: name, @handle, avatar,
+  // X logo, timestamp linking to the post, unaltered text with only mentions/hashtags/URLs linked, API media).
+  const linkX = s => esc(s)
+    .replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener noreferrer nofollow">${u.replace(/^https?:\/\//, '').slice(0, 40)}${u.length > 48 ? '…' : ''}</a>`)
+    .replace(/(^|[^\w/])@(\w{1,15})\b/g, (m, pre, h) => `${pre}<a href="https://x.com/${h}" target="_blank" rel="noopener noreferrer">@${h}</a>`)
+    .replace(/(^|[^\w&/])#(\w{1,80})/g, (m, pre, h) => `${pre}<a href="https://x.com/hashtag/${encodeURIComponent(h)}" target="_blank" rel="noopener noreferrer">#${h}</a>`);
+  const stamp = sec => sec ? new Date(sec * 1000).toLocaleString(undefined, { hour: 'numeric', minute: '2-digit', month: 'short', day: 'numeric', year: 'numeric' }) : 'View post';
+  function media(m) {
+    return (m || []).map(x => x.video
+      ? `<video class="tw__m" src="${esc(x.video)}" ${x.url ? `poster="${esc(x.url)}"` : ''} controls preload="none" playsinline></video>`
+      : x.url ? `<img class="tw__m" src="${esc(x.url)}" alt="${esc(x.alt || '')}" loading="lazy" referrerpolicy="no-referrer">` : '').join('');
   }
-  function thread(p) {
-    const tw = p.tweets, open = S.open.has(p.id) || tw.length <= VISIBLE + 1;
-    const shown = open ? tw : tw.slice(0, VISIBLE);
-    return `<div class="ex">${shown.map(embed).join('')}</div>` +
-      (tw.length > VISIBLE + 1 ? `<button class="thread-more" data-act="thread">${open ? 'Show less' : `Show full thread (${tw.length})`}</button>` : '');
+  function turn(w) {
+    const url = `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`;
+    return `<div class="tw ${w.grok ? 'tw--grok' : 'tw--human'}">
+      <div class="tw__h">
+        <a href="https://x.com/${encodeURIComponent(w.handle)}" target="_blank" rel="noopener noreferrer" class="tw__who">
+          <img class="tw__av" src="${esc(w.avatar || '')}" alt="" loading="lazy" referrerpolicy="no-referrer">
+          <span class="tw__n">${esc(w.name || w.handle)}${w.verified ? ' <i class="fa-solid fa-circle-check tw__v" aria-label="verified"></i>' : ''}</span>
+          <span class="tw__u">@${esc(w.handle)}</span></a>
+        <a href="${url}" target="_blank" rel="noopener noreferrer" class="tw__x" aria-label="View on X">${X_SVG}</a>
+      </div>
+      <p class="tw__t">${linkX(w.text)}</p>${media(w.media)}
+      <a class="tw__time" href="${url}" target="_blank" rel="noopener noreferrer">${esc(stamp(w.created_at))}</a>
+    </div>`;
   }
-  let wjs = null;
-  function widgets() {
-    if (!wjs) wjs = new Promise(res => { const s = document.createElement('script'); s.src = 'https://platform.twitter.com/widgets.js'; s.async = true; s.charset = 'utf-8';
-      s.onload = () => (window.twttr && twttr.ready ? twttr.ready(() => res(window.twttr)) : res(window.twttr)); s.onerror = () => res(null); document.head.appendChild(s); });
-    return wjs;
-  }
-  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return; io.unobserve(e.target); hydrate(e.target);
-  }), { rootMargin: '800px 0px' }) : null;
-  async function hydrate(el) { const t = await widgets(); if (t && t.widgets && el.isConnected) t.widgets.load(el); }
-  function watch(root) { (root.matches?.('.post') ? [root] : root.querySelectorAll('.post')).forEach(el => io ? io.observe(el) : hydrate(el)); }
+  const thread = p => `<div class="ex">${p.tweets.map(turn).join('')}</div>`;
+  const watch = () => {};
   function card(p, rank) {
     const t = p.votes.grok + p.votes.human, gp = t ? Math.round(p.votes.grok / t * 100) : 50;
     return `<article class="post" data-id="${p.id}" id="p${p.id}">
@@ -159,8 +162,7 @@
     const hof = e.target.closest('[data-hof]'); if (hof) return setState({ hof: hof.dataset.hof });
     const a = e.target.closest('[data-act]'); if (!a) return;
     const el = a.closest('.post'), p = S.posts.find(x => x.id === el?.dataset.id), act = a.dataset.act;
-        if (act === 'thread') { S.open.has(p.id) ? S.open.delete(p.id) : S.open.add(p.id); rerender(p, true); if (!S.open.has(p.id)) document.getElementById('p' + p.id).scrollIntoView({ block: 'nearest' }); return; }
-    if (act === 'comments') return openSheet(p);
+        if (act === 'comments') return openSheet(p);
     if (act === 'share') {
       const url = location.origin + '/#p' + p.id;
       if (navigator.share) return navigator.share({ title: p.headline || 'Grok vs. Humans', text: 'Who won? Vote:', url }).catch(() => {});

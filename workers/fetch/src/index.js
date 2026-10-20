@@ -117,13 +117,19 @@ async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = n
 
 // X API v2 tweet -> our chain row. users: id -> user object from includes.users.
 const USER_FIELDS = 'username,name,profile_image_url,verified';
-const LOOKUP_FIELDS = 'created_at,conversation_id,referenced_tweets,author_id,in_reply_to_user_id,note_tweet';
-function fromApi(t, users) {
+const LOOKUP_FIELDS = 'created_at,conversation_id,referenced_tweets,author_id,in_reply_to_user_id,note_tweet,attachments';
+const MEDIA_FIELDS = 'type,url,preview_image_url,variants,width,height,alt_text';
+const mediaMap = j => Object.fromEntries((j.includes?.media || []).map(m => [m.media_key, m]));
+// Media exactly as the API returns it: photos (url), videos/GIFs (preview + best mp4 variant).
+const apiMedia = (t, media) => (t.attachments?.media_keys || []).map(k => media[k]).filter(Boolean).map(m => ({
+  type: m.type, url: m.url || m.preview_image_url || null, alt: m.alt_text || null,
+  video: m.type === 'photo' ? null : ((m.variants || []).filter(v => v.content_type === 'video/mp4').sort((a, b) => (b.bit_rate || 0) - (a.bit_rate || 0))[0]?.url || null) }));
+function fromApi(t, users, media = {}) {
   const u = users[t.author_id] || {};
   return {
     tweet_id: t.id, author_id: t.author_id || null, author_handle: u.username || (t.author_id === GROK_ID ? 'grok' : '?'),
     author_name: u.name || null, author_avatar: u.profile_image_url ? u.profile_image_url.replace('_normal.', '_bigger.') : null,
-    verified: u.verified ? 1 : 0, text: cleanText(t.note_tweet?.text || t.text || ''), media: [],
+    verified: u.verified ? 1 : 0, text: cleanText(t.note_tweet?.text || t.text || ''), media: apiMedia(t, media),
     created_at: t.created_at ? Math.floor(Date.parse(t.created_at) / 1000) : null,
     parent: (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id || null,
     conversation_id: t.conversation_id || null,
@@ -132,30 +138,33 @@ function fromApi(t, users) {
 // Paid lookup of up to N ids plus the posts they reply to (one level) and all authors. Returns Map id -> row.
 async function lookup(env, b, ids, kind) {
   const r = await xGet(env, b, '/tweets', {
-    ids: ids.join(','), 'tweet.fields': LOOKUP_FIELDS, expansions: 'author_id,referenced_tweets.id,referenced_tweets.id.author_id', 'user.fields': USER_FIELDS,
+    ids: ids.join(','), 'tweet.fields': LOOKUP_FIELDS, expansions: 'author_id,referenced_tweets.id,referenced_tweets.id.author_id,attachments.media_keys', 'user.fields': USER_FIELDS, 'media.fields': MEDIA_FIELDS,
   }, kind, ids.length * 2 + ids.length * 4);   // estimate: posts + parents, users at 2x post price
   if (r.capped) return { capped: r.capped };
   const out = new Map();
   if (!r.ok) return { rows: out };
   const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
-  for (const t of [...(r.json.data || []), ...(r.json.includes?.tweets || [])]) out.set(t.id, fromApi(t, users));
+  const media = mediaMap(r.json);
+  for (const t of [...(r.json.data || []), ...(r.json.includes?.tweets || [])]) out.set(t.id, fromApi(t, users, media));
   return { rows: out };
 }
 
 // Stage 2: rebuild the chain of one candidate, all via the paid X API: upward with tweet lookups
 // (each call returns a post and its parent), downward with one conversation search limited to the participants.
 // Paid conversation search restricted to the participants (both directions in one go), paginated.
-async function conversation(env, b, conv, froms, pages = 2) {
+async function conversation(env, b, conv, froms, pages = 1) {
   const map = new Map(); let token = null;
   for (let i = 0; i < pages; i++) {
-    const params = { query: `conversation_id:${conv} (${froms.map(f => 'from:' + f).join(' OR ')})`, max_results: '100',
-      'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet,public_metrics', expansions: 'author_id', 'user.fields': USER_FIELDS };
+    // only the human(s) and Grok's replies *to them* (a viral conversation can hold hundreds of other Grok replies)
+    const hs = froms.filter(f => f !== 'grok');
+    const params = { query: `conversation_id:${conv} (${hs.map(h => `from:${h} OR (from:grok to:${h})`).join(' OR ')})`, max_results: '100',
+      'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet,public_metrics,attachments', expansions: 'author_id,attachments.media_keys', 'user.fields': USER_FIELDS, 'media.fields': MEDIA_FIELDS };
     if (token) params.next_token = token;
-    const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', 40);
+    const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', 60);
     if (r.capped) return { capped: r.capped, map };
     if (!r.ok) break;
-    const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
-    for (const t of r.json.data || []) map.set(t.id, fromApi(t, users));
+    const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u])), media = mediaMap(r.json);
+    for (const t of r.json.data || []) map.set(t.id, fromApi(t, users, media));
     token = r.json.meta?.next_token; if (!token) break;
   }
   return { map };
@@ -291,6 +300,35 @@ async function runJob(env) {
   const b = new Budget(env, runId, { runCap: Math.max(0, job.budget - await spentInRun(env, runId)) });
   const log = async (state, extra) => { const r = { ...(JSON.parse(job.result || '{}')), ...extra }; await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, state, JSON.stringify(r)).run(); };
   if (job.state === 'new') {
+    if (job.kind === 'pick' && spec.backfill) {
+      // Full text (note_tweet) + media for stored turns that may be truncated; 100 ids per paid call, no user objects.
+      const out = JSON.parse(job.result || '{}'); let calls = 0, capped = false;
+      while (calls < 5) {
+        const { results } = await env.DB.prepare(`SELECT t.tweet_id FROM post_tweets t JOIN posts p ON p.id = t.post_id
+          WHERE p.status = 'pending' AND t.full_at IS NULL AND (length(t.text) BETWEEN 255 AND 300 OR t.text LIKE '%…') ORDER BY p.id DESC LIMIT 100`).all();
+        if (!results.length) break;
+        const ids = results.map(r => r.tweet_id);
+        const r = await xGet(env, b, '/tweets', { ids: ids.join(','), 'tweet.fields': 'note_tweet,attachments', expansions: 'attachments.media_keys', 'media.fields': MEDIA_FIELDS }, 'backfill', ids.length);
+        calls++;
+        if (r.capped) { capped = true; break; }
+        if (!r.ok) break;
+        const media = mediaMap(r.json), got = new Map((r.json.data || []).map(t => [t.id, t])), t0 = now(), st = [];
+        for (const id of ids) {
+          const t = got.get(id);
+          if (!t) { st.push(env.DB.prepare('UPDATE post_tweets SET full_at = ?2 WHERE tweet_id = ?1').bind(id, -t0)); continue; }   // gone: the daily check handles removal
+          const m = apiMedia(t, media);
+          st.push(env.DB.prepare(`UPDATE post_tweets SET text = ?2, media_json = CASE WHEN ?3 = '[]' THEN media_json ELSE ?3 END, full_at = ?4 WHERE tweet_id = ?1`)
+            .bind(id, cleanText(t.note_tweet?.text || t.text || ''), JSON.stringify(m), t0));
+          if (t.note_tweet) out.long = (out.long || 0) + 1;
+        }
+        for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));
+        out.updated = (out.updated || 0) + got.size;
+      }
+      const left = (await env.DB.prepare(`SELECT COUNT(*) n FROM post_tweets t JOIN posts p ON p.id = t.post_id WHERE p.status='pending' AND t.full_at IS NULL AND (length(t.text) BETWEEN 255 AND 300 OR t.text LIKE '%…')`).first()).n;
+      out.left = left; out.spent = await spentInRun(env, runId);
+      await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, capped || !left ? 'done' : 'new', JSON.stringify(out)).run();
+      return { job: job.id, backfill: out };
+    }
     if (job.kind === 'pick' && spec.rebuild) {
       const out = JSON.parse(job.result || '{}'); const done = new Set(out.done || []); let capped = false;
       for (const id of spec.rebuild) {
