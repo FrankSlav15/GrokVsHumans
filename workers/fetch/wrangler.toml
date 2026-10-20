@@ -9,7 +9,7 @@ workers_dev = true
 
 [vars]
 DAILY_CAP_USD = "1.50"
-MONTHLY_CAP_USD = "41"         # temporary: keeps ~$4 of the X prepaid credit in reserve (402 also stops runs)
+MONTHLY_CAP_USD = "45"
 BOOST_UNTIL = "2026-10-26"       # initial fill: $5/day, 100 results/run, 60 expansions/day; auto-reverts after this UTC date
 BOOST_DAILY_CAP_USD = "5"
 BOOST_EXPAND_PER_DAY = "60"
