@@ -316,6 +316,49 @@ async function usage(env, b) {
   return j;
 }
 
+// User suggestions approved in /admin/featured (state 'queued'): resolve the linked post to the Grok reply of its
+// exchange, build the chain like any candidate (same Budget = same X spend caps), store a pending post "suggested by".
+async function runSuggestions(env, b, max = 2) {
+  const { results } = await env.DB.prepare(`SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE s.state = 'queued' ORDER BY s.id LIMIT ?1`).bind(max).all();
+  const out = [];
+  for (const s of results) {
+    if (b.sub > SUB_BUDGET - 10) break;
+    const res = await suggestionOne(env, b, s).catch(e => ({ state: 'failed', result: 'error:' + String(e.message || e).slice(0, 60) }));
+    if (res.state === 'queued') { out.push({ id: s.id, capped: res.result }); break; }   // spend cap: try again on a later tick
+    const t = now();
+    await env.DB.prepare('UPDATE suggestions SET state = ?2, result = ?3, post_id = COALESCE(?4, post_id), updated_at = ?5 WHERE id = ?1').bind(s.id, res.state, res.result || null, res.post_id || null, t).run();
+    if (res.post_id) await env.DB.prepare("UPDATE feature_requests SET post_id = ?2, updated_at = ?3 WHERE suggestion_id = ?1 AND post_id IS NULL").bind(s.id, res.post_id, t).run();
+    out.push({ id: s.id, ...res });
+  }
+  return out;
+}
+async function suggestionOne(env, b, s) {
+  const first = await lookup(env, b, [s.tweet_id], 'suggest');
+  if (first.capped) return { state: 'queued', result: 'capped:' + first.capped };
+  const w = first.rows.get(s.tweet_id);
+  if (!w) return { state: 'failed', result: 'post not found (deleted, private or not visible to the API)' };
+  let grok = null, conv = w.conversation_id;
+  if (w.author_id === GROK_ID) grok = w.tweet_id;
+  else if (w.parent && first.rows.get(w.parent)?.author_id === GROK_ID) grok = w.parent;
+  else if (conv) {   // a human post: find Grok's reply to it (recent search covers the last 7 days)
+    const r = await conversation(env, b, conv, ['grok', w.author_handle]);
+    if (r.capped && !r.map.size) return { state: 'queued', result: 'capped:' + r.capped };
+    const g = [...r.map.values()].filter(x => x.author_id === GROK_ID).sort((a, c) => (BigInt(a.tweet_id) < BigInt(c.tweet_id) ? -1 : 1));
+    grok = (g.find(x => x.parent === w.tweet_id) || g[0])?.tweet_id || null;
+  }
+  if (!grok) return { state: 'failed', result: 'no Grok reply found in this thread' };
+  const dup = await env.DB.prepare('SELECT id FROM posts WHERE grok_tweet_id = ?1 OR (conversation_id IS NOT NULL AND conversation_id = ?2) LIMIT 1').bind(grok, conv || '').first();
+  if (dup) return { state: 'duplicate', result: 'already on the site', post_id: dup.id };
+  const res = await expandOne(env, b, { grok_tweet_id: grok, conversation_id: conv, engagement: 0,
+    payload: JSON.stringify({ source: 'manual', replier_id: w.author_id !== GROK_ID ? w.author_id : null, annotations: [] }) });
+  if (String(res).startsWith('capped')) return { state: 'queued', result: res };
+  if (!String(res).startsWith('stored')) return { state: res === 'dup_conv' || res === 'duplicate' ? 'duplicate' : 'failed', result: res };
+  const p = await env.DB.prepare('SELECT id FROM posts WHERE grok_tweet_id = ?1').bind(grok).first();
+  await env.DB.prepare('UPDATE posts SET suggested_by_x_id = ?2, suggested_by_handle = ?3 WHERE id = ?1').bind(p.id, s.x_id, s.handle).run();
+  return { state: 'fetched', result: res, post_id: p.id };
+}
+// Paid featured spots end automatically (the feed also checks ends_at, this just records the state).
+const expireFeatures = env => env.DB.prepare("UPDATE feature_requests SET state = 'expired', updated_at = ?1 WHERE state = 'active' AND ends_at <= ?1").bind(now()).run().catch(() => {});
 // Admin-queued jobs (table fetch_jobs), run by the */10 cron with their own budget (run id job-<id>):
 //   kind 'pick':   spec {items:[{grok, conv, topics?, low_priority?}]}  -> rebuild these chains as pending posts
 //   kind 'search': spec {queries:[...], max:N}  -> recent search, rank by engagement + depth, expand the best N
@@ -438,6 +481,8 @@ export default {
       if (!env.X_BEARER_TOKEN) return;
       await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
     } else {
+      await expireFeatures(env);
+      if (env.X_BEARER_TOKEN && (await runSuggestions(env, b).catch(e => (console.log('suggest error', String(e)), []))).length) return;
       if (env.X_BEARER_TOKEN && await runJob(env).catch(e => (console.log('job error', String(e)), null))) return;   // a job tick uses this invocation's subrequests
       const lim = boosted(env) ? Number(env.BOOST_EXPAND_PER_DAY || 60) : Number(env.EXPAND_PER_DAY || 20);
       const done = (await env.DB.prepare("SELECT COUNT(*) n FROM fetch_log WHERE kind='expand' AND day=?1 AND run_id LIKE 'cron-%'").bind(ymd()).first()).n;
@@ -463,6 +508,7 @@ export default {
     else if (o.stage === 'expand') result = await expand(env, b, Math.min(Number(o.max) || 3, 5), o.order);
     else if (o.stage === 'recheck') result = await recheck(env, b);
     else if (o.stage === 'usage') result = await usage(env, b);
+    else if (o.stage === 'suggest') result = await runSuggestions(env, b, Math.min(Number(o.max) || 2, 5));
     else if (o.stage === 'digest') result = await digest(env, { send: o.send === true, force: o.force === true });   // default: dry run (store only)
     else result = { candidates: (await env.DB.prepare('SELECT state, COUNT(*) n FROM fetch_candidates GROUP BY state').all()).results,
       spend: await b.totals(), run_spent: await spentInRun(env, runId) };

@@ -16,6 +16,8 @@ export const ADMIN_SESSION_TTL = 60 * 60 * 24;  // admin sessions: max 24 h from
 export const MIN_AGE_WRITE = 3 * 86400;     // votes, reactions, comments
 export const MIN_AGE_REPORT = 30 * 86400;   // a report only counts towards auto-hide from accounts this old
 export const LIMITS = {
+  suggest: { max: 10, win: 3600 },  // burst guard; the daily cap lives in server/config.js
+  feature: { max: 10, win: 3600 },
   login:   { max: 20,  win: 600 },   // per IP
   vote:    { max: 120, win: 600 },   // per user (and 4x per IP)
   react:   { max: 120, win: 600 },

@@ -4,3 +4,7 @@
 /impressum         /imprint    301
 /datenschutz.html  /privacy    301
 /datenschutz       /privacy    301
+
+# Old Formspree submit form -> in-site "Suggest a thread"
+/submit.html  /?suggest=1  301
+/submit       /?suggest=1  301

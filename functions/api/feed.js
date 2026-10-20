@@ -5,6 +5,7 @@
 // viewer's own state are then loaded only for the posts on the page. Anonymous responses are edge-cached.
 import { json, getSessionUser, getCookie, SESSION_COOKIE, now } from '../../server/lib.js';
 import { TOPICS, engagement, hotScore } from '../../server/v2.js';
+import { MAX_ACTIVE_FEATURED } from '../../server/config.js';
 
 const VIEWS = ['hot', 'new', 'top', 'hall', 'grok', 'human'];
 // Wilson lower bound (95%) of the leading side's share: rewards both margin and vote volume (1-0 ~0.21, 40-10 ~0.67).
@@ -42,7 +43,7 @@ async function build({ request, env }) {
 
   // 1) candidates + aggregates in one bounded query
   const minApproved = view === 'hall' && range === 'week' ? t - 7 * 86400 : 0;
-  const { results: cand } = await env.DB.prepare(
+  const candStmt = env.DB.prepare(
     `WITH c AS (
        SELECT p.id, p.headline, p.featured, p.approved_at, p.tweet_created_at, p.grok_tweet_id FROM posts p
         WHERE p.status = 'approved' AND p.approved_at >= ?4
@@ -57,7 +58,19 @@ async function build({ request, env }) {
        (SELECT SUM(value=-1) FROM reactions r WHERE r.target_type='post' AND r.target_id = CAST(c.id AS TEXT)) d,
        (SELECT COUNT(*) FROM comments m WHERE m.item_type='post' AND m.item_id = CAST(c.id AS TEXT) AND m.status='visible') n
      FROM c`
-  ).bind(topic || '', one || '', CANDIDATES, minApproved, t - 7 * 86400).all();
+  );
+  const { results: cand } = await candStmt.bind(topic || '', one || '', CANDIDATES, minApproved, t - 7 * 86400).all();
+  // Paid featured spots (owner-approved, unexpired): pinned on Hot, and on topic pages when pin_topics is set.
+  const promo = new Map();
+  if (view === 'hot' && !one) {
+    const { results: fr } = await env.DB.prepare(`SELECT f.post_id, MAX(f.ends_at) ends_at, MAX(f.pin_topics) pin_topics, MIN(f.starts_at) s FROM feature_requests f
+        JOIN posts p ON p.id = f.post_id AND p.status = 'approved' WHERE f.state = 'active' AND f.ends_at > ?1
+          AND (?2 = '' OR f.post_id IN (SELECT post_id FROM post_topics WHERE topic = ?2))
+        GROUP BY f.post_id ORDER BY s LIMIT ?3`).bind(t, topic || '', MAX_ACTIVE_FEATURED).all();
+    for (const r of fr) if (!topic || r.pin_topics) promo.set(String(r.post_id), r.ends_at);
+    const have = new Set(cand.map(c => String(c.id)));
+    for (const id of promo.keys()) if (!have.has(id)) { const x = await candStmt.bind(topic || '', id, 1, 0, t - 7 * 86400).all(); cand.push(...x.results); }
+  }
 
   let list = cand.map(p => ({
     id: String(p.id), headline: p.headline, featured: !!p.featured, approved_at: p.approved_at,
@@ -74,6 +87,9 @@ async function build({ request, env }) {
   else if (view === 'hall') list = list.filter(p => engagement(p) > 0 || p.featured)
     .sort((a, b) => engagement(b) - engagement(a) || b.featured - a.featured).slice(0, 10);
   else list.sort((a, b) => hotScore(b, t) - hotScore(a, t));
+  if (promo.size) { const ids = [...promo.keys()];
+    list = [...ids.map(id => list.find(p => p.id === id)).filter(Boolean), ...list.filter(p => !promo.has(p.id))];
+    for (const p of list) if (promo.has(p.id)) p.promoted = { until: promo.get(p.id) }; }
   const total = list.length;
   const page = list.slice(offset, offset + limit);
   const next = offset + page.length < total ? offset + page.length : null;
@@ -102,6 +118,6 @@ async function build({ request, env }) {
   // keep the previous field order for clients
   const posts = page.map(p => ({ id: p.id, headline: p.headline, featured: p.featured, approved_at: p.approved_at, created_at: p.created_at,
     url: p.url, topics: p.topics, tweets: p.tweets, votes: p.votes, week_votes: p.week_votes, likes: p.likes, dislikes: p.dislikes,
-    comments: p.comments, mine: p.mine }));
+    comments: p.comments, mine: p.mine, promoted: p.promoted || null }));
   return json({ view, range, topic, topics: TOPICS, signedIn: !!viewer, posts, total, offset, next });
 }

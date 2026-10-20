@@ -75,7 +75,8 @@
     io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) more(); }, { rootMargin: '800px 0px' }); io.observe(s); };
   function card(p, rank) {
     const t = p.votes.grok + p.votes.human, gp = t ? Math.round(p.votes.grok / t * 100) : 50;
-    return `<article class="post" data-id="${p.id}" id="p${p.id}">
+    return `<article class="post${p.promoted ? ' post--promo' : ''}" data-id="${p.id}" id="p${p.id}">
+      ${p.promoted ? `<div class="promo" title="Paid placement until ${esc(new Date(p.promoted.until * 1000).toLocaleString())}"><span class="promo__star" aria-hidden="true">⭐</span> Featured <span class="promo__paid">Paid placement</span></div>` : ''}
       <div class="post__top">
         ${rank ? `<span class="rank">#${rank}</span>` : ''}${p.featured ? '<span class="rank">★</span>' : ''}
         ${p.topics.map(x => `<button class="topic" data-topic="${esc(x)}">${esc(x)}</button>`).join('')}
@@ -92,6 +93,7 @@
         <button class="act ${p.mine.react === 1 ? 'is-like' : ''}" data-act="react" data-v="1" aria-label="Like"><i class="fa-solid fa-thumbs-up"></i>${p.likes}</button>
         <button class="act ${p.mine.react === -1 ? 'is-dislike' : ''}" data-act="react" data-v="-1" aria-label="Dislike"><i class="fa-solid fa-thumbs-down"></i>${p.dislikes}</button>
         <button class="act" data-act="comments" aria-label="Comments"><i class="fa-regular fa-comment"></i>${p.comments}</button>
+        <button class="act act--feat" data-act="feature" aria-label="Feature this thread"><i class="fa-solid fa-star"></i></button>
         <button class="act" data-act="share" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
       </div>
       <a class="xlink" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
@@ -203,6 +205,7 @@
     const el = a.closest('.post'), p = S.posts.find(x => x.id === el?.dataset.id), act = a.dataset.act;
     if (act === 'expand') { S.open.add(p.id); return rerender(p, true); }
         if (act === 'comments') return openSheet(p);
+    if (act === 'feature') return S.user ? openFeature(p) : needSignIn('feature a thread', location.pathname + '#p' + p.id);
     if (act === 'share') {
       const url = location.origin + '/#p' + p.id;
       if (navigator.share) return navigator.share({ title: p.headline || 'Grok vs. Humans', text: 'Who won? Vote:', url }).catch(() => {});
@@ -222,13 +225,71 @@
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.sheet) closeSheet(); });
 
+  // ---- suggest a thread / paid featured spots ----
+  let CFG = null;
+  const cfg = async () => CFG || (CFG = await fetch('/api/suggest', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).catch(() => ({ tiers: [] })));
+  const SERR = { bad_url: 'Paste a link to a post on x.com, like https://x.com/user/status/123…', daily_limit: 'You reached today\'s limit of suggestions.', already_suggested: 'Someone already suggested this thread. Thanks!',
+    already_on_site: 'This thread is already on the site.', rate_limited: 'Slow down a little and try again.', account_too_new: 'Your X account is too new to suggest threads.', sign_in_required: 'Sign in with X first.', banned: 'Your account cannot suggest threads.' };
+  function panel(title, inner) {
+    const el = $('#sheet'); el.hidden = false; document.body.style.overflow = 'hidden'; S.sheet = { p: S.sheet?.p || { id: '' }, panel: true };
+    el.innerHTML = `<div class="sheet__bg" data-sh="close"></div><div class="sheet__panel sx" role="dialog" aria-label="${esc(title)}">
+      <div class="sheet__head"><strong>${esc(title)}</strong><span></span><button data-sh="close" aria-label="Close">✕</button></div><div class="sx__body">${inner}</div></div>`;
+  }
+  const tierPicker = (tiers, name, none) => `<div class="tiers" role="radiogroup">${none ? `<label class="tier"><input type="radio" name="${name}" value="" checked><span><b>No thanks</b><small>Free suggestion</small></span></label>` : ''}
+    ${tiers.map((t, i) => `<label class="tier"><input type="radio" name="${name}" value="${esc(t.id)}" ${!none && i === 0 ? 'checked' : ''}><span><b>$${t.usd}</b><small>${esc(t.label)}</small></span></label>`).join('')}</div>`;
+  function payView(f) {
+    return `<div class="pay"><p class="pay__lead">Almost done! Pay <b>$${f.usd}</b> on Ko-fi and put this code in the Ko-fi message:</p>
+      <button class="pay__code" data-copy="${esc(f.code)}" aria-label="Copy code ${esc(f.code)}">${esc(f.code)} <i class="fa-regular fa-copy"></i></button>
+      ${f.kofi_ready ? `<a class="pill-btn pill-btn--kofi" href="${esc(f.kofi_url)}" target="_blank" rel="noopener noreferrer">☕ Pay $${f.usd} on Ko-fi</a>` : '<p class="pay__soon">Ko-fi payments are not open yet. Your request is saved with this code.</p>'}
+      <p class="fine">Featured spots are paid placements and are labelled as such. Every request is reviewed by the site owner; if it is declined you get a refund. The spot runs ${esc(f.label)} from approval.</p></div>`;
+  }
+  async function openSuggest() {
+    if (!S.user) return needSignIn('suggest a thread', location.pathname + '?suggest=1');
+    const c = await cfg();
+    panel('💡 Suggest a thread', `<form id="sgf" class="sx__form">
+      <label class="fld"><span>Link to the post on X</span><input name="url" type="url" inputmode="url" autocomplete="off" required placeholder="https://x.com/user/status/…"></label>
+      <label class="fld"><span>Note <em>(optional)</em></span><textarea name="note" rows="2" maxlength="280" placeholder="Why is this one good?"></textarea></label>
+      <fieldset class="fld"><legend>⭐ Feature it at the top of Hot? <em>(optional, paid)</em></legend>${tierPicker(c.tiers || [], 'tier', true)}</fieldset>
+      <button class="pill-btn" type="submit">Send suggestion</button>
+      <p class="fine">Up to ${c.per_day || 5} a day. We review every suggestion; approved threads show “suggested by @${esc(S.user.handle)}”.</p></form>`);
+    setTimeout(() => $('#sgf input[name=url]')?.focus(), 50);
+  }
+  async function openFeature(p) {
+    const c = await cfg();
+    panel('⭐ Feature this thread', `<form id="ftf" class="sx__form" data-post="${esc(p.id)}"><p class="sx__t">${esc(p.headline || '')}</p>
+      <fieldset class="fld"><legend>Pin it at the top of Hot (and its topics) for</legend>${tierPicker(c.tiers || [], 'tier', false)}</fieldset>
+      <button class="pill-btn" type="submit">Continue</button><p class="fine">Paid placement, clearly labelled “Featured”. The owner approves every request; declined requests are refunded.</p></form>`);
+  }
+  document.addEventListener('submit', async e => {
+    const f = e.target; if (f.id !== 'sgf' && f.id !== 'ftf') return; e.preventDefault();
+    const fd = new FormData(f), btn = f.querySelector('button[type=submit]'); btn.disabled = true;
+    const r = f.id === 'sgf' ? await post('/api/suggest', { url: fd.get('url'), note: fd.get('note'), tier: fd.get('tier') || undefined })
+      : await post('/api/feature', { post_id: Number(f.dataset.post), tier: fd.get('tier') });
+    btn.disabled = false;
+    if (!r.ok) return toast(SERR[r.data.error] || ERR[r.data.error] || 'Could not send (' + r.status + ')');
+    const ft = r.data.feature;
+    $('.sx__body').innerHTML = (f.id === 'sgf' ? '<p class="done">✅ Thanks! Your suggestion is in the queue.</p>' : '') + (ft ? payView(ft) : '<button class="pill-btn" data-sh="close">Done</button>');
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-suggest]')) return openSuggest();
+    const cp = e.target.closest('[data-copy]'); if (cp) navigator.clipboard?.writeText(cp.dataset.copy).then(() => toast('Code copied'), () => {});
+  }, true);
+  // In-app status updates for the viewer's own suggestions and featured requests.
+  async function notify() {
+    if (!S.user) return; CFG = null; const c = await cfg();
+    const msg = [...(c.suggestions || []).filter(x => x.unseen && (x.state === 'fetched' || x.state === 'rejected' || x.live)).map(x => x.live ? '🎉 Your suggested thread is live!' : x.state === 'rejected' ? 'One of your suggestions was not picked.' : '👀 Your suggestion is being reviewed.'),
+      ...(c.features || []).filter(x => x.unseen).map(x => x.state === 'active' ? '⭐ Your featured spot is live!' : x.state === 'paid' ? '💜 Payment received for ' + x.code + '. Awaiting approval.' : x.state === 'rejected' ? 'Featured request ' + x.code + ' was declined; a refund is on its way.' : x.state === 'expired' ? 'Your featured spot ' + x.code + ' has ended.' : '')].filter(Boolean);
+    if (msg.length) { toast(msg[0] + (msg.length > 1 ? ` (+${msg.length - 1} more)` : '')); post('/api/suggest', { seen: true }); }
+  }
+
   const q = new URLSearchParams(location.search);
   S.view = ['hot', 'new', 'top', 'hall', 'grok', 'human'].includes(q.get('view')) ? q.get('view') : 'hot';
   S.topic = q.get('topic') || 'All';
   S.hof = q.get('hof') === 'week' ? 'week' : 'all';
   const qs = new URLSearchParams(location.search);
   if (qs.get('login') === 'error') toast('Sign-in failed. Please try again.');
-  fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); }).catch(renderAuth);
+  fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); notify();
+    if (qs.get('suggest') === '1') { history.replaceState(null, '', location.pathname); openSuggest(); } }).catch(renderAuth);
   // Donate buttons stay hidden until a Ko-fi URL is configured in data-kofi-url.
   document.querySelectorAll('[data-kofi-url]').forEach(a => { const u = (a.dataset.kofiUrl || '').trim(); if (/^https:\/\/(www\.)?ko-fi\.com\//.test(u)) { a.href = u; a.hidden = false; } });
   renderAuth(); load();
