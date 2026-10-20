@@ -95,3 +95,9 @@ a.me{text-decoration:none}
 .emb--grok blockquote.twitter-tweet { border-color: #3f3f46; }
 .xlink { display: inline-flex; align-items: center; gap: .35rem; margin-top: .5rem; font-size: .8rem; color: #a1a1aa; text-decoration: none; }
 .xlink:hover { color: #fff; }
+
+/* About / help / support */
+.about{max-width:640px;margin:1.5rem auto 0;padding:0 1rem;color:#d4d4d8;font-size:.88rem;line-height:1.5}
+.about h2{font-size:1.05rem;margin:0 0 .4rem;color:#fff}.about h3{font-size:.92rem;margin:0 0 .25rem;color:#fff}
+.about p{margin:.3rem 0}.about__box{border:1px solid var(--line);border-radius:12px;padding:.8rem .95rem;margin:.7rem 0;background:#111113}
+.about a{color:#93c5fd}.about__donate{display:inline-block;margin-top:.45rem;padding:.45rem .9rem;border-radius:999px;background:#fde68a;color:#18181b!important;font-weight:700;text-decoration:none}

@@ -30,8 +30,24 @@
 
   <main class="feed" id="feed" aria-live="polite"></main>
 
+  <section class="about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About</h2>
+    <p>Grok vs. Humans collects real exchanges between people and @grok on X. You vote on who won.</p>
+    <div class="about__box">
+      <h3>Help us improve</h3>
+      <p>Found a bug? Email <a href="mailto:support@grokvshumans.com?subject=Bug%20report&body=Device%3A%0AOS%3A%0ABrowser%3A%0AWhat%20happened%3A%0AScreenshot%20attached%3A%0A" class="about__mail">support@grokvshumans.com</a> with your device, operating system and browser (with versions if you can), what you did, and a screenshot. Every report helps.</p>
+    </div>
+    <div class="about__box">
+      <h3>Support the site</h3>
+      <p>Grok vs. Humans runs on X API credits and hosting. Donations keep it going.</p>
+      <!-- Ko-fi: set data-kofi-url (https://ko-fi.com/...) to show the button; empty = hidden. -->
+      <a class="about__donate" data-kofi-url="" href="#" target="_blank" rel="noopener noreferrer" hidden>☕ Donate</a>
+    </div>
+  </section>
+
   <footer class="foot">
-    <a href="/privacy">Privacy</a> · <a href="/tos">Terms</a> · <a href="/imprint">Contact</a>
+    <a href="#about">About</a> · <a href="/privacy">Privacy</a> · <a href="/tos">Terms</a> · <a href="/imprint">Contact</a> · <a href="mailto:support@grokvshumans.com?subject=Bug%20report&body=Device%3A%0AOS%3A%0ABrowser%3A%0AWhat%20happened%3A%0AScreenshot%20attached%3A%0A">Report a bug</a>
+    <p>Support the site: Grok vs. Humans runs on X API credits and hosting. Donations keep it going. <a class="foot__donate" data-kofi-url="" href="#" target="_blank" rel="noopener noreferrer" hidden>Donate</a></p>
     
     <p>Independent fan site. Not affiliated with or endorsed by X Corp. or xAI. Grok is a trademark of xAI.</p>
     <p>Built by <a href="https://x.com/SlavisTon">@SlavisTon</a></p>

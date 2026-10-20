@@ -187,5 +187,7 @@
   const qs = new URLSearchParams(location.search);
   if (qs.get('login') === 'error') toast('Sign-in failed. Please try again.');
   fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); }).catch(renderAuth);
+  // Donate buttons stay hidden until a Ko-fi URL is configured in data-kofi-url.
+  document.querySelectorAll('[data-kofi-url]').forEach(a => { const u = (a.dataset.kofiUrl || '').trim(); if (/^https:\/\/(www\.)?ko-fi\.com\//.test(u)) { a.href = u; a.hidden = false; } });
   renderAuth(); load();
 })();
