@@ -71,7 +71,7 @@
         ${p.topics.map(x => `<button class="topic" data-topic="${esc(x)}">${esc(x)}</button>`).join('')}
         <span class="post__time">${ago(p.created_at)}</span>
       </div>
-      <h3 class="post__title">${esc(p.headline || 'Grok vs. a human')}</h3>
+      <h2 class="post__title">${esc(p.headline || 'Grok vs. a human')}</h2>
       ${thread(p)}
       <div class="vote">
         <button class="v-grok ${p.mine.vote === 'grok' ? 'is-mine' : ''}" data-act="vote" data-v="grok">Grok won <span class="n">${p.votes.grok}</span></button>

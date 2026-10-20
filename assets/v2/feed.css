@@ -114,3 +114,6 @@ a.me{text-decoration:none}
 .tw__m{display:block;width:100%;max-height:520px;object-fit:contain;border-radius:12px;margin:.4rem 0;background:#000}
 .tw__time{display:inline-flex;align-items:center;min-height:44px;color:#a1a1aa;font-size:.75rem;text-decoration:none}.tw__time:hover{text-decoration:underline}
 .xlink{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;margin:0 .9rem .3rem;font-size:.8rem;color:#a1a1aa;text-decoration:none}
+/* QA round 2: tap targets, 320px header */
+.top__logo,.btn-x,.me,.tw__who{min-height:44px}.thread-more{min-height:44px}.about__mail{display:inline-block;padding:.6rem 0;margin:-.6rem 0}
+@media (max-width:360px){.top{gap:.4rem;padding-left:.6rem;padding-right:.6rem}.top__g{width:30px;height:30px}.btn-x{gap:.3rem;padding:.4rem .55rem;font-size:.76rem}}
