@@ -6,6 +6,9 @@
 import { json, getSessionUser, getCookie, SESSION_COOKIE, now } from '../../server/lib.js';
 import { TOPICS, engagement, hotScore } from '../../server/v2.js';
 
+const VIEWS = ['hot', 'new', 'top', 'hall', 'grok', 'human'];
+// Wilson lower bound (95%) of the leading side's share: rewards both margin and vote volume (1-0 ~0.21, 40-10 ~0.67).
+const wilson = (w, n) => { if (!n) return 0; const z = 1.96, ph = w / n; return (ph + z * z / (2 * n) - z * Math.sqrt((ph * (1 - ph) + z * z / (4 * n)) / n)) / (1 + z * z / n); };
 const CANDIDATES = 500;   // newest approved posts considered for ranking
 const ANON_TTL = 30;      // seconds, anonymous edge cache
 
@@ -27,7 +30,7 @@ export async function onRequestGet(ctx) {
 
 async function build({ request, env }) {
   const q = new URL(request.url).searchParams;
-  const view = ['hot', 'new', 'top', 'hall'].includes(q.get('view')) ? q.get('view') : 'hot';
+  const view = VIEWS.includes(q.get('view')) ? q.get('view') : 'hot';
   const range = q.get('range') === 'week' ? 'week' : 'all';
   const topic = TOPICS.includes(q.get('topic')) ? q.get('topic') : null;
   const one = /^[0-9]{1,9}$/.test(q.get('id') || '') ? q.get('id') : null;
@@ -63,6 +66,11 @@ async function build({ request, env }) {
   }));
   if (view === 'new') list.sort((a, b) => b.approved_at - a.approved_at);
   else if (view === 'top') list.sort((a, b) => engagement(b) - engagement(a) || b.approved_at - a.approved_at);
+  else if (view === 'grok' || view === 'human') {   // live from current vote counts; ties and 0-0 excluded
+    const lead = p => view === 'grok' ? p.votes.grok - p.votes.human : p.votes.human - p.votes.grok;
+    const sc = p => wilson(Math.max(p.votes.grok, p.votes.human), p.votes.grok + p.votes.human);
+    list = list.filter(p => lead(p) > 0).sort((a, b) => sc(b) - sc(a) || lead(b) - lead(a) || b.approved_at - a.approved_at);
+  }
   else if (view === 'hall') list = list.filter(p => engagement(p) > 0 || p.featured)
     .sort((a, b) => engagement(b) - engagement(a) || b.featured - a.featured).slice(0, 10);
   else list.sort((a, b) => hotScore(b, t) - hotScore(a, t));

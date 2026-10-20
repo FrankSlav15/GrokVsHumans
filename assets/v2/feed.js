@@ -103,8 +103,8 @@
            <div class="seg"><button data-hof="all" class="${S.hof === 'all' ? 'is-on' : ''}">All-time</button><button data-hof="week" class="${S.hof === 'week' ? 'is-on' : ''}">This week</button></div></div>` : '';
     $('#feed').innerHTML = head + (S.posts.length ? S.posts.map((p, i) => card(p, S.view === 'hall' ? i + 1 : 0)).join('')
       + (S.next != null ? '<div id="more" class="more-wrap"><button class="load-more" data-act="more">Load more</button></div>' : '')
-      : `<div class="empty">${S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
-    document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.view === S.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      : `<div class="empty">${S.view === 'grok' || S.view === 'human' ? `${S.view === 'grok' ? '🤖' : '🧑'} No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts where ${S.view === 'grok' ? 'Grok' : 'the human'} leads the vote yet. Vote on a few threads and they will show up here.` : S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
+    document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.view === S.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); if (on && b.parentNode.scrollWidth > b.parentNode.clientWidth) b.parentNode.scrollTo({ left: b.offsetLeft - 16, behavior: 'smooth' }); });
     renderChips(); watch($('#feed'));
   }
   // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
@@ -223,7 +223,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.sheet) closeSheet(); });
 
   const q = new URLSearchParams(location.search);
-  S.view = ['hot', 'new', 'top', 'hall'].includes(q.get('view')) ? q.get('view') : 'hot';
+  S.view = ['hot', 'new', 'top', 'hall', 'grok', 'human'].includes(q.get('view')) ? q.get('view') : 'hot';
   S.topic = q.get('topic') || 'All';
   S.hof = q.get('hof') === 'week' ? 'week' : 'all';
   const qs = new URLSearchParams(location.search);

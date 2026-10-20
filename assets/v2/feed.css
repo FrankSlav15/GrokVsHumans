@@ -230,3 +230,10 @@ a.me{text-decoration:none}
 @media (prefers-reduced-motion:reduce){.chip,.tab,.me{transition:none}}
 .top__g{flex:0 0 auto}@media (max-width:360px){.top__g{width:30px;height:30px}.top__name{font-size:.88rem}}
 .top__name{min-width:0;overflow:hidden;text-overflow:ellipsis}@media (max-width:420px){.me__x{display:none}.me{padding-right:.75rem}.top__auth{gap:.3rem}}
+/* Grok Wins / Human Wins tabs + sideways scrolling tab row */
+.tabs{scroll-snap-type:x proximity;scroll-padding:0 1rem;-webkit-overflow-scrolling:touch}
+.tab{flex:0 0 auto;scroll-snap-align:start;white-space:nowrap}
+@media (max-width:699px){.tabs{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}.tabs::after{content:"";flex:0 0 1rem}}
+.tab--grok.is-on::after{background:linear-gradient(90deg,#a855f7,#c084fc);box-shadow:0 0 10px rgba(168,85,247,.9)}
+.tab--human.is-on{background:linear-gradient(180deg,rgba(251,113,133,0),rgba(251,113,133,.12))}
+.tab--human.is-on::after{background:linear-gradient(90deg,#e11d48,#fb7185);box-shadow:0 0 10px rgba(251,113,133,.8)}
