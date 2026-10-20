@@ -2,6 +2,7 @@
 // KOFI_URL and the tiers can also be overridden per environment with the Pages variables
 // KOFI_URL and FEATURE_TIERS_JSON (e.g. [{"id":"day","label":"24 hours","usd":5,"days":1}]).
 export const KOFI_URL_PLACEHOLDER = 'https://ko-fi.com/YOUR_KOFI_PAGE';
+export const KOFI_URL_DEFAULT = 'https://ko-fi.com/grokvshumans';
 export const FEATURE_TIERS = [
   { id: 'day', label: '24 hours', usd: 5, days: 1 },
   { id: 'week', label: '7 days', usd: 15, days: 7 },
@@ -11,7 +12,7 @@ export const SUGGEST_PER_DAY = 5;          // suggestions per user per 24 h
 export const FEATURE_REQ_PER_DAY = 5;      // feature requests per user per 24 h
 export const MAX_ACTIVE_FEATURED = 3;      // pinned at most at once (oldest approval first)
 
-export const kofiUrl = env => (env.KOFI_URL && /^https:\/\/(www\.)?ko-fi\.com\/\w/.test(env.KOFI_URL)) ? env.KOFI_URL : KOFI_URL_PLACEHOLDER;
+export const kofiUrl = env => (env.KOFI_URL && /^https:\/\/(www\.)?ko-fi\.com\/\w/.test(env.KOFI_URL)) ? env.KOFI_URL : KOFI_URL_DEFAULT;
 export const kofiConfigured = env => kofiUrl(env) !== KOFI_URL_PLACEHOLDER;
 export function tiers(env) {
   try { const t = JSON.parse(env.FEATURE_TIERS_JSON || 'null'); if (Array.isArray(t) && t.every(x => x.id && x.usd > 0 && x.days > 0)) return t; } catch {}
