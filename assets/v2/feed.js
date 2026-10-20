@@ -53,7 +53,7 @@
         <a href="https://x.com/${encodeURIComponent(w.handle)}" target="_blank" rel="noopener noreferrer" class="tw__who">
           <img class="tw__av" src="${esc(w.avatar || '')}" alt="" loading="lazy" referrerpolicy="no-referrer">
           <span class="tw__n">${esc(w.name || w.handle)}${w.verified ? ' <i class="fa-solid fa-circle-check tw__v" aria-label="verified"></i>' : ''}</span>
-          <span class="tw__u">@${esc(w.handle)}</span></a>
+          <span class="tw__u">@${esc(w.handle)}</span>${w.grok ? '<span class="tw__badge" aria-hidden="true">Grok</span>' : ''}</a>
         <a href="${url}" target="_blank" rel="noopener noreferrer" class="tw__x" aria-label="View on X">${X_SVG}</a>
       </div>
       ${hasText ? `<p class="tw__t">${linkX(w.text)}</p>` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media)}
@@ -63,7 +63,7 @@
   // Threads over 5 turns show the first 2 and last 2; "Show full thread" expands inline (never leaves the site).
   const thread = p => { const w = p.tweets;
     if (w.length <= 5 || S.open.has(p.id)) return `<div class="ex">${w.map(turn).join('')}</div>`;
-    return `<div class="ex">${w.slice(0, 2).map(turn).join('')}<button class="thread-more" data-act="expand">Show full thread (${w.length - 4} more of ${w.length})</button>${w.slice(-2).map(turn).join('')}</div>`; };
+    return `<div class="ex">${w.slice(0, 2).map(turn).join('')}<button class="thread-more" data-act="expand"><span aria-hidden="true">⋯</span> Show full thread <span class="thread-more__n">+${w.length - 4}</span><span class="sr"> more of ${w.length}</span></button>${w.slice(-2).map(turn).join('')}</div>`; };
   // Infinite scroll: a sentinel after the last card loads the next page.
   let io = null;
   const watch = () => { const s = $('#more'); if (!s) return; io?.disconnect();
