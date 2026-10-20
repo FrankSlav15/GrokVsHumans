@@ -1,6 +1,6 @@
 // Grok vs. Humans v2 feed. Data: /api/feed (approved posts only). Actions need Sign in with X.
 (function () {
-  const S = { view: 'hot', topic: 'All', hof: 'all', posts: [], topics: [], user: null, open: new Set(), sheet: null };
+  const S = { view: 'hot', topic: 'All', hof: 'all', posts: [], next: null, busy: false, topics: [], user: null, open: new Set(), sheet: null };
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const X_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
@@ -54,8 +54,15 @@
       <a class="tw__time" href="${url}" target="_blank" rel="noopener noreferrer">${esc(stamp(w.created_at))}</a>
     </div>`;
   }
-  const thread = p => `<div class="ex">${p.tweets.map(turn).join('')}</div>`;
-  const watch = () => {};
+  // Threads over 5 turns show the first 2 and last 2; "Show full thread" expands inline (never leaves the site).
+  const thread = p => { const w = p.tweets;
+    if (w.length <= 5 || S.open.has(p.id)) return `<div class="ex">${w.map(turn).join('')}</div>`;
+    return `<div class="ex">${w.slice(0, 2).map(turn).join('')}<button class="thread-more" data-act="expand">Show full thread (${w.length - 4} more of ${w.length})</button>${w.slice(-2).map(turn).join('')}</div>`; };
+  // Infinite scroll: a sentinel after the last card loads the next page.
+  let io = null;
+  const watch = () => { const s = $('#more'); if (!s) return; io?.disconnect();
+    if (!('IntersectionObserver' in window)) return;
+    io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) more(); }, { rootMargin: '800px 0px' }); io.observe(s); };
   function card(p, rank) {
     const t = p.votes.grok + p.votes.human, gp = t ? Math.round(p.votes.grok / t * 100) : 50;
     return `<article class="post" data-id="${p.id}" id="p${p.id}">
@@ -85,24 +92,44 @@
       ? `<div class="hof-head"><h2>🏆 Hall of Fame${S.topic !== 'All' ? ' · ' + esc(S.topic) : ''}</h2>
            <div class="seg"><button data-hof="all" class="${S.hof === 'all' ? 'is-on' : ''}">All-time</button><button data-hof="week" class="${S.hof === 'week' ? 'is-on' : ''}">This week</button></div></div>` : '';
     $('#feed').innerHTML = head + (S.posts.length ? S.posts.map((p, i) => card(p, S.view === 'hall' ? i + 1 : 0)).join('')
+      + (S.next != null ? '<div id="more" class="more-wrap"><button class="load-more" data-act="more">Load more</button></div>' : '')
       : `<div class="empty">${S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
-    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('is-on', b.dataset.view === S.view));
+    document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.view === S.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
     renderChips(); watch($('#feed'));
   }
   // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
   const rerender = (p, full) => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p);
     const tmp = document.createElement('div'); tmp.innerHTML = card(p, S.view === 'hall' ? i + 1 : 0); const fresh = tmp.firstElementChild;
-    if (!full) { const ex = el.querySelector('.ex'), nx = fresh.querySelector('.ex'); if (ex && nx) nx.replaceWith(ex); const tm = el.querySelector('.thread-more'), nm = fresh.querySelector('.thread-more'); if (tm && nm) nm.replaceWith(tm); }
+    if (!full) { const ex = el.querySelector('.ex'), nx = fresh.querySelector('.ex'); if (ex && nx) nx.replaceWith(ex); }
     el.replaceWith(fresh); if (full) watch(fresh); };
 
+  const feedQ = extra => { const q = new URLSearchParams({ view: S.view, range: S.hof, ...extra }); if (S.topic !== 'All') q.set('topic', S.topic); return '/api/feed?' + q; };
   async function load() {
-    const q = new URLSearchParams({ view: S.view, range: S.hof });
-    if (S.topic !== 'All') q.set('topic', S.topic);
-    const r = await fetch('/api/feed?' + q, { credentials: 'same-origin', cache: 'no-store' });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok) { $('#feed').innerHTML = '<div class="empty">Could not load the feed. Pull to refresh.</div>'; return; }
-    S.posts = d.posts; S.topics = d.topics; render();
-    const h = location.hash.match(/^#p(\d+)$/); if (h && !load.jumped) { load.jumped = 1; document.getElementById('p' + h[1])?.scrollIntoView(); }
+    const seq = load.seq = (load.seq || 0) + 1;
+    const r = await fetch(feedQ({}), { credentials: 'same-origin', cache: 'no-store' }).catch(() => null);
+    const d = r ? await r.json().catch(() => ({})) : {};
+    if (seq !== load.seq) return;
+    if (!r || !r.ok) { $('#feed').innerHTML = '<div class="empty">Could not load the feed. <button class="load-more" data-act="retry">Retry</button></div>'; return; }
+    S.posts = d.posts; S.topics = d.topics; S.next = d.next ?? null; render();
+    const h = location.hash.match(/^#p(\d+)$/);
+    if (h && !load.jumped) { load.jumped = 1;
+      if (!document.getElementById('p' + h[1])) {   // shared link to a post beyond the first page: fetch it on its own
+        const one = await fetch('/api/feed?id=' + h[1], { credentials: 'same-origin' }).then(x => x.json()).catch(() => ({}));
+        if (one.posts?.[0]) { S.posts = [one.posts[0], ...S.posts.filter(p => p.id !== one.posts[0].id)]; render(); }
+      }
+      document.getElementById('p' + h[1])?.scrollIntoView(); }
+  }
+  async function more() {
+    if (S.busy || S.next == null) return; S.busy = true; const seq = load.seq;
+    try {
+      const d = await fetch(feedQ({ offset: S.next }), { credentials: 'same-origin', cache: 'no-store' }).then(x => x.ok ? x.json() : Promise.reject());
+      if (seq !== load.seq) return;
+      const have = new Set(S.posts.map(p => p.id)), add = d.posts.filter(p => !have.has(p.id)), base = S.posts.length;
+      S.posts.push(...add); S.next = d.next ?? null;
+      const m = $('#more'), tmp = document.createElement('div');
+      tmp.innerHTML = add.map((p, i) => card(p, S.view === 'hall' ? base + i + 1 : 0)).join('');
+      if (m) { m.before(...tmp.children); if (S.next == null) m.remove(); }
+    } catch { toast('Could not load more posts.'); } finally { S.busy = false; watch(); }
   }
   function setState(patch) {
     Object.assign(S, patch);
@@ -161,7 +188,10 @@
     const chip = e.target.closest('[data-topic]'); if (chip) return setState({ topic: chip.dataset.topic }), window.scrollTo({ top: 0 });
     const hof = e.target.closest('[data-hof]'); if (hof) return setState({ hof: hof.dataset.hof });
     const a = e.target.closest('[data-act]'); if (!a) return;
+    if (a.dataset.act === 'more') return more();
+    if (a.dataset.act === 'retry') return load();
     const el = a.closest('.post'), p = S.posts.find(x => x.id === el?.dataset.id), act = a.dataset.act;
+    if (act === 'expand') { S.open.add(p.id); return rerender(p, true); }
         if (act === 'comments') return openSheet(p);
     if (act === 'share') {
       const url = location.origin + '/#p' + p.id;

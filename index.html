@@ -11,22 +11,24 @@
   <link rel="stylesheet" href="/assets/v2/feed.css">
 </head>
 <body>
-  <div class="mock-banner">PREVIEW · v2 beta</div>
+  <aside class="mock-banner" aria-label="Preview notice">PREVIEW · v2 beta</aside>
 
+  <div class="sticky">
   <header class="top">
-    <a href="/" class="top__logo"><span class="top__g">G</span><span class="top__name">Grok <em>vs.</em> Humans</span></a>
+    <a href="/" class="top__logo"><span class="top__g" aria-hidden="true">G</span><h1 class="top__name">Grok <em>vs.</em> Humans</h1></a>
     <div id="auth" class="top__auth"></div>
   </header>
 
   <nav class="bar" aria-label="Views and topics">
     <div class="tabs" role="tablist">
-      <button class="tab is-on" data-view="hot">🔥 Hot</button>
-      <button class="tab" data-view="new">🆕 New</button>
-      <button class="tab" data-view="top">📈 Top</button>
-      <button class="tab" data-view="hall">🏆 Hall of Fame</button>
+      <button class="tab is-on" role="tab" aria-selected="true" data-view="hot">🔥 Hot</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="new">🆕 New</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="top">📈 Top</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="hall">🏆 Hall of Fame</button>
     </div>
     <div class="chips" id="chips"></div>
   </nav>
+  </div>
 
   <main class="feed" id="feed" aria-live="polite"></main>
 

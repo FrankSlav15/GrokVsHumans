@@ -32,6 +32,7 @@ async function build({ request, env }) {
   const topic = TOPICS.includes(q.get('topic')) ? q.get('topic') : null;
   const one = /^[0-9]{1,9}$/.test(q.get('id') || '') ? q.get('id') : null;
   const limit = Math.min(Math.max(Number(q.get('limit')) || 30, 1), 60);
+  const offset = Math.min(Math.max(Math.floor(Number(q.get('offset'))) || 0, 0), 5000);
   const viewer = await getSessionUser(env, request);
   const me = viewer ? viewer.x_id : '';
   const t = now();
@@ -66,7 +67,8 @@ async function build({ request, env }) {
     .sort((a, b) => engagement(b) - engagement(a) || b.featured - a.featured).slice(0, 10);
   else list.sort((a, b) => hotScore(b, t) - hotScore(a, t));
   const total = list.length;
-  const page = list.slice(0, limit);
+  const page = list.slice(offset, offset + limit);
+  const next = offset + page.length < total ? offset + page.length : null;
 
   // 2) details only for the page
   if (page.length) {
@@ -93,5 +95,5 @@ async function build({ request, env }) {
   const posts = page.map(p => ({ id: p.id, headline: p.headline, featured: p.featured, approved_at: p.approved_at, created_at: p.created_at,
     url: p.url, topics: p.topics, tweets: p.tweets, votes: p.votes, week_votes: p.week_votes, likes: p.likes, dislikes: p.dislikes,
     comments: p.comments, mine: p.mine }));
-  return json({ view, range, topic, topics: TOPICS, signedIn: !!viewer, posts, total });
+  return json({ view, range, topic, topics: TOPICS, signedIn: !!viewer, posts, total, offset, next });
 }
