@@ -229,3 +229,4 @@ a.me{text-decoration:none}
 @media (min-width:700px){.chips{-webkit-mask-image:none}}
 @media (prefers-reduced-motion:reduce){.chip,.tab,.me{transition:none}}
 .top__g{flex:0 0 auto}@media (max-width:360px){.top__g{width:30px;height:30px}.top__name{font-size:.88rem}}
+.top__name{min-width:0;overflow:hidden;text-overflow:ellipsis}@media (max-width:420px){.me__x{display:none}.me{padding-right:.75rem}.top__auth{gap:.3rem}}
