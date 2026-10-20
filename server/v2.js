@@ -32,19 +32,24 @@ const DOMAIN_MAP = [
   [/science/i, 'Science'], [/health|medic|fitness/i, 'Health'], [/religio|faith/i, 'Religion'], [/business|financ|stock|cryptocurrenc|economic/i, 'Money'], [/history/i, 'History'],
 ];
 
+// Keyword fallback: points per *post* that matches (not per word, so one chatty reply full of 😂 or bug names cannot
+// dominate); the root question (texts[0]) and the first human question count 3x. At most 2 topics: the second only
+// when it is close to the first.
 export function suggestTopics(texts, annotations = []) {
-  const all = texts.join('\n');
   const score = {};
-  for (const [t, re] of Object.entries(RULES)) {
-    const m = all.match(new RegExp(re.source, 'gi'));
-    if (m) score[t] = m.length;
-  }
+  texts.forEach((txt, i) => {
+    const w = i === 0 ? 3 : i === 1 ? 2 : 1;
+    for (const [t, re] of Object.entries(RULES)) if (re.test(String(txt || ''))) score[t] = (score[t] || 0) + w;
+  });
   for (const a of annotations || []) {
     const name = a?.domain?.name || '';
     for (const [re, t] of DOMAIN_MAP) if (re.test(name)) score[t] = (score[t] || 0) + 2;
   }
-  const out = Object.entries(score).sort((a, b) => b[1] - a[1]).slice(0, 2).map(e => e[0]);
-  return out.length ? out : ['Wild Card'];
+  const ranked = Object.entries(score).filter(e => e[1] >= 2).sort((a, b) => b[1] - a[1]);
+  if (!ranked.length) return ['Wild Card'];
+  const out = [ranked[0][0]];
+  if (ranked[1] && ranked[1][1] >= Math.max(3, ranked[0][1] * 0.6)) out.push(ranked[1][0]);
+  return out;
 }
 
 // Strip leading @mentions of reply chains and trailing t.co media links.
@@ -82,7 +87,7 @@ export async function insertPost(DB, p) {
     .bind(p.grok_tweet_id, p.conversation_id, p.human_x_id, p.human_handle, p.headline || null, p.source || 'fetch',
       p.x_engagement || 0, p.tweet_created_at || null, t, p.low_priority ? 1 : 0).first();
   if (!row) return null;
-  const stmts = p.tweets.slice(0, 20).map((w, i) => DB.prepare(
+  const stmts = p.tweets.slice(0, 40).map((w, i) => DB.prepare(
     `INSERT INTO post_tweets (post_id, pos, tweet_id, author_id, author_handle, author_name, author_avatar, verified, is_grok, text, media_json, created_at)
      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`)
     .bind(row.id, i, w.tweet_id, w.author_id, w.author_handle, w.author_name, w.author_avatar, w.verified ? 1 : 0,

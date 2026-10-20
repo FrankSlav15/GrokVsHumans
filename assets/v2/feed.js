@@ -20,9 +20,9 @@
 
   function renderAuth() {
     const u = S.user;
-    $('#auth').innerHTML = u
+    $('#auth').innerHTML = `<button class="lang-btn" data-lang aria-label="Language: ${esc(langName(RL()))}. Change language and translation settings"><span aria-hidden="true">🌐</span><span class="lang-btn__c">${esc(RL().toUpperCase())}</span></button>` + (u
       ? `${u.admin ? '<a class="queue" href="/admin/queue" aria-label="Admin: post queue"><i class="fa-solid fa-inbox" aria-hidden="true"></i><span class="queue__l">Admin</span><b class="queue__n" id="qn" hidden></b></a>' : ''}<button class="me" id="me" title="Sign out" aria-label="Signed in as @${esc(u.handle)}. Sign out"><img src="${esc(u.avatar)}" alt="" referrerpolicy="no-referrer"><span class="me__h">@${esc(u.handle)}</span><span class="me__x">${X_SVG}</span></button>`
-      : `<button class="btn-x" id="signin">${X_SVG} Sign in with X</button>`;
+      : `<button class="btn-x" id="signin">${X_SVG} Sign in with X</button>`);
     if (u?.admin) fetch('/api/admin/counts', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => { const n = d ? d.queue + d.moderation + d.featured : 0, b = $('#qn');
       if (b && n > 0) { b.textContent = n > 99 ? '99+' : n; b.hidden = false; b.parentNode.setAttribute('aria-label', `Admin: ${n} items need attention`); } }).catch(() => {});
     $('#signin') && ($('#signin').onclick = () => signIn());
@@ -52,9 +52,10 @@
     return `<a class="tw__q" href="${url}" target="_blank" rel="noopener noreferrer"><span class="tw__qh">${q.name ? `<b>${esc(q.name)}</b> ` : ''}${q.handle ? '@' + esc(q.handle) : 'Quoted post'}</span>${q.text ? `<span class="tw__qt">${esc(q.text)}</span>` : '<span class="tw__qt">View the quoted post on X</span>'}</a>`;
   }
   function turn(w) {
+    const k = 'post_turn|' + w._k, tr = TR.get(k), shown = tr && tr.on ? tr.text : w.text;
     const hasText = !!String(w.text || '').trim(), hasMedia = (w.media || []).length > 0;
     const url = `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`;
-    return `<div class="tw ${w.grok ? 'tw--grok' : 'tw--human'}">
+    return `<div class="tw ${w.grok ? 'tw--grok' : 'tw--human'}" data-trk="${esc(k)}">
       <div class="tw__h">
         <a href="https://x.com/${encodeURIComponent(w.handle)}" target="_blank" rel="noopener noreferrer" class="tw__who">
           <img class="tw__av" src="${esc(w.avatar || '')}" alt="" loading="lazy" referrerpolicy="no-referrer">
@@ -62,12 +63,12 @@
           <span class="tw__u">@${esc(w.handle)}</span>${w.grok ? '<span class="tw__badge" aria-hidden="true">Grok</span>' : ''}</a>
         <a href="${url}" target="_blank" rel="noopener noreferrer" class="tw__x" aria-label="View on X">${X_SVG}</a>
       </div>
-      ${hasText ? `<p class="tw__t">${linkX(w.text)}</p>` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media)}
+      ${hasText ? `<p class="tw__t" data-trt>${linkX(shown)}</p>${trBar(k, w.text)}` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media)}
       <a class="tw__time" href="${url}" target="_blank" rel="noopener noreferrer">${esc(stamp(w.created_at))}</a>
     </div>`;
   }
   // Threads over 5 turns show the first 2 and last 2; "Show full thread" expands inline (never leaves the site).
-  const thread = p => { const w = p.tweets;
+  const thread = p => { const w = p.tweets; w.forEach((x, i) => { x._k = p.id + ':' + (x.pos ?? i); });
     if (w.length <= 5 || S.open.has(p.id)) return `<div class="ex">${w.map(turn).join('')}</div>`;
     return `<div class="ex">${w.slice(0, 2).map(turn).join('')}<button class="thread-more" data-act="expand"><span aria-hidden="true">⋯</span> Show full thread <span class="thread-more__n">+${w.length - 4}</span><span class="sr"> more of ${w.length}</span></button>${w.slice(-2).map(turn).join('')}</div>`; };
   // Infinite scroll: a sentinel after the last card loads the next page.
@@ -109,13 +110,13 @@
       + (S.next != null ? '<div id="more" class="more-wrap"><button class="load-more" data-act="more">Load more</button></div>' : '')
       : `<div class="empty">${S.view === 'grok' || S.view === 'human' ? `${S.view === 'grok' ? '🤖' : '🧑'} No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts where ${S.view === 'grok' ? 'Grok' : 'the human'} leads the vote yet. Vote on a few threads and they will show up here.` : S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
     document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.view === S.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); if (on && b.parentNode.scrollWidth > b.parentNode.clientWidth) b.parentNode.scrollTo({ left: b.offsetLeft - 16, behavior: 'smooth' }); });
-    renderChips(); watch($('#feed'));
+    renderChips(); watch($('#feed')); autoWatch($('#feed'));
   }
   // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
   const rerender = (p, full) => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p);
     const tmp = document.createElement('div'); tmp.innerHTML = card(p, S.view === 'hall' ? i + 1 : 0); const fresh = tmp.firstElementChild;
     if (!full) { const ex = el.querySelector('.ex'), nx = fresh.querySelector('.ex'); if (ex && nx) nx.replaceWith(ex); }
-    el.replaceWith(fresh); if (full) watch(fresh); };
+    el.replaceWith(fresh); if (full) watch(fresh); autoWatch(fresh); };
 
   const feedQ = extra => { const q = new URLSearchParams({ view: S.view, range: S.hof, ...extra }); if (S.topic !== 'All') q.set('topic', S.topic); return '/api/feed?' + q; };
   async function load() {
@@ -142,7 +143,7 @@
       S.posts.push(...add); S.next = d.next ?? null;
       const m = $('#more'), tmp = document.createElement('div');
       tmp.innerHTML = add.map((p, i) => card(p, S.view === 'hall' ? base + i + 1 : 0)).join('');
-      if (m) { m.before(...tmp.children); if (S.next == null) m.remove(); }
+      const nodes = [...tmp.children]; if (m) { m.before(...nodes); if (S.next == null) m.remove(); } nodes.forEach(autoWatch);
     } catch { toast('Could not load more posts.'); } finally { S.busy = false; watch(); }
   }
   function setState(patch) {
@@ -155,11 +156,113 @@
     render(); load();
   }
 
+  // ---- translate (POST /api/translate; cached server-side per item + language) ----
+  const LANGS = { en: 'English', es: 'Español', de: 'Deutsch', fr: 'Français', pt: 'Português', it: 'Italiano', nl: 'Nederlands', pl: 'Polski',
+    tr: 'Türkçe', sv: 'Svenska', ru: 'Русский', uk: 'Українська', ar: 'العربية', he: 'עברית', hi: 'हिन्दी', ja: '日本語', ko: '한국어', zh: '中文',
+    id: 'Bahasa Indonesia', vi: 'Tiếng Việt', th: 'ไทย', el: 'Ελληνικά', fa: 'فارسی', ro: 'Română', cs: 'Čeština' };
+  const EN_NAMES = { en: 'English', es: 'Spanish', de: 'German', fr: 'French', pt: 'Portuguese', it: 'Italian', nl: 'Dutch', pl: 'Polish', tr: 'Turkish', sv: 'Swedish',
+    ru: 'Russian', uk: 'Ukrainian', ar: 'Arabic', he: 'Hebrew', hi: 'Hindi', ja: 'Japanese', ko: 'Korean', zh: 'Chinese', id: 'Indonesian', vi: 'Vietnamese', th: 'Thai',
+    el: 'Greek', fa: 'Persian', ro: 'Romanian', cs: 'Czech' };
+  const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
+  const norm = l => { const c = String(l || '').toLowerCase().split(/[-_]/)[0]; return LANGS[c] ? c : null; };
+  const RL = () => norm(store.get('gvh_lang')) || norm(navigator.language) || 'en';   // reader language
+  const AUTO = () => store.get('gvh_autotr') === '1';
+  const langName = c => LANGS[c] || c;
+  const srcName = c => !c ? 'another language' : EN_NAMES[c] || (() => { try { return new Intl.DisplayNames(['en'], { type: 'language' }).of(c); } catch { return c; } })();   // site UI is English
+  // Same heuristic as server/lang.js: script ranges, then stopword scoring. null = unsure.
+  const SCRIPTS = [[/[\u3040-\u30ff]/g, 'ja'], [/[\uac00-\ud7af]/g, 'ko'], [/[\u4e00-\u9fff]/g, 'zh'], [/[\u0600-\u06ff]/g, 'ar'], [/[\u0590-\u05ff]/g, 'he'],
+    [/[\u0900-\u097f]/g, 'hi'], [/[\u0e00-\u0e7f]/g, 'th'], [/[\u0370-\u03ff]/g, 'el'], [/[\u0400-\u04ff]/g, 'ru']];
+  const STOP = Object.fromEntries(Object.entries({
+    en: 'the and is are you that this what with for not have it was but they of to in be do does how why',
+    es: 'el la los las que de y es en un una por para con no se lo como pero más muy está qué porque',
+    de: 'der die das und ist nicht ich du sie ein eine mit auf für den dem zu auch wie aber was warum sehr',
+    fr: 'le la les et est une des pas que qui pour avec dans ce je tu vous mais très pourquoi',
+    pt: 'o os as que de e é em um uma não para com por mais muito você isso mas porque',
+    it: 'il lo gli che di e è un una non per con sono ma più molto perché questo',
+    nl: 'de het een en is niet dat van ik je met voor op maar ook wat waarom', pl: 'nie jest się to że na w i z do co jak ale tak',
+    tr: 've bir bu da de ne için çok ama ben sen değil', sv: 'och är det att en som inte jag du med för på men',
+    id: 'yang dan di ini itu tidak dengan untuk dari saya kamu ada' }).map(([k, v]) => [k, new Set(v.split(' '))]));
+  function detect(text) {
+    const s = String(text || '').replace(/https?:\/\/\S+/g, ' ').replace(/[@#]\w+/g, ' ');
+    for (const [re, c] of SCRIPTS) { const m = s.match(re); if (m && m.length >= 2) return c === 'ru' && /[іїєґ]/i.test(s) ? 'uk' : c === 'ar' && /[پچژگ]/.test(s) ? 'fa' : c; }
+    const words = s.toLowerCase().match(/[a-zà-ÿąćęłńóśźżçğışö]+/g) || []; if (words.length < 3) return null;
+    const sc = {}; for (const w of words) for (const k in STOP) if (STOP[k].has(w)) sc[k] = (sc[k] || 0) + 1;
+    if (/[ñ¿¡]/.test(s)) sc.es = (sc.es || 0) + 2; if (/[äöüß]/.test(s)) sc.de = (sc.de || 0) + 1.5; if (/[ãõ]/.test(s)) sc.pt = (sc.pt || 0) + 2;
+    const top = Object.entries(sc).sort((a, b) => b[1] - a[1]);
+    if (!top.length || top[0][1] < 2 || (top[1] && top[1][1] >= top[0][1] * 0.8)) return null;
+    return top[0][0];
+  }
+  // Show "Translate" when the text looks like another language; when unsure, show it unless it is plain ASCII for an English reader.
+  function needsTr(text) {
+    const s = String(text || '').replace(/https?:\/\/\S+/g, '').replace(/[@#]\w+/g, '').trim();
+    if (!/\p{L}{2,}/u.test(s)) return false;
+    const d = detect(s), rl = RL();
+    if (d) return d !== rl;
+    return !(rl === 'en' && /^[\x00-\x7f\s\p{Extended_Pictographic}\u{FE0F}\u{200D}’‘“”…–—]*$/u.test(s));
+  }
+  const TR = new Map();   // key "kind|id" -> { text, source, on, busy, err, target }
+  function trBar(k, text) {
+    const t = TR.get(k);
+    if (!t && !needsTr(text)) return '';
+    if (t && t.target !== RL()) TR.delete(k);
+    const x = TR.get(k);
+    if (x?.busy) return `<div class="trx" data-trbar><span class="trx__s" role="status">🌐 Translating…</span></div>`;
+    if (x?.on) return `<div class="trx" data-trbar><span class="trx__s">Translated from ${esc(srcName(x.source))}</span> · <button class="trx__b" data-tr>Show original</button></div>`;
+    return `<div class="trx" data-trbar><button class="trx__b" data-tr${x?.err ? ' title="Translation failed, tap to retry"' : ''}>🌐 ${x?.err ? 'Retry translation' : 'Translate'}</button></div>`;
+  }
+  const origText = k => { const [kind, id] = k.split('|');
+    if (kind === 'comment') return S.sheet?.comments?.find(c => String(c.id) === id)?.body;
+    const [pid, pos] = id.split(':'); return S.posts.find(p => p.id === pid)?.tweets.find((w, i) => String(w.pos ?? i) === pos)?.text; };
+  function paint(el) {
+    const k = el.dataset.trk, src = origText(k); if (src == null) return; const t = TR.get(k);
+    const p = el.querySelector('[data-trt]'), isC = k.startsWith('comment|');
+    if (p) { p.innerHTML = (isC ? linkify : linkX)(t?.on ? t.text : src); p.lang = t?.on ? t.target : ''; }
+    const tmp = document.createElement('div'); tmp.innerHTML = trBar(k, src);
+    const old = el.querySelector('[data-trbar]'); if (old) old.replaceWith(...tmp.children); else if (p) p.after(...tmp.children);
+  }
+  async function toggleTr(el, auto) {
+    if (!el) return; const k = el.dataset.trk, t = TR.get(k);
+    if (t?.busy) return;
+    if (t && t.text != null && t.target === RL()) { if (auto && t.on) return; t.on = !t.on; return paint(el); }
+    const [kind, id] = k.split('|');
+    TR.set(k, { busy: true, target: RL() }); paint(el);
+    const r = await post('/api/translate', { kind, id, target: RL() }).catch(() => ({ ok: false, data: {} }));
+    if (r.ok && !r.data.same) TR.set(k, { text: r.data.text, source: r.data.source, on: true, target: RL() });
+    else { TR.set(k, { err: true, target: RL() });
+      if (r.data?.same) TR.set(k, { text: origText(k), source: r.data.source, on: false, target: RL(), same: true });
+      if (!auto) toast(r.data?.same ? 'This is already in ' + srcName(RL()) + '.' : r.status === 429 ? 'Too many translations. Try again in a minute.' : 'Translation failed. Try again.'); }
+    document.querySelectorAll(`[data-trk="${CSS.escape(k)}"]`).forEach(paint);
+  }
+  // Auto-translate: only items that scroll into view (keeps under the 60/min limit).
+  let aio = null;
+  function autoWatch(root) {
+    if (!AUTO() || !root || !('IntersectionObserver' in window)) return;
+    aio ||= new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; aio.unobserve(e.target);
+      if (e.target.querySelector('[data-tr]') && !TR.get(e.target.dataset.trk)) toggleTr(e.target, true); }), { rootMargin: '200px 0px' });
+    root.querySelectorAll('[data-trk]').forEach(el => { if (el.querySelector('[data-tr]')) aio.observe(el); });
+  }
+  function openLang() {
+    const cur = norm(store.get('gvh_lang')), br = norm(navigator.language) || 'en';
+    panel('🌐 Language', `<form id="lgf" class="sx__form">
+      <label class="fld"><span>Translate posts and comments into</span><select name="lang" class="lang-sel">
+        <option value="">Browser default (${esc(langName(br))})</option>
+        ${Object.entries(LANGS).map(([c, n]) => `<option value="${c}" ${cur === c ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>
+      <label class="tgl"><input type="checkbox" name="auto" ${AUTO() ? 'checked' : ''}><span><b>Auto-translate everything</b><small>Translate posts and comments in other languages as they appear</small></span></label>
+      <button class="pill-btn" type="submit">Save</button><p class="fine">Translations are machine-generated (Cloudflare Workers AI) and may be imperfect. Saved on this device only.</p></form>`);
+  }
+  document.addEventListener('submit', e => {
+    if (e.target.id !== 'lgf') return; e.preventDefault();
+    const fd = new FormData(e.target); store.set('gvh_lang', fd.get('lang') || null); store.set('gvh_autotr', fd.get('auto') ? '1' : null);
+    TR.clear(); aio?.disconnect(); aio = null; closeSheet(); renderAuth(); render(); toast('Language: ' + langName(RL()) + (AUTO() ? ' · auto-translate on' : ''));
+  });
+  window.__gvhTr = { detect, needsTr, RL };
+
   // ---- comments sheet ----
   function cmtHtml(c) {
-    return `<li class="cmt" data-cid="${c.id}"><img class="cmt__av" src="${esc(c.user.avatar)}" alt="" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">
+    const k = 'comment|' + c.id, tr = TR.get(k);
+    return `<li class="cmt" data-cid="${c.id}" data-trk="${esc(k)}"><img class="cmt__av" src="${esc(c.user.avatar)}" alt="" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">
       <div class="cmt__main"><div class="cmt__head"><a href="https://x.com/${encodeURIComponent(c.user.handle)}" target="_blank" rel="noopener noreferrer">@${esc(c.user.handle)}</a> · ${ago(c.created_at)}${c.hidden ? ' · <em>hidden</em>' : ''}</div>
-      <p class="cmt__body">${linkify(c.body)}</p>
+      <p class="cmt__body" data-trt>${linkify(tr && tr.on ? tr.text : c.body)}</p>${c.hidden ? '' : trBar(k, c.body)}
       <div class="cmt__acts"><button data-c="like" class="${c.mine === 1 ? 'is-like' : ''}"><i class="fa-solid fa-thumbs-up"></i> ${c.likes}</button><button data-c="dislike" class="${c.mine === -1 ? 'is-dislike' : ''}"><i class="fa-solid fa-thumbs-down"></i> ${c.dislikes}</button>
       ${c.own || S.user?.admin ? '<button data-c="delete">Delete</button>' : ''}${!c.own ? '<button data-c="report">Report</button>' : ''}</div></div></li>`;
   }
@@ -175,7 +278,7 @@
     const d = await r.json().catch(() => ({ comments: [] }));
     S.sheet.comments = d.comments || []; drawComments();
   }
-  function drawComments() { const c = S.sheet.comments; $('#cl').innerHTML = c.length ? c.map(cmtHtml).join('') : '<li class="empty">No comments yet. Be the first.</li>'; }
+  function drawComments() { const c = S.sheet.comments; $('#cl').innerHTML = c.length ? c.map(cmtHtml).join('') : '<li class="empty">No comments yet. Be the first.</li>'; autoWatch($('#cl')); }
   function closeSheet() { $('#sheet').hidden = true; $('#sheet').innerHTML = ''; document.body.style.overflow = ''; S.sheet = null; }
   document.addEventListener('submit', async e => {
     if (e.target.id !== 'cf') return; e.preventDefault();
@@ -186,6 +289,8 @@
   });
 
   document.addEventListener('click', async e => {
+    const tb = e.target.closest('[data-tr]'); if (tb) return toggleTr(tb.closest('[data-trk]'));
+    if (e.target.closest('[data-lang]')) return openLang();
     const sh = e.target.closest('[data-sh]');
     if (sh) { if (sh.dataset.sh === 'close') return closeSheet(); return signIn(location.pathname + location.search + '#p' + S.sheet.p.id); }
     const cb = e.target.closest('[data-c]');

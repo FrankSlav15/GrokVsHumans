@@ -6,12 +6,12 @@ import { digest, chicagoHour } from './digest.js';
 // the paid X API v2 (no syndication scraping); the public site shows posts as official X embeds.
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
-import { suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
+import { TOPICS, suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
 
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
 const POST_USD = 0.005, USER_USD = 0.010;
-const MAX_CHAIN = 20, MAX_UP = 20;          // whole Grok-vs-human exchange, up to 20 turns
+const MAX_CHAIN = 40, MAX_UP_LOOKUPS = 12;  // stored posts per thread (root..leaf); paid lookups allowed while walking up to the root
 const GROK_ID = '1720665183188922368';
 const SUB_BUDGET = 45;                       // free plan: 50 external subrequests per invocation
 
@@ -118,7 +118,7 @@ async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = n
 
 // X API v2 tweet -> our chain row. users: id -> user object from includes.users.
 const USER_FIELDS = 'username,name,profile_image_url,verified';
-const LOOKUP_FIELDS = 'created_at,conversation_id,referenced_tweets,author_id,in_reply_to_user_id,note_tweet,attachments';
+const LOOKUP_FIELDS = 'created_at,conversation_id,referenced_tweets,author_id,in_reply_to_user_id,note_tweet,attachments,public_metrics';
 const MEDIA_FIELDS = 'type,url,preview_image_url,variants,width,height,alt_text';
 const mediaMap = j => Object.fromEntries((j.includes?.media || []).map(m => [m.media_key, m]));
 // Media exactly as the API returns it: photos (url), videos/GIFs (preview + best mp4 variant).
@@ -141,6 +141,7 @@ function fromApi(t, users, media = {}, tweets = {}) {
     created_at: t.created_at ? Math.floor(Date.parse(t.created_at) / 1000) : null,
     parent: (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id || null,
     conversation_id: t.conversation_id || null,
+    likes: t.public_metrics?.like_count || 0, replies: t.public_metrics?.reply_count || 0,
   };
 }
 // Paid lookup of up to N ids plus the posts they reply to (one level) and all authors. Returns Map id -> row.
@@ -179,8 +180,34 @@ async function conversation(env, b, conv, froms, pages = 1) {
   return { map };
 }
 
-// Rebuild the full exchange around one Grok post: ancestors (search results first, paid lookups only for gaps),
-// then follow the alternating human <-> Grok replies down to the end of the conversation (max MAX_CHAIN turns).
+// Rebuild the full exchange around one Grok post:
+//  1. the true root = the post whose id is the conversation_id (fetched by id via GET /2/tweets when it is not in the
+//     search results, e.g. older than the 7-day recent-search window); the walk up from the anchor follows replied_to
+//     parents (paid lookups only for gaps, batched with their own parents) until it reaches that root;
+//  2. below the anchor, every branch of the known reply tree (conversation search limited to Grok + the asker(s)) is
+//     scored and the best one is followed down to its leaf: engagement (likes, replies) + length, bonus for the
+//     Grok <-> original-asker back-and-forth. Nothing is taken just because it came first.
+function pickBranch(known, startId, { grokId = GROK_ID, askers = new Set(), maxDepth = MAX_CHAIN } = {}) {
+  const kids = {}; for (const w of known.values()) if (w.parent && known.has(w.parent) && w.tweet_id !== startId) (kids[w.parent] ||= []).push(w);
+  const val = w => 1 + Math.min(w.likes || 0, 50) / 5 + Math.min(w.replies || 0, 20) / 4;
+  const memo = new Map();
+  const best = (id, prevAuthor, depth) => {
+    const key = id + '|' + depth; if (memo.has(key)) return memo.get(key);
+    let top = { s: 0, path: [] };
+    if (depth < maxDepth) for (const k of kids[id] || []) {
+      const g = k.author_id === grokId, asker = askers.has(k.author_id);
+      if (!g && !asker) continue;                                  // only Grok and the asker(s) continue the chain
+      const alt = g !== (prevAuthor === grokId);                   // a real turn (human -> Grok -> human)
+      const sub = best(k.tweet_id, k.author_id, depth + 1);
+      const s = val(k) + (alt ? 3 : 0) + (asker || g ? 1 : 0) + sub.s;
+      if (s > top.s || (s === top.s && sub.path.length + 1 > top.path.length)) top = { s, path: [k, ...sub.path] };
+    }
+    memo.set(key, top); return top;
+  };
+  const start = known.get(startId);
+  return best(startId, start?.author_id, 0).path;
+}
+
 async function buildChain(env, b, c) {
   const p = JSON.parse(c.payload);
   const first = await lookup(env, b, [c.grok_tweet_id], 'chain');
@@ -188,46 +215,44 @@ async function buildChain(env, b, c) {
   const g = first.rows.get(c.grok_tweet_id);
   if (!g) return { status: 'gone' };
   const known = first.rows;
+  const conv = g.conversation_id || c.conversation_id;
+  // 1a. root by id (one paid lookup, only when it is not already known)
+  if (conv && !known.has(conv)) { const r = await lookup(env, b, [conv], 'root'); if (r.capped) return { status: 'capped:' + r.capped }; for (const [k, v] of r.rows) if (!known.has(k)) known.set(k, v); }
+  const root = conv ? known.get(conv) : null;
   const asked = g.parent ? known.get(g.parent) : null;
-  const humanIds = new Set([asked?.author_id, p.replier_id].filter(id => id && id !== GROK_ID));
+  const humanIds = new Set([root?.author_id, asked?.author_id, p.replier_id].filter(id => id && id !== GROK_ID));
   if (!humanIds.size) return { status: 'no_human' };
-  const conv = c.conversation_id || g.conversation_id;
-  const handles = [...new Set([asked?.author_handle, ...[...known.values()].filter(w => humanIds.has(w.author_id)).map(w => w.author_handle)].filter(h => h && h !== '?'))];
-  if (conv && env.X_BEARER_TOKEN) {
-    const r = await conversation(env, b, conv, ['grok', ...(handles.length ? handles : []), ...(p.replier_id && !handles.length ? [p.replier_id] : [])]);
+  const handles = [...new Set([...known.values()].filter(w => humanIds.has(w.author_id)).map(w => w.author_handle).filter(h => h && h !== '?'))];
+  if (conv && env.X_BEARER_TOKEN && handles.length) {
+    const r = await conversation(env, b, conv, ['grok', ...handles]);
     if (r.capped && !r.map.size) return { status: 'capped:' + r.capped };
     for (const [k, v] of r.map) if (!known.has(k)) known.set(k, v);
   }
-  // upward
-  const chain = [g];
-  let up = g.parent;
-  while (up && chain.length < MAX_UP) {
-    if (!known.has(up)) { const r = await lookup(env, b, [up], 'chain'); if (r.capped) break; for (const [k, v] of r.rows) known.set(k, v); }
-    const w = known.get(up); if (!w) break;
+  // 1b. walk up to the root; gaps are looked up by id (each lookup also returns that post's parent)
+  const chain = [g]; let up = g.parent, lookups = 0;
+  while (up) {
+    if (!known.has(up)) {
+      if (lookups++ >= MAX_UP_LOOKUPS) break;
+      const r = await lookup(env, b, [up], 'chain'); if (r.capped) break; for (const [k, v] of r.rows) if (!known.has(k)) known.set(k, v);
+    }
+    const w = known.get(up); if (!w || chain.some(x => x.tweet_id === w.tweet_id)) break;
     chain.unshift(w); up = w.parent;
   }
-  // downward: earliest reply to the last turn by the other side (human after Grok, Grok after a human)
-  const kids = {}; for (const w of known.values()) if (w.parent) (kids[w.parent] ||= []).push(w);
-  for (const k in kids) kids[k].sort((a, b2) => (BigInt(a.tweet_id) < BigInt(b2.tweet_id) ? -1 : 1));
-  const seen = new Set(chain.map(w => w.tweet_id));
-  while (chain.length < MAX_CHAIN + MAX_UP) {
-    const last = chain[chain.length - 1], grokLast = last.author_id === GROK_ID;
-    const next = (kids[last.tweet_id] || []).find(w => !seen.has(w.tweet_id) && (grokLast ? humanIds.has(w.author_id) : w.author_id === GROK_ID));
-    if (!next) break;
-    chain.push(next); seen.add(next.tweet_id);
-  }
-  // the human is whoever Grok answered most in this exchange
+  const rootOk = !!root && chain[0].tweet_id === root.tweet_id;
+  if (root && !rootOk) chain.unshift(root);                      // path not fully bridged: still open on the root post
+  // 2. best branch below the anchor down to its leaf
+  const askers = new Set([root?.author_id, asked?.author_id, p.replier_id].filter(id => id && id !== GROK_ID));
+  for (const w of pickBranch(known, g.tweet_id, { askers, maxDepth: MAX_CHAIN })) chain.push(w);
+  // the human is whoever Grok answered most in this exchange (falls back to the root author)
   const cnt = {}; chain.forEach((w, i) => { if (w.author_id === GROK_ID && i > 0 && chain[i - 1].author_id !== GROK_ID) cnt[chain[i - 1].author_id] = (cnt[chain[i - 1].author_id] || 0) + 1; });
-  const hid = Object.entries(cnt).sort((a, b2) => b2[1] - a[1])[0]?.[0];
+  const hid = Object.entries(cnt).sort((a, b2) => b2[1] - a[1])[0]?.[0] || root?.author_id;
   const human = chain.find(w => w.author_id === hid);
   if (!human) return { status: 'no_human' };
   const blocked = await env.DB.prepare('SELECT 1 FROM blocked_authors WHERE handle = lower(?1) OR (x_id IS NOT NULL AND x_id = ?2)').bind(human.author_handle, human.author_id).first();
   if (blocked) return { status: 'blocked' };
-  // drop leading posts by other people once the human's own exchange has started
-  while (chain.length > 2 && chain[0].author_id !== human.author_id && chain[0].author_id !== GROK_ID
-    && chain.slice(1, -1).some(w => w.author_id === human.author_id)) chain.shift();
-  const tweets = chain.slice(0, MAX_CHAIN);
-  return { status: 'ok', p, conv, human, tweets };
+  // too long: keep the root and the end of the exchange (the root is never dropped)
+  const tweets = chain.length <= MAX_CHAIN ? chain : [chain[0], ...chain.slice(chain.length - (MAX_CHAIN - 1))];
+  return { status: 'ok', p, conv, human, tweets, rootOk };
 }
 // Turns that alternate human/Grok, for ranking and stats.
 const turns = tweets => tweets.reduce((n, w, i) => n + (i === 0 || (w.author_id === GROK_ID) !== (tweets[i - 1].author_id === GROK_ID) ? 1 : 0), 0);
@@ -237,7 +262,7 @@ async function expandOne(env, b, c) {
   if (r.status !== 'ok') return r.status;
   const { p, conv, human, tweets } = r;
   if (conv && await env.DB.prepare('SELECT 1 FROM posts WHERE conversation_id = ?1').bind(conv).first()) return 'dup_conv';
-  const topics = p.topics?.length ? p.topics : suggestTopics(tweets.map(w => w.text), p.annotations);
+  const topics = p.topics?.length ? p.topics : await aiTopics(env, tweets, p.annotations);
   const id = await insertPost(env.DB, {
     grok_tweet_id: c.grok_tweet_id, conversation_id: conv, human_x_id: human.author_id, human_handle: human.author_handle,
     headline: await aiHeadline(env, tweets), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
@@ -262,6 +287,23 @@ async function aiHeadline(env, tweets) {
   } catch { return suggestHeadline(tweets); }
 }
 
+// 1-2 topics from the root question + the overall thread: Workers AI picks from TOPICS, validated; keyword fallback.
+async function aiTopics(env, tweets, annotations = []) {
+  const kw = suggestTopics(tweets.map(w => w.text), annotations);
+  if (!env.AI) return kw;
+  try {
+    const clean = s => String(s || '').replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').trim();
+    const rest = tweets.slice(1).map(w => `${w.author_id === GROK_ID ? 'Grok' : 'Human'}: ${clean(w.text).slice(0, 160)}`).join('\n').slice(0, 2500);
+    const r = await env.AI.run(AI_MODEL, { max_tokens: 16, temperature: 0, messages: [
+      { role: 'system', content: `You categorize X threads. Allowed topics: ${TOPICS.join(', ')}. Judge mainly by what the ROOT post asks, then the thread as a whole; ignore passing jokes, emojis and side remarks. Reply with ONLY one topic, or two separated by a comma when both clearly apply. Use Wild Card only if nothing fits.` },
+      { role: 'user', content: `ROOT: ${clean(tweets[0]?.text).slice(0, 500)}\n\nTHREAD:\n${rest}` }] });
+    const out = [];
+    for (const part of String(r?.response || '').split(/[,\n]/)) { const t = TOPICS.find(x => x.toLowerCase() === part.trim().replace(/[."*]/g, '').toLowerCase()); if (t && !out.includes(t)) out.push(t); }
+    const res = out.filter(t => t !== 'Wild Card' || out.length === 1).slice(0, 2);
+    return res.length ? res : kw;
+  } catch { return kw; }
+}
+
 // Re-build an existing pending post in place (chain + auto headline), keeping its id, votes and admin edits to topics.
 async function rebuildPost(env, b, postId) {
   const post = await env.DB.prepare("SELECT * FROM posts WHERE id = ?1 AND status = 'pending'").bind(postId).first();
@@ -269,14 +311,22 @@ async function rebuildPost(env, b, postId) {
   const old = (await env.DB.prepare('SELECT * FROM post_tweets WHERE post_id = ?1 ORDER BY pos').bind(postId).all()).results;
   const r = await buildChain(env, b, { grok_tweet_id: post.grok_tweet_id, conversation_id: post.conversation_id, payload: '{}', engagement: post.x_engagement });
   if (r.status !== 'ok') return r.status;
-  if (r.tweets.length <= old.length) return 'same';
+  if (r.tweets.map(w => w.tweet_id).join() === old.map(w => w.tweet_id).join()) return 'same';
   const autoHead = !post.headline || post.headline === suggestHeadline(old);
   const st = [env.DB.prepare('DELETE FROM post_tweets WHERE post_id = ?1').bind(postId),
     ...r.tweets.map((w, i) => env.DB.prepare(`INSERT INTO post_tweets (post_id, pos, tweet_id, author_id, author_handle, author_name, author_avatar, verified, is_grok, text, media_json, created_at)
       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`).bind(postId, i, w.tweet_id, w.author_id, w.author_handle, w.author_name, w.author_avatar, w.verified ? 1 : 0, w.author_id === GROK_ID ? 1 : 0, w.text, JSON.stringify(w.media || []), w.created_at))];
   if (autoHead) st.push(env.DB.prepare('UPDATE posts SET headline = ?2 WHERE id = ?1').bind(postId, await aiHeadline(env, r.tweets)));
+  // topics: re-suggest unless an admin set them (suggested = 0)
+  const manual = await env.DB.prepare('SELECT 1 FROM post_topics WHERE post_id = ?1 AND suggested = 0').bind(postId).first();
+  let topics = null;
+  if (!manual) {
+    topics = await aiTopics(env, r.tweets, []);
+    st.push(env.DB.prepare('DELETE FROM post_topics WHERE post_id = ?1').bind(postId),
+      ...topics.map(t => env.DB.prepare('INSERT OR IGNORE INTO post_topics (post_id, topic, suggested) VALUES (?1, ?2, 1)').bind(postId, t)));
+  }
   await env.DB.batch(st);
-  return 'rebuilt:' + old.length + '->' + r.tweets.length;
+  return 'rebuilt:' + old.length + '->' + r.tweets.length + (r.rootOk ? '' : ':root-gap') + (topics ? ':' + topics.join('/') : '');
 }
 
 async function expand(env, b, max = 3, order = 'engagement') {
@@ -482,7 +532,8 @@ export default {
       await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
     } else {
       await expireFeatures(env);
-      if (env.X_BEARER_TOKEN && (await runSuggestions(env, b).catch(e => (console.log('suggest error', String(e)), []))).length) return;
+      // a suggestion skipped by the spend cap must not starve admin jobs (they carry their own budget)
+      if (env.X_BEARER_TOKEN && (await runSuggestions(env, b).catch(e => (console.log('suggest error', String(e)), []))).some(x => !x.capped)) return;
       if (env.X_BEARER_TOKEN && await runJob(env).catch(e => (console.log('job error', String(e)), null))) return;   // a job tick uses this invocation's subrequests
       const lim = boosted(env) ? Number(env.BOOST_EXPAND_PER_DAY || 60) : Number(env.EXPAND_PER_DAY || 20);
       const done = (await env.DB.prepare("SELECT COUNT(*) n FROM fetch_log WHERE kind='expand' AND day=?1 AND run_id LIKE 'cron-%'").bind(ymd()).first()).n;

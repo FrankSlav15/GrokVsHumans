@@ -107,7 +107,7 @@ async function build({ request, env }) {
     const M = {}; for (const r of mine.results) (M[r.id] ||= {})[r.k] = r.val;
     const T = {}; for (const r of topics.results) (T[r.post_id] ||= []).push(r.topic);
     const W = {}; for (const r of tweets.results) (W[r.post_id] ||= []).push({
-      id: r.tweet_id, handle: r.author_handle, name: r.author_name, avatar: r.author_avatar, verified: !!r.verified,
+      id: r.tweet_id, pos: r.pos, handle: r.author_handle, name: r.author_name, avatar: r.author_avatar, verified: !!r.verified,
       grok: !!r.is_grok, text: r.text, media: JSON.parse(r.media_json || '[]'), created_at: r.created_at });
     for (const p of page) {
       p.topics = (T[p.id] || []).sort((a, b) => TOPICS.indexOf(a) - TOPICS.indexOf(b));
