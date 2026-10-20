@@ -66,7 +66,7 @@ const EXPLICIT = /\b(penis|dick|cock|pussy|vagina|cum|cumming|jerk(ing)? off|str
 const eng = m => (m?.like_count || 0) + (m?.retweet_count || 0) + (m?.reply_count || 0) + (m?.quote_count || 0);
 
 // Stage 1: paid recent search for @grok replies -> fetch_candidates.
-async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = null, query = null, endHoursAgo = 48 } = {}) {
+async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = null, query = null, endHoursAgo = 48, job = null } = {}) {
   let token = start, added = 0, seen = 0; const engs = []; let noParent = 0;
   for (let i = 0; i < pages; i++) {
     const params = { query: query || 'from:grok is:reply -is:retweet lang:en', max_results: String(Math.min(100, Math.max(10, perPage))), sort_order: 'relevancy', 'tweet.fields': TWEET_FIELDS };
@@ -89,8 +89,8 @@ async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = n
       }
       t._anchor = anchor; t._eng = e;
       stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at)
-        SELECT ?1, ?2, ?3, ?4, ?5, 'new', ?6 WHERE NOT EXISTS (SELECT 1 FROM posts WHERE grok_tweet_id = ?1 OR conversation_id = ?2)`)
-        .bind(t._anchor, t.conversation_id, t.author_id === GROK_ID ? (t.in_reply_to_user_id || null) : t.author_id, JSON.stringify({ parent, reply_id: t.author_id === GROK_ID ? null : t.id, replier_id: t.author_id === GROK_ID ? null : t.author_id, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text }), t._eng, now()));
+        SELECT ?1, ?2, ?3, ?4, ?5, ?7, ?6 WHERE NOT EXISTS (SELECT 1 FROM posts WHERE grok_tweet_id = ?1 OR conversation_id = ?2)`)
+        .bind(t._anchor, t.conversation_id, t.author_id === GROK_ID ? (t.in_reply_to_user_id || null) : t.author_id, JSON.stringify({ parent, reply_id: t.author_id === GROK_ID ? null : t.id, replier_id: t.author_id === GROK_ID ? null : t.author_id, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text, ...(job ? { job, source: 'manual' } : {}) }), t._eng, now(), job ? 'job' : 'new'));
     }
     if (stmts.length) { const res = await env.DB.batch(stmts); added += res.reduce((a, x) => a + (x.meta?.changes || 0), 0); }
     token = r.json.meta?.next_token; if (!token) break;
@@ -182,10 +182,10 @@ async function expandOne(env, b, c) {
     if (w && chain.some(x => x.tweet_id === w.parent)) { const i = chain.findIndex(x => x.tweet_id === w.parent); chain.splice(i + 1, 0, w); }
   }
   const tweets = chain.slice(-MAX_CHAIN);
-  const topics = suggestTopics(tweets.map(w => w.text), p.annotations);
+  const topics = p.topics?.length ? p.topics : suggestTopics(tweets.map(w => w.text), p.annotations);
   const id = await insertPost(env.DB, {
     grok_tweet_id: c.grok_tweet_id, conversation_id: conv, human_x_id: human.author_id, human_handle: human.author_handle,
-    headline: suggestHeadline(tweets), source: 'fetch', low_priority: tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0, x_engagement: c.engagement, tweet_created_at: chain.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
+    headline: suggestHeadline(tweets), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: chain.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
   });
   return id ? 'stored' : 'duplicate';
 }
@@ -227,6 +227,50 @@ async function usage(env, b) {
   return j;
 }
 
+// Admin-queued jobs (table fetch_jobs), run by the */10 cron with their own budget (run id job-<id>):
+//   kind 'pick':   spec {items:[{grok, conv, topics?, low_priority?}]}  -> rebuild these chains as pending posts
+//   kind 'search': spec {queries:[...], max:N}  -> recent search, rank by engagement + depth, expand the best N
+async function runJob(env) {
+  const job = await env.DB.prepare("SELECT * FROM fetch_jobs WHERE state IN ('new','expanding') ORDER BY id LIMIT 1").first();
+  if (!job) return null;
+  const spec = JSON.parse(job.spec), runId = 'job-' + job.id;
+  const b = new Budget(env, runId, { runCap: Math.max(0, job.budget - await spentInRun(env, runId)) });
+  const log = async (state, extra) => { const r = { ...(JSON.parse(job.result || '{}')), ...extra }; await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, state, JSON.stringify(r)).run(); };
+  if (job.state === 'new') {
+    if (job.kind === 'pick') {
+      await env.DB.batch(spec.items.map(it => env.DB.prepare(`INSERT OR REPLACE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at) VALUES (?1, ?2, NULL, ?3, 0, 'job', ?4)`)
+        .bind(it.grok, it.conv, JSON.stringify({ job: job.id, source: 'manual', topics: it.topics || null, low_priority: it.low_priority ?? null, annotations: [] }), now())));
+    } else {
+      const found = [];
+      for (const q of spec.queries) found.push(await discover(env, b, { pages: 1, perPage: 100, minEng: 0, query: q, endHoursAgo: 0, job: job.id }));
+      // one candidate per conversation (the latest Grok post = longest chain), ranked by engagement + depth (hits per conversation)
+      const { results } = await env.DB.prepare(`SELECT grok_tweet_id, conversation_id, engagement FROM fetch_candidates WHERE state='job' AND json_extract(payload,'$.job')=?1`).bind(job.id).all();
+      const conv = {};
+      for (const c of results) { const k = c.conversation_id || c.grok_tweet_id; const o = conv[k] ||= { best: c, hits: 0, eng: 0 }; o.hits++; o.eng = Math.max(o.eng, c.engagement); if (BigInt(c.grok_tweet_id) > BigInt(o.best.grok_tweet_id)) o.best = c; }
+      const ranked = Object.values(conv).sort((a, b2) => (b2.eng + 5 * b2.hits) - (a.eng + 5 * a.hits));
+      const keep = new Set(ranked.slice(0, spec.max || 20).map(o => o.best.grok_tweet_id));
+      const drop = results.filter(c => !keep.has(c.grok_tweet_id));
+      for (let i = 0; i < drop.length; i += 50) await env.DB.batch(drop.slice(i, i + 50).map(c => env.DB.prepare("UPDATE fetch_candidates SET state='job-skip' WHERE grok_tweet_id=?1").bind(c.grok_tweet_id)));
+      for (const c of ranked.slice(0, spec.max || 20)) await env.DB.prepare('UPDATE fetch_candidates SET engagement=?2 WHERE grok_tweet_id=?1').bind(c.best.grok_tweet_id, c.eng + 5 * c.hits).run();
+      await log('expanding', { discover: found.map(f => ({ seen: f.seen, added: f.added })), conversations: ranked.length, selected: keep.size });
+      return { job: job.id, discovered: true };
+    }
+  }
+  const { results: todo } = await env.DB.prepare(`SELECT * FROM fetch_candidates WHERE state='job' AND json_extract(payload,'$.job')=?1 ORDER BY engagement DESC`).bind(job.id).all();
+  const out = JSON.parse(job.result || '{}').expand || {};
+  let capped = false;
+  for (const c of todo) {
+    if (b.sub > SUB_BUDGET - 12) break;
+    const res = await expandOne(env, b, c).catch(e => 'error:' + e.message);
+    if (String(res).startsWith('capped')) { capped = true; out.capped = (out.capped || 0) + 1; break; }
+    out[res] = (out[res] || 0) + 1;
+    await env.DB.prepare('UPDATE fetch_candidates SET state = ?2 WHERE grok_tweet_id = ?1').bind(c.grok_tweet_id, 'job:' + String(res).slice(0, 36)).run();
+  }
+  const left = (await env.DB.prepare(`SELECT COUNT(*) n FROM fetch_candidates WHERE state='job' AND json_extract(payload,'$.job')=?1`).bind(job.id).first()).n;
+  await log(left && !capped ? 'expanding' : 'done', { expand: out, left, spent: await spentInRun(env, runId) });
+  return { job: job.id, out, left };
+}
+
 export default {
   async scheduled(event, env, ctx) {
     API = env.X_API_BASE || API_DEFAULT;
@@ -235,6 +279,7 @@ export default {
       if (!env.X_BEARER_TOKEN) return;
       await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
     } else {
+      if (env.X_BEARER_TOKEN && await runJob(env).catch(e => (console.log('job error', String(e)), null))) return;   // a job tick uses this invocation's subrequests
       const lim = boosted(env) ? Number(env.BOOST_EXPAND_PER_DAY || 60) : Number(env.EXPAND_PER_DAY || 20);
       const done = (await env.DB.prepare("SELECT COUNT(*) n FROM fetch_log WHERE kind='expand' AND day=?1 AND run_id LIKE 'cron-%'").bind(ymd()).first()).n;
       if (done < lim) await expand(env, b, Math.min(3, lim - done));
