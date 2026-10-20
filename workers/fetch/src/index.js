@@ -344,7 +344,7 @@ async function runJob(env) {
     }
     if (job.kind === 'pick') {
       await env.DB.batch(spec.items.map(it => env.DB.prepare(`INSERT OR REPLACE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at) VALUES (?1, ?2, NULL, ?3, 0, 'job', ?4)`)
-        .bind(it.grok, it.conv, JSON.stringify({ job: job.id, source: 'manual', topics: it.topics || null, low_priority: it.low_priority ?? null, annotations: [] }), now())));
+        .bind(it.grok, it.conv || null, JSON.stringify({ job: job.id, source: 'manual', topics: it.topics || null, low_priority: it.low_priority ?? null, annotations: [] }), now())));
     } else {
       const found = [];
       for (const q of spec.queries) found.push(await discover(env, b, { pages: 1, perPage: 100, minEng: 0, query: q, endHoursAgo: 0, job: job.id }));
