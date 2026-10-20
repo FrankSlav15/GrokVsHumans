@@ -124,12 +124,19 @@ const mediaMap = j => Object.fromEntries((j.includes?.media || []).map(m => [m.m
 const apiMedia = (t, media) => (t.attachments?.media_keys || []).map(k => media[k]).filter(Boolean).map(m => ({
   type: m.type, url: m.url || m.preview_image_url || null, alt: m.alt_text || null,
   video: m.type === 'photo' ? null : ((m.variants || []).filter(v => v.content_type === 'video/mp4').sort((a, b) => (b.bit_rate || 0) - (a.bit_rate || 0))[0]?.url || null) }));
-function fromApi(t, users, media = {}) {
+// Quoted post (from includes.tweets of the same response) as a nested card entry in media_json.
+function apiQuote(t, users, tweets = {}) {
+  const qid = (t.referenced_tweets || []).find(x => x.type === 'quoted')?.id; if (!qid) return [];
+  const q = tweets[qid], u = q ? users[q.author_id] || {} : {};
+  return [{ type: 'quote', id: qid, handle: u.username || null, name: u.name || null, avatar: u.profile_image_url || null,
+    text: q ? String(q.note_tweet?.text || q.text || '').replace(/\s*https:\/\/t\.co\/\w+$/, '') : null, created_at: q?.created_at ? Math.floor(Date.parse(q.created_at) / 1000) : null }];
+}
+function fromApi(t, users, media = {}, tweets = {}) {
   const u = users[t.author_id] || {};
   return {
     tweet_id: t.id, author_id: t.author_id || null, author_handle: u.username || (t.author_id === GROK_ID ? 'grok' : '?'),
     author_name: u.name || null, author_avatar: u.profile_image_url ? u.profile_image_url.replace('_normal.', '_bigger.') : null,
-    verified: u.verified ? 1 : 0, text: cleanText(t.note_tweet?.text || t.text || ''), media: apiMedia(t, media),
+    verified: u.verified ? 1 : 0, text: cleanText(t.note_tweet?.text || t.text || ''), media: [...apiMedia(t, media), ...apiQuote(t, users, tweets)],
     created_at: t.created_at ? Math.floor(Date.parse(t.created_at) / 1000) : null,
     parent: (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id || null,
     conversation_id: t.conversation_id || null,
@@ -144,8 +151,9 @@ async function lookup(env, b, ids, kind) {
   const out = new Map();
   if (!r.ok) return { rows: out };
   const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
-  const media = mediaMap(r.json);
-  for (const t of [...(r.json.data || []), ...(r.json.includes?.tweets || [])]) out.set(t.id, fromApi(t, users, media));
+  const media = mediaMap(r.json), all = [...(r.json.data || []), ...(r.json.includes?.tweets || [])];
+  const byId = Object.fromEntries(all.map(t => [t.id, t]));
+  for (const t of all) out.set(t.id, fromApi(t, users, media, byId));
   return { rows: out };
 }
 
@@ -317,6 +325,30 @@ async function runJob(env) {
   const b = new Budget(env, runId, { runCap: Math.max(0, job.budget - await spentInRun(env, runId)) });
   const log = async (state, extra) => { const r = { ...(JSON.parse(job.result || '{}')), ...extra }; await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, state, JSON.stringify(r)).run(); };
   if (job.state === 'new') {
+    if (job.kind === 'pick' && spec.refix) {
+      // Turns stored with empty text (mentions-only, quote posts, media-only): re-fetch with quotes, entities and authors.
+      const { results } = await env.DB.prepare(`SELECT DISTINCT tweet_id FROM post_tweets WHERE length(trim(text)) = 0 LIMIT 100`).all();
+      const ids = results.map(r => r.tweet_id), out = { ids: ids.length };
+      if (ids.length) {
+        const r = await xGet(env, b, '/tweets', { ids: ids.join(','), 'tweet.fields': 'note_tweet,attachments,entities,display_text_range,referenced_tweets,author_id,created_at',
+          expansions: 'attachments.media_keys,referenced_tweets.id,referenced_tweets.id.author_id', 'user.fields': USER_FIELDS, 'media.fields': MEDIA_FIELDS }, 'refix', ids.length * 4);
+        if (r.ok) {
+          const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u])), media = mediaMap(r.json);
+          const byId = Object.fromEntries([...(r.json.data || []), ...(r.json.includes?.tweets || [])].map(t => [t.id, t])), st = [], t0 = now();
+          out.raw = {};
+          for (const t of r.json.data || []) {
+            const m = [...apiMedia(t, media), ...apiQuote(t, users, byId)];
+            out.raw[t.id] = { text: t.text, quoted: m.some(x => x.type === 'quote'), media: m.filter(x => x.type !== 'quote').length };
+            st.push(env.DB.prepare(`UPDATE post_tweets SET text = ?2, media_json = ?3, full_at = ?4 WHERE tweet_id = ?1`).bind(t.id, cleanText(t.note_tweet?.text || t.text || ''), JSON.stringify(m), t0));
+          }
+          out.missing = ids.filter(id => !byId[id]);
+          for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));
+        } else out.error = r.capped || r.status;
+      }
+      out.spent = await spentInRun(env, runId);
+      await env.DB.prepare("UPDATE fetch_jobs SET state='done', result=?2 WHERE id=?1").bind(job.id, JSON.stringify(out)).run();
+      return { job: job.id, refix: out };
+    }
     if (job.kind === 'pick' && spec.backfill) {
       // Full text (note_tweet) + media for stored turns that may be truncated; 100 ids per paid call, no user objects.
       const out = JSON.parse(job.result || '{}'); let calls = 0, capped = false;
@@ -395,6 +427,8 @@ async function runJob(env) {
 
 export default {
   async scheduled(event, env, ctx) {
+    // Effective caps for the admin queue header (boost-aware).
+    await env.DB.prepare("INSERT OR REPLACE INTO kv (k, v) VALUES ('caps', ?1)").bind(JSON.stringify({ day: boosted(env) ? Number(env.BOOST_DAILY_CAP_USD || 5) : Number(env.DAILY_CAP_USD || 1.5), month: Number(env.MONTHLY_CAP_USD || 45), boost_until: boosted(env) ? env.BOOST_UNTIL : null })).run().catch(() => {});
     API = env.X_API_BASE || API_DEFAULT;
     const b = new Budget(env, 'cron-' + Date.now());
     if (event.cron === '0 11,23 * * *') {

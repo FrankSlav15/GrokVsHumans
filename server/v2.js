@@ -51,7 +51,9 @@ export function suggestTopics(texts, annotations = []) {
 export function cleanText(text, range) {
   let s = text;
   if (Array.isArray(range) && range[0] > 0) s = [...s].slice(range[0]).join('');
-  s = s.replace(/^(@\w+\s+)+/, '').replace(/\s*https:\/\/t\.co\/\w+$/, '');
+  const noLink = s.replace(/\s*https:\/\/t\.co\/\w+$/, '');
+  s = noLink.replace(/^(@\w+\s*)+/, '');
+  if (!s.trim()) s = noLink;   // mentions-only reply: keep the mentions rather than an empty turn
   return s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
 }
 

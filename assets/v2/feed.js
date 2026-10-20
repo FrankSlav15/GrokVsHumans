@@ -36,11 +36,17 @@
     .replace(/(^|[^\w&/])#(\w{1,80})/g, (m, pre, h) => `${pre}<a href="https://x.com/hashtag/${encodeURIComponent(h)}" target="_blank" rel="noopener noreferrer">#${h}</a>`);
   const stamp = sec => sec ? new Date(sec * 1000).toLocaleString(undefined, { hour: 'numeric', minute: '2-digit', month: 'short', day: 'numeric', year: 'numeric' }) : 'View post';
   function media(m) {
-    return (m || []).map(x => x.video
+    return (m || []).map(x => x.type === 'quote' ? quote(x) : x.video
       ? `<video class="tw__m" src="${esc(x.video)}" ${x.url ? `poster="${esc(x.url)}"` : ''} controls preload="none" playsinline></video>`
       : x.url ? `<img class="tw__m" src="${esc(x.url)}" alt="${esc(x.alt || '')}" loading="lazy" referrerpolicy="no-referrer">` : '').join('');
   }
+  // Quoted post as a nested card (text from the X API, linked to x.com).
+  function quote(q) {
+    const url = `https://x.com/${encodeURIComponent(q.handle || 'i')}/status/${encodeURIComponent(q.id)}`;
+    return `<a class="tw__q" href="${url}" target="_blank" rel="noopener noreferrer"><span class="tw__qh">${q.name ? `<b>${esc(q.name)}</b> ` : ''}${q.handle ? '@' + esc(q.handle) : 'Quoted post'}</span>${q.text ? `<span class="tw__qt">${esc(q.text)}</span>` : '<span class="tw__qt">View the quoted post on X</span>'}</a>`;
+  }
   function turn(w) {
+    const hasText = !!String(w.text || '').trim(), hasMedia = (w.media || []).length > 0;
     const url = `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`;
     return `<div class="tw ${w.grok ? 'tw--grok' : 'tw--human'}">
       <div class="tw__h">
@@ -50,7 +56,7 @@
           <span class="tw__u">@${esc(w.handle)}</span></a>
         <a href="${url}" target="_blank" rel="noopener noreferrer" class="tw__x" aria-label="View on X">${X_SVG}</a>
       </div>
-      <p class="tw__t">${linkX(w.text)}</p>${media(w.media)}
+      ${hasText ? `<p class="tw__t">${linkX(w.text)}</p>` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media)}
       <a class="tw__time" href="${url}" target="_blank" rel="noopener noreferrer">${esc(stamp(w.created_at))}</a>
     </div>`;
   }
