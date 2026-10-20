@@ -10,7 +10,7 @@ import { suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText } fr
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
 const POST_USD = 0.005, USER_USD = 0.010;
-const MAX_CHAIN = 10, MAX_UP = 7;
+const MAX_CHAIN = 20, MAX_UP = 10;          // whole Grok-vs-human exchange, up to 20 turns
 const GROK_ID = '1720665183188922368';
 const SUB_BUDGET = 45;                       // free plan: 50 external subrequests per invocation
 
@@ -61,8 +61,24 @@ async function xGet(env, b, path, params, kind, maxPosts) {
   return { ok: r.ok, status: r.status, json: j };
 }
 
-const TWEET_FIELDS = 'conversation_id,created_at,public_metrics,referenced_tweets,in_reply_to_user_id,context_annotations,author_id,attachments,lang';
+const TWEET_FIELDS = 'conversation_id,created_at,public_metrics,referenced_tweets,in_reply_to_user_id,context_annotations,author_id,attachments,lang,note_tweet';
 const EXPLICIT = /\b(penis|dick|cock|pussy|vagina|cum|cumming|jerk(ing)? off|stroke my|masturbat\w*|porn\w*|nude[sz]?|naked|boobs?|tits|horny|blowjob|anal|fuck(ing|ed)?|rape\w*|nsfw|onlyfans|sex(ual|y)?)\b/i;
+// Discovery ranking: prefer (a) deep multi-turn debates (a human replying to Grok, long/note text, debate words) and
+// (b) funny ones (likes relative to impressions, playful words); push down one-shot "is this true" fact checks.
+const DEBATE = /\b(conscious(ness)?|materialis\w*|emergen\w*|meaning|free will|philosoph\w*|moral\w*|god|soul|universe|argu\w*|logic\w*|evidence|you('re| are) wrong|disagree|contradict\w*|define|prove)\b/i;
+const FUNNY = /(😂|🤣|💀|😭|\blol\b|\blmao\b|\brofl\b|\broast\w*|\bmeme\w*|\bbro\b|\bcook(ed|ing)\b|\bbased\b|\bunhinged\b|\bgoofy\b|\bjoke\w*|\bfunny\b)/i;
+const FACTCHECK = /\b(is (this|that|it) (true|real|legit|accurate)|fact[- ]?check|true or false|is this ai)\b/i;
+function score(t, e) {
+  const m = t.public_metrics || {}, text = t.note_tweet?.text || t.text || '';
+  let s = e;
+  if (t.author_id !== GROK_ID && t.in_reply_to_user_id === GROK_ID) s += 15;          // the human answered Grok back = multi-turn
+  if (text.length > 280) s += 8;
+  if (DEBATE.test(text)) s += 10;
+  if (FUNNY.test(text)) s += 10;
+  if (m.impression_count > 50 && (m.like_count || 0) / m.impression_count > 0.02) s += 12;
+  if (FACTCHECK.test(text) && text.length < 160) s -= 15;
+  return Math.max(0, Math.round(s));
+}
 const eng = m => (m?.like_count || 0) + (m?.retweet_count || 0) + (m?.reply_count || 0) + (m?.quote_count || 0);
 
 // Stage 1: paid recent search for @grok replies -> fetch_candidates.
@@ -87,7 +103,7 @@ async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = n
         if (t.in_reply_to_user_id !== GROK_ID || cleanText(t.text).length < 40) continue;
         anchor = parent; parent = null; e += 1;
       }
-      t._anchor = anchor; t._eng = e;
+      t._anchor = anchor; t._eng = score(t, e);
       stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at)
         SELECT ?1, ?2, ?3, ?4, ?5, ?7, ?6 WHERE NOT EXISTS (SELECT 1 FROM posts WHERE grok_tweet_id = ?1 OR conversation_id = ?2)`)
         .bind(t._anchor, t.conversation_id, t.author_id === GROK_ID ? (t.in_reply_to_user_id || null) : t.author_id, JSON.stringify({ parent, reply_id: t.author_id === GROK_ID ? null : t.id, replier_id: t.author_id === GROK_ID ? null : t.author_id, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text, ...(job ? { job, source: 'manual' } : {}) }), t._eng, now(), job ? 'job' : 'new'));
@@ -128,66 +144,104 @@ async function lookup(env, b, ids, kind) {
 
 // Stage 2: rebuild the chain of one candidate, all via the paid X API: upward with tweet lookups
 // (each call returns a post and its parent), downward with one conversation search limited to the participants.
-async function expandOne(env, b, c) {
+// Paid conversation search restricted to the participants (both directions in one go), paginated.
+async function conversation(env, b, conv, froms, pages = 2) {
+  const map = new Map(); let token = null;
+  for (let i = 0; i < pages; i++) {
+    const params = { query: `conversation_id:${conv} (${froms.map(f => 'from:' + f).join(' OR ')})`, max_results: '100',
+      'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet,public_metrics', expansions: 'author_id', 'user.fields': USER_FIELDS };
+    if (token) params.next_token = token;
+    const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', 40);
+    if (r.capped) return { capped: r.capped, map };
+    if (!r.ok) break;
+    const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
+    for (const t of r.json.data || []) map.set(t.id, fromApi(t, users));
+    token = r.json.meta?.next_token; if (!token) break;
+  }
+  return { map };
+}
+
+// Rebuild the full exchange around one Grok post: ancestors (search results first, paid lookups only for gaps),
+// then follow the alternating human <-> Grok replies down to the end of the conversation (max MAX_CHAIN turns).
+async function buildChain(env, b, c) {
   const p = JSON.parse(c.payload);
   const first = await lookup(env, b, [c.grok_tweet_id], 'chain');
-  if (first.capped) return 'capped:' + first.capped;
+  if (first.capped) return { status: 'capped:' + first.capped };
   const g = first.rows.get(c.grok_tweet_id);
-  if (!g) return 'gone';
+  if (!g) return { status: 'gone' };
   const known = first.rows;
+  const asked = g.parent ? known.get(g.parent) : null;
+  const humanIds = new Set([asked?.author_id, p.replier_id].filter(id => id && id !== GROK_ID));
+  if (!humanIds.size) return { status: 'no_human' };
+  const conv = c.conversation_id || g.conversation_id;
+  const handles = [...new Set([asked?.author_handle, ...[...known.values()].filter(w => humanIds.has(w.author_id)).map(w => w.author_handle)].filter(h => h && h !== '?'))];
+  if (conv && env.X_BEARER_TOKEN) {
+    const r = await conversation(env, b, conv, ['grok', ...(handles.length ? handles : []), ...(p.replier_id && !handles.length ? [p.replier_id] : [])]);
+    if (r.capped && !r.map.size) return { status: 'capped:' + r.capped };
+    for (const [k, v] of r.map) if (!known.has(k)) known.set(k, v);
+  }
+  // upward
   const chain = [g];
   let up = g.parent;
   while (up && chain.length < MAX_UP) {
-    if (!known.has(up)) {
-      const r = await lookup(env, b, [up], 'chain');
-      if (r.capped) break;
-      for (const [k, v] of r.rows) known.set(k, v);
-    }
+    if (!known.has(up)) { const r = await lookup(env, b, [up], 'chain'); if (r.capped) break; for (const [k, v] of r.rows) known.set(k, v); }
     const w = known.get(up); if (!w) break;
     chain.unshift(w); up = w.parent;
   }
-  // The human is the author Grok answered (the tweet right above Grok's reply).
-  const human = chain.length > 1 ? chain[chain.length - 2] : null;
-  if (!human || human.author_handle.toLowerCase() === 'grok') return 'no_human';
+  // downward: earliest reply to the last turn by the other side (human after Grok, Grok after a human)
+  const kids = {}; for (const w of known.values()) if (w.parent) (kids[w.parent] ||= []).push(w);
+  for (const k in kids) kids[k].sort((a, b2) => (BigInt(a.tweet_id) < BigInt(b2.tweet_id) ? -1 : 1));
+  const seen = new Set(chain.map(w => w.tweet_id));
+  while (chain.length < MAX_CHAIN + MAX_UP) {
+    const last = chain[chain.length - 1], grokLast = last.author_id === GROK_ID;
+    const next = (kids[last.tweet_id] || []).find(w => !seen.has(w.tweet_id) && (grokLast ? humanIds.has(w.author_id) : w.author_id === GROK_ID));
+    if (!next) break;
+    chain.push(next); seen.add(next.tweet_id);
+  }
+  // the human is whoever Grok answered most in this exchange
+  const cnt = {}; chain.forEach((w, i) => { if (w.author_id === GROK_ID && i > 0 && chain[i - 1].author_id !== GROK_ID) cnt[chain[i - 1].author_id] = (cnt[chain[i - 1].author_id] || 0) + 1; });
+  const hid = Object.entries(cnt).sort((a, b2) => b2[1] - a[1])[0]?.[0];
+  const human = chain.find(w => w.author_id === hid);
+  if (!human) return { status: 'no_human' };
   const blocked = await env.DB.prepare('SELECT 1 FROM blocked_authors WHERE handle = lower(?1) OR (x_id IS NOT NULL AND x_id = ?2)').bind(human.author_handle, human.author_id).first();
-  if (blocked) return 'blocked';
-  // Trim the upward part to the participants' own exchange where possible (keep the post Grok answered).
-  while (chain.length > 2 && ![human.author_handle.toLowerCase(), 'grok'].includes(chain[0].author_handle.toLowerCase())
-    && chain.slice(1, -2).some(w => w.author_handle.toLowerCase() === human.author_handle.toLowerCase())) chain.shift();
+  if (blocked) return { status: 'blocked' };
+  // drop leading posts by other people once the human's own exchange has started
+  while (chain.length > 2 && chain[0].author_id !== human.author_id && chain[0].author_id !== GROK_ID
+    && chain.slice(1, -1).some(w => w.author_id === human.author_id)) chain.shift();
+  const tweets = chain.slice(0, MAX_CHAIN);
+  return { status: 'ok', p, conv, human, tweets };
+}
+// Turns that alternate human/Grok, for ranking and stats.
+const turns = tweets => tweets.reduce((n, w, i) => n + (i === 0 || (w.author_id === GROK_ID) !== (tweets[i - 1].author_id === GROK_ID) ? 1 : 0), 0);
 
-  const conv = c.conversation_id || chain[0].conversation_id;
-  const upCount = chain.length;
-  if (conv && env.X_BEARER_TOKEN) {
-    const r = await xGet(env, b, '/tweets/search/recent', {
-      query: `conversation_id:${conv} (from:grok OR from:${human.author_handle}${p.replier_id && p.replier_id !== human.author_id ? ' OR from:' + p.replier_id : ''})`, max_results: '10',
-      'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet', since_id: c.grok_tweet_id,
-      expansions: 'author_id', 'user.fields': USER_FIELDS,
-    }, 'expand', 14);
-    if (r.capped) return 'capped:' + r.capped;
-    if (r.ok) {
-      const have = new Set(chain.map(w => w.tweet_id));
-      const later = (r.json.data || []).sort((a, b2) => (BigInt(a.id) < BigInt(b2.id) ? -1 : 1));
-      for (const t of later) {
-        if (chain.length - upCount >= MAX_CHAIN - 2) break;      // keep Grok's reply + the post it answered
-        const parent = (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id;
-        if (!parent || !have.has(parent) || have.has(t.id)) continue;   // must continue *this* branch
-        const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
-        chain.push(fromApi(t, users)); have.add(t.id);
-      }
-    }
-  }
-  if (p.reply_id && !chain.some(w => w.tweet_id === p.reply_id)) {
-    const r = await lookup(env, b, [p.reply_id], 'chain');
-    const w = r.rows?.get(p.reply_id);
-    if (w && chain.some(x => x.tweet_id === w.parent)) { const i = chain.findIndex(x => x.tweet_id === w.parent); chain.splice(i + 1, 0, w); }
-  }
-  const tweets = chain.slice(-MAX_CHAIN);
+async function expandOne(env, b, c) {
+  const r = await buildChain(env, b, c);
+  if (r.status !== 'ok') return r.status;
+  const { p, conv, human, tweets } = r;
+  if (conv && await env.DB.prepare('SELECT 1 FROM posts WHERE conversation_id = ?1').bind(conv).first()) return 'dup_conv';
   const topics = p.topics?.length ? p.topics : suggestTopics(tweets.map(w => w.text), p.annotations);
   const id = await insertPost(env.DB, {
     grok_tweet_id: c.grok_tweet_id, conversation_id: conv, human_x_id: human.author_id, human_handle: human.author_handle,
-    headline: suggestHeadline(tweets), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: chain.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
+    headline: suggestHeadline(tweets), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
   });
-  return id ? 'stored' : 'duplicate';
+  return id ? 'stored:' + tweets.length : 'duplicate';
+}
+
+// Re-build an existing pending post in place (chain + auto headline), keeping its id, votes and admin edits to topics.
+async function rebuildPost(env, b, postId) {
+  const post = await env.DB.prepare("SELECT * FROM posts WHERE id = ?1 AND status = 'pending'").bind(postId).first();
+  if (!post) return 'not_pending';
+  const old = (await env.DB.prepare('SELECT * FROM post_tweets WHERE post_id = ?1 ORDER BY pos').bind(postId).all()).results;
+  const r = await buildChain(env, b, { grok_tweet_id: post.grok_tweet_id, conversation_id: post.conversation_id, payload: '{}', engagement: post.x_engagement });
+  if (r.status !== 'ok') return r.status;
+  if (r.tweets.length <= old.length) return 'same';
+  const autoHead = !post.headline || post.headline === suggestHeadline(old);
+  const st = [env.DB.prepare('DELETE FROM post_tweets WHERE post_id = ?1').bind(postId),
+    ...r.tweets.map((w, i) => env.DB.prepare(`INSERT INTO post_tweets (post_id, pos, tweet_id, author_id, author_handle, author_name, author_avatar, verified, is_grok, text, media_json, created_at)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`).bind(postId, i, w.tweet_id, w.author_id, w.author_handle, w.author_name, w.author_avatar, w.verified ? 1 : 0, w.author_id === GROK_ID ? 1 : 0, w.text, JSON.stringify(w.media || []), w.created_at))];
+  if (autoHead) st.push(env.DB.prepare('UPDATE posts SET headline = ?2 WHERE id = ?1').bind(postId, suggestHeadline(r.tweets)));
+  await env.DB.batch(st);
+  return 'rebuilt:' + old.length + '->' + r.tweets.length;
 }
 
 async function expand(env, b, max = 3, order = 'engagement') {
@@ -237,6 +291,19 @@ async function runJob(env) {
   const b = new Budget(env, runId, { runCap: Math.max(0, job.budget - await spentInRun(env, runId)) });
   const log = async (state, extra) => { const r = { ...(JSON.parse(job.result || '{}')), ...extra }; await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, state, JSON.stringify(r)).run(); };
   if (job.state === 'new') {
+    if (job.kind === 'pick' && spec.rebuild) {
+      const out = JSON.parse(job.result || '{}'); const done = new Set(out.done || []); let capped = false;
+      for (const id of spec.rebuild) {
+        if (done.has(id)) continue;
+        if (b.sub > SUB_BUDGET - 8) break;
+        const res = await rebuildPost(env, b, id).catch(e => 'error:' + e.message);
+        if (String(res).startsWith('capped')) { capped = true; break; }
+        done.add(id); (out.res ||= {})[id] = res;
+      }
+      out.done = [...done]; out.spent = await spentInRun(env, runId);
+      await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, capped || done.size >= spec.rebuild.length ? 'done' : 'new', JSON.stringify(out)).run();
+      return { job: job.id, rebuild: done.size };
+    }
     if (job.kind === 'pick') {
       await env.DB.batch(spec.items.map(it => env.DB.prepare(`INSERT OR REPLACE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at) VALUES (?1, ?2, NULL, ?3, 0, 'job', ?4)`)
         .bind(it.grok, it.conv, JSON.stringify({ job: job.id, source: 'manual', topics: it.topics || null, low_priority: it.low_priority ?? null, annotations: [] }), now())));

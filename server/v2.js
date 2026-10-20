@@ -65,7 +65,7 @@ export async function insertPost(DB, p) {
     .bind(p.grok_tweet_id, p.conversation_id, p.human_x_id, p.human_handle, p.headline || null, p.source || 'fetch',
       p.x_engagement || 0, p.tweet_created_at || null, t, p.low_priority ? 1 : 0).first();
   if (!row) return null;
-  const stmts = p.tweets.slice(0, 10).map((w, i) => DB.prepare(
+  const stmts = p.tweets.slice(0, 20).map((w, i) => DB.prepare(
     `INSERT INTO post_tweets (post_id, pos, tweet_id, author_id, author_handle, author_name, author_avatar, verified, is_grok, text, media_json, created_at)
      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`)
     .bind(row.id, i, w.tweet_id, w.author_id, w.author_handle, w.author_name, w.author_avatar, w.verified ? 1 : 0,
