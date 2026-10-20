@@ -35,8 +35,10 @@ class Budget {
   async allow(est) {
     const t = await this.totals();
     if (t.month + est > this.monthCap) return 'month_cap';
-    if (this.runCap != null) { if (this.spent + est > this.runCap) return 'run_cap'; }
-    else if (t.day + est > this.dayCap) return 'day_cap';
+    // The daily cap always applies (it used to be replaced by a job/manual run budget, which let jobs and seeding
+    // runs spend $11-18/day against a $5 cap). A run budget is an additional, smaller limit.
+    if (t.day + est > this.dayCap) return 'day_cap';
+    if (this.runCap != null && this.spent + est > this.runCap) return 'run_cap';
     return null;
   }
   take(n = 1) { if (this.sub + n > SUB_BUDGET) return false; this.sub += n; return true; }
@@ -170,7 +172,7 @@ async function conversation(env, b, conv, froms, pages = 1) {
     const params = { query: `conversation_id:${conv} (${hs.map(h => `from:${h} OR (from:grok to:${h})`).join(' OR ')})`, max_results: '100',
       'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet,public_metrics,attachments', expansions: 'author_id,attachments.media_keys', 'user.fields': USER_FIELDS, 'media.fields': MEDIA_FIELDS };
     if (token) params.next_token = token;
-    const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', 60);
+    const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', 100 + 2 * 20);   // worst case: 100 posts + ~20 users (2x post price)
     if (r.capped) return { capped: r.capped, map };
     if (!r.ok) break;
     const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u])), media = mediaMap(r.json);
@@ -208,13 +210,16 @@ function pickBranch(known, startId, { grokId = GROK_ID, askers = new Set(), maxD
   return best(startId, start?.author_id, 0).path;
 }
 
-async function buildChain(env, b, c) {
+async function buildChain(env, b, c, { seed = [], search = true } = {}) {
   const p = JSON.parse(c.payload);
-  const first = await lookup(env, b, [c.grok_tweet_id], 'chain');
+  // one batched lookup: the anchor, the root (conversation_id) and the first already-known post (to learn its parent)
+  const ids = [...new Set([c.grok_tweet_id, c.conversation_id, seed[0]?.tweet_id].filter(Boolean))];
+  const first = await lookup(env, b, ids, 'chain');
   if (first.capped) return { status: 'capped:' + first.capped };
   const g = first.rows.get(c.grok_tweet_id);
   if (!g) return { status: 'gone' };
   const known = first.rows;
+  for (const w of seed) if (!known.has(w.tweet_id)) known.set(w.tweet_id, w);   // stored chain rows (free)
   const conv = g.conversation_id || c.conversation_id;
   // 1a. root by id (one paid lookup, only when it is not already known)
   if (conv && !known.has(conv)) { const r = await lookup(env, b, [conv], 'root'); if (r.capped) return { status: 'capped:' + r.capped }; for (const [k, v] of r.rows) if (!known.has(k)) known.set(k, v); }
@@ -223,7 +228,7 @@ async function buildChain(env, b, c) {
   const humanIds = new Set([root?.author_id, asked?.author_id, p.replier_id].filter(id => id && id !== GROK_ID));
   if (!humanIds.size) return { status: 'no_human' };
   const handles = [...new Set([...known.values()].filter(w => humanIds.has(w.author_id)).map(w => w.author_handle).filter(h => h && h !== '?'))];
-  if (conv && env.X_BEARER_TOKEN && handles.length) {
+  if (search && conv && env.X_BEARER_TOKEN && handles.length) {
     const r = await conversation(env, b, conv, ['grok', ...handles]);
     if (r.capped && !r.map.size) return { status: 'capped:' + r.capped };
     for (const [k, v] of r.map) if (!known.has(k)) known.set(k, v);
@@ -305,11 +310,13 @@ async function aiTopics(env, tweets, annotations = []) {
 }
 
 // Re-build an existing pending post in place (chain + auto headline), keeping its id, votes and admin edits to topics.
-async function rebuildPost(env, b, postId) {
+async function rebuildPost(env, b, postId, { search = true } = {}) {
   const post = await env.DB.prepare("SELECT * FROM posts WHERE id = ?1 AND status = 'pending'").bind(postId).first();
   if (!post) return 'not_pending';
   const old = (await env.DB.prepare('SELECT * FROM post_tweets WHERE post_id = ?1 ORDER BY pos').bind(postId).all()).results;
-  const r = await buildChain(env, b, { grok_tweet_id: post.grok_tweet_id, conversation_id: post.conversation_id, payload: '{}', engagement: post.x_engagement });
+  // seed with the stored chain (each row replies to the previous one); pos 0's parent comes from the batched lookup
+  const seed = old.map((w, i) => ({ ...w, media: JSON.parse(w.media_json || '[]'), parent: i ? old[i - 1].tweet_id : null, likes: 0, replies: 0 }));
+  const r = await buildChain(env, b, { grok_tweet_id: post.grok_tweet_id, conversation_id: post.conversation_id, payload: '{}', engagement: post.x_engagement }, { seed, search });
   if (r.status !== 'ok') return r.status;
   if (r.tweets.map(w => w.tweet_id).join() === old.map(w => w.tweet_id).join()) return 'same';
   const autoHead = !post.headline || post.headline === suggestHeadline(old);
@@ -477,7 +484,7 @@ async function runJob(env) {
       for (const id of spec.rebuild) {
         if (done.has(id)) continue;
         if (b.sub > SUB_BUDGET - 8) break;
-        const res = await rebuildPost(env, b, id).catch(e => 'error:' + e.message);
+        const res = await rebuildPost(env, b, id, { search: spec.search !== false }).catch(e => 'error:' + e.message);
         if (String(res).startsWith('capped')) { capped = true; break; }
         done.add(id); (out.res ||= {})[id] = res;
       }
