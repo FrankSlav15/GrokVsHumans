@@ -5,7 +5,7 @@
 // the paid X API v2 (no syndication scraping); the public site shows posts as official X embeds.
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
-import { suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText } from '../../../server/v2.js';
+import { suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
 
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
@@ -132,11 +132,11 @@ function apiQuote(t, users, tweets = {}) {
     text: q ? String(q.note_tweet?.text || q.text || '').replace(/\s*https:\/\/t\.co\/\w+$/, '') : null, created_at: q?.created_at ? Math.floor(Date.parse(q.created_at) / 1000) : null }];
 }
 function fromApi(t, users, media = {}, tweets = {}) {
-  const u = users[t.author_id] || {};
+  const u = users[t.author_id] || {}, m = [...apiMedia(t, media), ...apiQuote(t, users, tweets)];
   return {
     tweet_id: t.id, author_id: t.author_id || null, author_handle: u.username || (t.author_id === GROK_ID ? 'grok' : '?'),
     author_name: u.name || null, author_avatar: u.profile_image_url ? u.profile_image_url.replace('_normal.', '_bigger.') : null,
-    verified: u.verified ? 1 : 0, text: cleanText(t.note_tweet?.text || t.text || ''), media: [...apiMedia(t, media), ...apiQuote(t, users, tweets)],
+    verified: u.verified ? 1 : 0, text: turnText(t.note_tweet?.text || t.text || '', m), media: m,
     created_at: t.created_at ? Math.floor(Date.parse(t.created_at) / 1000) : null,
     parent: (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id || null,
     conversation_id: t.conversation_id || null,
@@ -339,7 +339,7 @@ async function runJob(env) {
           for (const t of r.json.data || []) {
             const m = [...apiMedia(t, media), ...apiQuote(t, users, byId)];
             out.raw[t.id] = { text: t.text, quoted: m.some(x => x.type === 'quote'), media: m.filter(x => x.type !== 'quote').length };
-            st.push(env.DB.prepare(`UPDATE post_tweets SET text = ?2, media_json = ?3, full_at = ?4 WHERE tweet_id = ?1`).bind(t.id, cleanText(t.note_tweet?.text || t.text || ''), JSON.stringify(m), t0));
+            st.push(env.DB.prepare(`UPDATE post_tweets SET text = ?2, media_json = ?3, full_at = ?4 WHERE tweet_id = ?1`).bind(t.id, turnText(t.note_tweet?.text || t.text || '', m), JSON.stringify(m), t0));
           }
           out.missing = ids.filter(id => !byId[id]);
           for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));

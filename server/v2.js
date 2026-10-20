@@ -48,10 +48,15 @@ export function suggestTopics(texts, annotations = []) {
 }
 
 // Strip leading @mentions of reply chains and trailing t.co media links.
+// Text for a turn that carries media or a quoted post: mentions-only text is dropped (the media/quote is the content).
+export function turnText(text, media) {
+  const s = cleanText(text);
+  return media?.length && /^(@\w+\s*)*$/.test(s) ? '' : s;
+}
 export function cleanText(text, range) {
   let s = text;
   if (Array.isArray(range) && range[0] > 0) s = [...s].slice(range[0]).join('');
-  const noLink = s.replace(/\s*https:\/\/t\.co\/\w+$/, '');
+  const noLink = s.replace(/(\s*https:\/\/t\.co\/\w+)+$/, '');
   s = noLink.replace(/^(@\w+\s*)+/, '');
   if (!s.trim()) s = noLink;   // mentions-only reply: keep the mentions rather than an empty turn
   return s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
