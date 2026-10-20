@@ -489,7 +489,7 @@ async function runJob(env) {
         done.add(id); (out.res ||= {})[id] = res;
       }
       out.done = [...done]; out.spent = await spentInRun(env, runId);
-      await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, capped || done.size >= spec.rebuild.length ? 'done' : 'new', JSON.stringify(out)).run();
+      await env.DB.prepare('UPDATE fetch_jobs SET state=?2, result=?3 WHERE id=?1').bind(job.id, done.size >= spec.rebuild.length ? 'done' : 'new', JSON.stringify(out)).run();   // capped: retried on a later tick (after the daily reset)
       return { job: job.id, rebuild: done.size };
     }
     if (job.kind === 'pick') {
