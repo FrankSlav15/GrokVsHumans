@@ -10,7 +10,7 @@ import { suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText } fr
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
 const POST_USD = 0.005, USER_USD = 0.010;
-const MAX_CHAIN = 20, MAX_UP = 10;          // whole Grok-vs-human exchange, up to 20 turns
+const MAX_CHAIN = 20, MAX_UP = 20;          // whole Grok-vs-human exchange, up to 20 turns
 const GROK_ID = '1720665183188922368';
 const SUB_BUDGET = 45;                       // free plan: 50 external subrequests per invocation
 
