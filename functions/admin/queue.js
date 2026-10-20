@@ -34,7 +34,7 @@ function tabs(){$('#tabs').innerHTML=TABS.map(([k,l])=>'<button data-tab="'+k+'"
 function tw(w){const m=(w.media||[]).map(x=>x.video?'<video class="m" src="'+esc(x.video)+'" poster="'+esc(x.url)+'" controls preload="none" playsinline></video>':'<img class="m" src="'+esc(x.url)+'" loading="lazy" referrerpolicy="no-referrer">').join('');
  return '<div class="tw '+(w.is_grok?'g':'')+'"><img class="av" src="'+esc(w.author_avatar)+'" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.visibility=\\'hidden\\'"><div class="b"><div class="n">'+esc(w.author_name||'')+' @'+esc(w.author_handle)+'</div><div class="t">'+esc(w.text)+'</div>'+m+'</div></div>';}
 function card(p){const on=new Set(p.topics.map(t=>t.topic)),sug=new Set(p.topics.filter(t=>t.suggested).map(t=>t.topic));
- const A=status==='pending'?'<button class="ok" data-a="approve">✓ Approve</button><button class="gold" data-a="feature">★ Approve + feature</button><button data-a="skip">Skip</button><button class="danger" data-a="never">⛔ Never from @'+esc(p.human_handle)+'</button>'
+ const A=status==='pending'?'<button class="ok" data-a="approve">✓ Approve</button><button class="gold" data-a="feature">★ Approve + feature</button><button data-a="headline">Save title</button><button data-a="skip">Skip</button><button class="danger" data-a="never">⛔ Never from @'+esc(p.human_handle)+'</button>'
   :status==='approved'?'<button data-a="topics">Save headline/topics</button><button class="gold" data-a="'+(p.featured?'unfeature':'feature')+'">'+(p.featured?'Unfeature':'★ Feature')+'</button><button class="danger" data-a="hide">Hide</button>'
   :'<button data-a="restore">Back to pending</button>'+(status==='blocked'?'<button data-a="unblock">Unblock @'+esc(p.human_handle)+'</button>':'');
  return '<article class="card" data-id="'+esc(p.id)+'"><div class="meta"><span>#'+esc(p.id)+'</span><span>'+esc(p.source)+'</span><span>X engagement '+esc(p.x_engagement)+'</span><span>'+esc(p.tweets.length)+' posts</span>'+(p.low_priority?'<span style="color:#fda4af">⚠ explicit?</span>':'')+(p.featured?'<span>★ featured</span>':'')+(p.hidden_reason?'<span>hidden: '+esc(p.hidden_reason)+'</span>':'')+'<a href="https://x.com/i/status/'+esc(p.grok_tweet_id)+'" target="_blank" rel="noopener">open on X</a></div>'
@@ -50,7 +50,7 @@ document.addEventListener('click',async e=>{const tb=e.target.closest('[data-tab
  if(a==='never'&&!confirm('Never show posts from @'+p.human_handle+'? Their pending posts are removed from the queue.'))return;
  const body={id:Number(c.dataset.id),action:a,headline:c.querySelector('input.h').value,topics:[...c.querySelectorAll('[data-t].on')].map(x=>x.dataset.t),handle:p.human_handle};
  b.disabled=true;const r=await fetch('/api/admin/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));b.disabled=false;
- if(!r.ok)return toast('Failed: '+(d.error||r.status));toast(a+' ✓');if(['topics','unblock'].includes(a))return;c.remove();D.counts[status]--;tabs();});
+ if(!r.ok)return toast('Failed: '+(d.error||r.status));toast(a+' ✓');if(['topics','unblock','headline'].includes(a))return;c.remove();D.counts[status]--;tabs();});
 load();
 </script>`;
 

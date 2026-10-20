@@ -231,9 +231,26 @@ async function expandOne(env, b, c) {
   const topics = p.topics?.length ? p.topics : suggestTopics(tweets.map(w => w.text), p.annotations);
   const id = await insertPost(env.DB, {
     grok_tweet_id: c.grok_tweet_id, conversation_id: conv, human_x_id: human.author_id, human_handle: human.author_handle,
-    headline: suggestHeadline(tweets), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
+    headline: await aiHeadline(env, tweets), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
   });
   return id ? 'stored:' + tweets.length : 'duplicate';
+}
+
+// "Grok vs. @handle: <2-6 word topic>" via Workers AI (binding AI); falls back to the cleaned-question headline.
+const AI_MODEL = '@cf/meta/llama-3.2-3b-instruct';
+async function aiHeadline(env, tweets) {
+  const human = tweets.find(w => String(w.author_handle).toLowerCase() !== 'grok' && w.author_handle && w.author_handle !== '?');
+  if (!human || !env.AI) return suggestHeadline(tweets);
+  try {
+    const convo = tweets.slice(0, 6).map(w => `${String(w.author_handle).toLowerCase() === 'grok' ? 'Grok' : 'Human'}: ${String(w.text).replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').slice(0, 300)}`).join('\n');
+    const r = await env.AI.run(AI_MODEL, { max_tokens: 20, temperature: 0.2, messages: [
+      { role: 'system', content: 'You title debates. Reply with ONLY a 2-6 word topic summarizing what the thread is about, ideally a short question (e.g. "Does the universe have meaning?", "Are humans just meat computers?"). No quotes, no names, no hashtags, never copy the user\'s wording.' },
+      { role: 'user', content: convo }] });
+    let t = String(r?.response || '').split('\n')[0].replace(/^["'*\s]+|["'*\s]+$/g, '').replace(/^(topic|title)\s*:\s*/i, '').replace(/\s+/g, ' ');
+    const words = t.split(' ').filter(Boolean).length;
+    if (!t || words < 2 || words > 8 || t.length > 48 || /[@#<>]|https?:/.test(t)) return suggestHeadline(tweets);
+    return `Grok vs. @${human.author_handle}: ${t.charAt(0).toUpperCase() + t.slice(1)}`;
+  } catch { return suggestHeadline(tweets); }
 }
 
 // Re-build an existing pending post in place (chain + auto headline), keeping its id, votes and admin edits to topics.
@@ -248,7 +265,7 @@ async function rebuildPost(env, b, postId) {
   const st = [env.DB.prepare('DELETE FROM post_tweets WHERE post_id = ?1').bind(postId),
     ...r.tweets.map((w, i) => env.DB.prepare(`INSERT INTO post_tweets (post_id, pos, tweet_id, author_id, author_handle, author_name, author_avatar, verified, is_grok, text, media_json, created_at)
       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`).bind(postId, i, w.tweet_id, w.author_id, w.author_handle, w.author_name, w.author_avatar, w.verified ? 1 : 0, w.author_id === GROK_ID ? 1 : 0, w.text, JSON.stringify(w.media || []), w.created_at))];
-  if (autoHead) st.push(env.DB.prepare('UPDATE posts SET headline = ?2 WHERE id = ?1').bind(postId, suggestHeadline(r.tweets)));
+  if (autoHead) st.push(env.DB.prepare('UPDATE posts SET headline = ?2 WHERE id = ?1').bind(postId, await aiHeadline(env, r.tweets)));
   await env.DB.batch(st);
   return 'rebuilt:' + old.length + '->' + r.tweets.length;
 }

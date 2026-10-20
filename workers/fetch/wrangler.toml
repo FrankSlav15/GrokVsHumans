@@ -27,3 +27,6 @@ database_id = "d1a0f66c-826e-4394-915a-b5f93971aa85"
 [triggers]
 # 11:00 and 23:00 UTC: discovery (paid, capped). Every 10 min: expand queued candidates + free oEmbed re-check.
 crons = ["0 11,23 * * *", "*/10 * * * *"]
+
+[ai]
+binding = "AI"

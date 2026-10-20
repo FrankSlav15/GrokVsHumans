@@ -82,8 +82,8 @@ export function legacyHeadline(tweets) {
   if (s.length > 80) s = s.slice(0, 77).replace(/\s+\S*$/, '') + '…';
   return s || 'Grok vs. a human';
 }
-// "Grok vs. @handle: <question>", capped at ~90 chars on a word boundary.
-export const HEADLINE_MAX = 90;
+// Fallback "Grok vs. @handle: <question>", capped at ~60 chars on a word boundary.
+export const HEADLINE_MAX = 60;
 export function suggestHeadline(tweets) {
   const human = tweets.find(w => String(w.author_handle).toLowerCase() !== 'grok' && w.author_handle && w.author_handle !== '?');
   if (!human) return 'Grok vs. a human';

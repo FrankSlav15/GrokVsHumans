@@ -14,7 +14,7 @@ export async function onRequestPost({ request, env }) {
   if (!p) return json({ error: 'not_found' }, 404);
   const t = now(), DB = env.DB, st = [];
 
-  if (typeof body?.headline === 'string' && ['approve', 'feature', 'headline'].includes(action)) {
+  if (typeof body?.headline === 'string' && ['approve', 'feature', 'headline', 'topics'].includes(action)) {
     const h = body.headline.replace(/\s+/g, ' ').trim().slice(0, 120);
     st.push(DB.prepare('UPDATE posts SET headline = ?2 WHERE id = ?1').bind(id, h || null));
   }
