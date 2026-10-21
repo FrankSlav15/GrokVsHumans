@@ -16,13 +16,13 @@ button.on{background:#7e22ce;border-color:#a855f7}.ok{border-color:#15803d;color
 main{padding:.8rem;max-width:720px;margin:0 auto}.card{background:#18181b;border:1px solid #27272a;border-radius:1rem;padding:.8rem;margin-bottom:.9rem}
 .meta{font-size:.78rem;color:#a1a1aa;display:flex;flex-wrap:wrap;gap:.3rem .7rem;margin-bottom:.5rem}.stats{font-size:.78rem;color:#a1a1aa;margin-top:.4rem}
 .meta .mid{color:#fcd34d;border:1px solid #a16207;border-radius:999px;padding:0 .45rem}.meta .rb{color:#86efac;border:1px solid #15803d;border-radius:999px;padding:0 .45rem}button.sm{font-size:.8rem;min-height:36px;padding:.3rem .7rem}
-input.h{width:100%;font:inherit;font-weight:600;background:#09090b;color:#fff;border:1px solid #3f3f46;border-radius:.6rem;padding:.55rem .65rem;margin-bottom:.6rem}
+input.h,textarea.h{width:100%;font:inherit;font-weight:600;background:#09090b;color:#fff;border:1px solid #3f3f46;border-radius:.6rem;padding:.55rem .65rem;margin-bottom:.6rem}
 .tw{display:flex;gap:.5rem;margin:.45rem 0}.tw img.av{width:30px;height:30px;border-radius:50%;flex:0 0 30px;background:#27272a}
 .tw .b{background:#202024;border-radius:.8rem;padding:.45rem .65rem;min-width:0;flex:1}.tw.g .b{background:#2e1065}.tw .n{font-size:.78rem;color:#a1a1aa}
 .tw .t{white-space:pre-wrap;word-break:break-word}.tw .m{max-width:100%;max-height:220px;border-radius:.6rem;margin-top:.35rem;display:block}
 .tops{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}.tops button{padding:.3rem .7rem;font-size:.82rem}.tops button.sug{border-style:dashed}
 .acts{display:flex;flex-wrap:wrap;gap:.45rem}.empty{color:#a1a1aa;text-align:center;padding:2rem}
-.toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#18181b;border:1px solid #a855f7;padding:.6rem 1rem;border-radius:1rem;display:none;z-index:9}
+.toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#18181b;border:1px solid #a855f7;padding:.6rem 1rem;border-radius:1rem;display:none;z-index:60}
 .bv h2{font-size:1rem;margin:1.1rem 0 .4rem;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .7rem}.bv h2 small{color:#a1a1aa;font-weight:400;font-size:.78rem}
 .bh{position:sticky;top:0}.bacts{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 .6rem}
 .bc{display:flex;gap:.6rem;align-items:flex-start;background:#18181b;border:1px solid #27272a;border-radius:.8rem;padding:.55rem .65rem;margin-bottom:.45rem}
@@ -32,6 +32,23 @@ input.h{width:100%;font:inherit;font-weight:600;background:#09090b;color:#fff;bo
 .chips span{border:1px solid #3f3f46;border-radius:999px;padding:0 .45rem;color:#a1a1aa}.chips .sc{color:#fff;border-color:#7e22ce;background:#3b0764}
 .chips .mid{color:#fcd34d;border-color:#a16207}.chips .rb{color:#86efac;border-color:#15803d}
 ".bc.fail{border-color:#9f1239}.bc .fe{color:#fda4af;font-size:.78rem;margin-top:.2rem}.failbox{background:#2a0a12;border:1px solid #9f1239;color:#fecdd3;border-radius:.8rem;padding:.55rem .7rem;margin:.6rem 0;font-size:.85rem}
+.bc .ck{display:flex;align-items:flex-start;padding:.1rem;margin:-.1rem}.bc .bd{cursor:pointer}.bc .pvb{flex:0 0 auto;align-self:center}.bc.flash{border-color:#a855f7;box-shadow:0 0 0 2px #a855f766}.bc.done{opacity:.5}.chips .gone{color:#fff;border-color:#52525b;background:#3f3f46}
+#pv{position:fixed;inset:0;z-index:50;background:#000c;display:flex;align-items:center;justify-content:center;padding:2vh 2vw}#pv[hidden],#pv [hidden]{display:none!important}#pv textarea.h{display:block;resize:none;line-height:1.35;font-size:16px}
+.pv__box{background:#111113;border:1px solid #3b0764;border-radius:1rem;width:min(1200px,96vw);height:96vh;display:flex;flex-direction:column;overflow:hidden}
+.pv__bar{display:flex;align-items:center;gap:.45rem;padding:.5rem .7rem;border-bottom:1px solid #27272a;background:#18181b}.pv__pos{font-size:.85rem;color:#a1a1aa;white-space:nowrap}.pv__sp{flex:1}
+.pv__body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(300px,380px) 1fr}
+.pv__ed{overflow:auto;padding:.8rem;border-right:1px solid #27272a}.pv__prev{overflow:auto;padding:.8rem;background:#09090b}
+.pv__lbl{font-size:.75rem;color:#a1a1aa;text-transform:uppercase;letter-spacing:.04em;margin:.5rem 0 .3rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.pv__two{text-transform:none;letter-spacing:0;font-size:.8rem;color:#d4d4d8;display:flex;align-items:center;gap:.3rem;min-height:36px}.pv__two input{width:18px;height:18px;accent-color:#a855f7}
+.pv__warn{color:#fcd34d;font-size:.8rem;margin:-.35rem 0 .5rem}.pv__sug{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;font-size:.84rem;color:#fde68a;margin-bottom:.4rem}.pv__sug span{flex:1 1 180px}
+.pv__tags button{min-height:38px}.pv__tags button.on{background:#7e22ce;border-color:#c084fc}.pv__k{display:inline-block;font-size:.65rem;color:#a1a1aa;margin-right:.3rem}.pv__tags button.on .pv__k{color:#e9d5ff}
+.pv__meta{display:flex;flex-wrap:wrap;gap:.3rem;font-size:.78rem;color:#d4d4d8}.pv__meta span{border:1px solid #3f3f46;border-radius:.6rem;padding:.1rem .45rem}.pv__meta .sc{border-color:#7e22ce;background:#3b0764;color:#fff}.pv__meta .mid{color:#fcd34d;border-color:#a16207}.pv__meta .rb{color:#86efac;border-color:#15803d}
+.pv__acts{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.8rem}.pv__acts button{min-height:44px}.pv__acts button:disabled,.pv__bar button:disabled{opacity:.45}
+.pv__keys{font-size:.72rem;color:#71717a;margin-top:.8rem}@media (hover:none){.pv__keys,.pv__k{display:none}}
+@media (max-width:760px){#pv{padding:0}.pv__box{width:100vw;height:100vh;height:100dvh;border-radius:0;border:0}
+ .pv__bar{padding-top:calc(.5rem + env(safe-area-inset-top))}.pv__bar button{min-height:44px}
+ .pv__body{display:block;overflow:auto;-webkit-overflow-scrolling:touch}.pv__ed{overflow:visible;border-right:0;border-bottom:1px solid #27272a}.pv__prev{overflow:visible;padding:.5rem}
+ .pv__body{padding-bottom:calc(68px + env(safe-area-inset-bottom))}.pv__acts{position:fixed;left:0;right:0;bottom:0;background:#111113;border-top:1px solid #27272a;padding:.5rem .6rem calc(.5rem + env(safe-area-inset-bottom));margin:0;z-index:3;flex-wrap:nowrap}.pv__acts button{flex:1;padding:.5rem .4rem}}
 dialog{background:#18181b;color:#e4e4e7;border:1px solid #a855f7;border-radius:1rem;max-width:min(92vw,420px)}dialog::backdrop{background:#000a}`;
 const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Queue · Grok vs. Humans</title><style>${CSS}${NAV_CSS}</style></head><body>${b}</body></html>`;
 
@@ -41,7 +58,7 @@ const APP = `<header>${navHtml('queue')}<h1>Approval queue</h1>
 const TABS=[['batches','Batches'],['pending','Pending'],['approved','Approved'],['skipped','Skipped'],['blocked','Never'],['hidden','Hidden']];
 let status=location.hash.slice(1)||'batches',D=null;const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2000);}
+window.toast=toast;function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2000);}
 function tabs(){$('#tabs').innerHTML=TABS.map(([k,l])=>'<button data-tab="'+k+'" class="'+(k===status?'on':'')+'">'+l+(D&&D.counts[k]!=null?' ('+D.counts[k]+')':'')+'</button>').join('');}
 function tw(w){const m=(w.media||[]).map(x=>x.type==='quote'?'<div class="q" style="border:1px solid #3f3f46;border-radius:10px;padding:.4rem .6rem;margin-top:.3rem;font-size:.85rem"><b>'+esc(x.name||'Quoted post')+'</b> @'+esc(x.handle||'')+'<br>'+esc(x.text||'(open on X)')+'</div>':x.video?'<video class="m" src="'+esc(x.video)+'" poster="'+esc(x.url)+'" controls preload="none" playsinline></video>':'<img class="m" src="'+esc(x.url)+'" loading="lazy" referrerpolicy="no-referrer">').join('');
  return '<div class="tw '+(w.is_grok?'g':'')+'"><img class="av" src="'+esc(w.author_avatar)+'" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.visibility=\\'hidden\\'"><div class="b"><div class="n">'+esc(w.author_name||'')+' @'+esc(w.author_handle)+'</div><div class="t">'+(String(w.text||'').trim()?esc(w.text):(w.media||[]).length?'':'<em style="color:#a1a1aa">(no text, view on X)</em>')+'</div>'+m+'</div></div>';}
@@ -58,13 +75,18 @@ async function load(){tabs();if(status==='batches')return loadBatches();const r=
  $('#list').innerHTML=D.posts.length?D.posts.map(card).join(''):'<div class="empty">Nothing here.</div>';}
 
 const BATCHES=[['strong','Strong picks: approve all'],['maybe','Maybe: skim'],['reject','Recommend reject'],['none','Not reviewed']];let B=null;
-async function loadBatches(){const r=await fetch('/api/admin/queue?view=batch',{cache:'no-store'});B=await r.json().catch(()=>null);
+async function loadBatches(){const r=await fetch('/api/admin/queue?view=batch',{cache:'no-store'});B=await r.json().catch(()=>null);window.QUEUE_B=B;
  if(!r.ok||!B){$('#list').innerHTML='<div class="empty">Error '+r.status+'</div>';return;}
  const s=B.spend;$('#stats').textContent='Pending '+B.posts.length+' · X spend (est.) today $'+(s.today||0).toFixed(2)+' / $'+s.caps.day+' · month $'+(s.month||0).toFixed(2)+' / $'+s.caps.month+' · rebuild ≤ $'+B.rebuild_max_usd.toFixed(2)+'/post';
  $('#list').innerHTML='<div class="bv">'+BATCHES.map(([k,l])=>{const ps=B.posts.filter(p=>(p.review_batch||'none')===k);if(!ps.length)return '';const m=ps.filter(p=>p.mid_thread).length;
   return '<section data-batch="'+k+'"><h2>'+esc(l)+' <small>'+ps.length+' posts · '+m+' mid-thread · est. rebuild ≤ $'+(m*B.rebuild_max_usd).toFixed(2)+'</small></h2><div class="bacts"><label class="sm"><input type="checkbox" data-all="'+k+'"> Select all in batch</label><button class="ok sm" data-bulk="approve" data-b="'+k+'">✓ Approve selected</button><button class="danger sm" data-bulk="skip" data-b="'+k+'">✕ Reject selected</button></div>'+ps.map(bcard).join('')+'</section>';}).join('')+'</div>';}
-function bcard(p){return '<label class="bc" data-id="'+p.id+'"><input type="checkbox" data-sel="'+p.id+'"'+(p.rebuild_state==='queued'?' disabled':'')+'><div class="bd"><div class="tt">#'+p.id+' '+esc(p.headline||'(no title)')+'</div>'+(p.review_reason?'<div class="rs">'+esc(p.review_reason)+'</div>':'')+(p.review_title?'<div class="sg">Suggested title: '+esc(p.review_title)+'</div>':'')
- +'<div class="chips">'+(p.review_score!=null?'<span class="sc">'+p.review_score+'/5</span>':'')+p.topics.map(t=>'<span>'+esc(t)+'</span>').join('')+(p.mid_thread&&p.rebuild_state!=='queued'?'<span class="mid">⤴ mid-thread</span>':'')+(p.rebuild_state==='queued'?'<span class="rb">↻ rebuilding</span>':'')+'<span>'+p.n_tweets+' posts</span><a href="https://x.com/i/status/'+esc(p.grok_tweet_id)+'" target="_blank" rel="noopener">X</a></div></div></label>';}
+function bcard(p){return '<div class="bc" data-id="'+p.id+'"><label class="ck"><input type="checkbox" data-sel="'+p.id+'" aria-label="Select #'+p.id+'"'+(p.rebuild_state==='queued'?' disabled':'')+'></label>'+bbody(p)+'<button class="sm pvb" data-preview="'+p.id+'" aria-label="Preview #'+p.id+'">Preview</button></div>';}
+function bbody(p){return '<div class="bd" data-open="'+p.id+'"><div class="tt">#'+p.id+' '+esc(p.headline||'(no title)')+'</div>'+(p.review_reason?'<div class="rs">'+esc(p.review_reason)+'</div>':'')+(p.review_title&&p.review_title!==p.headline?'<div class="sg">Suggested title: '+esc(p.review_title)+'</div>':'')
+ +'<div class="chips">'+(p.review_score!=null?'<span class="sc">'+p.review_score+'/5</span>':'')+p.topics.map(t=>'<span class="tg">'+esc(t)+'</span>').join('')+(p.mid_thread&&p.rebuild_state!=='queued'?'<span class="mid">⤴ mid-thread</span>':'')+(p.rebuild_state==='queued'?'<span class="rb">↻ rebuilding</span>':'')+(p._gone?'<span class="gone">'+esc(p._gone)+'</span>':'')+'<span>'+p.n_tweets+' posts</span><a href="https://x.com/i/status/'+esc(p.grok_tweet_id)+'" target="_blank" rel="noopener">X</a></div></div>';}
+// Called by the preview modal after a save/approve/skip: patch the card in place, keep every checkbox as it was.
+window.updateBatchCard=function(id,patch){const p=B&&B.posts.find(x=>x.id===id);if(!p)return;Object.assign(p,patch);const c=document.querySelector('.bc[data-id="'+id+'"]');if(!c)return;
+ c.querySelector('.bd').outerHTML=bbody(p);const cb=c.querySelector('[data-sel]');if(p.rebuild_state==='queued'||p._gone){cb.checked=false;cb.disabled=true;}c.classList.toggle('done',!!p._gone);c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),900);};
+function batchIds(id){const sec=document.querySelector('.bc[data-id="'+id+'"]').closest('[data-batch]');return [...sec.querySelectorAll('.bc:not(.done)')].map(c=>Number(c.dataset.id));}
 async function bulk(action,k){const sec=document.querySelector('[data-batch="'+k+'"]');const ids=[...sec.querySelectorAll('[data-sel]:checked')].map(x=>Number(x.dataset.sel));if(!ids.length)return toast('Nothing selected');
  const ps=B.posts.filter(p=>ids.includes(p.id)),m=ps.filter(p=>p.mid_thread).length,cost=m*B.rebuild_max_usd,left=Math.max(0,B.spend.caps.day-(B.spend.today||0));
  const msg=action==='approve'?'Approve '+ids.length+' posts?\\n\\n'+m+' start mid-thread and will be rebuilt from the root before publishing (paid X API).\\nEstimated rebuild cost: up to $'+cost.toFixed(2)+' (≤ $'+B.rebuild_max_usd.toFixed(2)+' each).\\nDaily cap left today: $'+left.toFixed(2)+'. Rebuilds over the cap wait for the daily reset.\\n'+(ids.length-m)+' publish immediately.':'Reject (skip) '+ids.length+' posts? They move to Skipped; no X API cost.';
@@ -75,7 +97,7 @@ async function bulk(action,k){const sec=document.querySelector('[data-batch="'+k
 function showFails(F){if(!F.length)return;for(const f of F){const c=document.querySelector('.bc[data-id="'+f.id+'"]');if(c){c.classList.add('fail');const d=document.createElement('div');d.className='fe';d.textContent='✕ failed: '+(f.error||'error')+(f.message?' ('+f.message+')':'');c.querySelector('.bd').appendChild(d);}}
  const box=document.createElement('div');box.className='failbox';box.innerHTML='<b>'+F.length+' failed</b> (left unchanged, safe to retry): '+F.map(f=>'#'+esc(f.id)+' '+esc(f.error||'error')).join(', ');document.querySelector('.bv').prepend(box);}
 document.addEventListener('change',e=>{const a=e.target.closest('[data-all]');if(a){document.querySelectorAll('[data-batch="'+a.dataset.all+'"] [data-sel]:not(:disabled)').forEach(x=>x.checked=a.checked);}});
-document.addEventListener('click',async e=>{const bb=e.target.closest('[data-bulk]');if(bb){e.preventDefault();return bulk(bb.dataset.bulk,bb.dataset.b);}const tb=e.target.closest('[data-tab]');if(tb){status=tb.dataset.tab;location.hash=status;return load();}
+document.addEventListener('click',async e=>{const pv=e.target.closest('[data-preview],[data-open]');if(pv&&!e.target.closest('a,input,label.ck')){e.preventDefault();const id=Number(pv.dataset.preview||pv.dataset.open);return window.openPreview(id,batchIds(id));}const bb=e.target.closest('[data-bulk]');if(bb){e.preventDefault();return bulk(bb.dataset.bulk,bb.dataset.b);}const tb=e.target.closest('[data-tab]');if(tb){status=tb.dataset.tab;location.hash=status;return load();}
  const t=e.target.closest('[data-t]');if(t){t.classList.toggle('on');return;}
  const b=e.target.closest('[data-a]');if(!b)return;const c=b.closest('.card'),a=b.dataset.a,p=D.posts.find(x=>String(x.id)===c.dataset.id);
  if(a==='never'&&!confirm('Never show posts from @'+p.human_handle+'? Their pending posts are removed from the queue.'))return;
@@ -83,7 +105,7 @@ document.addEventListener('click',async e=>{const bb=e.target.closest('[data-bul
  b.disabled=true;const r=await fetch('/api/admin/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));b.disabled=false;
  if(!r.ok)return toast('Failed: '+(d.error||r.status));if(d.rebuilding||a==='rebuild'){toast(d.rebuilding?'Approved · rebuilding full thread first':'Rebuild queued');return load();}toast(a+' ✓');if(['topics','unblock','headline'].includes(a))return;c.remove();D.counts[status]--;tabs();});
 load();
-</script>`;
+</script><script src="/assets/admin/preview.js"></script>`;
 
 export async function onRequestGet({ request, env }) {
   const user = await getSessionUser(env, request);

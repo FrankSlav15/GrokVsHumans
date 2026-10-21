@@ -9,6 +9,7 @@ export async function onRequestGet({ request, env }) {
   const q = new URL(request.url).searchParams;
   const status = ['pending', 'approved', 'skipped', 'blocked', 'hidden'].includes(q.get('status')) ? q.get('status') : 'pending';
   if (q.get('view') === 'batch') return batchView(env);
+  if (q.get('id')) return onePost(env, Number(q.get('id')));
   const [posts, tweets, topics, counts, spend, blocked] = await env.DB.batch([
     env.DB.prepare(`SELECT * FROM posts WHERE status = ?1 ORDER BY ${status === 'pending' ? 'low_priority, x_engagement DESC, id' : 'COALESCE(approved_at, fetched_at) DESC'} LIMIT 100`).bind(status),
     env.DB.prepare(`SELECT t.* FROM post_tweets t JOIN posts p ON p.id = t.post_id WHERE p.status = ?1 ORDER BY t.post_id, t.pos`).bind(status),
@@ -28,6 +29,22 @@ export async function onRequestGet({ request, env }) {
     // mid_thread: same free check the approve action uses (first stored post is not the conversation root)
     posts: posts.results.map(p => ({ ...p, tweets: W[p.id] || [], topics: T[p.id] || [], mid_thread: !!p.conversation_id && (W[p.id]?.[0]?.tweet_id || null) !== p.conversation_id })),
   });
+}
+
+// ?id=N: one post in the live feed's shape (tweets as /api/feed returns them) for the batch-view preview modal.
+async function onePost(env, id) {
+  if (!Number.isInteger(id) || id <= 0) return json({ error: 'bad_request' }, 400);
+  const [posts, tweets, topics] = await env.DB.batch([
+    env.DB.prepare("SELECT id, status, headline, COALESCE(tweet_created_at, fetched_at) AS created_at, 'https://x.com/grok/status/' || grok_tweet_id AS url, human_handle, grok_tweet_id, conversation_id, review_score, review_reason, review_batch, review_title, rebuild_state, rebuild_note, x_engagement FROM posts WHERE id = ?1").bind(id),
+    env.DB.prepare('SELECT * FROM post_tweets WHERE post_id = ?1 ORDER BY pos').bind(id),
+    env.DB.prepare('SELECT topic FROM post_topics WHERE post_id = ?1').bind(id),
+  ]);
+  const p = posts.results[0];
+  if (!p) return json({ error: 'not_found' }, 404);
+  const tw = tweets.results.map(r => ({ id: r.tweet_id, pos: r.pos, handle: r.author_handle, name: r.author_name, avatar: r.author_avatar, verified: !!r.verified,
+    grok: !!r.is_grok, text: r.text, media: JSON.parse(r.media_json || '[]'), created_at: r.created_at }));
+  return json({ topics: TOPICS, post: { ...p, tweets: tw, topics: topics.results.map(r => r.topic).sort((a, b) => TOPICS.indexOf(a) - TOPICS.indexOf(b)),
+    mid_thread: !!p.conversation_id && (tw[0]?.id || null) !== p.conversation_id } });
 }
 
 // ?view=batch: every pending post as a compact card (no chain text) grouped by review batch, with rebuild-cost inputs.

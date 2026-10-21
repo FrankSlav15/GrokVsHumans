@@ -43,7 +43,14 @@ export async function applyPostAction(env, id, action, body = {}, admin = null, 
       break;
     }
     case 'unblock': st.push(DB.prepare('DELETE FROM blocked_authors WHERE handle = lower(?1)').bind(String(body?.handle || p.human_handle || ''))); break;
-    case 'headline': case 'topics': break;
+    case 'headline': case 'topics': {
+      // Title/tag edit: log before + after so the change can be undone from admin_log.
+      const before = await DB.prepare('SELECT topic FROM post_topics WHERE post_id = ?1').bind(id).all();
+      st.push(auditStmt(env, admin, 'post.edit', 'post:' + id, { via, edit: action, before: { headline: p.headline, topics: before.results.map(r => r.topic) },
+        after: { headline: typeof body?.headline === 'string' ? body.headline.replace(/\s+/g, ' ').trim().slice(0, 120) : undefined, topics: action === 'topics' && Array.isArray(body?.topics) ? body.topics : undefined } }));
+      await DB.batch(st);
+      return { status: 200, body: { ok: true, id, action } };
+    }
     default: return { status: 400, body: { error: 'bad_action' } };
   }
   st.push(auditStmt(env, admin, 'post.' + action, 'post:' + id, { via, from: p.status, headline: body?.headline, topics: body?.topics, handle: action === 'never' || action === 'unblock' ? (body?.handle || p.human_handle) : undefined }));
