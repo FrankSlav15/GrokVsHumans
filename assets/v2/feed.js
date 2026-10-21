@@ -25,9 +25,9 @@
 
   function renderAuth() {
     const u = S.user;
-    $('#auth').innerHTML = `<button class="lang-btn" data-lang aria-label="Language: ${esc(langName(RL()))}. Change language and translation settings"><span aria-hidden="true">🌐</span><span class="lang-btn__c">${esc(RL().toUpperCase())}</span></button><button class="sg-btn" data-suggest aria-label="Suggest a thread"><span aria-hidden="true">💡</span> Suggest</button>` + (u
+    $('#auth').innerHTML = `<button class="lang-btn" data-lang aria-label="Language: ${esc(langName(RL()))}. Change language and translation settings"><span aria-hidden="true">🌐</span><span class="lang-btn__c">${esc(RL().toUpperCase())}</span></button><button class="sg-btn" data-suggest aria-label="Suggest a thread"><span aria-hidden="true">💡</span><span class="sg-btn__l"> Suggest</span></button>` + (u
       ? `${u.admin ? '<a class="queue" href="/admin/queue" aria-label="Admin: post queue"><i class="fa-solid fa-inbox" aria-hidden="true"></i><span class="queue__l">Admin</span><b class="queue__n" id="qn" hidden></b></a>' : ''}<button class="me" id="me" title="Sign out" aria-label="Signed in as @${esc(u.handle)}. Sign out"><img src="${esc(u.avatar)}" alt="" referrerpolicy="no-referrer"><span class="me__h">@${esc(u.handle)}</span><span class="me__x">${X_SVG}</span></button>`
-      : `<button class="btn-x" id="signin">${X_SVG} Sign in with X</button>`);
+      : `<button class="btn-x btn-x--top" id="signin" aria-label="Sign in with X">${X_SVG}<span class="btn-x__l"> Sign in with X</span></button>`);
     if (u?.admin) fetch('/api/admin/counts', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => { const n = d ? d.queue + d.moderation + d.featured : 0, b = $('#qn');
       if (b && n > 0) { b.textContent = n > 99 ? '99+' : n; b.hidden = false; b.parentNode.setAttribute('aria-label', `Admin: ${n} items need attention`); } }).catch(() => {});
     $('#signin') && ($('#signin').onclick = () => signIn());

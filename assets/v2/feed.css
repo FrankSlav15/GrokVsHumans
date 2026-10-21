@@ -355,3 +355,24 @@ a.tab{text-decoration:none;display:inline-flex;align-items:center}
 .fld .cnt{float:right;font-weight:500;color:#71717a}
 @media (min-width:720px){.pj__links{margin-top:.7rem}}
 .about__title{font-size:1.3rem;margin:.6rem 0 .4rem;color:#fff}.about__links a{font-weight:600}
+/* Phone header (<=480px; iPad/desktop unchanged): the full "Grok vs. Humans" title always fits, controls go icon-only. */
+@media (max-width:480px){
+  .top{gap:.4rem;padding-left:.7rem;padding-right:.7rem}
+  .top__logo{flex:0 0 auto;gap:.45rem}
+  .top__name{overflow:visible;text-overflow:clip;font-size:1.02rem}
+  .top__auth{gap:.3rem;flex:0 1 auto;min-width:0}
+  .top__auth .lang-btn,.top__auth .sg-btn,.top__auth .btn-x--top,.top__auth .queue{width:40px;min-width:40px;height:40px;min-height:40px;padding:0;justify-content:center;flex:0 0 40px}
+  .top__auth .lang-btn{font-size:.95rem}
+  .sg-btn__l,.btn-x__l{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .btn-x--top svg{width:16px;height:16px}
+  .top__auth .me{padding:3px;min-height:40px;max-width:none;gap:0}
+  .top__auth .me__h,.top__auth .me__x{display:none}
+}
+@media (max-width:374px){
+  .top{gap:.3rem;padding-left:.55rem;padding-right:.55rem}
+  .top__g{width:28px;height:28px}
+  .top__name{font-size:.95rem}
+  .top__auth{gap:.25rem}
+  .top__auth .lang-btn,.top__auth .sg-btn,.top__auth .btn-x--top,.top__auth .queue{width:36px;min-width:36px;height:36px;min-height:36px;flex-basis:36px}
+  .top__auth .me img{width:28px;height:28px;flex-basis:28px}
+}
