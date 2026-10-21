@@ -63,7 +63,7 @@ async function load(){
   if(filter==='banned'){
     if(!d.users.length)list.append(el('div',{class:'empty'},'No banned users.'));
     for(const u of d.users)list.append(el('div',{class:'card'},
-      el('div',{class:'meta'},el('a',{href:'https://x.com/'+encodeURIComponent(u.handle),target:'_blank',rel:'noopener'},'@'+u.handle),el('span',{},u.comments+' comments')),
+      el('div',{class:'meta'},u.handle?el('a',{href:'https://x.com/'+encodeURIComponent(u.handle),target:'_blank',rel:'noopener'},'@'+u.handle):el('span',{},'Deleted account · X id '+u.x_id+(u.reason?' · '+u.reason:'')),el('span',{},u.comments+' comments')),
       el('div',{class:'acts'},el('button',{class:'ok',onclick:()=>act('user',u.x_id,'unban')},'Unban'))));
     return;
   }

@@ -82,6 +82,8 @@ export async function onRequestGet({ request, env }) {
   }
 
   const avatar = me.profile_image_url ? me.profile_image_url.replace('_normal.', '_400x400.') : null;
+  // Ban list (survives account deletion): refuse sign-in, create no user row or session.
+  if (await env.DB.prepare('SELECT 1 FROM banned_ids WHERE x_id = ?1').bind(String(me.id)).first()) return back(returnTo, 'banned');
   const token = randomToken(32);
   const t = now();
   const xCreated = me.created_at ? Math.floor(Date.parse(me.created_at) / 1000) || null : null;

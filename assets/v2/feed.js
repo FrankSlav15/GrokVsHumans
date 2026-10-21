@@ -427,6 +427,7 @@
   S.hof = q.get('hof') === 'week' ? 'week' : 'all';
   const qs = new URLSearchParams(location.search);
   if (qs.get('login') === 'error') toast('Sign-in failed. Please try again.');
+  if (qs.get('login') === 'banned') toast('This X account is banned from signing in.');
   fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); notify();
     if (qs.get('suggest') === '1') { history.replaceState(null, '', location.pathname); openSuggest(); } }).catch(renderAuth);
   // Donate buttons stay hidden until a Ko-fi URL is configured in data-kofi-url.

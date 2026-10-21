@@ -252,6 +252,7 @@ function handleLoginReturn() {
   const msg = {
     ok: null,
     cancelled: 'Sign in cancelled.',
+    banned: 'This X account is banned from signing in.',
     expired: 'Sign in took too long. Please try again.',
     error: 'Sign in with X failed. Please try again.'
   }[flag];

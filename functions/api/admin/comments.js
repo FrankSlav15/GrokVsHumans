@@ -19,6 +19,10 @@ export async function onRequestGet({ request, env }) {
       `SELECT x_id, handle, name, avatar_url, last_login,
               (SELECT COUNT(*) FROM comments c WHERE c.x_id = u.x_id) AS comments
          FROM users u WHERE banned = 1 ORDER BY last_login DESC LIMIT 200`).all();
+    const { results: gone } = await env.DB.prepare(   // deleted accounts that remain on the ban list (id only)
+      `SELECT b.x_id, NULL AS handle, b.banned_at, b.reason, 0 AS comments FROM banned_ids b
+        WHERE NOT EXISTS (SELECT 1 FROM users u WHERE u.x_id = b.x_id) ORDER BY b.banned_at DESC LIMIT 200`).all();
+    results.push(...gone);
     return json({ filter, users: results });
   }
   const where = FILTERS[filter];
@@ -35,7 +39,7 @@ export async function onRequestGet({ request, env }) {
             (SELECT COUNT(*) FROM comments WHERE mod_state IN ('flagged','error') AND mod_reviewed = 0) AS flagged,
             (SELECT COUNT(*) FROM comments WHERE status = 'hidden') AS hidden,
             (SELECT COUNT(*) FROM comments) AS total,
-            (SELECT COUNT(*) FROM users WHERE banned = 1) AS banned,
+            (SELECT COUNT(*) FROM banned_ids) AS banned,
             (SELECT COUNT(*) FROM users) AS users`).first();
   return json({ filter, comments: results, counts });
 }

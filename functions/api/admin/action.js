@@ -37,17 +37,23 @@ export async function onRequestPost({ request, env }) {
   if (kind === 'user') {
     const xId = String(body.id || '');
     if (!/^[0-9]{1,25}$/.test(xId)) return json({ error: 'bad_request' }, 400);
-    if (!(await DB.prepare('SELECT 1 FROM users WHERE x_id = ?1').bind(xId).first())) return json({ error: 'not_found' }, 404);
+    const hasUser = !!(await DB.prepare('SELECT 1 FROM users WHERE x_id = ?1').bind(xId).first());
+    const listed = !!(await DB.prepare('SELECT 1 FROM banned_ids WHERE x_id = ?1').bind(xId).first());
+    // a deleted account can still be on the ban list (unban only); ban needs an existing user
+    if (!hasUser && !(listed && action === 'unban')) return json({ error: 'not_found' }, 404);
     if (action === 'ban') {
+      const reason = body.reason ? String(body.reason).trim().slice(0, 200) || null : null;
       if (isAdmin(env, xId)) return json({ error: 'cannot_ban_admin' }, 400);
       await DB.batch([
         DB.prepare('UPDATE users SET banned = 1 WHERE x_id = ?1').bind(xId),
+        DB.prepare('INSERT INTO banned_ids (x_id, banned_at, reason) VALUES (?1, unixepoch(), ?2) ON CONFLICT(x_id) DO UPDATE SET reason = COALESCE(excluded.reason, banned_ids.reason)').bind(xId, reason),
         DB.prepare("UPDATE comments SET status = 'hidden', hidden_by = 'ban' WHERE x_id = ?1 AND status = 'visible'").bind(xId),
         DB.prepare('DELETE FROM sessions WHERE x_id = ?1').bind(xId),   // M4: ban signs the user out everywhere
       ]);
     } else if (action === 'unban') {
       await DB.batch([
         DB.prepare('UPDATE users SET banned = 0 WHERE x_id = ?1').bind(xId),
+        DB.prepare('DELETE FROM banned_ids WHERE x_id = ?1').bind(xId),
         DB.prepare("UPDATE comments SET status = 'visible', hidden_by = NULL WHERE x_id = ?1 AND hidden_by = 'ban'").bind(xId),
       ]);
     } else return json({ error: 'bad_action' }, 400);
