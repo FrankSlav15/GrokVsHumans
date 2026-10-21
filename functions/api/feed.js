@@ -1,4 +1,6 @@
-// GET /api/feed?view=hot|new|top|hall&range=all|week&topic=Science&limit=30
+// GET /api/feed?view=hot|new|top|hall|grok|human&range=all|week&topic=Science&limit=10&offset=0
+//   &order=1     -> only the ranked ids [[id, engagement, promoted 0/1], ...] of the whole view (client splits unseen/seen)
+//   &ids=1,2,3   -> details for exactly these ids, in that order (pages of the client-side order; max 30)
 // Only approved posts. Returns each post with its full chain, topics, vote totals, reactions,
 // comment count and (when signed in) the viewer's own vote/reaction.
 // M2: ranking runs over at most CANDIDATES recent approved posts (SQL LIMIT); chains, topics and the
@@ -37,6 +39,8 @@ async function build({ request, env }) {
   const one = /^[0-9]{1,9}$/.test(q.get('id') || '') ? q.get('id') : null;
   const limit = Math.min(Math.max(Number(q.get('limit')) || 30, 1), 60);
   const offset = Math.min(Math.max(Math.floor(Number(q.get('offset'))) || 0, 0), 5000);
+  const orderOnly = q.get('order') === '1';
+  const want = (q.get('ids') || '').split(',').filter(x => /^[0-9]{1,9}$/.test(x)).slice(0, 30);
   const viewer = await getSessionUser(env, request);
   const me = viewer ? viewer.x_id : '';
   const t = now();
@@ -91,8 +95,10 @@ async function build({ request, env }) {
     list = [...ids.map(id => list.find(p => p.id === id)).filter(Boolean), ...list.filter(p => !promo.has(p.id))];
     for (const p of list) if (promo.has(p.id)) p.promoted = { until: promo.get(p.id) }; }
   const total = list.length;
-  const page = list.slice(offset, offset + limit);
-  const next = offset + page.length < total ? offset + page.length : null;
+  if (orderOnly) return json({ view, range, topic, topics: TOPICS, order: list.map(p => [p.id, engagement(p), p.promoted ? 1 : 0]), total });
+  let page, next;
+  if (want.length) { const by = new Map(list.map(p => [p.id, p])); page = want.map(id => by.get(id)).filter(Boolean); next = null; }
+  else { page = list.slice(offset, offset + limit); next = offset + page.length < total ? offset + page.length : null; }
 
   // 2) details only for the page
   if (page.length) {

@@ -102,19 +102,65 @@
   const thread = p => { const w = p.tweets; w.forEach((x, i) => { x._k = p.id + ':' + (x.pos ?? i); });
     if (w.length <= 5 || S.open.has(p.id)) return `<div class="ex">${w.map(turn).join('')}</div>`;
     return `<div class="ex">${w.slice(0, 2).map(turn).join('')}<button class="thread-more" data-act="expand"><span aria-hidden="true">⋯</span> Show full thread <span class="thread-more__n">+${w.length - 4}</span><span class="sr"> more of ${w.length}</span></button>${w.slice(-2).map(turn).join('')}</div>`; };
-  // Infinite scroll: a sentinel after the last card loads the next page.
-  let io = null;
-  const watch = () => { const s = $('#more'); if (!s) return; io?.disconnect();
+  // No infinite scroll (footer stays reachable): an explicit "Load more" button adds the next PAGE posts.
+  const PAGE = 10;
+  const watch = () => {};
+  // ---- seen / interacted: >=50% on screen for ~2 s = seen; vote, react, comments, expand, share, open on X = interacted ----
+  // Map id -> [eng when seen, acted 0/1, seen_at]. Signed out: localStorage (cap SEEN_CAP); signed in: also /api/seen (D1).
+  const SEEN_CAP = 2000, SEEN_KEY = 'gvh_seen', eng = p => p.votes.grok + p.votes.human + 2 * p.likes + 3 * p.comments - p.dislikes;
+  const SEEN = new Map((() => { try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '[]'); } catch { return []; } })().filter(r => Array.isArray(r) && r.length >= 4).map(r => [String(r[0]), r.slice(1)]));
+  const seenSave = () => { try { const a = [...SEEN].sort((x, y) => y[1][2] - x[1][2]).slice(0, SEEN_CAP);
+    if (a.length < SEEN.size) { SEEN.clear(); a.forEach(([k, v]) => SEEN.set(k, v)); } localStorage.setItem(SEEN_KEY, JSON.stringify(a.map(([k, v]) => [k, ...v]))); } catch {} };
+  // a seen post comes back up when it got lots of new activity since (>= +10 engagement and +50%)
+  const resurfaced = (id, e) => { const r = SEEN.get(id); return !!r && e >= r[0] + 10 && e >= r[0] * 1.5; };
+  const isSeen = p => SEEN.has(p.id) && !resurfaced(p.id, eng(p));
+  const UNSEEN_FIRST = () => store.get('gvh_unseen_first') !== '0';
+  let pend = new Map(), flushT = null;
+  function flushSeen(beacon) {
+    clearTimeout(flushT); flushT = null; if (!S.user || !pend.size) { pend.clear(); return; }
+    const items = [...pend.values()].slice(0, 50); items.forEach(i => pend.delete(i.id));
+    const body = JSON.stringify({ items });
+    if (beacon && navigator.sendBeacon) navigator.sendBeacon('/api/seen', new Blob([body], { type: 'application/json' }));
+    else post('/api/seen', { items }).catch(() => {});
+    if (pend.size) flushT = setTimeout(flushSeen, 3000);
+  }
+  function markSeen(p, acted) {
+    if (!p) return; const old = SEEN.get(p.id), e = eng(p), a = acted || old?.[1] ? 1 : 0;
+    if (old && old[1] >= a && !resurfaced(p.id, e)) return;
+    SEEN.set(p.id, [e, a, Math.floor(Date.now() / 1000)]); seenSave();
+    if (S.user) { pend.set(p.id, { id: p.id, e, a }); if (!flushT) flushT = setTimeout(flushSeen, 3000); }
+  }
+  addEventListener('pagehide', () => flushSeen(true));
+  addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushSeen(true); });
+  let sio = null; const stimers = new Map();
+  function seenWatch(root) {
     if (!('IntersectionObserver' in window)) return;
-    io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) more(); }, { rootMargin: '800px 0px' }); io.observe(s); };
+    sio ||= new IntersectionObserver(es => es.forEach(en => { const id = en.target.dataset.id;
+      if (en.isIntersecting && (en.intersectionRatio >= 0.5 || halfScreen(en))) { if (!stimers.has(id)) stimers.set(id, setTimeout(() => { stimers.delete(id); markSeen(S.posts.find(x => x.id === id)); }, 2000)); }
+      else { clearTimeout(stimers.get(id)); stimers.delete(id); } }),
+    // tall cards never reach 50% on a phone: also count a card that fills half the viewport
+    { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    (root.matches?.('.post') ? [root] : root.querySelectorAll('.post')).forEach(el => sio.observe(el));
+  }
+  // tall cards: treat "covers >= 50% of the viewport" as seen too
+  const halfScreen = en => en.intersectionRect.height >= innerHeight * 0.5;
+  async function syncSeen() {
+    if (!S.user) return;
+    const d = await fetch('/api/seen', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
+    if (!d?.items) return; let ch = false;
+    for (const [id, e, a, t] of d.items) { const o = SEEN.get(id); if (!o || o[2] < t || (a && !o[1])) { SEEN.set(id, [e, Math.max(a, o?.[1] || 0), Math.max(t, o?.[2] || 0)]); ch = true; } }
+    // local-only seen ids from before sign-in go up once
+    for (const [id, v] of SEEN) if (!d.items.some(r => r[0] === id)) pend.set(id, { id, e: v[0], a: v[1] });
+    if (ch) seenSave(); if (pend.size) flushSeen();
+  }
   function card(p, rank) {
     const t = p.votes.grok + p.votes.human, gp = t ? Math.round(p.votes.grok / t * 100) : 50;
-    return `<article class="post${p.promoted ? ' post--promo' : ''}" data-id="${p.id}" id="p${p.id}">
+    return `<article class="post${p.promoted ? ' post--promo' : ''}${isSeen(p) ? ' is-seen' : ''}" data-id="${p.id}" id="p${p.id}">
       ${p.promoted ? `<div class="promo" title="Paid placement until ${esc(new Date(p.promoted.until * 1000).toLocaleString())}"><span class="promo__star" aria-hidden="true">⭐</span> Featured <span class="promo__paid">Paid placement</span></div>` : ''}
       <div class="post__top">
         ${rank ? `<span class="rank">#${rank}</span>` : ''}${p.featured ? '<span class="rank">★</span>' : ''}
         ${p.topics.map(x => `<button class="topic" data-topic="${esc(x)}">${esc(x)}</button>`).join('')}
-        <span class="post__time">${ago(p.created_at)}</span>
+        ${S.view !== 'hot' && isSeen(p) ? '<span class="seen-tag" title="You have seen this post">✓ Seen</span>' : ''}<span class="post__time">${ago(p.created_at)}</span>
       </div>
       <h2 class="post__title">${esc(p.headline || 'Grok vs. a human')}</h2>
       ${thread(p)}
@@ -138,11 +184,18 @@
       ? `<div class="hof-head"><h2>🏆 Hall of Fame${S.topic !== 'All' ? ' · ' + esc(S.topic) : ''}</h2>
            <div class="seg"><button data-hof="all" class="${S.hof === 'all' ? 'is-on' : ''}">All-time</button><button data-hof="week" class="${S.hof === 'week' ? 'is-on' : ''}">This week</button></div></div>` : '';
     $('#feed').innerHTML = head + (S.posts.length ? S.posts.map((p, i) => card(p, S.view === 'hall' ? i + 1 : 0)).join('')
-      + (S.next != null ? '<div id="more" class="more-wrap"><button class="load-more" data-act="more">Load more</button></div>' : '')
+      + moreHtml()
       : `<div class="empty">${S.view === 'grok' || S.view === 'human' ? `${S.view === 'grok' ? '🤖' : '🧑'} No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts where ${S.view === 'grok' ? 'Grok' : 'the human'} leads the vote yet. Vote on a few threads and they will show up here.` : S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
     document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.view === S.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); if (on && b.parentNode.scrollWidth > b.parentNode.clientWidth) b.parentNode.scrollTo({ left: b.offsetLeft - 16, behavior: 'smooth' }); });
-    renderChips(); watch($('#feed')); autoWatch($('#feed'));
+    renderChips(); renderSeenOpt(); autoWatch($('#feed')); seenWatch($('#feed'));
   }
+  const hasMore = () => S.queue ? S.qi < S.queue.length : S.next != null;
+  const moreHtml = () => hasMore() ? '<div id="more" class="more-wrap"><button class="load-more" data-act="more">Load more</button></div>'
+    : '<div id="more" class="more-wrap caught" role="status"><span aria-hidden="true">✨</span> You\'re all caught up</div>';
+  const hotSeen = () => S.view === 'hot' && UNSEEN_FIRST();
+  function renderSeenOpt() { const el = $('#seenopt'); if (!el) return;
+    el.innerHTML = (S.view === 'hot' ? `<label class="seenopt__t"><input type="checkbox" data-seen="first" ${UNSEEN_FIRST() ? 'checked' : ''}> Unseen posts first</label>` : '')
+      + `<button class="seenopt__r" data-seen="reset" ${SEEN.size ? '' : 'disabled'}>Reset seen${SEEN.size ? ' (' + SEEN.size + ')' : ''}</button>`; }
   // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
   const rerender = (p, full) => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p);
     const tmp = document.createElement('div'); tmp.innerHTML = card(p, S.view === 'hall' ? i + 1 : 0); const fresh = tmp.firstElementChild;
@@ -150,32 +203,63 @@
     el.replaceWith(fresh); if (full) watch(fresh); autoWatch(fresh); };
 
   const feedQ = extra => { const q = new URLSearchParams({ view: S.view, range: S.hof, ...extra }); if (S.topic !== 'All') q.set('topic', S.topic); return '/api/feed?' + q; };
+  // Hot + "unseen first": one cheap ranked id list (order=1), split into unseen (Hot order) then seen; pages by ids=.
+  // Other tabs: offset paging. Both: PAGE posts per request.
+  async function fetchPage() {
+    if (S.queue) { const ids = S.queue.slice(S.qi, S.qi + PAGE); S.qi += ids.length; if (!ids.length) return [];
+      const d = await fetch(feedQ({ ids: ids.join(',') }), { credentials: 'same-origin', cache: 'no-store' }).then(x => x.ok ? x.json() : Promise.reject());
+      const by = new Map(d.posts.map(p => [p.id, p])); return ids.map(id => by.get(id)).filter(Boolean); }
+    const d = await fetch(feedQ({ limit: PAGE, offset: S.next || 0 }), { credentials: 'same-origin', cache: 'no-store' }).then(x => x.ok ? x.json() : Promise.reject());
+    S.next = d.next ?? null; if (d.topics) S.topics = d.topics; return d.posts;
+  }
   async function load() {
     const seq = load.seq = (load.seq || 0) + 1;
-    const r = await fetch(feedQ({}), { credentials: 'same-origin', cache: 'no-store' }).catch(() => null);
-    const d = r ? await r.json().catch(() => ({})) : {};
+    S.queue = null; S.qi = 0; S.next = null;
+    let posts;
+    try {
+      if (hotSeen()) {
+        const d = await fetch(feedQ({ order: 1 }), { credentials: 'same-origin', cache: 'no-store' }).then(x => x.ok ? x.json() : Promise.reject());
+        if (seq !== load.seq) return;
+        if (d.topics) S.topics = d.topics;
+        const pro = d.order.filter(r => r[2]), rest = d.order.filter(r => !r[2]);
+        const seen = r => SEEN.has(r[0]) && !resurfaced(r[0], r[1]);
+        S.queue = [...pro, ...rest.filter(r => !seen(r)), ...rest.filter(seen)].map(r => r[0]);
+      }
+      posts = await fetchPage();
+    } catch { posts = null; }
     if (seq !== load.seq) return;
-    if (!r || !r.ok) { $('#feed').innerHTML = '<div class="empty">Could not load the feed. <button class="load-more" data-act="retry">Retry</button></div>'; return; }
-    S.posts = d.posts; S.topics = d.topics; S.next = d.next ?? null; render();
+    if (!posts) { $('#feed').innerHTML = '<div class="empty">Could not load the feed. <button class="load-more" data-act="retry">Retry</button></div>'; return; }
+    S.posts = posts; render();
     const h = location.hash.match(/^#p(\d+)$/);
     if (h && !load.jumped) { load.jumped = 1;
       if (!document.getElementById('p' + h[1])) {   // shared link to a post beyond the first page: fetch it on its own
         const one = await fetch('/api/feed?id=' + h[1], { credentials: 'same-origin' }).then(x => x.json()).catch(() => ({}));
-        if (one.posts?.[0]) { S.posts = [one.posts[0], ...S.posts.filter(p => p.id !== one.posts[0].id)]; render(); }
+        if (one.posts?.[0]) { S.posts = [one.posts[0], ...S.posts.filter(p => p.id !== one.posts[0].id)]; if (S.queue) S.queue = S.queue.filter(id => id !== one.posts[0].id); render(); }
       }
       document.getElementById('p' + h[1])?.scrollIntoView(); }
   }
   async function more() {
-    if (S.busy || S.next == null) return; S.busy = true; const seq = load.seq;
+    if (S.busy || !hasMore()) return; S.busy = true; const seq = load.seq;
+    const btn = $('#more .load-more'); if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="spin" aria-hidden="true"></span> Loading…'; }
+    const qi = S.qi, nx = S.next;
     try {
-      const d = await fetch(feedQ({ offset: S.next }), { credentials: 'same-origin', cache: 'no-store' }).then(x => x.ok ? x.json() : Promise.reject());
+      const got = await fetchPage();
       if (seq !== load.seq) return;
-      const have = new Set(S.posts.map(p => p.id)), add = d.posts.filter(p => !have.has(p.id)), base = S.posts.length;
-      S.posts.push(...add); S.next = d.next ?? null;
+      const have = new Set(S.posts.map(p => p.id)), add = got.filter(p => !have.has(p.id)), base = S.posts.length;
+      S.posts.push(...add);
       const m = $('#more'), tmp = document.createElement('div');
-      tmp.innerHTML = add.map((p, i) => card(p, S.view === 'hall' ? base + i + 1 : 0)).join('');
-      const nodes = [...tmp.children]; if (m) { m.before(...nodes); if (S.next == null) m.remove(); } nodes.forEach(autoWatch);
-    } catch { toast('Could not load more posts.'); } finally { S.busy = false; watch(); }
+      tmp.innerHTML = add.map((p, i) => card(p, S.view === 'hall' ? base + i + 1 : 0)).join('') + moreHtml();
+      const nodes = [...tmp.children];
+      // insert above the button: content above the viewport does not move, so the scroll position stays put
+      const last = document.getElementById('p' + S.posts[base - 1]?.id), top0 = last?.getBoundingClientRect().top;
+      if (m) m.replaceWith(...nodes);
+      // keep the last old card exactly where it was (browser scroll anchoring may pick the removed button)
+      const fix = () => { if (last && top0 != null) { const d = last.getBoundingClientRect().top - top0; if (Math.abs(d) > 0.5) scrollBy(0, d); } };
+      fix(); requestAnimationFrame(fix); nodes.forEach(n => { if (n.classList.contains('post')) { autoWatch(n); seenWatch(n); } });
+      if (add[0]) document.getElementById('p' + add[0].id)?.querySelector('.post__title')?.setAttribute('tabindex', '-1');
+    } catch { S.qi = qi; S.next = nx; toast('Could not load more posts.');
+      if (btn && btn.isConnected) { btn.disabled = false; btn.removeAttribute('aria-busy'); btn.textContent = 'Load more'; } }
+    finally { S.busy = false; }
   }
   function setState(patch) {
     Object.assign(S, patch);
@@ -338,10 +422,14 @@
     const tab = e.target.closest('.tab'); if (tab) return setState({ view: tab.dataset.view }), window.scrollTo({ top: 0 });
     const chip = e.target.closest('[data-topic]'); if (chip) return setState({ topic: chip.dataset.topic }), window.scrollTo({ top: 0 });
     const hof = e.target.closest('[data-hof]'); if (hof) return setState({ hof: hof.dataset.hof });
-    const a = e.target.closest('[data-act]'); if (!a) return;
+    const so = e.target.closest('[data-seen]');
+    if (so?.dataset.seen === 'reset') { SEEN.clear(); pend.clear(); seenSave(); if (S.user) post('/api/seen', { reset: true }).catch(() => {}); toast('Seen history cleared'); return load(); }
+    const a = e.target.closest('[data-act]');
+    if (!a) { const xl = e.target.closest('.post a[href*="x.com"], .post a[href*="twitter.com"]'); if (xl) markSeen(S.posts.find(x => x.id === xl.closest('.post').dataset.id), 1); return; }
     if (a.dataset.act === 'more') return more();
     if (a.dataset.act === 'retry') return load();
     const el = a.closest('.post'), p = S.posts.find(x => x.id === el?.dataset.id), act = a.dataset.act;
+    if (p && ['vote', 'react', 'comments', 'expand', 'share'].includes(act)) markSeen(p, 1);
     if (act === 'expand') { S.open.add(p.id); return rerender(p, true); }
         if (act === 'comments') return openSheet(p);
     if (act === 'feature') return S.user ? openFeature(p) : needSignIn('feature a thread', location.pathname + '#p' + p.id);
@@ -433,7 +521,8 @@
   const qs = new URLSearchParams(location.search);
   if (qs.get('login') === 'error') toast('Sign-in failed. Please try again.');
   if (qs.get('login') === 'banned') toast('This X account is banned from signing in.');
-  fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); notify();
+  document.addEventListener('change', e => { if (e.target.matches?.('[data-seen="first"]')) { store.set('gvh_unseen_first', e.target.checked ? null : '0'); load(); window.scrollTo({ top: 0 }); } });
+  fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); notify(); syncSeen();
     if (qs.get('suggest') === '1') { history.replaceState(null, '', location.pathname); openSuggest(); } }).catch(renderAuth);
   // Donate buttons stay hidden until a Ko-fi URL is configured in data-kofi-url.
   document.querySelectorAll('[data-kofi-url]').forEach(a => { const u = (a.dataset.kofiUrl || '').trim(); if (/^https:\/\/(www\.)?ko-fi\.com\//.test(u)) { a.href = u; a.hidden = false; } });

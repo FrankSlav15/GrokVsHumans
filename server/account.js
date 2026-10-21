@@ -18,6 +18,7 @@ export async function deleteAccountData(env, id) {
     DB.prepare('DELETE FROM votes WHERE x_id = ?1').bind(id),
     DB.prepare('DELETE FROM reports WHERE x_id = ?1').bind(id),
     DB.prepare('DELETE FROM suggestions WHERE x_id = ?1').bind(id),
+    DB.prepare('DELETE FROM seen_posts WHERE x_id = ?1').bind(id),
     DB.prepare('DELETE FROM sessions WHERE x_id = ?1').bind(id),
     DB.prepare("DELETE FROM rate_limits WHERE key LIKE '%:u:' || ?1").bind(id),
     DB.prepare('DELETE FROM users WHERE x_id = ?1').bind(id),
