@@ -1,5 +1,8 @@
 // GET /api/admin/queue?status=pending|approved|skipped|blocked|hidden  (admins only)
-import { json, requireAdmin } from '../../../server/lib.js';
+import { json, requireAdmin, isAdmin } from '../../../server/lib.js';
+// ',id1,id2,' for SQL instr(): posts added by an admin (quick-add) are source 'manual' + suggested_by_x_id = admin
+const ADM = env => ',' + String(env.ADMIN_X_IDS || '').split(',').map(x => x.trim()).filter(Boolean).join(',') + ',';
+const byAdmin = (env, p) => p.source === 'manual' && !!p.suggested_by_x_id && isAdmin(env, p.suggested_by_x_id);
 import { TOPICS, headlineMismatch } from '../../../server/v2.js';
 import { rebuildConfig } from '../../../server/config.js';
 
@@ -11,7 +14,7 @@ export async function onRequestGet({ request, env }) {
   if (q.get('view') === 'batch') return batchView(env);
   if (q.get('id')) return onePost(env, Number(q.get('id')));
   const [posts, tweets, topics, counts, spend, blocked] = await env.DB.batch([
-    env.DB.prepare(`SELECT * FROM posts WHERE status = ?1 ORDER BY ${status === 'pending' ? 'low_priority, x_engagement DESC, id' : 'COALESCE(approved_at, fetched_at) DESC'} LIMIT 100`).bind(status),
+    env.DB.prepare(`SELECT * FROM posts WHERE status = ?1 ORDER BY ${status === 'pending' ? "(source = 'manual' AND instr(?2, ',' || suggested_by_x_id || ',') > 0) DESC, CASE WHEN source = 'manual' AND instr(?2, ',' || suggested_by_x_id || ',') > 0 THEN -fetched_at END, low_priority, x_engagement DESC, id" : 'COALESCE(approved_at, fetched_at) DESC'} LIMIT 100`).bind(...(status === 'pending' ? [status, ADM(env)] : [status])),
     env.DB.prepare(`SELECT t.* FROM post_tweets t JOIN posts p ON p.id = t.post_id WHERE p.status = ?1 ORDER BY t.post_id, t.pos`).bind(status),
     env.DB.prepare(`SELECT pt.* FROM post_topics pt JOIN posts p ON p.id = pt.post_id WHERE p.status = ?1`).bind(status),
     env.DB.prepare(`SELECT status, COUNT(*) n FROM posts GROUP BY status`),
@@ -27,7 +30,7 @@ export async function onRequestGet({ request, env }) {
     spend: { today: spend.results[0]?.today || 0, month: spend.results[0]?.month || 0, last_run: spend.results[0]?.last_run || null, caps },
     blocked: blocked.results,
     // mid_thread: same free check the approve action uses (first stored post is not the conversation root)
-    posts: posts.results.map(p => ({ ...p, title_mismatch: headlineMismatch(p.headline, p.human_handle), tweets: W[p.id] || [], topics: T[p.id] || [], mid_thread: !!p.conversation_id && (W[p.id]?.[0]?.tweet_id || null) !== p.conversation_id })),
+    posts: posts.results.map(p => ({ ...p, added_by_admin: byAdmin(env, p), title_mismatch: headlineMismatch(p.headline, p.human_handle), tweets: W[p.id] || [], topics: T[p.id] || [], mid_thread: !!p.conversation_id && (W[p.id]?.[0]?.tweet_id || null) !== p.conversation_id })),
   });
 }
 
@@ -50,10 +53,10 @@ async function onePost(env, id) {
 // ?view=batch: every pending post as a compact card (no chain text) grouped by review batch, with rebuild-cost inputs.
 async function batchView(env) {
   const [posts, topics, spend] = await env.DB.batch([
-    env.DB.prepare(`SELECT p.id, p.headline, p.human_handle, p.x_engagement, p.grok_tweet_id, p.review_score, p.review_reason, p.review_batch, p.review_title, p.rebuild_state, p.rebuild_note, p.low_priority,
+    env.DB.prepare(`SELECT p.id, p.headline, p.human_handle, p.source, p.suggested_by_x_id, p.x_engagement, p.grok_tweet_id, p.review_score, p.review_reason, p.review_batch, p.review_title, p.rebuild_state, p.rebuild_note, p.low_priority,
       (SELECT COUNT(*) FROM post_tweets t WHERE t.post_id = p.id) n_tweets,
       (p.conversation_id IS NOT NULL AND COALESCE((SELECT tweet_id FROM post_tweets t WHERE t.post_id = p.id AND t.pos = 0), '') != p.conversation_id) mid_thread
-      FROM posts p WHERE p.status = 'pending' ORDER BY COALESCE(p.review_score, 0) DESC, p.x_engagement DESC, p.id`),
+      FROM posts p WHERE p.status = 'pending' ORDER BY (p.source = 'manual' AND instr(?1, ',' || p.suggested_by_x_id || ',') > 0) DESC, CASE WHEN p.source = 'manual' AND instr(?1, ',' || p.suggested_by_x_id || ',') > 0 THEN -p.fetched_at END, COALESCE(p.review_score, 0) DESC, p.x_engagement DESC, p.id`).bind(ADM(env)),
     env.DB.prepare(`SELECT pt.post_id, pt.topic FROM post_topics pt JOIN posts p ON p.id = pt.post_id WHERE p.status = 'pending'`),
     env.DB.prepare(`SELECT SUM(CASE WHEN day = strftime('%Y-%m-%d','now') THEN est_cost END) today, SUM(CASE WHEN month = strftime('%Y-%m','now') THEN est_cost END) month FROM fetch_log`),
   ]);
@@ -62,6 +65,6 @@ async function batchView(env) {
   return json({
     view: 'batch', rebuild_max_usd: rebuildConfig(env).maxUsd,
     spend: { today: spend.results[0]?.today || 0, month: spend.results[0]?.month || 0, caps },
-    posts: posts.results.map(p => ({ ...p, mid_thread: !!p.mid_thread, topics: T[p.id] || [], title_mismatch: headlineMismatch(p.headline, p.human_handle) || headlineMismatch(p.review_title, p.human_handle) })),
+    posts: posts.results.map(p => ({ ...p, added_by_admin: byAdmin(env, p), mid_thread: !!p.mid_thread, topics: T[p.id] || [], title_mismatch: headlineMismatch(p.headline, p.human_handle) || headlineMismatch(p.review_title, p.human_handle) })),
   });
 }

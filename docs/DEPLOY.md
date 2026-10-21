@@ -53,3 +53,9 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 - Fetch Worker `workers/fetch` (`gvh-fetch`): `cd workers/fetch && wrangler deploy`; secrets `wrangler secret put X_BEARER_TOKEN` and `wrangler secret put RUN_KEY`.
   Crons: 11:00/23:00 UTC discovery (50 results, ≈$0.25/run), every 10 min expand 3 candidates (≈$0.05 each) + free oEmbed re-check.
   Caps: $1.50/day, $45/month (estimated from fetch_log, before every paid call). Manual run: `POST /run` with `Authorization: Bearer $RUN_KEY`, body `{"stage":"discover|expand|recheck|usage|status","budget":8}` (budget capped at $8 per UTC day for manual runs; the run id is server-chosen, `manual-YYYY-MM-DD`; key compared in constant time).
+
+## Admin quick-add (/admin/queue "Add a thread")
+- Pages Function `POST /api/admin/quickadd {url}` (requireAdmin → ADMIN_X_IDS; audit `post.quickadd`) calls gvh-fetch over the
+  Pages service binding `FETCH` → service `gvh-fetch`, entrypoint `QuickAdd` (RPC; not reachable from workers.dev). Set on both Production and Preview.
+- Budget: `ADMIN_DAILY_USD` (default $1, run ids `admin-*`) replaces the daily cap for these adds; the monthly cap still applies; max $0.60 per add.
+- Stored as `source='manual'` + `suggested_by_x_id` = admin (posts.source has a CHECK constraint); shown as "➕ added by admin" at the top of the queue.

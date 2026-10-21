@@ -1,5 +1,6 @@
+import { WorkerEntrypoint } from 'cloudflare:workers';
 import { digest, chicagoHour } from './digest.js';
-import { rebuildConfig } from '../../../server/config.js';
+import { rebuildConfig, parseStatusUrl } from '../../../server/config.js';
 // gvh-fetch: discovers @grok reply threads on X, rebuilds the chain, stores them as *pending*
 // posts for the /admin/queue. Nothing is public until an admin approves it.
 //
@@ -26,7 +27,8 @@ class Budget {
   constructor(env, runId, opts = {}) {
     this.env = env; this.runId = runId; this.sub = 0;
     this.dayCap = boosted(env) ? Number(env.BOOST_DAILY_CAP_USD || 5) : Number(env.DAILY_CAP_USD || 1.5); this.monthCap = Number(env.MONTHLY_CAP_USD || 45);
-    this.runCap = opts.runCap ?? null;     // seeding run: explicit budget (replaces the daily cap, month cap still applies)
+    this.runCap = opts.runCap ?? null;
+    this.adminCap = opts.adminCap ?? null;  // admin quick-add: own small daily allowance (run ids 'admin-*') instead of the daily cap     // seeding run: explicit budget (replaces the daily cap, month cap still applies)
     this.spent = 0;
   }
   async totals() {
@@ -35,6 +37,12 @@ class Budget {
   }
   async allow(est) {
     const t = await this.totals();
+    if (this.adminCap != null && t.month + est <= this.monthCap) {   // admin allowance replaces the daily cap
+      const a = await this.env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first();
+      if (a.s + est > this.adminCap) { this.capped = 'admin_cap'; return 'admin_cap'; }
+      if (this.runCap != null && this.spent + est > this.runCap) { this.capped = 'run_cap'; return 'run_cap'; }
+      return null;
+    }
     const why = t.month + est > this.monthCap ? 'month_cap' : t.day + est > this.dayCap ? 'day_cap' : this.runCap != null && this.spent + est > this.runCap ? 'run_cap' : null;
     if (why) this.capped = why;            // remembered: a chain built after a capped call may be incomplete
     if (t.month + est > this.monthCap) return 'month_cap';
@@ -420,7 +428,7 @@ async function suggestionOne(env, b, s) {
   const dup = await env.DB.prepare('SELECT id FROM posts WHERE grok_tweet_id = ?1 OR (conversation_id IS NOT NULL AND conversation_id = ?2) LIMIT 1').bind(grok, conv || '').first();
   if (dup) return { state: 'duplicate', result: 'already on the site', post_id: dup.id };
   const res = await expandOne(env, b, { grok_tweet_id: grok, conversation_id: conv, engagement: 0,
-    payload: JSON.stringify({ source: 'manual', replier_id: w.author_id !== GROK_ID ? w.author_id : null, annotations: [] }) });
+    payload: JSON.stringify({ source: s.source || 'manual', replier_id: w.author_id !== GROK_ID ? w.author_id : null, annotations: [] }) });
   if (String(res).startsWith('capped')) return { state: 'queued', result: res };
   if (!String(res).startsWith('stored')) return { state: res === 'dup_conv' || res === 'duplicate' ? 'duplicate' : 'failed', result: res };
   const p = await env.DB.prepare('SELECT id FROM posts WHERE grok_tweet_id = ?1').bind(grok).first();
@@ -563,6 +571,41 @@ async function runJob(env) {
   const left = (await env.DB.prepare(`SELECT COUNT(*) n FROM fetch_candidates WHERE state='job' AND json_extract(payload,'$.job')=?1`).bind(job.id).first()).n;
   await log(left && !capped ? 'expanding' : 'done', { expand: out, left, spent: await spentInRun(env, runId) });
   return { job: job.id, out, left };
+}
+
+// Admin quick-add (/admin/queue "Add a thread"), called by the Pages Function /api/admin/quickadd over the
+// service binding FETCH (entrypoint QuickAdd; RPC is not reachable from the public workers.dev URL).
+// Same path as suggestions: resolve the Grok reply, rebuild the chain root-first, main-human title, AI topics, pending.
+// Budget: ADMIN_DAILY_USD (default $1) per UTC day for admin runs, independent of the daily cap; the monthly cap still applies.
+export class QuickAdd extends WorkerEntrypoint {
+  async add({ url, adminXId, adminHandle }) {
+    const env = this.env;
+    API = env.X_API_BASE || API_DEFAULT;
+    const tweetId = parseStatusUrl(url);
+    if (!tweetId) return { error: 'bad_url' };
+    const onSite = await env.DB.prepare(`SELECT p.id, p.status FROM post_tweets t JOIN posts p ON p.id = t.post_id WHERE t.tweet_id = ?1
+                                         UNION ALL SELECT id, status FROM posts WHERE grok_tweet_id = ?1 LIMIT 1`).bind(tweetId).first();
+    if (onSite) return { error: 'duplicate', post_id: onSite.id, status: onSite.status, cost: 0 };
+    if (!env.X_BEARER_TOKEN) return { error: 'no_x_token' };
+    const cap = Number(env.ADMIN_DAILY_USD || 1);
+    // Size this add to what is left of today's allowance (max $0.60 per add): the conversation search shrinks its page to fit,
+    // so a worst-case estimate cannot block an add that would really cost a few cents.
+    const used = (await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first()).s;
+    const runCap = Math.min(0.6, cap - used);
+    if (runCap < 0.1) return { error: 'admin_cap', tweet_id: tweetId, cost: 0, admin_spent_today: Math.round(used * 1000) / 1000, admin_cap: cap };
+    const b = new Budget(env, 'admin-' + Date.now(), { adminCap: cap, runCap });
+    const res = await suggestionOne(env, b, { tweet_id: tweetId, x_id: adminXId, handle: adminHandle || null, source: 'manual' })   // posts.source CHECK allows fetch|manual|...; 'added by admin' = manual + suggested_by_x_id in ADMIN_X_IDS
+      .catch(e => ({ state: 'failed', result: 'error:' + String(e.message || e).slice(0, 80) }));
+    const left = await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first();
+    const out = { tweet_id: tweetId, cost: Math.round(b.spent * 1000) / 1000, admin_spent_today: Math.round(left.s * 1000) / 1000, admin_cap: cap, result: res.result || null };
+    if (res.state === 'fetched') {
+      if (b.capped) await env.DB.prepare("UPDATE posts SET rebuild_note = 'quick-add hit the admin allowance; thread may be incomplete' WHERE id = ?1").bind(res.post_id).run();
+      return { ok: true, post_id: res.post_id, partial: !!b.capped, ...out };
+    }
+    if (res.state === 'duplicate') return { error: 'duplicate', post_id: res.post_id || null, ...out };
+    if (res.state === 'queued') return { error: String(res.result || '').includes('month') ? 'month_cap' : 'admin_cap', ...out };
+    return { error: 'failed', ...out };
+  }
 }
 
 export default {
