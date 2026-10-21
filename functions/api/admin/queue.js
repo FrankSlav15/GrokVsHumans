@@ -23,6 +23,7 @@ export async function onRequestGet({ request, env }) {
     counts: Object.fromEntries(counts.results.map(r => [r.status, r.n])),
     spend: { today: spend.results[0]?.today || 0, month: spend.results[0]?.month || 0, last_run: spend.results[0]?.last_run || null, caps },
     blocked: blocked.results,
-    posts: posts.results.map(p => ({ ...p, tweets: W[p.id] || [], topics: T[p.id] || [] })),
+    // mid_thread: same free check the approve action uses (first stored post is not the conversation root)
+    posts: posts.results.map(p => ({ ...p, tweets: W[p.id] || [], topics: T[p.id] || [], mid_thread: !!p.conversation_id && (W[p.id]?.[0]?.tweet_id || null) !== p.conversation_id })),
   });
 }

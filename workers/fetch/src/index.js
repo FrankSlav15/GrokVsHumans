@@ -34,6 +34,8 @@ class Budget {
   }
   async allow(est) {
     const t = await this.totals();
+    const why = t.month + est > this.monthCap ? 'month_cap' : t.day + est > this.dayCap ? 'day_cap' : this.runCap != null && this.spent + est > this.runCap ? 'run_cap' : null;
+    if (why) this.capped = why;            // remembered: a chain built after a capped call may be incomplete
     if (t.month + est > this.monthCap) return 'month_cap';
     // The daily cap always applies (it used to be replaced by a job/manual run budget, which let jobs and seeding
     // runs spend $11-18/day against a $5 cap). A run budget is an additional, smaller limit.
@@ -318,6 +320,7 @@ async function rebuildPost(env, b, postId, { search = true } = {}) {
   const seed = old.map((w, i) => ({ ...w, media: JSON.parse(w.media_json || '[]'), parent: i ? old[i - 1].tweet_id : null, likes: 0, replies: 0 }));
   const r = await buildChain(env, b, { grok_tweet_id: post.grok_tweet_id, conversation_id: post.conversation_id, payload: '{}', engagement: post.x_engagement }, { seed, search });
   if (r.status !== 'ok') return r.status;
+  if (b.capped) return 'capped:' + b.capped + ':partial';
   if (r.tweets.map(w => w.tweet_id).join() === old.map(w => w.tweet_id).join()) return 'same';
   const autoHead = !post.headline || post.headline === suggestHeadline(old);
   const st = [env.DB.prepare('DELETE FROM post_tweets WHERE post_id = ?1').bind(postId),
@@ -413,6 +416,32 @@ async function suggestionOne(env, b, s) {
   const p = await env.DB.prepare('SELECT id FROM posts WHERE grok_tweet_id = ?1').bind(grok).first();
   await env.DB.prepare('UPDATE posts SET suggested_by_x_id = ?2, suggested_by_handle = ?3 WHERE id = ?1').bind(p.id, s.x_id, s.handle).run();
   return { state: 'fetched', result: res, post_id: p.id };
+}
+// Rebuild-on-approve (posts.rebuild_state = 'queued', set by /admin/queue): rebuild the chain from its root, then
+// publish if the admin approved it. Respects the daily/monthly caps (Budget) plus $REBUILD_MAX_USD per post; a capped
+// rebuild stays queued and is retried on a later tick (i.e. after the UTC daily reset). On failure the existing chain
+// is published (if approved) and the post is flagged rebuild_state = 'failed'.
+const REBUILD_MAX_USD = 0.3;
+async function runRebuilds(env, b0, max = 2) {
+  const { results } = await env.DB.prepare("SELECT id, rebuild_publish, rebuild_feature FROM posts WHERE rebuild_state = 'queued' AND status = 'pending' ORDER BY rebuild_at, id LIMIT ?1").bind(max).all();
+  const out = [];
+  for (const q of results) {
+    if (b0.sub > SUB_BUDGET - 16) break;
+    const b = new Budget(env, 'rebuild-' + q.id, { runCap: REBUILD_MAX_USD }); b.sub = b0.sub;
+    const res = String(await rebuildPost(env, b, q.id, { search: false }).catch(e => 'error:' + e.message));
+    b0.sub = b.sub;
+    if (res.startsWith('capped')) {
+      // daily/monthly cap: retry later. Per-post budget exhausted: publish what we have (it is not going to get cheaper).
+      if (!res.includes('run_cap')) { await env.DB.prepare('UPDATE posts SET rebuild_note = ?2 WHERE id = ?1').bind(q.id, 'waiting for daily cap reset').run(); out.push({ id: q.id, res }); break; }
+    }
+    const first = await env.DB.prepare('SELECT p.conversation_id c, t.tweet_id f FROM posts p LEFT JOIN post_tweets t ON t.post_id = p.id AND t.pos = 0 WHERE p.id = ?1').bind(q.id).first();
+    const ok = (res.startsWith('rebuilt') || res === 'same') && !res.includes('root-gap') && first?.f === first?.c;
+    const st = [env.DB.prepare('UPDATE posts SET rebuild_state = ?2, rebuild_note = ?3, rebuild_at = ?4 WHERE id = ?1').bind(q.id, ok ? 'done' : 'failed', ok ? null : res.slice(0, 80), now())];
+    if (q.rebuild_publish) st.push(env.DB.prepare("UPDATE posts SET status = 'approved', featured = CASE WHEN ?2 = 1 THEN 1 ELSE featured END, approved_at = COALESCE(approved_at, ?3), hidden_reason = NULL, rebuild_publish = 0 WHERE id = ?1 AND status = 'pending'").bind(q.id, q.rebuild_feature, now()));
+    await env.DB.batch(st);
+    out.push({ id: q.id, res, ok, published: !!q.rebuild_publish });
+  }
+  return out;
 }
 // Paid featured spots end automatically (the feed also checks ends_at, this just records the state).
 const expireFeatures = env => env.DB.prepare("UPDATE feature_requests SET state = 'expired', updated_at = ?1 WHERE state = 'active' AND ends_at <= ?1").bind(now()).run().catch(() => {});
@@ -539,6 +568,8 @@ export default {
       await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
     } else {
       await expireFeatures(env);
+      // approved-but-mid-thread posts first: the owner is waiting for them
+      if (env.X_BEARER_TOKEN && (await runRebuilds(env, b).catch(e => (console.log('rebuild error', String(e)), []))).some(x => x.ok !== undefined)) return;
       // a suggestion skipped by the spend cap must not starve admin jobs (they carry their own budget)
       if (env.X_BEARER_TOKEN && (await runSuggestions(env, b).catch(e => (console.log('suggest error', String(e)), []))).some(x => !x.capped)) return;
       if (env.X_BEARER_TOKEN && await runJob(env).catch(e => (console.log('job error', String(e)), null))) return;   // a job tick uses this invocation's subrequests
