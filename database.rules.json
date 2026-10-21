@@ -1,36 +1,8 @@
 {
   "rules": {
-    // Default deny: everything not explicitly opened below is locked.
+    // v2 switch: the site no longer uses Firebase (votes/comments live in Cloudflare D1).
+    // Deny every read and write. Admin SDK access bypasses rules.
     ".read": false,
-    ".write": false,
-
-    // /content/* is written only by the GitHub Action (Admin SDK bypasses rules).
-    // The site itself loads content from /data/*.json, so no public access is needed here.
-
-    "battles": {
-      // Public, read-only scoreboard (the site reads battles/{id} with .once('value')).
-      ".read": true,
-
-      "$battleId": {
-        // Only numeric battle ids (matches the keys in data/battles.json).
-        // A write must keep the record (no deletes) and change exactly one
-        // counter by exactly +1 while the other stays the same.
-        ".write": "$battleId.matches(/^[0-9]{1,6}$/) && newData.exists() && ((newData.child('grok').val() === (data.child('grok').exists() ? data.child('grok').val() : 0) + 1 && newData.child('human').val() === (data.child('human').exists() ? data.child('human').val() : 0)) || (newData.child('human').val() === (data.child('human').exists() ? data.child('human').val() : 0) + 1 && newData.child('grok').val() === (data.child('grok').exists() ? data.child('grok').val() : 0)))",
-
-        // Both counters must be present after every write.
-        ".validate": "newData.hasChildren(['grok', 'human'])",
-
-        "grok": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() % 1 === 0"
-        },
-        "human": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() % 1 === 0"
-        },
-        // No other fields allowed.
-        "$other": {
-          ".validate": false
-        }
-      }
-    }
+    ".write": false
   }
 }
