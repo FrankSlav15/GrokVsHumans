@@ -15,3 +15,13 @@ DIRS=( assets data )
 for f in "${FILES[@]}"; do [ -f "$f" ] && cp -p "$f" "$OUT/"; done
 for d in "${DIRS[@]}"; do [ -d "$d" ] && tar -cf - --exclude '.DS_Store' "$d" | tar -C "$OUT" -xf -; done
 echo "static files: $(find "$OUT" -type f | wc -l)"
+# Shared HTML partials: a line "<!-- include:NAME ... -->" is replaced by partials/NAME.html (one source for repeated blocks).
+python3 - "$OUT" "$REPO/partials" <<'PY'
+import re, sys, pathlib
+out, parts = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+for f in out.glob('*.html'):
+    s = f.read_text()
+    n = re.sub(r'^[ \t]*<!-- include:([\w-]+)[^>]*-->\n', lambda m: (parts / (m.group(1) + '.html')).read_text(), s, flags=re.M)
+    if n != s: f.write_text(n)
+PY
+grep -l 'include:' "$OUT"/*.html && { echo "unresolved include"; exit 1; } || true
