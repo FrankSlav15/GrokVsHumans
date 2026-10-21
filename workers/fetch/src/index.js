@@ -7,7 +7,7 @@ import { rebuildConfig } from '../../../server/config.js';
 // the paid X API v2 (no syndication scraping); the public site shows posts as official X embeds.
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
-import { TOPICS, suggestTopics, suggestHeadline, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
+import { TOPICS, suggestTopics, suggestHeadline, mainHuman, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
 
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
@@ -276,16 +276,18 @@ async function expandOne(env, b, c) {
   const topics = p.topics?.length ? p.topics : await aiTopics(env, tweets, p.annotations);
   const id = await insertPost(env.DB, {
     grok_tweet_id: c.grok_tweet_id, conversation_id: conv, human_x_id: human.author_id, human_handle: human.author_handle,
-    headline: await aiHeadline(env, tweets), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
+    headline: await aiHeadline(env, tweets, human), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
   });
   return id ? 'stored:' + tweets.length : 'duplicate';
 }
 
 // "Grok vs. @handle: <2-6 word topic>" via Workers AI (binding AI); falls back to the cleaned-question headline.
 const AI_MODEL = '@cf/meta/llama-3.2-3b-instruct';
-async function aiHeadline(env, tweets) {
-  const human = tweets.find(w => String(w.author_handle).toLowerCase() !== 'grok' && w.author_handle && w.author_handle !== '?');
-  if (!human || !env.AI) return suggestHeadline(tweets);
+// TITLE RULE: the @handle is the main human participant (the one Grok answered most, = posts.human_handle from
+// buildChain), never simply the opening asker. Callers pass that human; mainHuman() is the same rule as a fallback.
+async function aiHeadline(env, tweets, humanIn) {
+  const human = humanIn || mainHuman(tweets);
+  if (!human || !env.AI) return suggestHeadline(tweets, human);
   try {
     const convo = tweets.slice(0, 6).map(w => `${String(w.author_handle).toLowerCase() === 'grok' ? 'Grok' : 'Human'}: ${String(w.text).replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').slice(0, 300)}`).join('\n');
     const r = await env.AI.run(AI_MODEL, { max_tokens: 20, temperature: 0.2, messages: [
@@ -293,9 +295,9 @@ async function aiHeadline(env, tweets) {
       { role: 'user', content: convo }] });
     let t = String(r?.response || '').split('\n')[0].replace(/^["'*\s]+|["'*\s]+$/g, '').replace(/^(topic|title)\s*:\s*/i, '').replace(/\s+/g, ' ');
     const words = t.split(' ').filter(Boolean).length;
-    if (!t || words < 2 || words > 8 || t.length > 48 || /[@#<>]|https?:/.test(t)) return suggestHeadline(tweets);
+    if (!t || words < 2 || words > 8 || t.length > 48 || /[@#<>]|https?:/.test(t)) return suggestHeadline(tweets, human);
     return `Grok vs. @${human.author_handle}: ${t.charAt(0).toUpperCase() + t.slice(1)}`;
-  } catch { return suggestHeadline(tweets); }
+  } catch { return suggestHeadline(tweets, human); }
 }
 
 // 1-2 topics from the root question + the overall thread: Workers AI picks from TOPICS, validated; keyword fallback.
@@ -326,11 +328,15 @@ async function rebuildPost(env, b, postId, { search = true } = {}) {
   if (r.status !== 'ok') return r.status;
   if (b.capped) return 'capped:' + b.capped + ':partial';
   if (r.tweets.map(w => w.tweet_id).join() === old.map(w => w.tweet_id).join()) return 'same';
-  const autoHead = !post.headline || post.headline === suggestHeadline(old);
+  // auto headline = never edited: matches the fallback under the current rule or the old first-human rule
+  const firstHuman = old.find(w => String(w.author_handle).toLowerCase() !== 'grok' && w.author_handle && w.author_handle !== '?');
+  const autoHead = !post.headline || post.headline === suggestHeadline(old) || post.headline === suggestHeadline(old, firstHuman);
   const st = [env.DB.prepare('DELETE FROM post_tweets WHERE post_id = ?1').bind(postId),
     ...r.tweets.map((w, i) => env.DB.prepare(`INSERT INTO post_tweets (post_id, pos, tweet_id, author_id, author_handle, author_name, author_avatar, verified, is_grok, text, media_json, created_at)
       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`).bind(postId, i, w.tweet_id, w.author_id, w.author_handle, w.author_name, w.author_avatar, w.verified ? 1 : 0, w.author_id === GROK_ID ? 1 : 0, w.text, JSON.stringify(w.media || []), w.created_at))];
-  if (autoHead) st.push(env.DB.prepare('UPDATE posts SET headline = ?2 WHERE id = ?1').bind(postId, await aiHeadline(env, r.tweets)));
+  if (autoHead) st.push(env.DB.prepare('UPDATE posts SET headline = ?2 WHERE id = ?1').bind(postId, await aiHeadline(env, r.tweets, r.human)));
+  // keep the stored main human in sync with the rebuilt chain (the title rule and the batch-view check use it)
+  st.push(env.DB.prepare('UPDATE posts SET human_x_id = ?2, human_handle = ?3 WHERE id = ?1').bind(postId, r.human.author_id, r.human.author_handle));
   // topics: re-suggest unless an admin set them (suggested = 0)
   const manual = await env.DB.prepare('SELECT 1 FROM post_topics WHERE post_id = ?1 AND suggested = 0').bind(postId).first();
   let topics = null;

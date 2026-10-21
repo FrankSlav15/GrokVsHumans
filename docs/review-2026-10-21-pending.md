@@ -2,6 +2,8 @@
 
 Score 1-5, batch, tags (old -> new), mid-thread, reason, suggested title. Stored on posts.review_* (migration 0013). Topic undo: review-2026-10-21-undo-topics.sql (also topic_change_log in D1).
 
+Title rule (see docs/TITLES.md): the @handle in a suggested title is the main human participant (most back-and-forth with Grok), not the opening asker.
+
 | id | score | batch | mid | tags old -> new | reason | suggested title |
 |---|---|---|---|---|---|---|
 | 10 | 5 | strong |  | Health, History, Science -> Science | Poop-snob question becomes a funny, accurate water-cycle and fish-poop explainer | Grok vs. @SoveyX: Where does my poop go? |

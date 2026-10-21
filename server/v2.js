@@ -106,8 +106,25 @@ export function legacyHeadline(tweets) {
 }
 // Fallback "Grok vs. @handle: <question>", capped at ~60 chars on a word boundary.
 export const HEADLINE_MAX = 60;
-export function suggestHeadline(tweets) {
-  const human = tweets.find(w => String(w.author_handle).toLowerCase() !== 'grok' && w.author_handle && w.author_handle !== '?');
+// TITLE RULE: the @handle in "Grok vs. @handle: ..." is the MAIN human participant, i.e. the human Grok answered most
+// (most back-and-forth), NOT whoever asked the opening question. Same rule as buildChain() in workers/fetch, which stores
+// it as posts.human_handle. Ties / no Grok replies: the first human in the chain.
+const isGrokTweet = w => w.is_grok === 1 || w.is_grok === true || String(w.author_handle).toLowerCase() === 'grok';
+export function mainHuman(tweets) {
+  const ok = w => w && !isGrokTweet(w) && w.author_handle && w.author_handle !== '?';
+  const cnt = new Map();
+  tweets.forEach((w, i) => { if (i > 0 && isGrokTweet(w) && ok(tweets[i - 1])) { const h = tweets[i - 1].author_handle; cnt.set(h, (cnt.get(h) || 0) + 1); } });
+  let best = null, n = 0; for (const [h, c] of cnt) if (c > n) { best = h; n = c; }
+  return tweets.find(w => ok(w) && w.author_handle === best) || tweets.find(ok) || null;
+}
+// "Grok vs. @X: ..." whose X is not the stored main human (case-insensitive). null = no handle in the headline / unknown.
+export function headlineHandle(headline) { const m = String(headline || '').match(/^Grok vs\. @(\w{1,15})\b/); return m ? m[1] : null; }
+export function headlineMismatch(headline, humanHandle) {
+  const h = headlineHandle(headline);
+  return !!(h && humanHandle && h.toLowerCase() !== String(humanHandle).toLowerCase());
+}
+export function suggestHeadline(tweets, humanIn) {
+  const human = humanIn || mainHuman(tweets);
   if (!human) return 'Grok vs. a human';
   const q = (human.text || '').replace(/@grok\b/gi, '').replace(/https?:\/\/\S+/g, '').replace(/^(\s*@\w+)+/, '')
     .replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').replace(/([,;:])(?=[,;:.!?])/g, '')

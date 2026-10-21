@@ -1,6 +1,6 @@
 // GET /api/admin/queue?status=pending|approved|skipped|blocked|hidden  (admins only)
 import { json, requireAdmin } from '../../../server/lib.js';
-import { TOPICS } from '../../../server/v2.js';
+import { TOPICS, headlineMismatch } from '../../../server/v2.js';
 import { rebuildConfig } from '../../../server/config.js';
 
 export async function onRequestGet({ request, env }) {
@@ -27,7 +27,7 @@ export async function onRequestGet({ request, env }) {
     spend: { today: spend.results[0]?.today || 0, month: spend.results[0]?.month || 0, last_run: spend.results[0]?.last_run || null, caps },
     blocked: blocked.results,
     // mid_thread: same free check the approve action uses (first stored post is not the conversation root)
-    posts: posts.results.map(p => ({ ...p, tweets: W[p.id] || [], topics: T[p.id] || [], mid_thread: !!p.conversation_id && (W[p.id]?.[0]?.tweet_id || null) !== p.conversation_id })),
+    posts: posts.results.map(p => ({ ...p, title_mismatch: headlineMismatch(p.headline, p.human_handle), tweets: W[p.id] || [], topics: T[p.id] || [], mid_thread: !!p.conversation_id && (W[p.id]?.[0]?.tweet_id || null) !== p.conversation_id })),
   });
 }
 
@@ -62,6 +62,6 @@ async function batchView(env) {
   return json({
     view: 'batch', rebuild_max_usd: rebuildConfig(env).maxUsd,
     spend: { today: spend.results[0]?.today || 0, month: spend.results[0]?.month || 0, caps },
-    posts: posts.results.map(p => ({ ...p, mid_thread: !!p.mid_thread, topics: T[p.id] || [] })),
+    posts: posts.results.map(p => ({ ...p, mid_thread: !!p.mid_thread, topics: T[p.id] || [], title_mismatch: headlineMismatch(p.headline, p.human_handle) || headlineMismatch(p.review_title, p.human_handle) })),
   });
 }
