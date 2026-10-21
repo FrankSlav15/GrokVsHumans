@@ -8,7 +8,7 @@ compatibility_date = "2026-05-01"
 workers_dev = true
 
 [vars]
-REVIEW_URL = "https://v2-feed.grokvshumans.pages.dev/admin"
+REVIEW_URL = "https://grokvshumans.com/admin"
 DIGEST_FROM = "support@grokvshumans.com"
 DIGEST_TO = "trafrajohn@gmail.com"
 DAILY_CAP_USD = "1.50"
