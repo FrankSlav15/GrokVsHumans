@@ -1,6 +1,8 @@
 # Cloudflare Pages headers: https://developers.cloudflare.com/pages/configuration/headers/
 #
 # Security headers for every response.
+# Referrer-Policy same-origin: no Referer to other sites (video.twimg.com returns 403 to non-X Referers, which
+# broke every video); same-origin requests keep Referer and POSTs keep their Origin header.
 # The enforced CSP only uses directives that cannot break the site's inline
 # scripts or CDN assets. The Report-Only CSP is the full allow-list; check the
 # browser console for violations, then promote it to the enforced header.
@@ -10,7 +12,7 @@
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
-  Referrer-Policy: strict-origin-when-cross-origin
+  Referrer-Policy: same-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin-allow-popups

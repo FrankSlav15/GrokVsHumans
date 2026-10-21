@@ -72,9 +72,14 @@
     .replace(/(^|[^\w/])@(\w{1,15})\b/g, (m, pre, h) => `${pre}<a href="https://x.com/${h}" target="_blank" rel="noopener noreferrer">@${h}</a>`)
     .replace(/(^|[^\w&/])#(\w{1,80})/g, (m, pre, h) => `${pre}<a href="https://x.com/hashtag/${encodeURIComponent(h)}" target="_blank" rel="noopener noreferrer">#${h}</a>`);
   const stamp = sec => sec ? new Date(sec * 1000).toLocaleString(undefined, { hour: 'numeric', minute: '2-digit', month: 'short', day: 'numeric', year: 'numeric' }) : 'View post';
-  function media(m) {
-    return (m || []).map(x => x.type === 'quote' ? quote(x) : x.video
-      ? `<video class="tw__m" src="${esc(x.video)}" ${x.url ? `poster="${esc(x.url)}"` : ''} controls preload="none" playsinline></video>`
+  // Videos/GIFs: best mp4 variant from the API, poster always shown. video.twimg.com answers 403 to any non-X Referer,
+  // so the page uses Referrer-Policy: same-origin (no Referer to other sites). If playback still fails, the box turns
+  // into the poster plus a "Watch on X" link (see the capture-phase error listener below).
+  function media(m, xurl) {
+    return (m || []).map(x => x.type === 'quote' ? quote(x) : (x.type === 'video' || x.type === 'animated_gif')
+      ? `<figure class="tw__vid">${x.video ? `<video class="tw__m" src="${esc(x.video)}"${x.url ? ` poster="${esc(x.url)}"` : ''} controls preload="${x.url ? 'none' : 'metadata'}" playsinline webkit-playsinline${x.type === 'animated_gif' ? ' loop muted' : ''} data-x="${esc(xurl || '')}"></video>`
+          : `${x.url ? `<img class="tw__m" src="${esc(x.url)}" alt="${esc(x.alt || '')}" loading="lazy" referrerpolicy="no-referrer">` : ''}`}
+        <a class="tw__vx${x.video ? '' : ' is-on'}" href="${esc(xurl || 'https://x.com')}" target="_blank" rel="noopener noreferrer">${X_SVG} ${x.video ? 'Video not playing? Watch on X' : 'Watch the video on X'}</a></figure>`
       : x.url ? `<img class="tw__m" src="${esc(x.url)}" alt="${esc(x.alt || '')}" loading="lazy" referrerpolicy="no-referrer">` : '').join('');
   }
   // Quoted post as a nested card (text from the X API, linked to x.com).
@@ -94,7 +99,7 @@
           <span class="tw__u">@${esc(w.handle)}</span>${w.grok ? '<span class="tw__badge" aria-hidden="true">Grok</span>' : ''}</a>
         <a href="${url}" target="_blank" rel="noopener noreferrer" class="tw__x" aria-label="View on X">${X_SVG}</a>
       </div>
-      ${hasText ? `<p class="tw__t" data-trt>${linkX(shown)}</p>${trBar(k, w.text)}` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media)}
+      ${hasText ? `<p class="tw__t" data-trt>${linkX(shown)}</p>${trBar(k, w.text)}` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media, `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`)}
       <a class="tw__time" href="${url}" target="_blank" rel="noopener noreferrer">${esc(stamp(w.created_at))}</a>
     </div>`;
   }
@@ -193,9 +198,11 @@
   const moreHtml = () => hasMore() ? '<div id="more" class="more-wrap"><button class="load-more" data-act="more">Load more</button></div>'
     : '<div id="more" class="more-wrap caught" role="status"><span aria-hidden="true">✨</span> You\'re all caught up</div>';
   const hotSeen = () => S.view === 'hot' && UNSEEN_FIRST();
-  function renderSeenOpt() { const el = $('#seenopt'); if (!el) return;
-    el.innerHTML = (S.view === 'hot' ? `<label class="seenopt__t"><input type="checkbox" data-seen="first" ${UNSEEN_FIRST() ? 'checked' : ''}> Unseen posts first</label>` : '')
-      + `<button class="seenopt__r" data-seen="reset" ${SEEN.size ? '' : 'disabled'}>Reset seen${SEEN.size ? ' (' + SEEN.size + ')' : ''}</button>`; }
+  // Seen controls as one small chip at the end of the topic tags (last row on wide screens, end of the sideways row on phones).
+  function renderSeenOpt() { const el = $('#chips'); if (!el) return; el.querySelector('.seenchip')?.remove();
+    el.insertAdjacentHTML('beforeend', `<span class="seenchip" role="group" aria-label="Seen posts">`
+      + (S.view === 'hot' ? `<label class="seenchip__t"><input type="checkbox" data-seen="first" ${UNSEEN_FIRST() ? 'checked' : ''}><span>Unseen first</span></label><span class="seenchip__sep" aria-hidden="true"></span>` : '')
+      + `<button class="seenchip__r" data-seen="reset" ${SEEN.size ? '' : 'disabled'} aria-label="Reset seen${SEEN.size ? ' (' + SEEN.size + ' posts)' : ''}" title="Forget which posts you have seen"><span aria-hidden="true">↺</span> Reset${SEEN.size ? ' <span class="seenchip__n">' + SEEN.size + '</span>' : ''}</button></span>`); }
   // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
   const rerender = (p, full) => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p);
     const tmp = document.createElement('div'); tmp.innerHTML = card(p, S.view === 'hall' ? i + 1 : 0); const fresh = tmp.firstElementChild;
@@ -451,6 +458,11 @@
     }
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.sheet) closeSheet(); });
+  // media errors do not bubble: catch them in the capture phase and show the poster + "Watch on X"
+  document.addEventListener('error', e => { const v = e.target; if (!(v instanceof HTMLVideoElement) || !v.classList.contains('tw__m')) return;
+    const f = v.closest(".tw__vid"); if (!f || f.classList.contains('is-failed')) return; f.classList.add('is-failed');
+    if (v.poster) { const i = document.createElement('img'); i.className = 'tw__m'; i.src = v.poster; i.alt = ''; i.referrerPolicy = 'no-referrer'; v.replaceWith(i); }
+    f.querySelector('.tw__vx')?.classList.add('is-on'); }, true);
 
   // ---- suggest a thread / paid featured spots ----
   let CFG = null;
