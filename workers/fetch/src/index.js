@@ -300,7 +300,7 @@ async function aiTopics(env, tweets, annotations = []) {
     const clean = s => String(s || '').replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').trim();
     const rest = tweets.slice(1).map(w => `${w.author_id === GROK_ID ? 'Grok' : 'Human'}: ${clean(w.text).slice(0, 160)}`).join('\n').slice(0, 2500);
     const r = await env.AI.run(AI_MODEL, { max_tokens: 16, temperature: 0, messages: [
-      { role: 'system', content: `You categorize X threads. Allowed topics: ${TOPICS.join(', ')}. Judge mainly by what the ROOT post asks, then the thread as a whole; ignore passing jokes, emojis and side remarks. Reply with ONLY one topic, or two separated by a comma when both clearly apply. Use Wild Card only if nothing fits.` },
+      { role: 'system', content: `You categorize X threads. Allowed topics: ${TOPICS.join(', ')}. Judge mainly by what the ROOT post asks, then the thread as a whole; ignore passing jokes, emojis and side remarks. A famous person (e.g. Elon Musk) or a company being mentioned is not Politics; use Politics only for government, elections, parties, policy or wars. Reply with ONLY one topic, or two separated by a comma when both clearly apply. Use Wild Card only if nothing fits.` },
       { role: 'user', content: `ROOT: ${clean(tweets[0]?.text).slice(0, 500)}\n\nTHREAD:\n${rest}` }] });
     const out = [];
     for (const part of String(r?.response || '').split(/[,\n]/)) { const t = TOPICS.find(x => x.toLowerCase() === part.trim().replace(/[."*]/g, '').toLowerCase()); if (t && !out.includes(t)) out.push(t); }
