@@ -87,6 +87,8 @@ export async function onRequestGet({ request, env }) {
   const token = randomToken(32);
   const t = now();
   const xCreated = me.created_at ? Math.floor(Date.parse(me.created_at) / 1000) || null : null;
+  const oldTok = getCookie(request, SESSION_COOKIE);
+  const oldHash = oldTok && oldTok.length <= 100 ? await sha256hex(oldTok) : '';
   const ttl = isAdmin(env, me.id) ? ADMIN_SESSION_TTL : SESSION_TTL;   // M4: admin sessions max 24 h
   await env.DB.batch([
     env.DB.prepare(
@@ -97,6 +99,8 @@ export async function onRequestGet({ request, env }) {
          x_created_at = COALESCE(excluded.x_created_at, users.x_created_at)`
     ).bind(String(me.id), me.username, me.name || null, avatar, me.verified ? 1 : 0, t, xCreated),
     env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?1').bind(t),
+    // Rotate: a session cookie this browser already had is invalidated, never reused.
+    env.DB.prepare('DELETE FROM sessions WHERE token_hash = ?1').bind(oldHash),
     env.DB.prepare('INSERT INTO sessions (token_hash, x_id, created_at, expires_at) VALUES (?1, ?2, ?3, ?4)')
       .bind(await sha256hex(token), String(me.id), t, t + ttl),
   ]);
