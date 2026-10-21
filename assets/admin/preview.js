@@ -39,14 +39,15 @@
     if (document.getElementById('pv')) return;
     const d = document.createElement('div'); d.id = 'pv'; d.hidden = true; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-labelledby', 'pv-h');
     d.innerHTML = `<div class="pv__box"><div class="pv__bar"><button class="sm" data-pv="prev" aria-label="Previous post">‹ Prev</button><span id="pv-h" class="pv__pos"></span><button class="sm" data-pv="next" aria-label="Next post">Next ›</button><span class="pv__sp"></span><button class="sm" data-pv="close" aria-label="Close preview">✕</button></div>
+      <div class="pv__tabs" role="tablist"><button role="tab" data-pvtab="ed" aria-selected="true">Edit</button><button role="tab" data-pvtab="prev" aria-selected="false">Preview</button></div>
       <div class="pv__body"><section class="pv__ed"><div class="pv__meta"></div>
         <label class="pv__lbl" for="pv-title">Title</label><textarea id="pv-title" class="h" rows="2" maxlength="120" autocomplete="off" spellcheck="true"></textarea>
         <div class="pv__warn" hidden>Format: Grok vs. @user: topic</div>
         <div class="pv__sug" hidden><span></span><button class="sm gold" data-pv="sug">Use suggested</button></div>
         <div class="pv__lbl">Tags <label class="pv__two"><input type="checkbox" id="pv-two"> allow a second tag</label></div><div class="tops pv__tags"></div>
-        <div class="pv__acts"><button data-pv="save">Save</button><button class="ok" data-pv="approve">✓ Approve</button><button class="danger" data-pv="skip">✕ Skip / Reject</button></div>
         <div class="pv__keys">Keys: ← → prev/next · ⌘/Ctrl+S or S save · A approve · X skip · U use suggested · 1–9 tag · Esc close</div></section>
-      <section class="pv__prev"><div class="pv__lbl">As it will look on the feed</div><div class="pv__host"></div></section></div></div>`;
+      <section class="pv__prev"><div class="pv__lbl">As it will look on the feed</div><div class="pv__host"></div></section></div>
+      <div class="pv__acts"><button data-pv="save">Save</button><button class="ok" data-pv="approve">✓ Approve</button><button class="danger" data-pv="skip">✕ Skip / Reject</button></div></div>`;
     document.body.appendChild(d);
     const host = d.querySelector('.pv__host'), sr = host.attachShadow({ mode: 'open' });
     sr.innerHTML = `<link rel="stylesheet" href="/assets/v2/feed.css"><style>${SHADOW_CSS}</style><div class="root"></div>`;
@@ -56,7 +57,13 @@
     d.querySelector('#pv-two').addEventListener('change', e => { M.two = e.target.checked; if (!M.two && M.tags.length > 1) { M.tags = M.tags.slice(-1); M.dirty = true; } paintTags(); paintPreview(); });
     d.addEventListener('mousedown', e => { if (e.target === d) close(); });
     document.addEventListener('keydown', onKey);
+    // Size to the *visible* viewport (iPad toolbars, on-screen keyboard): visualViewport when available, CSS dvh/svh/vh otherwise.
+    const vv = window.visualViewport;
+    const fit = () => { if (!vv || !M.open) return; d.style.setProperty('--vvh', vv.height + 'px'); d.style.setProperty('--vvw', vv.width + 'px'); d.style.setProperty('--vvt', vv.offsetTop + 'px'); d.style.setProperty('--vvl', vv.offsetLeft + 'px'); };
+    M.fit = fit; if (vv) { vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); }
+    d.querySelector('#pv-title').addEventListener('focus', e => setTimeout(() => { fit(); e.target.scrollIntoView({ block: 'nearest' }); }, 350));
   }
+  function tab(t) { const d = document.getElementById('pv'); d.dataset.tab = t; d.querySelectorAll('[data-pvtab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.pvtab === t))); }
   const fmt = () => { const v = $m('#pv-title').value.trim(); $m('.pv__warn').hidden = !v || TITLE_RE.test(v); };
   async function fetchPost(id) {
     if (M.cache.has(id)) return M.cache.get(id);
@@ -95,13 +102,16 @@
   }
   function open(id, list) {
     shell(); M.list = list.length ? list : [id]; M.open = true; M.dirty = false;
-    const d = document.getElementById('pv'); d.hidden = false; document.body.style.overflow = 'hidden';
+    const d = document.getElementById('pv'); d.hidden = false; tab('ed');
+    M.scrollY = window.scrollY; const bs = document.body.style; bs.position = 'fixed'; bs.top = -M.scrollY + 'px'; bs.left = '0'; bs.right = '0'; bs.overflow = 'hidden'; document.documentElement.style.overflow = 'hidden';
+    M.fit && M.fit();
     show(Math.max(0, M.list.indexOf(id)));
     setTimeout(() => d.querySelector('[data-pv=close]').focus(), 0);
   }
   function close() {
     if (M.dirty && !confirm('Discard unsaved title/tag changes?')) return;
-    M.open = false; M.dirty = false; document.getElementById('pv').hidden = true; document.body.style.overflow = '';
+    M.open = false; M.dirty = false; document.getElementById('pv').hidden = true;
+    const bs = document.body.style; bs.position = bs.top = bs.left = bs.right = bs.overflow = ''; document.documentElement.style.overflow = ''; window.scrollTo(0, M.scrollY || 0);
     const c = document.querySelector('.bc[data-id="' + M.list[M.i] + '"]'); if (c) { c.scrollIntoView({ block: 'nearest' }); c.querySelector('[data-preview]')?.focus({ preventScroll: true }); }
   }
   async function post(action) {
@@ -130,6 +140,7 @@
     else show(M.i);
   }
   function onClick(e) {
+    const tb = e.target.closest('[data-pvtab]'); if (tb) return tab(tb.dataset.pvtab);
     const tg = e.target.closest('[data-tag]'); if (tg) return toggleTag(tg.dataset.tag);
     const b = e.target.closest('[data-pv]'); if (!b || b.disabled) return;
     const a = b.dataset.pv;
