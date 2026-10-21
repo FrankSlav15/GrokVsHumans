@@ -31,3 +31,14 @@ export function featureCode() {
   const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', b = crypto.getRandomValues(new Uint8Array(6));
   return 'GVH-' + [...b].map(x => A[x % A.length]).join('');
 }
+
+// Thread rebuilds in gvh-fetch (rebuild-on-approve and the queue's "Rebuild thread" button).
+// Per-post X API budget (USD; the daily/monthly caps still apply on top) and whether to run the conversation search
+// (finds newer replies after the last stored post so the best branch is followed to its end). Override per environment
+// with the worker variables REBUILD_MAX_USD / REBUILD_SEARCH ("0" = walk up to the root only).
+export const REBUILD_MAX_USD = 0.70;
+export const REBUILD_SEARCH = true;
+export const rebuildConfig = env => ({
+  maxUsd: Number.isFinite(Number(env?.REBUILD_MAX_USD)) && env?.REBUILD_MAX_USD !== undefined && env.REBUILD_MAX_USD !== '' ? Number(env.REBUILD_MAX_USD) : REBUILD_MAX_USD,
+  search: env?.REBUILD_SEARCH != null && env.REBUILD_SEARCH !== '' ? !/^(0|false|no)$/i.test(String(env.REBUILD_SEARCH)) : REBUILD_SEARCH,
+});

@@ -1,4 +1,5 @@
 import { digest, chicagoHour } from './digest.js';
+import { rebuildConfig } from '../../../server/config.js';
 // gvh-fetch: discovers @grok reply threads on X, rebuilds the chain, stores them as *pending*
 // posts for the /admin/queue. Nothing is public until an admin approves it.
 //
@@ -166,15 +167,18 @@ async function lookup(env, b, ids, kind) {
 // Stage 2: rebuild the chain of one candidate, all via the paid X API: upward with tweet lookups
 // (each call returns a post and its parent), downward with one conversation search limited to the participants.
 // Paid conversation search restricted to the participants (both directions in one go), paginated.
-async function conversation(env, b, conv, froms, pages = 1) {
+async function conversation(env, b, conv, froms, pages = 1, { reserve = 0 } = {}) {
   const map = new Map(); let token = null;
+  // Under a per-run budget, size the page to what is left (minus a reserve for the walk up), so the search fits the cap.
+  let mr = 100;
+  if (b.runCap != null) { mr = Math.min(100, Math.floor((b.runCap - b.spent - reserve) / (POST_USD * 1.4))); if (mr < 10) return { capped: 'run_cap', map }; }
   for (let i = 0; i < pages; i++) {
     // only the human(s) and Grok's replies *to them* (a viral conversation can hold hundreds of other Grok replies)
     const hs = froms.filter(f => f !== 'grok');
-    const params = { query: `conversation_id:${conv} (${hs.map(h => `from:${h} OR (from:grok to:${h})`).join(' OR ')})`, max_results: '100',
+    const params = { query: `conversation_id:${conv} (${hs.map(h => `from:${h} OR (from:grok to:${h})`).join(' OR ')})`, max_results: String(mr),
       'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet,public_metrics,attachments', expansions: 'author_id,attachments.media_keys', 'user.fields': USER_FIELDS, 'media.fields': MEDIA_FIELDS };
     if (token) params.next_token = token;
-    const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', 100 + 2 * 20);   // worst case: 100 posts + ~20 users (2x post price)
+    const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', Math.ceil(mr * 1.4));   // worst case: mr posts + ~20% users (2x post price)
     if (r.capped) return { capped: r.capped, map };
     if (!r.ok) break;
     const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u])), media = mediaMap(r.json);
@@ -231,7 +235,7 @@ async function buildChain(env, b, c, { seed = [], search = true } = {}) {
   if (!humanIds.size) return { status: 'no_human' };
   const handles = [...new Set([...known.values()].filter(w => humanIds.has(w.author_id)).map(w => w.author_handle).filter(h => h && h !== '?'))];
   if (search && conv && env.X_BEARER_TOKEN && handles.length) {
-    const r = await conversation(env, b, conv, ['grok', ...handles]);
+    const r = await conversation(env, b, conv, ['grok', ...handles], 1, { reserve: 0.12 });   // keep ~4 lookups for the walk up
     if (r.capped && !r.map.size) return { status: 'capped:' + r.capped };
     for (const [k, v] of r.map) if (!known.has(k)) known.set(k, v);
   }
@@ -418,17 +422,17 @@ async function suggestionOne(env, b, s) {
   return { state: 'fetched', result: res, post_id: p.id };
 }
 // Rebuild-on-approve (posts.rebuild_state = 'queued', set by /admin/queue): rebuild the chain from its root, then
-// publish if the admin approved it. Respects the daily/monthly caps (Budget) plus $REBUILD_MAX_USD per post; a capped
+// publish if the admin approved it. Respects the daily/monthly caps (Budget) plus rebuildConfig().maxUsd per post; a capped
 // rebuild stays queued and is retried on a later tick (i.e. after the UTC daily reset). On failure the existing chain
 // is published (if approved) and the post is flagged rebuild_state = 'failed'.
-const REBUILD_MAX_USD = 0.3;
 async function runRebuilds(env, b0, max = 2) {
   const { results } = await env.DB.prepare("SELECT id, rebuild_publish, rebuild_feature FROM posts WHERE rebuild_state = 'queued' AND status = 'pending' ORDER BY rebuild_at, id LIMIT ?1").bind(max).all();
   const out = [];
   for (const q of results) {
     if (b0.sub > SUB_BUDGET - 16) break;
-    const b = new Budget(env, 'rebuild-' + q.id, { runCap: REBUILD_MAX_USD }); b.sub = b0.sub;
-    const res = String(await rebuildPost(env, b, q.id, { search: false }).catch(e => 'error:' + e.message));
+    const cfg = rebuildConfig(env);
+    const b = new Budget(env, 'rebuild-' + q.id, { runCap: cfg.maxUsd }); b.sub = b0.sub;
+    const res = String(await rebuildPost(env, b, q.id, { search: cfg.search }).catch(e => 'error:' + e.message));
     b0.sub = b.sub;
     if (res.startsWith('capped')) {
       // daily/monthly cap: retry later. Per-post budget exhausted: publish what we have (it is not going to get cheaper).
