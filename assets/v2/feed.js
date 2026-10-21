@@ -2,6 +2,11 @@
 (function () {
   const S = { view: 'hot', topic: 'All', hof: 'all', posts: [], next: null, busy: false, topics: [], user: null, open: new Set(), sheet: null };
   const $ = s => document.querySelector(s);
+  // /projects reuses this whole feed (auth, paging, seen, comments, translate, share) with project cards.
+  const PROJ = location.pathname.replace(/\/+$/, '') === '/projects';
+  if (PROJ) { const sb = document.querySelector('#sgbar .sgbar__b'); if (sb) { sb.removeAttribute('data-suggest'); sb.setAttribute('data-proj-submit', ''); sb.setAttribute('aria-label', 'Submit a project'); sb.innerHTML = '<span aria-hidden="true">＋</span> Submit a project'; } document.title = 'Projects built with SI – Grok vs. Humans'; }
+  const K = id => PROJ ? 'j' + id : String(id);   // seen-map key (projects are local-only seen, prefixed)
+  const UGC = 'noopener nofollow ugc';
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const X_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
   const ERR = { sign_in_required: 'Sign in with X first.', banned: 'Your account cannot post or react.', rate_limited: 'Slow down: max 5 comments per 10 minutes.',
@@ -10,7 +15,7 @@
   function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600); }
   window.mockToast = m => (toast(m), false);
   const ago = sec => { const d = Math.max(0, Date.now() / 1000 - sec); return d < 3600 ? Math.max(1, Math.round(d / 60)) + 'm' : d < 86400 ? Math.round(d / 3600) + 'h' : d < 86400 * 30 ? Math.round(d / 86400) + 'd' : new Date(sec * 1000).toLocaleDateString(); };
-  const linkify = s => esc(s).replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener noreferrer nofollow">${u.replace(/^https?:\/\//, '').slice(0, 30)}</a>`);
+  const linkify = s => esc(s).replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener noreferrer nofollow ugc">${u.replace(/^https?:\/\//, '').slice(0, 30)}</a>`);
   async function post(url, body) {
     const r = await fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     return { ok: r.ok, status: r.status, data: await r.json().catch(() => ({})) };
@@ -62,13 +67,16 @@
   const TOPIC = { All: ['✨', 270], Politics: ['🏛️', 0], Technology: ['💻', 200], Memology: ['🐸', 120], Sports: ['⚽', 30], 'Pop Culture': ['🎬', 320], 'Life Advice': ['🧭', 170],
     History: ['📜', 40], Science: ['🔬', 190], Money: ['💸', 140], Health: ['🩺', 350], Religion: ['🕊️', 50], Philosophy: ['🤔', 260], AI: ['🤖', 280], Space: ['🚀', 230],
     Gaming: ['🎮', 300], Food: ['🍕', 20], Animals: ['🐾', 90], 'Wild Card': ['🃏', 330] };
-  const renderChips = () => { $('#chips').innerHTML = ['All', ...S.topics].map(t => { const [e, h] = TOPIC[t] || ['#', 270];
+  const renderChips = () => { if (PROJ) { $('#chips').innerHTML = [['hot', '🔥 Hot'], ['new', '🆕 New'], ['top', '📈 Top']].map(([v, l]) =>
+      `<button class="chip ${S.view === v ? 'is-on' : ''}" style="--h:${v === 'hot' ? 20 : v === 'new' ? 200 : 140}" data-psort="${v}" aria-pressed="${S.view === v}">${l}</button>`).join('')
+      + '<button class="chip chip--submit" style="--h:270" data-proj-submit>＋ Submit a project</button>'; return; }
+    $('#chips').innerHTML = ['All', ...S.topics].map(t => { const [e, h] = TOPIC[t] || ['#', 270];
     return `<button class="chip ${t === S.topic ? 'is-on' : ''}" style="--h:${h}" data-topic="${esc(t)}" aria-pressed="${t === S.topic}"><span class="chip__e" aria-hidden="true">${e}</span>${esc(t)}</button>`; }).join(''); };
 
   // Native rendering of each turn from the paid X API data (X display requirements: name, @handle, avatar,
   // X logo, timestamp linking to the post, unaltered text with only mentions/hashtags/URLs linked, API media).
   const linkX = s => esc(s)
-    .replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener noreferrer nofollow">${u.replace(/^https?:\/\//, '').slice(0, 40)}${u.length > 48 ? '…' : ''}</a>`)
+    .replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener noreferrer nofollow ugc">${u.replace(/^https?:\/\//, '').slice(0, 40)}${u.length > 48 ? '…' : ''}</a>`)
     .replace(/(^|[^\w/])@(\w{1,15})\b/g, (m, pre, h) => `${pre}<a href="https://x.com/${h}" target="_blank" rel="noopener noreferrer">@${h}</a>`)
     .replace(/(^|[^\w&/])#(\w{1,80})/g, (m, pre, h) => `${pre}<a href="https://x.com/hashtag/${encodeURIComponent(h)}" target="_blank" rel="noopener noreferrer">#${h}</a>`);
   const stamp = sec => sec ? new Date(sec * 1000).toLocaleString(undefined, { hour: 'numeric', minute: '2-digit', month: 'short', day: 'numeric', year: 'numeric' }) : 'View post';
@@ -112,13 +120,13 @@
   const watch = () => {};
   // ---- seen / interacted: >=50% on screen for ~2 s = seen; vote, react, comments, expand, share, open on X = interacted ----
   // Map id -> [eng when seen, acted 0/1, seen_at]. Signed out: localStorage (cap SEEN_CAP); signed in: also /api/seen (D1).
-  const SEEN_CAP = 2000, SEEN_KEY = 'gvh_seen', eng = p => p.votes.grok + p.votes.human + 2 * p.likes + 3 * p.comments - p.dislikes;
+  const SEEN_CAP = 2000, SEEN_KEY = 'gvh_seen', eng = p => p.kind === 'project' ? p.up + p.down + 3 * p.comments : p.votes.grok + p.votes.human + 2 * p.likes + 3 * p.comments - p.dislikes;
   const SEEN = new Map((() => { try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '[]'); } catch { return []; } })().filter(r => Array.isArray(r) && r.length >= 4).map(r => [String(r[0]), r.slice(1)]));
   const seenSave = () => { try { const a = [...SEEN].sort((x, y) => y[1][2] - x[1][2]).slice(0, SEEN_CAP);
     if (a.length < SEEN.size) { SEEN.clear(); a.forEach(([k, v]) => SEEN.set(k, v)); } localStorage.setItem(SEEN_KEY, JSON.stringify(a.map(([k, v]) => [k, ...v]))); } catch {} };
   // a seen post comes back up when it got lots of new activity since (>= +10 engagement and +50%)
   const resurfaced = (id, e) => { const r = SEEN.get(id); return !!r && e >= r[0] + 10 && e >= r[0] * 1.5; };
-  const isSeen = p => SEEN.has(p.id) && !resurfaced(p.id, eng(p));
+  const isSeen = p => SEEN.has(K(p.id)) && !resurfaced(K(p.id), eng(p));
   const UNSEEN_FIRST = () => store.get('gvh_unseen_first') !== '0';
   let pend = new Map(), flushT = null;
   function flushSeen(beacon) {
@@ -130,10 +138,10 @@
     if (pend.size) flushT = setTimeout(flushSeen, 3000);
   }
   function markSeen(p, acted) {
-    if (!p) return; const old = SEEN.get(p.id), e = eng(p), a = acted || old?.[1] ? 1 : 0;
-    if (old && old[1] >= a && !resurfaced(p.id, e)) return;
-    SEEN.set(p.id, [e, a, Math.floor(Date.now() / 1000)]); seenSave();
-    if (S.user) { pend.set(p.id, { id: p.id, e, a }); if (!flushT) flushT = setTimeout(flushSeen, 3000); }
+    if (!p) return; const key = K(p.id), old = SEEN.get(key), e = eng(p), a = acted || old?.[1] ? 1 : 0;
+    if (old && old[1] >= a && !resurfaced(key, e)) return;
+    SEEN.set(key, [e, a, Math.floor(Date.now() / 1000)]); seenSave();
+    if (S.user && !PROJ) { pend.set(p.id, { id: p.id, e, a }); if (!flushT) flushT = setTimeout(flushSeen, 3000); }
   }
   addEventListener('pagehide', () => flushSeen(true));
   addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushSeen(true); });
@@ -155,10 +163,11 @@
     if (!d?.items) return; let ch = false;
     for (const [id, e, a, t] of d.items) { const o = SEEN.get(id); if (!o || o[2] < t || (a && !o[1])) { SEEN.set(id, [e, Math.max(a, o?.[1] || 0), Math.max(t, o?.[2] || 0)]); ch = true; } }
     // local-only seen ids from before sign-in go up once
-    for (const [id, v] of SEEN) if (!d.items.some(r => r[0] === id)) pend.set(id, { id, e: v[0], a: v[1] });
+    for (const [id, v] of SEEN) if (/^\d+$/.test(id) && !d.items.some(r => r[0] === id)) pend.set(id, { id, e: v[0], a: v[1] });
     if (ch) seenSave(); if (pend.size) flushSeen();
   }
   function card(p, rank) {
+    if (p.kind === 'project') return pcard(p);
     const t = p.votes.grok + p.votes.human, gp = t ? Math.round(p.votes.grok / t * 100) : 50;
     return `<article class="post${p.promoted ? ' post--promo' : ''}${isSeen(p) ? ' is-seen' : ''}" data-id="${p.id}" id="p${p.id}">
       ${p.promoted ? `<div class="promo" title="Paid placement until ${esc(new Date(p.promoted.until * 1000).toLocaleString())}"><span class="promo__star" aria-hidden="true">⭐</span> Featured <span class="promo__paid">Paid placement</span></div>` : ''}
@@ -184,14 +193,76 @@
       <a class="xlink" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
     </article>`;
   }
+  // ---- projects ----
+  const host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+  function projHead() {
+    return `<section class="pj-head"><h2>🛠️ Projects built with SI</h2><p>Things people build together with Grok and Grok Bot. Vote for the ones you like, or share yours.</p>
+      <p class="pj-disc" role="note"><b>Independent projects.</b> Projects are run by their creators, not by Grok vs. Humans, and are not vetted financially. We never handle money for them: donate buttons link straight to the creator's own page.</p>
+      <div class="pj-kofi"><span>☕ Like this page? <b>Support Grok vs. Humans</b> on Ko-fi.</span><a class="pj-kofi__b" href="https://ko-fi.com/grokvshumans" target="_blank" rel="noopener noreferrer">Support</a></div></section>`;
+  }
+  function ptext(p, f, label) {
+    const k = 'project|' + p.id + ':' + f, t = TR.get(k), src = f === 'd' ? p.description : p.si_usage, shown = t && t.on ? t.text : src;
+    return `<div class="pj__txt" data-trk="${esc(k)}">${label ? `<h3 class="pj__lbl">${label}</h3>` : ''}<p data-trt>${linkify(shown)}</p>${trBar(k, src)}</div>`;
+  }
+  function pcard(p) {
+    const sc = p.up - p.down;
+    return `<article class="post pj${p.promoted ? ' post--promo' : ''}${isSeen(p) ? ' is-seen' : ''}" data-id="${p.id}" id="p${p.id}">
+      ${p.promoted ? `<div class="promo"><span class="promo__star" aria-hidden="true">⭐</span> Featured <span class="promo__paid">Paid placement</span></div>` : ''}
+      <a class="pj__img" href="${esc(p.url)}" target="_blank" rel="${UGC}" tabindex="-1" aria-hidden="true">${p.image_url ? `<img src="${esc(p.image_url)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('is-none');this.remove()">` : ''}<span class="pj__ph">🛠️</span></a>
+      <div class="pj__body">
+        <div class="post__top">${S.view !== 'hot' && isSeen(p) ? '<span class="seen-tag">✓ Seen</span>' : ''}<span class="post__time">${ago(p.created_at)}</span></div>
+        <h2 class="post__title pj__name"><a href="${esc(p.url)}" target="_blank" rel="${UGC}">${esc(p.name)}</a></h2>
+        <p class="pj__by">by ${p.handle ? `<a href="https://x.com/${encodeURIComponent(p.handle)}" target="_blank" rel="${UGC}">@${esc(p.handle)}</a>` : '<span>[deleted account]</span>'} · <span class="pj__host">${esc(host(p.url))}</span></p>
+        ${ptext(p, 'd')}${ptext(p, 's', '🤖 How SI is used')}
+        <div class="pj__links"><a class="pj__go" href="${esc(p.url)}" target="_blank" rel="${UGC}">Open project ↗</a>${p.donate_url ? `<a class="pj__don" href="${esc(p.donate_url)}" target="_blank" rel="${UGC}" title="Opens ${esc(host(p.donate_url))}: the creator's own page, not Grok vs. Humans">💜 Donate <small>${esc(host(p.donate_url))}</small></a>` : ''}</div>
+        <div class="acts pj__acts">
+          <div class="pj__vote" role="group" aria-label="Vote"><button class="act ${p.mine.vote === 1 ? 'is-like' : ''}" data-act="pvote" data-v="1" aria-label="Upvote" aria-pressed="${p.mine.vote === 1}"><i class="fa-solid fa-arrow-up"></i></button><b class="pj__sc" aria-label="Score">${sc}</b><button class="act ${p.mine.vote === -1 ? 'is-dislike' : ''}" data-act="pvote" data-v="-1" aria-label="Downvote" aria-pressed="${p.mine.vote === -1}"><i class="fa-solid fa-arrow-down"></i></button></div>
+          <button class="act" data-act="comments" aria-label="Comments"><i class="fa-regular fa-comment"></i>${p.comments}</button>
+          <button class="act" data-act="share" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+        </div></div></article>`;
+  }
+  const PERR = { missing_name: 'Give your project a name.', missing_description: 'Add a short description.', missing_si_usage: 'Tell us how SI is used.', bad_url: 'The project link must start with https:// or http://',
+    bad_image_url: 'The image link must be an https:// URL.', bad_donate_url: 'Donation links must be https on Ko-fi, Patreon, GitHub Sponsors, Buy Me a Coffee, Open Collective or Liberapay.',
+    image_type: 'The image must be a JPEG, PNG, WebP or GIF.', image_too_big: 'The image is larger than 5 MB.', image_unreachable: 'We could not load that image link.',
+    daily_limit: 'You can submit up to 3 projects a day.', already_submitted: 'This project link was already submitted.', account_too_new: 'Your X account is too new to submit projects.', banned: 'Your account cannot submit projects.' };
+  async function openProjectForm() {
+    if (!S.user) return needSignIn('submit a project', '/projects?submit=1');
+    const c = await cfg(), F = (n, l, max, rows, req, ph, extra = '') => `<label class="fld"><span>${l}${req ? '' : ' <em>(optional)</em>'} <em class="cnt" data-cnt="${n}">0/${max}</em></span>${rows
+      ? `<textarea name="${n}" rows="${rows}" maxlength="${max}" ${req ? 'required' : ''} placeholder="${ph}"></textarea>` : `<input name="${n}" maxlength="${max}" ${req ? 'required' : ''} placeholder="${ph}" ${extra}>`}</label>`;
+    panel('🛠️ Submit a project', `<form id="pjf" class="sx__form" novalidate>
+      ${F('name', 'Name', 80, 0, 1, 'My SI-powered thing', 'autocomplete="off"')}
+      ${F('url', 'Link to the project', 500, 0, 1, 'https://…', 'type="url" inputmode="url" autocomplete="off"')}
+      ${F('description', 'Short description', 500, 3, 1, 'What is it, who is it for?')}
+      ${F('si_usage', 'How SI is used', 300, 3, 1, 'What did Grok / Grok Bot build or do?')}
+      ${F('image_url', 'Screenshot image link', 500, 0, 0, 'https://…/screenshot.png', 'type="url" inputmode="url" autocomplete="off" aria-describedby="pj-img-h"')}<small class="hint" id="pj-img-h">An https link to a JPEG, PNG, WebP or GIF up to 5 MB (image uploads are not available yet).</small>
+      ${F('donate_url', 'Donation link', 500, 0, 0, 'https://ko-fi.com/yourname', 'type="url" inputmode="url" autocomplete="off" aria-describedby="pj-don-h"')}<small class="hint" id="pj-don-h">https only, on Ko-fi, Patreon, GitHub Sponsors, Buy Me a Coffee, Open Collective or Liberapay. Donations go straight to you; we never handle money for projects.</small>
+      <fieldset class="fld"><legend>⭐ Feature it at the top of Projects? <em>(optional, paid)</em></legend>${tierPicker(c.tiers || [], 'tier', true)}</fieldset>
+      <p class="pj-err" role="alert" hidden></p>
+      <button class="pill-btn" type="submit">Submit for review</button>
+      <p class="fine">Up to 3 a day. Every project is reviewed before it appears and shows “by @${esc(S.user.handle)}”. Projects are independent and not vetted financially.</p></form>`);
+    setTimeout(() => $('#pjf input[name=name]')?.focus(), 50);
+  }
+  document.addEventListener('input', e => { const i = e.target.closest('#pjf [name]'); const c = i && $(`#pjf [data-cnt="${i.name}"]`); if (c) c.textContent = [...i.value].length + '/' + i.maxLength; });
+  document.addEventListener('submit', async e => {
+    const f = e.target; if (f.id !== 'pjf') return; e.preventDefault();
+    const fd = Object.fromEntries(new FormData(f)), err = f.querySelector('.pj-err'), btn = f.querySelector('button[type=submit]');
+    const miss = ['name', 'url', 'description', 'si_usage'].find(k => !String(fd[k] || '').trim());
+    if (miss) { err.hidden = false; err.textContent = PERR['missing_' + miss] || PERR.bad_url; f.querySelector(`[name=${miss}]`).focus(); return; }
+    btn.disabled = true; btn.textContent = 'Sending…'; err.hidden = true;
+    const r = await post('/api/projects', { ...fd, tier: fd.tier || undefined });
+    btn.disabled = false; btn.textContent = 'Submit for review';
+    if (!r.ok) { err.hidden = false; err.textContent = PERR[r.data.error] || SERR[r.data.error] || ERR[r.data.error] || 'Could not submit (' + r.status + ')'; return; }
+    $('.sx__body').innerHTML = '<p class="done">✅ Thanks! Your project is in the review queue.</p>' + (r.data.feature ? payView(r.data.feature) : '<button class="pill-btn" data-sh="close">Done</button>');
+  });
+
   function render() {
-    const head = S.view === 'hall'
+    const head = PROJ ? projHead() : S.view === 'hall'
       ? `<div class="hof-head"><h2>🏆 Hall of Fame${S.topic !== 'All' ? ' · ' + esc(S.topic) : ''}</h2>
            <div class="seg"><button data-hof="all" class="${S.hof === 'all' ? 'is-on' : ''}">All-time</button><button data-hof="week" class="${S.hof === 'week' ? 'is-on' : ''}">This week</button></div></div>` : '';
     $('#feed').innerHTML = head + (S.posts.length ? S.posts.map((p, i) => card(p, S.view === 'hall' ? i + 1 : 0)).join('')
       + moreHtml()
-      : `<div class="empty">${S.view === 'grok' || S.view === 'human' ? `${S.view === 'grok' ? '🤖' : '🧑'} No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts where ${S.view === 'grok' ? 'Grok' : 'the human'} leads the vote yet. Vote on a few threads and they will show up here.` : S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
-    document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.view === S.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); if (on && b.parentNode.scrollWidth > b.parentNode.clientWidth) b.parentNode.scrollTo({ left: b.offsetLeft - 16, behavior: 'smooth' }); });
+      : PROJ ? `<div class="empty">🛠️ No projects here yet. <button class="load-more" data-proj-submit>Submit the first one</button></div>` : `<div class="empty">${S.view === 'grok' || S.view === 'human' ? `${S.view === 'grok' ? '🤖' : '🧑'} No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts where ${S.view === 'grok' ? 'Grok' : 'the human'} leads the vote yet. Vote on a few threads and they will show up here.` : S.view === 'hall' ? 'No votes yet – the Hall of Fame fills up as people vote.' : `No ${S.topic === 'All' ? '' : esc(S.topic) + ' '}posts yet.`}</div>`);
+    document.querySelectorAll('.tab').forEach(b => { const on = PROJ ? b.dataset.nav === 'projects' : b.dataset.view === S.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); if (on && b.parentNode.scrollWidth > b.parentNode.clientWidth) b.parentNode.scrollTo({ left: b.offsetLeft - 16, behavior: 'smooth' }); });
     renderChips(); renderSeenOpt(); autoWatch($('#feed')); seenWatch($('#feed'));
   }
   const hasMore = () => S.queue ? S.qi < S.queue.length : S.next != null;
@@ -209,7 +280,8 @@
     if (!full) { const ex = el.querySelector('.ex'), nx = fresh.querySelector('.ex'); if (ex && nx) nx.replaceWith(ex); }
     el.replaceWith(fresh); if (full) watch(fresh); autoWatch(fresh); };
 
-  const feedQ = extra => { const q = new URLSearchParams({ view: S.view, range: S.hof, ...extra }); if (S.topic !== 'All') q.set('topic', S.topic); return '/api/feed?' + q; };
+  const feedQ = extra => { if (PROJ) return '/api/projects?' + new URLSearchParams({ view: S.view, ...extra });
+    const q = new URLSearchParams({ view: S.view, range: S.hof, ...extra }); if (S.topic !== 'All') q.set('topic', S.topic); return '/api/feed?' + q; };
   // Hot + "unseen first": one cheap ranked id list (order=1), split into unseen (Hot order) then seen; pages by ids=.
   // Other tabs: offset paging. Both: PAGE posts per request.
   async function fetchPage() {
@@ -229,7 +301,7 @@
         if (seq !== load.seq) return;
         if (d.topics) S.topics = d.topics;
         const pro = d.order.filter(r => r[2]), rest = d.order.filter(r => !r[2]);
-        const seen = r => SEEN.has(r[0]) && !resurfaced(r[0], r[1]);
+        const seen = r => SEEN.has(K(r[0])) && !resurfaced(K(r[0]), r[1]);
         S.queue = [...pro, ...rest.filter(r => !seen(r)), ...rest.filter(seen)].map(r => r[0]);
       }
       posts = await fetchPage();
@@ -240,7 +312,7 @@
     const h = location.hash.match(/^#p(\d+)$/);
     if (h && !load.jumped) { load.jumped = 1;
       if (!document.getElementById('p' + h[1])) {   // shared link to a post beyond the first page: fetch it on its own
-        const one = await fetch('/api/feed?id=' + h[1], { credentials: 'same-origin' }).then(x => x.json()).catch(() => ({}));
+        const one = await fetch((PROJ ? '/api/projects?id=' : '/api/feed?id=') + h[1], { credentials: 'same-origin' }).then(x => x.json()).catch(() => ({}));
         if (one.posts?.[0]) { S.posts = [one.posts[0], ...S.posts.filter(p => p.id !== one.posts[0].id)]; if (S.queue) S.queue = S.queue.filter(id => id !== one.posts[0].id); render(); }
       }
       document.getElementById('p' + h[1])?.scrollIntoView(); }
@@ -271,6 +343,7 @@
   function setState(patch) {
     Object.assign(S, patch);
     const h = new URLSearchParams();
+    if (PROJ) { if (S.view !== 'hot') h.set('sort', S.view); history.replaceState(null, '', '/projects' + (h.toString() ? '?' + h : '')); render(); load(); return; }
     if (S.view !== 'hot') h.set('view', S.view);
     if (S.topic !== 'All') h.set('topic', S.topic);
     if (S.view === 'hall' && S.hof !== 'all') h.set('hof', S.hof);
@@ -334,10 +407,11 @@
   }
   const origText = k => { const [kind, id] = k.split('|');
     if (kind === 'comment') return S.sheet?.comments?.find(c => String(c.id) === id)?.body;
+    if (kind === 'project') { const [pid, f] = id.split(':'), p = S.posts.find(x => x.id === pid); return p ? (f === 'd' ? p.description : p.si_usage) : undefined; }
     const [pid, pos] = id.split(':'); return S.posts.find(p => p.id === pid)?.tweets.find((w, i) => String(w.pos ?? i) === pos)?.text; };
   function paint(el) {
     const k = el.dataset.trk, src = origText(k); if (src == null) return; const t = TR.get(k);
-    const p = el.querySelector('[data-trt]'), isC = k.startsWith('comment|');
+    const p = el.querySelector('[data-trt]'), isC = k.startsWith('comment|') || k.startsWith('project|');
     if (p) { p.innerHTML = (isC ? linkify : linkX)(t?.on ? t.text : src); p.lang = t?.on ? t.target : ''; }
     const tmp = document.createElement('div'); tmp.innerHTML = trBar(k, src);
     const old = el.querySelector('[data-trbar]'); if (old) old.replaceWith(...tmp.children); else if (p) p.after(...tmp.children);
@@ -393,11 +467,11 @@
     S.sheet = { p, comments: [] };
     const el = $('#sheet'); el.hidden = false; document.body.style.overflow = 'hidden';
     el.innerHTML = `<div class="sheet__bg" data-sh="close"></div><div class="sheet__panel" role="dialog" aria-label="Comments">
-      <div class="sheet__head"><strong>Comments</strong><span>${esc(p.headline || '')}</span><button data-sh="close" aria-label="Close">✕</button></div>
+      <div class="sheet__head"><strong>Comments</strong><span>${esc(p.headline || p.name || '')}</span><button data-sh="close" aria-label="Close">✕</button></div>
       <ul class="sheet__list" id="cl"><li class="empty">Loading…</li></ul>
       <form class="sheet__form" id="cf">${S.user ? `<textarea maxlength="500" rows="2" placeholder="Add a comment as @${esc(S.user.handle)}" required></textarea><button type="submit">Post</button>`
         : `<button type="button" class="btn-x" data-sh="signin">${X_SVG} Sign in with X to comment</button>`}</form></div>`;
-    const r = await fetch(`/api/comments?type=post&id=${p.id}`, { credentials: 'same-origin', cache: 'no-store' });
+    const r = await fetch(`/api/comments?type=${p.kind === 'project' ? 'project' : 'post'}&id=${p.id}`, { credentials: 'same-origin', cache: 'no-store' });
     const d = await r.json().catch(() => ({ comments: [] }));
     S.sheet.comments = d.comments || []; drawComments();
   }
@@ -406,7 +480,7 @@
   document.addEventListener('submit', async e => {
     if (e.target.id !== 'cf') return; e.preventDefault();
     const ta = e.target.querySelector('textarea'), p = S.sheet.p;
-    const r = await post('/api/comments', { type: 'post', id: p.id, body: ta.value });
+    const r = await post('/api/comments', { type: p.kind === 'project' ? 'project' : 'post', id: p.id, body: ta.value });
     if (!r.ok) return toast(ERR[r.data.error] || 'Could not post (' + r.status + ')');
     ta.value = ''; S.sheet.comments.push(r.data.comment); p.comments++; drawComments(); rerender(p);
   });
@@ -426,7 +500,12 @@
       if (r.ok) { Object.assign(c, { likes: r.data.likes, dislikes: r.data.dislikes, mine: r.data.mine }); drawComments(); } else toast(ERR[r.data.error] || 'Failed');
       return;
     }
-    const tab = e.target.closest('.tab'); if (tab) return setState({ view: tab.dataset.view }), window.scrollTo({ top: 0 });
+    const tab = e.target.closest('.tab');
+    if (tab) { if (tab.dataset.nav === 'projects') { if (PROJ) e.preventDefault(); return; }
+      if (PROJ) { location.href = tab.dataset.view === 'hot' ? '/' : '/?view=' + tab.dataset.view; return; }
+      return setState({ view: tab.dataset.view }), window.scrollTo({ top: 0 }); }
+    const ps = e.target.closest('[data-psort]'); if (ps) return setState({ view: ps.dataset.psort }), window.scrollTo({ top: 0 });
+    if (e.target.closest('[data-proj-submit]')) return openProjectForm();
     const chip = e.target.closest('[data-topic]'); if (chip) return setState({ topic: chip.dataset.topic }), window.scrollTo({ top: 0 });
     const hof = e.target.closest('[data-hof]'); if (hof) return setState({ hof: hof.dataset.hof });
     const so = e.target.closest('[data-seen]');
@@ -436,16 +515,21 @@
     if (a.dataset.act === 'more') return more();
     if (a.dataset.act === 'retry') return load();
     const el = a.closest('.post'), p = S.posts.find(x => x.id === el?.dataset.id), act = a.dataset.act;
-    if (p && ['vote', 'react', 'comments', 'expand', 'share'].includes(act)) markSeen(p, 1);
+    if (p && ['vote', 'react', 'comments', 'expand', 'share', 'pvote'].includes(act)) markSeen(p, 1);
     if (act === 'expand') { S.open.add(p.id); return rerender(p, true); }
         if (act === 'comments') return openSheet(p);
     if (act === 'feature') return S.user ? openFeature(p) : needSignIn('feature a thread', location.pathname + '#p' + p.id);
     if (act === 'share') {
-      const url = location.origin + '/#p' + p.id;
-      if (navigator.share) return navigator.share({ title: p.headline || 'Grok vs. Humans', text: 'Who won? Vote:', url }).catch(() => {});
+      const url = location.origin + (PROJ ? '/projects#p' : '/#p') + p.id;
+      if (navigator.share) return navigator.share(PROJ ? { title: p.name, text: 'Built with SI, on Grok vs. Humans:', url } : { title: p.headline || 'Grok vs. Humans', text: 'Who won? Vote:', url }).catch(() => {});
       return navigator.clipboard.writeText(url).then(() => toast('Link copied'), () => toast(url));
     }
-    if (!S.user) return needSignIn(act === 'vote' ? 'vote' : 'react', location.pathname + location.search + '#p' + p.id);
+    if (!S.user) return needSignIn(act === 'vote' || act === 'pvote' ? 'vote' : 'react', location.pathname + location.search + '#p' + p.id);
+    if (act === 'pvote') {
+      const v = Number(a.dataset.v), r = await post('/api/project-vote', { id: p.id, value: p.mine.vote === v ? 0 : v });
+      if (!r.ok) return toast(ERR[r.data.error] || 'Vote failed');
+      Object.assign(p, { up: r.data.up, down: r.data.down }); p.mine.vote = r.data.mine; return rerender(p);
+    }
     if (act === 'vote') {
       const choice = p.mine.vote === a.dataset.v ? null : a.dataset.v;
       const r = await post('/api/vote', { type: 'post', id: p.id, choice });
@@ -527,7 +611,8 @@
   }
 
   const q = new URLSearchParams(location.search);
-  S.view = ['hot', 'new', 'top', 'hall', 'grok', 'human'].includes(q.get('view')) ? q.get('view') : 'hot';
+  S.view = PROJ ? (['hot', 'new', 'top'].includes(q.get('sort')) ? q.get('sort') : 'hot') : ['hot', 'new', 'top', 'hall', 'grok', 'human'].includes(q.get('view')) ? q.get('view') : 'hot';
+  if (PROJ) document.title = 'Projects built with SI · Grok vs. Humans';
   S.topic = q.get('topic') || 'All';
   S.hof = q.get('hof') === 'week' ? 'week' : 'all';
   const qs = new URLSearchParams(location.search);
@@ -535,7 +620,8 @@
   if (qs.get('login') === 'banned') toast('This X account is banned from signing in.');
   document.addEventListener('change', e => { if (e.target.matches?.('[data-seen="first"]')) { store.set('gvh_unseen_first', e.target.checked ? null : '0'); load(); window.scrollTo({ top: 0 }); } });
   fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); notify(); syncSeen();
-    if (qs.get('suggest') === '1') { history.replaceState(null, '', location.pathname); openSuggest(); } }).catch(renderAuth);
+    if (qs.get('suggest') === '1') { history.replaceState(null, '', location.pathname); openSuggest(); }
+    if (qs.get('submit') === '1' && PROJ) { history.replaceState(null, '', location.pathname); openProjectForm(); } }).catch(renderAuth);
   // Donate buttons stay hidden until a Ko-fi URL is configured in data-kofi-url.
   document.querySelectorAll('[data-kofi-url]').forEach(a => { const u = (a.dataset.kofiUrl || '').trim(); if (/^https:\/\/(www\.)?ko-fi\.com\//.test(u)) { a.href = u; a.hidden = false; } });
   renderAuth(); load();

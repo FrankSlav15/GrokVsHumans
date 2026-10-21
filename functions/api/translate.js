@@ -1,4 +1,4 @@
-// POST /api/translate {kind: 'post_turn'|'comment', id, target}
+// POST /api/translate {kind: 'post_turn'|'comment'|'project', id, target}
 //   post_turn id = "<post_id>:<pos>" of an approved post; comment id = a visible comment on an existing item.
 // Cached in D1 `translations` per (kind, id, target, sha256(source text)); rate-limited per IP and per signed-in user.
 import { json, now, readJsonPost, getSessionUser, rateLimit, clientIp, sha256hex, itemExists } from '../../server/lib.js';
@@ -6,6 +6,11 @@ import { normLang } from '../../server/lang.js';
 import { TRANSLATE_MODEL, MAX_TRANSLATE, TRANSLATE_LIMIT, sourceLang, translateText, langName } from '../../server/translate.js';
 
 async function loadText(env, request, kind, id) {
+  if (kind === 'project') {   // "<project_id>:d" (description) or ":s" (how SI is used) of an approved project
+    const m = /^([0-9]{1,9}):([ds])$/.exec(id); if (!m) return null;
+    const r = await env.DB.prepare("SELECT description, si_usage FROM projects WHERE id = ?1 AND status = 'approved'").bind(Number(m[1])).first();
+    return r ? (m[2] === 'd' ? r.description : r.si_usage) : null;
+  }
   if (kind === 'post_turn') {
     const m = /^([0-9]{1,9}):([0-9]{1,2})$/.exec(id); if (!m) return null;
     const r = await env.DB.prepare(`SELECT t.text FROM post_tweets t JOIN posts p ON p.id = t.post_id
@@ -22,7 +27,7 @@ export async function onRequestPost({ request, env }) {
   const [body, bad] = await readJsonPost(request);
   if (bad) return bad;
   const kind = String(body?.kind || ''), id = String(body?.id ?? ''), target = normLang(body?.target);
-  if (kind !== 'post_turn' && kind !== 'comment') return json({ error: 'bad_kind' }, 400);
+  if (!['post_turn', 'comment', 'project'].includes(kind)) return json({ error: 'bad_kind' }, 400);
   if (!target) return json({ error: 'bad_target' }, 400);
 
   const user = await getSessionUser(env, request);

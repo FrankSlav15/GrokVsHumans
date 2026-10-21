@@ -46,6 +46,7 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 
 ## v2 (branch v2-feed) – preview only
 - D1 `gvh-v2` (d1a0f66c-826e-4394-915a-b5f93971aa85) is bound as `DB` in the **Preview** environment only; schema `migrations-v2/0001_v2_schema.sql`.
+- **v2 migrations are tracked in D1's `d1_migrations` table** (since 0016, 2026-10-21). 0001–0015 had been applied by hand with `d1 execute --file`; they were recorded as already applied (no-op ledger entries, same file names) and 0016 was then applied with `wrangler d1 migrations apply`. Time-travel bookmark taken just before: `0000013d-00000002-0000510b-11c77b51056da2eab112affe0b9f7d5e`. New migrations: add `migrations-v2/00NN_name.sql`, then run `wrangler d1 migrations list|apply gvh-v2 --remote -c d1/wrangler.toml` (via `npx -y -p node@22 -p wrangler@latest --`). Never `d1 execute --file` a numbered migration again, or the ledger goes out of sync.
 - Preview vars: `X_CLIENT_ID`, `ADMIN_X_IDS`. Login on the preview also needs `X_CLIENT_SECRET` (Preview, secret) and the callback `https://v2-feed.grokvshumans.pages.dev/auth/callback` registered in the X app.
 - Deploy: `bash scripts/build-deploy.sh /workspace/gvh-site && npx -y -p node@22 -p wrangler@latest -- wrangler pages deploy /workspace/gvh-site --project-name grokvshumans --branch v2-feed`
 - Old battles: the one-time syndication-based history import was removed (no syndication scraping any more); posts imported earlier stay in gvh-v2. New posts come only from the fetch Worker (paid X API v2).

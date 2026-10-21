@@ -7,15 +7,15 @@ import { json, now, readJsonPost, requireAdmin, auditStmt } from '../../../serve
 export const statusOf = (f, t = now()) =>
   f.refund_needed && !f.refunded_at ? 'refund_needed'
   : f.state === 'active' ? (f.ends_at > t ? 'active' : 'expired')
-  : f.state === 'paid' ? (f.post_id ? 'awaiting_approval' : 'paid')
+  : f.state === 'paid' ? (f.post_id || f.project_id ? 'awaiting_approval' : 'paid')
   : f.state === 'rejected' && f.refunded_at ? 'refunded' : f.state;
 
 export async function onRequestGet({ request, env }) {
   const [, denied] = await requireAdmin(env, request);
   if (denied) return denied;
   const want = new URL(request.url).searchParams.get('status') || 'all';
-  const { results } = await env.DB.prepare(`SELECT f.*, u.handle, p.headline, p.status AS post_status, s.url AS suggestion_url, s.state AS suggestion_state
-      FROM feature_requests f LEFT JOIN users u ON u.x_id = f.x_id LEFT JOIN posts p ON p.id = f.post_id LEFT JOIN suggestions s ON s.id = f.suggestion_id
+  const { results } = await env.DB.prepare(`SELECT f.*, u.handle, COALESCE(p.headline, '🛠️ ' || j.name) AS headline, COALESCE(p.status, j.status) AS post_status, s.url AS suggestion_url, s.state AS suggestion_state
+      FROM feature_requests f LEFT JOIN users u ON u.x_id = f.x_id LEFT JOIN posts p ON p.id = f.post_id LEFT JOIN suggestions s ON s.id = f.suggestion_id LEFT JOIN projects j ON j.id = f.project_id
       ORDER BY f.id DESC LIMIT 300`).all();
   const t = now(), rows = results.map(f => ({ ...f, status: statusOf(f, t) }));
   const counts = {}; for (const r of rows) counts[r.status] = (counts[r.status] || 0) + 1;
@@ -33,9 +33,11 @@ export async function onRequestPost({ request, env }) {
   const note = typeof body?.note === 'string' ? body.note.slice(0, 200) : null, DB = env.DB;
   if (action === 'approve') {
     if (f.state !== 'paid') return json({ error: 'not_paid', state: f.state }, 400);
-    if (!f.post_id) return json({ error: 'no_post_yet' }, 400);
+    if (!f.post_id && !f.project_id) return json({ error: 'no_post_yet' }, 400);
     await DB.batch([
-      DB.prepare("UPDATE posts SET status = 'approved', approved_at = COALESCE(approved_at, ?2), hidden_reason = NULL WHERE id = ?1 AND status IN ('pending','approved')").bind(f.post_id, t),
+      f.project_id   // project: approving the paid spot also approves the project (like a post)
+        ? DB.prepare("UPDATE projects SET status = 'approved', approved_at = COALESCE(approved_at, ?2), updated_at = ?2 WHERE id = ?1 AND status IN ('pending','approved')").bind(f.project_id, t)
+        : DB.prepare("UPDATE posts SET status = 'approved', approved_at = COALESCE(approved_at, ?2), hidden_reason = NULL WHERE id = ?1 AND status IN ('pending','approved')").bind(f.post_id, t),
       DB.prepare("UPDATE feature_requests SET state = 'active', starts_at = ?2, ends_at = ?2 + days * 86400, updated_at = ?2 WHERE id = ?1").bind(id, t),
     ]);
   } else if (action === 'reject') {

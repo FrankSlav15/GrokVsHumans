@@ -1,0 +1,10 @@
+# Only used for D1 migrations of the v2 database (not a deployable Worker).
+#   npx -y -p node@22 -p wrangler@latest -- wrangler d1 migrations list  gvh-v2 --remote -c d1/wrangler.toml
+#   npx -y -p node@22 -p wrangler@latest -- wrangler d1 migrations apply gvh-v2 --remote -c d1/wrangler.toml
+name = "gvh-v2-migrations"
+compatibility_date = "2026-05-01"
+[[d1_databases]]
+binding = "DB"
+database_name = "gvh-v2"
+database_id = "d1a0f66c-826e-4394-915a-b5f93971aa85"
+migrations_dir = "../migrations-v2"

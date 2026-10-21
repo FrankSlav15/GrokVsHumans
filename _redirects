@@ -8,3 +8,6 @@
 # Old Formspree submit form -> in-site "Suggest a thread"
 /submit.html  /?suggest=1  301
 /submit       /?suggest=1  301
+
+# Projects page: the same app shell as the feed (assets/v2/feed.js switches to projects mode on /projects)
+/projects   /   200

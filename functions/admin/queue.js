@@ -59,7 +59,7 @@ const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><m
 const APP = `<header>${navHtml('queue')}<h1>Approval queue</h1>
 <div class="row" id="tabs"></div><div class="stats" id="stats"></div></header><main id="list"><div class="empty">Loading…</div></main><div class="toast" id="toast"></div>
 <script>
-const TABS=[['batches','Batches'],['pending','Pending'],['approved','Approved'],['skipped','Skipped'],['blocked','Never'],['hidden','Hidden']];
+const TABS=[['batches','Batches'],['pending','Pending'],['approved','Approved'],['skipped','Skipped'],['blocked','Never'],['hidden','Hidden'],['projects','🛠️ Projects']];
 let status=location.hash.slice(1)||'batches',D=null;const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 window.toast=toast;function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2000);}
@@ -73,7 +73,7 @@ function card(p){const on=new Set(p.topics.map(t=>t.topic)),sug=new Set(p.topics
  return '<article class="card" data-id="'+esc(p.id)+'"><div class="meta"><span>#'+esc(p.id)+'</span><span>'+esc(p.source)+'</span><span>X engagement '+esc(p.x_engagement)+'</span><span>'+esc(p.tweets.length)+' posts</span>'+(p.rebuild_state==='queued'?'<span class="rb">'+(p.rebuild_publish?'Approved'+(p.rebuild_feature?' + featured':'')+' · rebuilding full thread…':'↻ rebuild queued…')+(p.rebuild_note?' ('+esc(p.rebuild_note)+')':'')+'</span>':'')+(p.rebuild_state==='failed'?'<span class="mid">⚠ rebuild failed'+(p.rebuild_note?': '+esc(p.rebuild_note):'')+'</span>':'')+(p.mid_thread&&p.rebuild_state!=='queued'?'<span class="mid" title="The first stored post is not the root of the conversation">⤴ starts mid-thread</span>':'')+(p.low_priority?'<span style="color:#fda4af">⚠ explicit?</span>':'')+(p.featured?'<span>★ featured</span>':'')+(p.suggested_by_handle?'<span style="color:#fde68a">💡 suggested by @'+esc(p.suggested_by_handle)+'</span>':'')+(p.hidden_reason?'<span>hidden: '+esc(p.hidden_reason)+'</span>':'')+'<a href="https://x.com/i/status/'+esc(p.grok_tweet_id)+'" target="_blank" rel="noopener">open on X</a></div>'
  +'<input class="h" maxlength="120" value="'+esc(p.headline||'')+'" placeholder="Headline">'+p.tweets.map(tw).join('')
  +'<div class="tops">'+D.topics.map(t=>'<button data-t="'+esc(t)+'" class="'+(on.has(t)?'on ':'')+(sug.has(t)?'sug':'')+'">'+esc(t)+'</button>').join('')+'</div><div class="acts">'+A+'</div></article>';}
-async function load(){tabs();if(status==='batches')return loadBatches();const r=await fetch('/api/admin/queue?status='+status,{cache:'no-store'});D=await r.json().catch(()=>null);
+async function load(){tabs();if(status==='batches')return loadBatches();if(status==='projects')return window.loadProjects();const r=await fetch('/api/admin/queue?status='+status,{cache:'no-store'});D=await r.json().catch(()=>null);
  if(!r.ok){$('#list').innerHTML='<div class="empty">Error '+r.status+'</div>';return;}tabs();
  const s=D.spend;$('#stats').textContent='X spend (est.) today $'+(s.today||0).toFixed(2)+' / $'+s.caps.day+(s.caps.boost_until?' (boost until '+s.caps.boost_until+')':'')+' · month $'+(s.month||0).toFixed(2)+' / $'+s.caps.month+(s.last_run?' · last fetch '+new Date(s.last_run*1000).toLocaleString():'')+' · blocked authors '+D.blocked.length;
  $('#list').innerHTML=D.posts.length?D.posts.map(card).join(''):'<div class="empty">Nothing here.</div>';}
@@ -108,8 +108,9 @@ document.addEventListener('click',async e=>{const pv=e.target.closest('[data-pre
  const body={id:Number(c.dataset.id),action:a,headline:c.querySelector('input.h').value,topics:[...c.querySelectorAll('[data-t].on')].map(x=>x.dataset.t),handle:p.human_handle};
  b.disabled=true;const r=await fetch('/api/admin/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));b.disabled=false;
  if(!r.ok)return toast('Failed: '+(d.error||r.status));if(d.rebuilding||a==='rebuild'){toast(d.rebuilding?'Approved · rebuilding full thread first':'Rebuild queued');return load();}toast(a+' ✓');if(['topics','unblock','headline'].includes(a))return;c.remove();D.counts[status]--;tabs();});
-load();
-</script><script src="/assets/admin/preview.js"></script>`;
+// run after the deferred tab scripts below (projects.js defines window.loadProjects) so /admin/queue#projects works on a direct load
+document.readyState==="loading"?document.addEventListener("DOMContentLoaded",load,{once:true}):load();
+</script><script src="/assets/admin/preview.js"></script><script src="/assets/admin/projects.js"></script>`;
 
 export async function onRequestGet({ request, env }) {
   const user = await getSessionUser(env, request);

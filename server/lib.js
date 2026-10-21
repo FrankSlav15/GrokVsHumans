@@ -18,6 +18,7 @@ export const MIN_AGE_REPORT = 30 * 86400;   // a report only counts towards auto
 export const LIMITS = {
   suggest: { max: 10, win: 3600 },  // burst guard; the daily cap lives in server/config.js
   feature: { max: 10, win: 3600 },
+  project: { max: 10, win: 3600 },  // burst guard; the daily cap (3) lives in server/projects.js
   login:   { max: 20,  win: 600 },   // per IP
   vote:    { max: 120, win: 600 },   // per user (and 4x per IP)
   react:   { max: 120, win: 600 },
@@ -154,9 +155,9 @@ export async function limitWrite(env, request, user, action) {
 // Is this item id valid? Posts: one indexed lookup (no full-table scan); battles/memes: static JSON ids.
 export async function itemExists(env, request, type, id) {
   if (!ITEM_TYPES.has(type)) return false;
-  if (type === 'post') {
+  if (type === 'post' || type === 'project') {
     if (!/^[0-9]{1,9}$/.test(String(id))) return false;
-    return !!(await env.DB.prepare("SELECT 1 FROM posts WHERE id = ?1 AND status = 'approved'").bind(Number(id)).first());
+    return !!(await env.DB.prepare(`SELECT 1 FROM ${type === 'post' ? 'posts' : 'projects'} WHERE id = ?1 AND status = 'approved'`).bind(Number(id)).first());
   }
   return (await getItemIds(env, request, type)).has(String(id));
 }
@@ -195,7 +196,7 @@ export async function getItemIds(env, request, type) {
   return ids;
 }
 export const getBattleIds = (env, request) => getItemIds(env, request, 'battle');
-export const ITEM_TYPES = new Set([...Object.keys(ITEM_FILES), 'post']);
+export const ITEM_TYPES = new Set([...Object.keys(ITEM_FILES), 'post', 'project']);
 
 // Parse a JSON body of a same-origin POST. Returns [body, errorResponse].
 export async function readJsonPost(request) {

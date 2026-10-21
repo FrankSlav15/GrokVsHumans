@@ -63,11 +63,11 @@ export async function onRequestPost({ request, env }) {
   return json({ ok: true, id: row.id, feature }, 201);
 }
 
-export async function createFeature(env, user, { post_id = null, suggestion_id = null, tier, pin_topics = true }) {
+export async function createFeature(env, user, { post_id = null, suggestion_id = null, project_id = null, tier, pin_topics = true }) {
   for (let i = 0; i < 4; i++) {
     const code = featureCode();
-    const r = await env.DB.prepare(`INSERT OR IGNORE INTO feature_requests (code, x_id, post_id, suggestion_id, tier, amount_usd, days, pin_topics, created_at)
-      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9) RETURNING id, code`).bind(code, user.x_id, post_id, suggestion_id, tier.id, tier.usd, tier.days, pin_topics ? 1 : 0, now()).first();
+    const r = await env.DB.prepare(`INSERT OR IGNORE INTO feature_requests (code, x_id, post_id, suggestion_id, tier, amount_usd, days, pin_topics, created_at, project_id)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) RETURNING id, code`).bind(code, user.x_id, post_id, suggestion_id, tier.id, tier.usd, tier.days, pin_topics ? 1 : 0, now(), project_id).first();
     if (r) return { id: r.id, code: r.code, tier: tier.id, label: tier.label, usd: tier.usd, kofi_url: kofiUrl(env), kofi_ready: kofiConfigured(env) };
   }
   throw new Error('code collision');

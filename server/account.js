@@ -4,7 +4,22 @@
 export async function deleteAccountData(env, id) {
   const DB = env.DB;
   const own = "SELECT CAST(id AS TEXT) FROM comments WHERE x_id = ?1";
+  // Projects are the user's own content, like a comment body: all of them (pending and approved) are deleted, with
+  // their votes, translations and the comments under them (and those comments' reactions/reports/translations).
+  // A comment keeps a '[deleted]' placeholder only so a thread still reads; a deleted project leaves no thread behind.
+  const proj = "SELECT CAST(id AS TEXT) FROM projects WHERE x_id = ?1";
+  const projCmts = `SELECT id FROM comments WHERE item_type = 'project' AND item_id IN (${proj})`;
   await DB.batch([
+    DB.prepare(`DELETE FROM translations WHERE kind = 'comment' AND item_id IN (SELECT CAST(id AS TEXT) FROM (${projCmts}))`).bind(id),
+    DB.prepare(`DELETE FROM reactions WHERE target_type = 'comment' AND target_id IN (SELECT CAST(id AS TEXT) FROM (${projCmts}))`).bind(id),
+    DB.prepare(`DELETE FROM reports WHERE comment_id IN (${projCmts})`).bind(id),
+    DB.prepare(`DELETE FROM comments WHERE item_type = 'project' AND item_id IN (${proj})`).bind(id),
+    DB.prepare(`DELETE FROM translations WHERE kind = 'project' AND substr(item_id, 1, instr(item_id, ':') - 1) IN (${proj})`).bind(id),
+    DB.prepare(`DELETE FROM project_votes WHERE project_id IN (SELECT id FROM projects WHERE x_id = ?1)`).bind(id),
+    DB.prepare('UPDATE feature_requests SET project_id = NULL WHERE project_id IN (SELECT id FROM projects WHERE x_id = ?1)').bind(id),
+    DB.prepare(`DELETE FROM seen_posts WHERE x_id = ?1`).bind(id),
+    DB.prepare('DELETE FROM project_votes WHERE x_id = ?1').bind(id),
+    DB.prepare('DELETE FROM projects WHERE x_id = ?1').bind(id),
     // translations cache of this user's comments (keyed only by their comment ids)
     DB.prepare(`DELETE FROM translations WHERE kind = 'comment' AND item_id IN (${own})`).bind(id),
     // likes/dislikes others left on their comments go with the content; their own reactions cascade below
