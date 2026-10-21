@@ -45,10 +45,12 @@ function el(tag,attrs,...kids){const e=document.createElement(tag);for(const[k,v
 function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2200);}
 function ago(s){const d=Math.floor(Date.now()/1000)-s;if(d<60)return d+'s';if(d<3600)return Math.floor(d/60)+'m';if(d<86400)return Math.floor(d/3600)+'h';return Math.floor(d/86400)+'d';}
 function itemLink(c){const href=c.item_type==='post'?'/#p'+c.item_id:'/'+(c.item_type==='battle'?'battles':'memes')+'#'+c.item_id;return el('a',{href,target:'_blank'},c.item_type+' #'+c.item_id);}
-async function act(kind,id,action){
+async function act(kind,id,action,handle){
+  if(action==='purge'){const v=prompt('Delete data, keep ban for @'+handle+'?\\n\\nRuns the same deletion as self-service account deletion: profile, sessions, votes, likes, reports and suggestions are removed; comments become [deleted]; Ko-fi records keep no user id. Only the ban-list entry (X id, date, reason) stays. This cannot be undone.\\n\\nType the handle to confirm:');
+    if(v===null)return;if(v.trim().replace(/^@/,'').toLowerCase()!==String(handle).toLowerCase()){toast('Handle did not match, nothing deleted');return;}}
   if(action==='delete'&&!confirm('Delete this comment permanently?'))return;
   if(action==='ban'&&!confirm('Ban this user? Their comments will be hidden.'))return;
-  const r=await fetch('/api/admin/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,id,action})});
+  const r=await fetch('/api/admin/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(action==='purge'?{kind,id,action,confirm:id}:{kind,id,action})});
   const d=await r.json().catch(()=>({}));
   if(!r.ok){toast('Failed: '+(d.error||r.status));return;}
   toast(action+' ✓');load();
@@ -64,7 +66,7 @@ async function load(){
     if(!d.users.length)list.append(el('div',{class:'empty'},'No banned users.'));
     for(const u of d.users)list.append(el('div',{class:'card'},
       el('div',{class:'meta'},u.handle?el('a',{href:'https://x.com/'+encodeURIComponent(u.handle),target:'_blank',rel:'noopener'},'@'+u.handle):el('span',{},'Deleted account · X id '+u.x_id+(u.reason?' · '+u.reason:'')),el('span',{},u.comments+' comments')),
-      el('div',{class:'acts'},el('button',{class:'ok',onclick:()=>act('user',u.x_id,'unban')},'Unban'))));
+      el('div',{class:'acts'},el('button',{class:'ok',onclick:()=>act('user',u.x_id,'unban')},'Unban'),...(u.handle?[el('button',{class:'danger','data-purge':u.x_id,onclick:()=>act('user',u.x_id,'purge',u.handle)},'Delete data, keep ban')]:[]))));
     return;
   }
   if(!d.comments.length)list.append(el('div',{class:'empty'},'Nothing here. 🎉'));

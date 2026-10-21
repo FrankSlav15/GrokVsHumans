@@ -1,6 +1,8 @@
 // POST /api/admin/action {kind: 'comment'|'user', id, action}   (ADMIN_X_IDS only)
-//   comment: hide | unhide (approve) | dismiss (clear flag, stays visible) | delete      user: ban | unban
+//   comment: hide | unhide (approve) | dismiss (clear flag, stays visible) | delete      user: ban | unban | purge
+//   purge = 'Delete data, keep ban': same deletion as self-service, only for ids on the ban list; the entry stays
 import { json, readJsonPost, requireAdmin, isAdmin } from '../../../server/lib.js';
+import { deleteAccountData } from '../../../server/account.js';
 
 export async function onRequestPost({ request, env }) {
   const [body, bad] = await readJsonPost(request);
@@ -56,6 +58,11 @@ export async function onRequestPost({ request, env }) {
         DB.prepare('DELETE FROM banned_ids WHERE x_id = ?1').bind(xId),
         DB.prepare("UPDATE comments SET status = 'visible', hidden_by = NULL WHERE x_id = ?1 AND hidden_by = 'ban'").bind(xId),
       ]);
+    } else if (action === 'purge') {
+      if (!listed) return json({ error: 'not_banned' }, 400);
+      if (isAdmin(env, xId)) return json({ error: 'cannot_purge_admin' }, 400);
+      if (body.confirm !== xId) return json({ error: 'confirm_required' }, 400);   // client confirm step echoes the id
+      await deleteAccountData(env, xId);
     } else return json({ error: 'bad_action' }, 400);
     return json({ ok: true, kind, id: xId, action });
   }
