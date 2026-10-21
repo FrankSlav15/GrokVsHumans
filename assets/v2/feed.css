@@ -324,3 +324,9 @@ a.me{text-decoration:none}
 .tw__vx{display:inline-flex;align-items:center;gap:.35rem;margin-top:.3rem;font-size:.74rem;color:#a1a1aa;text-decoration:none;min-height:28px}
 .tw__vx:hover{color:#e4e4e7;text-decoration:underline}
 .tw__vx.is-on{color:#4cb4f5;font-weight:700;font-size:.82rem}
+/* Backdrop: fixed layer behind everything + dark overlay (v1 used rgba(10,10,31,.65); a bit darker here for card/text contrast) */
+.bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background:#09090b;overflow:hidden}
+.bg__img{position:absolute;inset:0;background:center 35%/cover no-repeat;opacity:0;transition:opacity 2s ease}
+.bg__img.is-on{opacity:1}
+.bg__shade{position:absolute;inset:0;background:rgba(10,10,31,.74)}
+@media (prefers-reduced-motion: reduce){.bg__img{transition:none}}
