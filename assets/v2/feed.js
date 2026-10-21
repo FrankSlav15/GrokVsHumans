@@ -20,7 +20,7 @@
 
   function renderAuth() {
     const u = S.user;
-    $('#auth').innerHTML = `<button class="lang-btn" data-lang aria-label="Language: ${esc(langName(RL()))}. Change language and translation settings"><span aria-hidden="true">🌐</span><span class="lang-btn__c">${esc(RL().toUpperCase())}</span></button>` + (u
+    $('#auth').innerHTML = `<button class="lang-btn" data-lang aria-label="Language: ${esc(langName(RL()))}. Change language and translation settings"><span aria-hidden="true">🌐</span><span class="lang-btn__c">${esc(RL().toUpperCase())}</span></button><button class="sg-btn" data-suggest aria-label="Suggest a thread"><span aria-hidden="true">💡</span> Suggest</button>` + (u
       ? `${u.admin ? '<a class="queue" href="/admin/queue" aria-label="Admin: post queue"><i class="fa-solid fa-inbox" aria-hidden="true"></i><span class="queue__l">Admin</span><b class="queue__n" id="qn" hidden></b></a>' : ''}<button class="me" id="me" title="Sign out" aria-label="Signed in as @${esc(u.handle)}. Sign out"><img src="${esc(u.avatar)}" alt="" referrerpolicy="no-referrer"><span class="me__h">@${esc(u.handle)}</span><span class="me__x">${X_SVG}</span></button>`
       : `<button class="btn-x" id="signin">${X_SVG} Sign in with X</button>`);
     if (u?.admin) fetch('/api/admin/counts', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => { const n = d ? d.queue + d.moderation + d.featured : 0, b = $('#qn');
@@ -386,11 +386,11 @@
     if (!S.user) return needSignIn('suggest a thread', location.pathname + '?suggest=1');
     const c = await cfg();
     panel('💡 Suggest a thread', `<form id="sgf" class="sx__form">
-      <label class="fld"><span>Link to the post on X</span><input name="url" type="url" inputmode="url" autocomplete="off" required placeholder="https://x.com/user/status/…"></label>
+      <label class="fld"><span>Link to the post on X</span><input name="url" type="url" inputmode="url" autocomplete="off" required placeholder="https://x.com/user/status/…" aria-describedby="sg-hint"><small class="hint" id="sg-hint">Paste the link to the LAST reply in the thread. We'll follow it back up to the original post automatically.</small></label>
       <label class="fld"><span>Note <em>(optional)</em></span><textarea name="note" rows="2" maxlength="280" placeholder="Why is this one good?"></textarea></label>
       <fieldset class="fld"><legend>⭐ Feature it at the top of Hot? <em>(optional, paid)</em></legend>${tierPicker(c.tiers || [], 'tier', true)}</fieldset>
       <button class="pill-btn" type="submit">Send suggestion</button>
-      <p class="fine">Up to ${c.per_day || 5} a day. We review every suggestion; approved threads show “suggested by @${esc(S.user.handle)}”.</p></form>`);
+      <p class="fine">Up to ${c.per_day || 5} a day. We review every suggestion; ${S.user?.handle ? `approved threads show “suggested by @${esc(S.user.handle)}”.` : "approved threads show who suggested them."}</p></form>`);
     setTimeout(() => $('#sgf input[name=url]')?.focus(), 50);
   }
   async function openFeature(p) {
@@ -409,6 +409,11 @@
     const ft = r.data.feature;
     $('.sx__body').innerHTML = (f.id === 'sgf' ? '<p class="done">✅ Thanks! Your suggestion is in the queue.</p>' : '') + (ft ? payView(ft) : '<button class="pill-btn" data-sh="close">Done</button>');
   });
+  // phone Suggest bar: hide while scrolling down, show again on scroll up / near the top or bottom
+  { let lastY = scrollY, tick = false; addEventListener('scroll', () => { if (tick) return; tick = true; requestAnimationFrame(() => {
+      const y = scrollY, bar = $('#sgbar'), end = y + innerHeight >= document.documentElement.scrollHeight - 40;
+      if (bar) bar.classList.toggle('is-hidden', y > lastY + 4 && y > 120 && !end ? true : (y < lastY - 4 || y <= 120 || end) ? false : bar.classList.contains('is-hidden'));
+      lastY = y; tick = false; }); }, { passive: true }); }
   document.addEventListener('click', e => {
     if (e.target.closest('[data-suggest]')) return openSuggest();
     const cp = e.target.closest('[data-copy]'); if (cp) navigator.clipboard?.writeText(cp.dataset.copy).then(() => toast('Code copied'), () => {});
