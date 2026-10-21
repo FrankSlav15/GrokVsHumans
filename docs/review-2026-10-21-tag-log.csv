@@ -1,0 +1,213 @@
+post_id,old_tags,new_tags
+1,History;Science,History
+2,AI;History;Politics,AI
+3,Animals;History;Technology,Science
+4,History;Sports;Technology,Sports
+5,History;Memology;Politics,Politics
+6,History;Memology;Technology,Technology
+7,History;Money;Politics,Politics
+8,History;Politics,History
+9,History;Memology;Religion,Memology
+10,Health;History;Science,Science
+11,AI;History;Technology,AI
+12,Food;Life Advice,Memology
+14,Health;Politics,Politics
+16,Politics;Pop Culture,Pop Culture
+17,Animals;Religion,Wild Card
+18,Memology;Philosophy,Money
+19,Money;Politics,Politics
+20,Money;Science,Politics
+22,History;Religion,History
+23,AI;Religion,Religion
+25,Science;Space,Space
+27,Science;Technology,Technology
+28,History;Philosophy,History
+30,Health;Science,Science
+31,Life Advice;Politics,Politics
+32,Wild Card,Pop Culture
+33,Politics;Science,Politics
+34,Memology,Politics
+36,History;Politics,Politics
+37,Memology;Money,Money
+38,Philosophy;Politics,Politics
+39,Life Advice;Money,Politics
+40,AI;Philosophy,AI
+41,Life Advice;Technology,Technology
+42,History;Religion,Religion
+43,Philosophy;Science,Science
+44,History;Memology,History
+45,Memology;Technology,AI
+46,Science;Technology,Space
+47,History;Religion,History
+48,Health;Religion,Health
+49,Politics;Religion,Politics
+50,AI;Pop Culture,AI
+51,AI;Science,Science
+52,Wild Card,History
+53,AI;History,Gaming
+54,Politics;Technology,Pop Culture
+55,Politics;Technology,Politics
+57,Memology;Politics,Politics
+58,History;Religion,Religion
+59,Animals;Memology,Wild Card
+60,Politics;Religion,History
+61,History;Religion,Religion
+62,Money;Politics,Politics
+63,History;Politics,History
+64,Politics;Technology,Money
+65,Food;Money,Money
+66,Memology;Science,Science
+67,Politics;Religion,Religion
+69,Wild Card,Money
+71,Wild Card,AI
+72,History;Politics,Politics
+73,History;Religion,Religion
+74,AI;Philosophy,AI
+75,Science;Space,Space
+76,History;Philosophy,Pop Culture
+77,Animals;History,Pop Culture;History
+78,History;Money,Politics
+79,History;Religion,Religion
+80,Health;Politics,Politics
+81,Money;Science,Money
+83,Memology,Money
+84,Money;Politics,Politics
+85,History;Religion,Religion
+86,Religion,Pop Culture
+87,Wild Card,Pop Culture
+88,Food;Politics,Food
+94,Animals;Politics,Politics
+96,Science;Space,Science
+97,Life Advice;Religion;Science,Religion
+98,AI;Money,Technology
+99,History;Money,Money
+100,Money;Technology,Money
+101,Money;Sports,Sports
+102,Gaming;Life Advice,Politics
+103,History;Science,History
+104,Health;Life Advice,Money
+105,Politics;Pop Culture,Pop Culture
+106,Memology;Technology,Technology
+107,Pop Culture;Religion,Pop Culture
+108,Money;Technology,Money
+109,History;Sports,Sports
+110,Health;Memology,Wild Card
+111,Life Advice;Politics,Technology
+112,AI;Science,AI
+113,Money;Technology,Money
+114,History;Politics,History
+115,History;Memology,History
+116,Memology;Money,Memology
+117,Gaming;Sports,Gaming
+118,Money;Politics,Politics
+119,Politics;Religion,History
+120,Memology;Pop Culture,Pop Culture
+122,Life Advice;Sports,Sports
+123,Philosophy;Religion,Religion
+124,History;Politics,Politics
+125,Money;Politics,Politics
+126,Life Advice;Pop Culture,AI
+127,Life Advice;Religion,Wild Card
+128,Money;Technology,Money
+129,Money;Technology,Money
+130,Money;Politics,Money
+131,Life Advice;Sports,Sports
+132,Memology;Science,Science
+133,Money;Politics,Money
+134,Politics;Sports,Politics
+135,History;Politics,History
+136,History;Politics,History
+137,Life Advice;Money,Life Advice
+138,History;Politics,History
+139,Money;Technology,Money
+141,Animals;Sports,Sports
+142,Philosophy;Religion,Religion
+143,Science;Sports,Sports
+144,Pop Culture;Sports,Pop Culture
+145,History;Religion,History
+146,Money;Sports,Sports
+148,Life Advice;Science,Science
+149,Money;Politics,Politics
+150,History;Politics,Technology
+151,Money;Technology,Money
+152,Pop Culture;Technology,Memology
+153,Gaming;History,Gaming
+154,Politics;Religion,Politics
+155,Money;Politics,Politics
+156,Life Advice;Sports,Sports
+157,Science;Space,Science
+158,Science;Sports,Memology
+159,History;Science,Science
+160,Memology;Sports,Pop Culture
+161,Life Advice,Technology
+162,Life Advice;Politics,Politics
+163,AI;Technology,Technology
+164,Science;Technology,Pop Culture
+165,Science;Technology,Life Advice
+166,History;Politics,History
+167,Religion;Sports,Sports
+168,Life Advice;Religion,Religion
+169,Money;Politics,Money
+170,Gaming;Technology,Gaming
+171,Life Advice;Philosophy,Philosophy
+172,Religion;Science,Religion
+173,History;Science,Science
+174,Space;Technology,Health
+175,Politics;Science,Politics
+176,Memology;Science,Science
+177,Science;Space,Science
+178,Gaming;Life Advice,Pop Culture
+179,Science;Technology,Technology
+180,Gaming;Memology,Gaming
+181,Science;Space,Space
+183,Religion;Science,Science
+184,Health;Life Advice,Health
+185,Money;Pop Culture,Pop Culture
+186,Memology;Politics,Memology
+187,Money;Politics,Politics
+188,Food;Money,Money
+189,Science;Space,Science
+191,Memology;Politics,Memology
+192,Pop Culture;Technology,Pop Culture
+193,Religion;Space,Religion
+194,AI;Life Advice,AI
+205,History;Life Advice,Religion
+208,Life Advice;Sports,Sports
+209,History;Politics,History
+210,Memology;Politics,Memology
+211,Philosophy;Politics,Politics
+212,Memology;Politics,Politics
+213,Space;Technology,Technology
+214,AI;Science,AI
+215,Pop Culture;Space,Pop Culture
+216,AI;Science,AI
+217,Money;Politics,Politics
+218,Money;Politics,Money
+219,Money;Politics,Politics
+220,Money;Technology,Money
+222,Gaming;Memology,Memology
+223,History;Pop Culture,Pop Culture
+224,AI;Technology,AI
+225,Pop Culture;Sports,Sports
+226,History;Religion;Wild Card,Religion
+227,Politics;Religion;Technology,Politics
+228,Food;Memology;Technology,Memology
+230,Politics;Religion,Politics
+231,Money;Politics,Politics
+233,History;Money,History
+239,Politics;Religion,Religion
+241,Politics;Technology,Memology
+242,Health;Sports,Sports
+243,Sports;Technology,Sports
+244,Politics;Technology,Pop Culture
+245,Politics;Technology,Wild Card
+246,Politics,Religion
+247,History;Politics,History
+248,Technology,Politics
+249,History;Politics,Politics
+250,Politics;Technology,Politics
+252,History;Technology,History
+253,Politics,Religion
+254,History;Politics,History
+255,Technology,Money
+257,Philosophy;Technology,AI

@@ -22,14 +22,23 @@ input.h{width:100%;font:inherit;font-weight:600;background:#09090b;color:#fff;bo
 .tw .t{white-space:pre-wrap;word-break:break-word}.tw .m{max-width:100%;max-height:220px;border-radius:.6rem;margin-top:.35rem;display:block}
 .tops{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}.tops button{padding:.3rem .7rem;font-size:.82rem}.tops button.sug{border-style:dashed}
 .acts{display:flex;flex-wrap:wrap;gap:.45rem}.empty{color:#a1a1aa;text-align:center;padding:2rem}
-.toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#18181b;border:1px solid #a855f7;padding:.6rem 1rem;border-radius:1rem;display:none;z-index:9}`;
+.toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:#18181b;border:1px solid #a855f7;padding:.6rem 1rem;border-radius:1rem;display:none;z-index:9}
+.bv h2{font-size:1rem;margin:1.1rem 0 .4rem;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .7rem}.bv h2 small{color:#a1a1aa;font-weight:400;font-size:.78rem}
+.bh{position:sticky;top:0}.bacts{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 .6rem}
+.bc{display:flex;gap:.6rem;align-items:flex-start;background:#18181b;border:1px solid #27272a;border-radius:.8rem;padding:.55rem .65rem;margin-bottom:.45rem}
+.bc input[type=checkbox]{width:22px;height:22px;flex:0 0 22px;margin-top:.1rem;accent-color:#a855f7}.bc .bd{min-width:0;flex:1}
+.bc .tt{font-weight:600;font-size:.92rem;line-height:1.3;word-break:break-word}.bc .rs{font-size:.82rem;color:#d4d4d8;margin:.2rem 0}
+.bc .sg{font-size:.76rem;color:#fde68a}.chips{display:flex;flex-wrap:wrap;gap:.25rem .35rem;font-size:.72rem;margin-top:.25rem}
+.chips span{border:1px solid #3f3f46;border-radius:999px;padding:0 .45rem;color:#a1a1aa}.chips .sc{color:#fff;border-color:#7e22ce;background:#3b0764}
+.chips .mid{color:#fcd34d;border-color:#a16207}.chips .rb{color:#86efac;border-color:#15803d}
+dialog{background:#18181b;color:#e4e4e7;border:1px solid #a855f7;border-radius:1rem;max-width:min(92vw,420px)}dialog::backdrop{background:#000a}`;
 const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Queue · Grok vs. Humans</title><style>${CSS}${NAV_CSS}</style></head><body>${b}</body></html>`;
 
 const APP = `<header>${navHtml('queue')}<h1>Approval queue</h1>
 <div class="row" id="tabs"></div><div class="stats" id="stats"></div></header><main id="list"><div class="empty">Loading…</div></main><div class="toast" id="toast"></div>
 <script>
-const TABS=[['pending','Pending'],['approved','Approved'],['skipped','Skipped'],['blocked','Never'],['hidden','Hidden']];
-let status=location.hash.slice(1)||'pending',D=null;const $=s=>document.querySelector(s);
+const TABS=[['batches','Batches'],['pending','Pending'],['approved','Approved'],['skipped','Skipped'],['blocked','Never'],['hidden','Hidden']];
+let status=location.hash.slice(1)||'batches',D=null;const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2000);}
 function tabs(){$('#tabs').innerHTML=TABS.map(([k,l])=>'<button data-tab="'+k+'" class="'+(k===status?'on':'')+'">'+l+(D&&D.counts[k]!=null?' ('+D.counts[k]+')':'')+'</button>').join('');}
@@ -42,11 +51,28 @@ function card(p){const on=new Set(p.topics.map(t=>t.topic)),sug=new Set(p.topics
  return '<article class="card" data-id="'+esc(p.id)+'"><div class="meta"><span>#'+esc(p.id)+'</span><span>'+esc(p.source)+'</span><span>X engagement '+esc(p.x_engagement)+'</span><span>'+esc(p.tweets.length)+' posts</span>'+(p.rebuild_state==='queued'?'<span class="rb">'+(p.rebuild_publish?'Approved'+(p.rebuild_feature?' + featured':'')+' · rebuilding full thread…':'↻ rebuild queued…')+(p.rebuild_note?' ('+esc(p.rebuild_note)+')':'')+'</span>':'')+(p.rebuild_state==='failed'?'<span class="mid">⚠ rebuild failed'+(p.rebuild_note?': '+esc(p.rebuild_note):'')+'</span>':'')+(p.mid_thread&&p.rebuild_state!=='queued'?'<span class="mid" title="The first stored post is not the root of the conversation">⤴ starts mid-thread</span>':'')+(p.low_priority?'<span style="color:#fda4af">⚠ explicit?</span>':'')+(p.featured?'<span>★ featured</span>':'')+(p.suggested_by_handle?'<span style="color:#fde68a">💡 suggested by @'+esc(p.suggested_by_handle)+'</span>':'')+(p.hidden_reason?'<span>hidden: '+esc(p.hidden_reason)+'</span>':'')+'<a href="https://x.com/i/status/'+esc(p.grok_tweet_id)+'" target="_blank" rel="noopener">open on X</a></div>'
  +'<input class="h" maxlength="120" value="'+esc(p.headline||'')+'" placeholder="Headline">'+p.tweets.map(tw).join('')
  +'<div class="tops">'+D.topics.map(t=>'<button data-t="'+esc(t)+'" class="'+(on.has(t)?'on ':'')+(sug.has(t)?'sug':'')+'">'+esc(t)+'</button>').join('')+'</div><div class="acts">'+A+'</div></article>';}
-async function load(){tabs();const r=await fetch('/api/admin/queue?status='+status,{cache:'no-store'});D=await r.json().catch(()=>null);
+async function load(){tabs();if(status==='batches')return loadBatches();const r=await fetch('/api/admin/queue?status='+status,{cache:'no-store'});D=await r.json().catch(()=>null);
  if(!r.ok){$('#list').innerHTML='<div class="empty">Error '+r.status+'</div>';return;}tabs();
  const s=D.spend;$('#stats').textContent='X spend (est.) today $'+(s.today||0).toFixed(2)+' / $'+s.caps.day+(s.caps.boost_until?' (boost until '+s.caps.boost_until+')':'')+' · month $'+(s.month||0).toFixed(2)+' / $'+s.caps.month+(s.last_run?' · last fetch '+new Date(s.last_run*1000).toLocaleString():'')+' · blocked authors '+D.blocked.length;
  $('#list').innerHTML=D.posts.length?D.posts.map(card).join(''):'<div class="empty">Nothing here.</div>';}
-document.addEventListener('click',async e=>{const tb=e.target.closest('[data-tab]');if(tb){status=tb.dataset.tab;location.hash=status;return load();}
+
+const BATCHES=[['strong','Strong picks: approve all'],['maybe','Maybe: skim'],['reject','Recommend reject'],['none','Not reviewed']];let B=null;
+async function loadBatches(){const r=await fetch('/api/admin/queue?view=batch',{cache:'no-store'});B=await r.json().catch(()=>null);
+ if(!r.ok||!B){$('#list').innerHTML='<div class="empty">Error '+r.status+'</div>';return;}
+ const s=B.spend;$('#stats').textContent='Pending '+B.posts.length+' · X spend (est.) today $'+(s.today||0).toFixed(2)+' / $'+s.caps.day+' · month $'+(s.month||0).toFixed(2)+' / $'+s.caps.month+' · rebuild ≤ $'+B.rebuild_max_usd.toFixed(2)+'/post';
+ $('#list').innerHTML='<div class="bv">'+BATCHES.map(([k,l])=>{const ps=B.posts.filter(p=>(p.review_batch||'none')===k);if(!ps.length)return '';const m=ps.filter(p=>p.mid_thread).length;
+  return '<section data-batch="'+k+'"><h2>'+esc(l)+' <small>'+ps.length+' posts · '+m+' mid-thread · est. rebuild ≤ $'+(m*B.rebuild_max_usd).toFixed(2)+'</small></h2><div class="bacts"><label class="sm"><input type="checkbox" data-all="'+k+'"> Select all in batch</label><button class="ok sm" data-bulk="approve" data-b="'+k+'">✓ Approve selected</button><button class="danger sm" data-bulk="skip" data-b="'+k+'">✕ Reject selected</button></div>'+ps.map(bcard).join('')+'</section>';}).join('')+'</div>';}
+function bcard(p){return '<label class="bc" data-id="'+p.id+'"><input type="checkbox" data-sel="'+p.id+'"'+(p.rebuild_state==='queued'?' disabled':'')+'><div class="bd"><div class="tt">#'+p.id+' '+esc(p.headline||'(no title)')+'</div>'+(p.review_reason?'<div class="rs">'+esc(p.review_reason)+'</div>':'')+(p.review_title?'<div class="sg">Suggested title: '+esc(p.review_title)+'</div>':'')
+ +'<div class="chips">'+(p.review_score!=null?'<span class="sc">'+p.review_score+'/5</span>':'')+p.topics.map(t=>'<span>'+esc(t)+'</span>').join('')+(p.mid_thread&&p.rebuild_state!=='queued'?'<span class="mid">⤴ mid-thread</span>':'')+(p.rebuild_state==='queued'?'<span class="rb">↻ rebuilding</span>':'')+'<span>'+p.n_tweets+' posts</span><a href="https://x.com/i/status/'+esc(p.grok_tweet_id)+'" target="_blank" rel="noopener">X</a></div></div></label>';}
+async function bulk(action,k){const sec=document.querySelector('[data-batch="'+k+'"]');const ids=[...sec.querySelectorAll('[data-sel]:checked')].map(x=>Number(x.dataset.sel));if(!ids.length)return toast('Nothing selected');
+ const ps=B.posts.filter(p=>ids.includes(p.id)),m=ps.filter(p=>p.mid_thread).length,cost=m*B.rebuild_max_usd,left=Math.max(0,B.spend.caps.day-(B.spend.today||0));
+ const msg=action==='approve'?'Approve '+ids.length+' posts?\\n\\n'+m+' start mid-thread and will be rebuilt from the root before publishing (paid X API).\\nEstimated rebuild cost: up to $'+cost.toFixed(2)+' (≤ $'+B.rebuild_max_usd.toFixed(2)+' each).\\nDaily cap left today: $'+left.toFixed(2)+'. Rebuilds over the cap wait for the daily reset.\\n'+(ids.length-m)+' publish immediately.':'Reject (skip) '+ids.length+' posts? They move to Skipped; no X API cost.';
+ if(!confirm(msg))return;let done=0,reb=0,fail=0;
+ for(let i=0;i<ids.length;i+=10){const r=await fetch('/api/admin/bulk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,ids:ids.slice(i,i+10)})});const d=await r.json().catch(()=>({}));
+  if(!r.ok){fail+=Math.min(10,ids.length-i);continue;}for(const x of d.results||[]){if(x.error)fail++;else if(x.rebuilding)reb++;else done++;}toast((action==='approve'?'Approving ':'Rejecting ')+(i+10<ids.length?i+10:ids.length)+'/'+ids.length+'…');}
+ toast((action==='approve'?'Approved '+done+(reb?' · '+reb+' rebuilding first':''):'Rejected '+done)+(fail?' · '+fail+' failed':''));loadBatches();}
+document.addEventListener('change',e=>{const a=e.target.closest('[data-all]');if(a){document.querySelectorAll('[data-batch="'+a.dataset.all+'"] [data-sel]:not(:disabled)').forEach(x=>x.checked=a.checked);}});
+document.addEventListener('click',async e=>{const bb=e.target.closest('[data-bulk]');if(bb){e.preventDefault();return bulk(bb.dataset.bulk,bb.dataset.b);}const tb=e.target.closest('[data-tab]');if(tb){status=tb.dataset.tab;location.hash=status;return load();}
  const t=e.target.closest('[data-t]');if(t){t.classList.toggle('on');return;}
  const b=e.target.closest('[data-a]');if(!b)return;const c=b.closest('.card'),a=b.dataset.a,p=D.posts.find(x=>String(x.id)===c.dataset.id);
  if(a==='never'&&!confirm('Never show posts from @'+p.human_handle+'? Their pending posts are removed from the queue.'))return;
