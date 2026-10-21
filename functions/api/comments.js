@@ -11,9 +11,10 @@ function shape(r, react, viewer) {
     body: r.body,
     created_at: r.created_at,
     hidden: r.status !== 'visible',
-    user: { handle: r.handle, name: r.name, avatar: r.avatar_url },
+    deleted: !!r.deleted_at || !r.x_id,
+    user: r.x_id && r.handle ? { handle: r.handle, name: r.name, avatar: r.avatar_url } : null,
     likes: react.likes, dislikes: react.dislikes, mine: react.mine,
-    own: !!viewer && viewer.x_id === r.x_id,
+    own: !!viewer && !!r.x_id && viewer.x_id === r.x_id,
   };
 }
 
@@ -30,8 +31,8 @@ export async function onRequestGet({ request, env }) {
 
   const viewer = await getSessionUser(env, request);
   const { results } = await env.DB.prepare(
-    `SELECT c.id, c.x_id, c.body, c.status, c.created_at, u.handle, u.name, u.avatar_url
-       FROM comments c JOIN users u ON u.x_id = c.x_id
+    `SELECT c.id, c.x_id, c.body, c.status, c.created_at, c.deleted_at, u.handle, u.name, u.avatar_url
+       FROM comments c LEFT JOIN users u ON u.x_id = c.x_id
       WHERE c.item_type = ?1 AND c.item_id = ?2 AND (c.status = 'visible' OR c.x_id = ?3)
       ORDER BY c.created_at ASC, c.id ASC LIMIT 300`
   ).bind(type, id, viewer ? viewer.x_id : '').all();

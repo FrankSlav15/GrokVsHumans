@@ -15,7 +15,7 @@ export async function onRequestGet({ request, env }) {
   if (denied) return denied;
   const want = new URL(request.url).searchParams.get('status') || 'all';
   const { results } = await env.DB.prepare(`SELECT f.*, u.handle, p.headline, p.status AS post_status, s.url AS suggestion_url, s.state AS suggestion_state
-      FROM feature_requests f JOIN users u ON u.x_id = f.x_id LEFT JOIN posts p ON p.id = f.post_id LEFT JOIN suggestions s ON s.id = f.suggestion_id
+      FROM feature_requests f LEFT JOIN users u ON u.x_id = f.x_id LEFT JOIN posts p ON p.id = f.post_id LEFT JOIN suggestions s ON s.id = f.suggestion_id
       ORDER BY f.id DESC LIMIT 300`).all();
   const t = now(), rows = results.map(f => ({ ...f, status: statusOf(f, t) }));
   const counts = {}; for (const r of rows) counts[r.status] = (counts[r.status] || 0) + 1;

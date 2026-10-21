@@ -51,6 +51,7 @@
   }
 
   function commentHtml(c) {
+    if (c.deleted || !c.user) return `<li class="cmt cmt--deleted" data-cid="${c.id}"><span class="cmt__avatar cmt__avatar--none"></span><div class="cmt__main"><div class="cmt__head"><em>[deleted account]</em> <span class="cmt__time">${ago(c.created_at)}</span></div><p class="cmt__body"><em>[deleted]</em></p></div></li>`;
     const avatar = /^https:\/\//.test(c.user.avatar || '') ? `<img class="cmt__avatar" src="${esc(c.user.avatar)}" alt="" referrerpolicy="no-referrer" loading="lazy">` : '<span class="cmt__avatar cmt__avatar--none"></span>';
     return `<li class="cmt ${c.hidden ? 'cmt--hidden' : ''}" data-cid="${c.id}">
       ${avatar}

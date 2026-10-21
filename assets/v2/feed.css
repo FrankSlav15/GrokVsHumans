@@ -283,3 +283,14 @@ a.me{text-decoration:none}
 .tgl input{width:20px;height:20px;margin:.1rem 0 0;accent-color:#a855f7;flex:0 0 auto}.tgl span{display:flex;flex-direction:column;gap:.15rem;font-size:.88rem}
 .tgl small{color:#a1a1aa;font-size:.78rem}
 @media (max-width:420px){.lang-btn__c{display:none}.lang-btn{padding:0;width:44px}}
+/* account sheet: sign out / delete my account */
+.acct__body{padding:1rem;display:flex;flex-direction:column;gap:.75rem;overflow:auto}
+.acct__btn{border:1px solid #3f3f46;background:#27272a;color:#fafafa;border-radius:.7rem;padding:.7rem 1rem;font-weight:600;font-size:.95rem;cursor:pointer}
+.acct__btn--danger{background:#7f1d1d;border-color:#b91c1c;color:#fff}
+.acct__btn:disabled{opacity:.45;cursor:not-allowed}
+.acct__f{display:flex;flex-direction:column;gap:.6rem;font-size:.92rem;line-height:1.45;color:#d4d4d8}
+.acct__f input{background:#09090b;border:1px solid #52525b;border-radius:.6rem;padding:.65rem .75rem;color:#fafafa;font-size:1rem}
+.acct__row{display:flex;gap:.6rem;justify-content:flex-end;flex-wrap:wrap}
+.acct__err{color:#fca5a5;margin:0}
+.acct__done{margin:0;color:#d4d4d8}
+.cmt--deleted .cmt__body,.cmt--deleted .cmt__head{color:#71717a}

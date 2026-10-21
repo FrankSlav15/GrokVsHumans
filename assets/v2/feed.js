@@ -26,7 +26,38 @@
     if (u?.admin) fetch('/api/admin/counts', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => { const n = d ? d.queue + d.moderation + d.featured : 0, b = $('#qn');
       if (b && n > 0) { b.textContent = n > 99 ? '99+' : n; b.hidden = false; b.parentNode.setAttribute('aria-label', `Admin: ${n} items need attention`); } }).catch(() => {});
     $('#signin') && ($('#signin').onclick = () => signIn());
-    $('#me') && ($('#me').onclick = async () => { if (!confirm('Sign out?')) return; await post('/auth/logout', {}); S.user = null; renderAuth(); load(); });
+    $('#me') && ($('#me').onclick = () => accountMenu());
+  }
+  // ---- account menu: sign out / delete my account ----
+  function accountMenu() {
+    const u = S.user; if (!u) return;
+    const el = $('#sheet'); el.hidden = false; document.body.style.overflow = 'hidden';
+    el.innerHTML = `<div class="sheet__bg" data-ac="close"></div><div class="sheet__panel acct" role="dialog" aria-modal="true" aria-labelledby="acct-t">
+      <div class="sheet__head"><strong id="acct-t">Your account</strong><span>@${esc(u.handle)}</span><button data-ac="close" aria-label="Close">✕</button></div>
+      <div class="acct__body" id="acct-b"><button class="acct__btn" data-ac="signout">Sign out</button>
+      <button class="acct__btn acct__btn--danger" data-ac="ask" id="acct-del">Delete my account</button></div></div>`;
+    const close = () => { el.hidden = true; el.innerHTML = ''; document.body.style.overflow = ''; };
+    el.onclick = async e => {
+      const a = e.target.closest('[data-ac]')?.dataset.ac;
+      if (a === 'close') close();
+      else if (a === 'signout') { await post('/auth/logout', {}); S.user = null; close(); renderAuth(); load(); }
+      else if (a === 'ask') {
+        $('#acct-t').textContent = 'Delete your account?';
+        $('#acct-b').innerHTML = `<form id="acct-f" class="acct__f"><p>This permanently deletes your account <b>@${esc(u.handle)}</b>, your votes, likes, reports, suggestions and sessions. Your comments stay as <em>[deleted]</em> without your name so threads still make sense. Ko-fi payment records are kept for bookkeeping, without your account ID. This cannot be undone.</p>
+          <label for="acct-c">Type <b>@${esc(u.handle)}</b> or <b>DELETE</b> to confirm</label>
+          <input id="acct-c" name="c" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+          <p class="acct__err" id="acct-e" role="alert" hidden></p>
+          <div class="acct__row"><button type="button" class="acct__btn" data-ac="close">Cancel</button><button type="submit" class="acct__btn acct__btn--danger" id="acct-go" disabled>Delete my account</button></div></form>`;
+        const inp = $('#acct-c'), go = $('#acct-go'), ok = v => { v = v.trim().replace(/^@/, ''); return v === 'DELETE' || v.toLowerCase() === u.handle.toLowerCase(); };
+        inp.oninput = () => { go.disabled = !ok(inp.value); }; inp.focus();
+        $('#acct-f').onsubmit = async ev => { ev.preventDefault(); if (!ok(inp.value)) return; go.disabled = true; go.textContent = 'Deleting…';
+          const r = await post('/api/account/delete', { confirm: inp.value.trim() }).catch(() => ({ ok: false, data: {} }));
+          if (!r.ok) { const er = $('#acct-e'); er.hidden = false; er.textContent = 'Could not delete your account (' + (r.data?.error || 'network error') + '). Please try again.'; go.disabled = false; go.textContent = 'Delete my account'; return; }
+          S.user = null; renderAuth(); load();
+          $('#acct-t').textContent = 'Account deleted';
+          $('#acct-b').innerHTML = '<p class="acct__done" role="status">Your account and personal data have been deleted and you are signed out.</p><button class="acct__btn" data-ac="close">Close</button>'; };
+      }
+    };
   }
   const TOPIC = { All: ['✨', 270], Politics: ['🏛️', 0], Technology: ['💻', 200], Memology: ['🐸', 120], Sports: ['⚽', 30], 'Pop Culture': ['🎬', 320], 'Life Advice': ['🧭', 170],
     History: ['📜', 40], Science: ['🔬', 190], Money: ['💸', 140], Health: ['🩺', 350], Religion: ['🕊️', 50], Philosophy: ['🤔', 260], AI: ['🤖', 280], Space: ['🚀', 230],
@@ -260,6 +291,7 @@
   // ---- comments sheet ----
   function cmtHtml(c) {
     const k = 'comment|' + c.id, tr = TR.get(k);
+    if (c.deleted || !c.user) return `<li class="cmt cmt--deleted" data-cid="${c.id}"><span class="cmt__av" aria-hidden="true"></span><div class="cmt__main"><div class="cmt__head"><em>[deleted account]</em> · ${ago(c.created_at)}</div><p class="cmt__body"><em>[deleted]</em></p></div></li>`;
     return `<li class="cmt" data-cid="${c.id}" data-trk="${esc(k)}"><img class="cmt__av" src="${esc(c.user.avatar)}" alt="" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">
       <div class="cmt__main"><div class="cmt__head"><a href="https://x.com/${encodeURIComponent(c.user.handle)}" target="_blank" rel="noopener noreferrer">@${esc(c.user.handle)}</a> · ${ago(c.created_at)}${c.hidden ? ' · <em>hidden</em>' : ''}</div>
       <p class="cmt__body" data-trt>${linkify(tr && tr.on ? tr.text : c.body)}</p>${c.hidden ? '' : trBar(k, c.body)}

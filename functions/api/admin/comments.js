@@ -27,7 +27,7 @@ export async function onRequestGet({ request, env }) {
     `SELECT c.id, c.item_type, c.item_id, c.body, c.status, c.hidden_by, c.report_count, c.created_at, c.mod_state, c.mod_category, c.mod_reason, c.mod_reviewed,
             u.x_id, u.handle, u.name, u.banned,
             (SELECT GROUP_CONCAT(COALESCE(r.reason, ''), ' | ') FROM reports r WHERE r.comment_id = c.id) AS reasons
-       FROM comments c JOIN users u ON u.x_id = c.x_id
+       FROM comments c LEFT JOIN users u ON u.x_id = c.x_id
       WHERE ${where} LIMIT 100`).all();
   const counts = await env.DB.prepare(
     `SELECT (SELECT COUNT(*) FROM comments WHERE report_count > 0) AS reported,
