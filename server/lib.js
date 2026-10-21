@@ -162,7 +162,7 @@ export async function itemExists(env, request, type, id) {
 }
 
 export function isAdmin(env, xId) {
-  return String(env.ADMIN_X_IDS || '').split(',').map(s => s.trim()).filter(Boolean).includes(String(xId));
+  return String(env.ADMIN_X_IDS || '').split(',').map(s => s.trim()).filter(s => /^[0-9]{1,25}$/.test(s)).includes(String(xId));   // numeric X ids only, never handles
 }
 
 export function publicUser(env, u) {
