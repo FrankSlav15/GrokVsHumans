@@ -1,6 +1,6 @@
 // GET  /api/admin/features?status=all|pending_payment|paid|awaiting_approval|active|expired|refund_needed   (admins only)
 // POST /api/admin/features {id, action: approve | reject | refunded | expire | cancel, note?}
-import { json, now, readJsonPost, requireAdmin } from '../../../server/lib.js';
+import { json, now, readJsonPost, requireAdmin, auditStmt } from '../../../server/lib.js';
 
 // Display status: "paid" = money in but the thread is not on the site yet (suggestion still being fetched/approved);
 // "awaiting_approval" = paid and the post exists, waiting for the owner to approve the feature.
@@ -25,7 +25,7 @@ export async function onRequestGet({ request, env }) {
 export async function onRequestPost({ request, env }) {
   const [body, bad] = await readJsonPost(request);
   if (bad) return bad;
-  const [, denied] = await requireAdmin(env, request);
+  const [admin, denied] = await requireAdmin(env, request);
   if (denied) return denied;
   const id = Number(body?.id), action = String(body?.action || ''), t = now();
   const f = Number.isInteger(id) ? await env.DB.prepare('SELECT * FROM feature_requests WHERE id = ?1').bind(id).first() : null;
@@ -49,5 +49,6 @@ export async function onRequestPost({ request, env }) {
     if (f.state !== 'pending_payment') return json({ error: 'bad_state' }, 400);
     await DB.prepare("UPDATE feature_requests SET state = 'cancelled', updated_at = ?2 WHERE id = ?1").bind(id, t).run();
   } else return json({ error: 'bad_action' }, 400);
+  await auditStmt(env, admin.x_id, 'feature.' + action, 'feature:' + id, typeof body?.note === 'string' ? { note: body.note.slice(0, 200) } : null).run();
   return json({ ok: true, id, action });
 }

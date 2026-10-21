@@ -6,10 +6,10 @@ import { applyPostAction } from '../../../server/postaction.js';
 export async function onRequestPost({ request, env }) {
   const [body, bad] = await readJsonPost(request);
   if (bad) return bad;
-  const [, denied] = await requireAdmin(env, request);
+  const [admin, denied] = await requireAdmin(env, request);
   if (denied) return denied;
   const id = Number(body?.id), action = String(body?.action || '');
   if (!Number.isInteger(id) || id <= 0) return json({ error: 'bad_request' }, 400);
-  const r = await applyPostAction(env, id, action, body);
+  const r = await applyPostAction(env, id, action, body, admin.x_id, 'single');
   return json(r.body, r.status);
 }

@@ -31,6 +31,7 @@ input.h{width:100%;font:inherit;font-weight:600;background:#09090b;color:#fff;bo
 .bc .sg{font-size:.76rem;color:#fde68a}.chips{display:flex;flex-wrap:wrap;gap:.25rem .35rem;font-size:.72rem;margin-top:.25rem}
 .chips span{border:1px solid #3f3f46;border-radius:999px;padding:0 .45rem;color:#a1a1aa}.chips .sc{color:#fff;border-color:#7e22ce;background:#3b0764}
 .chips .mid{color:#fcd34d;border-color:#a16207}.chips .rb{color:#86efac;border-color:#15803d}
+".bc.fail{border-color:#9f1239}.bc .fe{color:#fda4af;font-size:.78rem;margin-top:.2rem}.failbox{background:#2a0a12;border:1px solid #9f1239;color:#fecdd3;border-radius:.8rem;padding:.55rem .7rem;margin:.6rem 0;font-size:.85rem}
 dialog{background:#18181b;color:#e4e4e7;border:1px solid #a855f7;border-radius:1rem;max-width:min(92vw,420px)}dialog::backdrop{background:#000a}`;
 const page = b => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Queue · Grok vs. Humans</title><style>${CSS}${NAV_CSS}</style></head><body>${b}</body></html>`;
 
@@ -67,10 +68,12 @@ function bcard(p){return '<label class="bc" data-id="'+p.id+'"><input type="chec
 async function bulk(action,k){const sec=document.querySelector('[data-batch="'+k+'"]');const ids=[...sec.querySelectorAll('[data-sel]:checked')].map(x=>Number(x.dataset.sel));if(!ids.length)return toast('Nothing selected');
  const ps=B.posts.filter(p=>ids.includes(p.id)),m=ps.filter(p=>p.mid_thread).length,cost=m*B.rebuild_max_usd,left=Math.max(0,B.spend.caps.day-(B.spend.today||0));
  const msg=action==='approve'?'Approve '+ids.length+' posts?\\n\\n'+m+' start mid-thread and will be rebuilt from the root before publishing (paid X API).\\nEstimated rebuild cost: up to $'+cost.toFixed(2)+' (≤ $'+B.rebuild_max_usd.toFixed(2)+' each).\\nDaily cap left today: $'+left.toFixed(2)+'. Rebuilds over the cap wait for the daily reset.\\n'+(ids.length-m)+' publish immediately.':'Reject (skip) '+ids.length+' posts? They move to Skipped; no X API cost.';
- if(!confirm(msg))return;let done=0,reb=0,fail=0;
+ if(!confirm(msg))return;let done=0,reb=0;const F=[];
  for(let i=0;i<ids.length;i+=10){const r=await fetch('/api/admin/bulk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,ids:ids.slice(i,i+10)})});const d=await r.json().catch(()=>({}));
-  if(!r.ok){fail+=Math.min(10,ids.length-i);continue;}for(const x of d.results||[]){if(x.error)fail++;else if(x.rebuilding)reb++;else done++;}toast((action==='approve'?'Approving ':'Rejecting ')+(i+10<ids.length?i+10:ids.length)+'/'+ids.length+'…');}
- toast((action==='approve'?'Approved '+done+(reb?' · '+reb+' rebuilding first':''):'Rejected '+done)+(fail?' · '+fail+' failed':''));loadBatches();}
+  const chunk=ids.slice(i,i+10);if(!r.ok||!Array.isArray(d.results)){for(const id of chunk)F.push({id,error:d.error||('HTTP '+r.status)});continue;}for(const x of d.results){if(!x.ok||x.error)F.push(x);else if(x.rebuilding)reb++;else done++;}toast((action==='approve'?'Approving ':'Rejecting ')+(i+10<ids.length?i+10:ids.length)+'/'+ids.length+'…');}
+ toast((action==='approve'?'Approved '+done+(reb?' · '+reb+' rebuilding first':''):'Rejected '+done)+(F.length?' · '+F.length+' failed':''));await loadBatches();showFails(F);}
+function showFails(F){if(!F.length)return;for(const f of F){const c=document.querySelector('.bc[data-id="'+f.id+'"]');if(c){c.classList.add('fail');const d=document.createElement('div');d.className='fe';d.textContent='✕ failed: '+(f.error||'error')+(f.message?' ('+f.message+')':'');c.querySelector('.bd').appendChild(d);}}
+ const box=document.createElement('div');box.className='failbox';box.innerHTML='<b>'+F.length+' failed</b> (left unchanged, safe to retry): '+F.map(f=>'#'+esc(f.id)+' '+esc(f.error||'error')).join(', ');document.querySelector('.bv').prepend(box);}
 document.addEventListener('change',e=>{const a=e.target.closest('[data-all]');if(a){document.querySelectorAll('[data-batch="'+a.dataset.all+'"] [data-sel]:not(:disabled)').forEach(x=>x.checked=a.checked);}});
 document.addEventListener('click',async e=>{const bb=e.target.closest('[data-bulk]');if(bb){e.preventDefault();return bulk(bb.dataset.bulk,bb.dataset.b);}const tb=e.target.closest('[data-tab]');if(tb){status=tb.dataset.tab;location.hash=status;return load();}
  const t=e.target.closest('[data-t]');if(t){t.classList.toggle('on');return;}

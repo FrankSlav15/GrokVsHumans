@@ -259,3 +259,9 @@ export async function voteTotals(env, itemId = null) {
   }
   return totals;
 }
+
+// Admin audit log (admin_log, migration 0014). Returns a prepared statement to put in the same DB.batch as the change.
+export function auditStmt(env, adminXId, action, target, detail) {
+  return env.DB.prepare('INSERT INTO admin_log (at, admin_x_id, action, target, detail) VALUES (unixepoch(), ?1, ?2, ?3, ?4)')
+    .bind(String(adminXId || ''), String(action), target == null ? null : String(target), detail == null ? null : JSON.stringify(detail).slice(0, 2000));
+}

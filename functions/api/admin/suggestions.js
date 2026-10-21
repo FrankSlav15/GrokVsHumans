@@ -1,6 +1,6 @@
 // GET  /api/admin/suggestions?state=new|queued|fetched|duplicate|failed|rejected   (admins only)
 // POST /api/admin/suggestions {id, action: approve (queue for the fetch worker) | reject | retry}
-import { json, now, readJsonPost, requireAdmin } from '../../../server/lib.js';
+import { json, now, readJsonPost, requireAdmin, auditStmt } from '../../../server/lib.js';
 const STATES = ['new', 'queued', 'fetched', 'duplicate', 'failed', 'rejected'];
 
 export async function onRequestGet({ request, env }) {
@@ -20,7 +20,7 @@ export async function onRequestGet({ request, env }) {
 export async function onRequestPost({ request, env }) {
   const [body, bad] = await readJsonPost(request);
   if (bad) return bad;
-  const [, denied] = await requireAdmin(env, request);
+  const [admin, denied] = await requireAdmin(env, request);
   if (denied) return denied;
   const id = Number(body?.id), action = String(body?.action || '');
   const s = Number.isInteger(id) ? await env.DB.prepare('SELECT * FROM suggestions WHERE id = ?1').bind(id).first() : null;
@@ -38,5 +38,6 @@ export async function onRequestPost({ request, env }) {
         WHERE suggestion_id = ?1 AND state IN ('pending_payment','paid')`).bind(id, t),
     ]);
   } else return json({ error: 'bad_action' }, 400);
+  await auditStmt(env, admin.x_id, 'suggestion.' + action, 'suggestion:' + id, typeof body?.note === 'string' ? { note: body.note.slice(0, 200) } : null).run();
   return json({ ok: true, id, action });
 }

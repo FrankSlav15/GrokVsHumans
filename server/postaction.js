@@ -1,9 +1,9 @@
 // Shared approve/skip/... logic for POST /api/admin/post and the bulk batch actions (/api/admin/bulk).
 // approve on a mid-thread pending post queues a gvh-fetch rebuild (cap-aware, publishes when done) instead of publishing.
-import { now } from './lib.js';
+import { now, auditStmt } from './lib.js';
 import { TOPICS } from './v2.js';
 
-export async function applyPostAction(env, id, action, body = {}) {
+export async function applyPostAction(env, id, action, body = {}, admin = null, via = 'single') {
   const p = await env.DB.prepare('SELECT * FROM posts WHERE id = ?1').bind(id).first();
   if (!p) return { status: 404, body: { error: 'not_found' } };
   const t = now(), DB = env.DB, st = [];
@@ -20,6 +20,7 @@ export async function applyPostAction(env, id, action, body = {}) {
   // Free check: the stored chain does not open on the conversation root -> rebuild before publishing.
   const midThread = async () => !!p.conversation_id && (await DB.prepare('SELECT tweet_id FROM post_tweets WHERE post_id = ?1 AND pos = 0').bind(id).first())?.tweet_id !== p.conversation_id;
   if (p.status === 'pending' && (action === 'approve' || action === 'feature') && body?.force !== true && p.rebuild_state !== 'failed' && await midThread()) {
+    st.push(auditStmt(env, admin, 'post.' + action, 'post:' + id, { via, rebuilding: true, headline: body?.headline, topics: body?.topics }));
     st.push(DB.prepare("UPDATE posts SET rebuild_state='queued', rebuild_publish=1, rebuild_feature=?2, rebuild_note=NULL, rebuild_at=?3 WHERE id=?1").bind(id, action === 'feature' ? 1 : 0, t));
     await DB.batch(st);
     return { status: 200, body: { ok: true, id, action, rebuilding: true } };
@@ -45,6 +46,7 @@ export async function applyPostAction(env, id, action, body = {}) {
     case 'headline': case 'topics': break;
     default: return { status: 400, body: { error: 'bad_action' } };
   }
-  if (st.length) await DB.batch(st);
+  st.push(auditStmt(env, admin, 'post.' + action, 'post:' + id, { via, from: p.status, headline: body?.headline, topics: body?.topics, handle: action === 'never' || action === 'unblock' ? (body?.handle || p.human_handle) : undefined }));
+  await DB.batch(st);
   return { status: 200, body: { ok: true, id, action } };
 }
