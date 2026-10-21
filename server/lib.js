@@ -31,9 +31,8 @@ export const OAUTH_HOSTS = new Set([
   'grokvshumans.pages.dev',
   'grokvshumans.com',
   'www.grokvshumans.com',
-  'v2-feed.grokvshumans.pages.dev',   // v2 preview: works only once this callback is registered in the X app
 ]);
-export const CANONICAL_HOST = 'grokvshumans.pages.dev';
+export const CANONICAL_HOST = 'grokvshumans.com';
 
 export const now = () => Math.floor(Date.now() / 1000);
 
