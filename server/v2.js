@@ -58,11 +58,19 @@ export function turnText(text, media) {
   const s = cleanText(text);
   return media?.length && /^(@\w+\s*)*$/.test(s) ? '' : s;
 }
+// Leading reply-chain handles are dropped, except a final @grok that reads as part of the sentence
+// ("@JaguarGator9NFL @grok is the Brewers' ..." -> "@grok is the Brewers' ..."): it must be the last
+// leading handle and be followed by a lowercase word. "@grok @bob That is wild" -> "That is wild".
+export function stripLeadingMentions(s) {
+  const m = s.match(/^(?:@\w+\s*)+/); if (!m) return s;
+  const rest = s.slice(m[0].length), handles = m[0].trim().split(/\s+/);
+  return /^@grok$/i.test(handles[handles.length - 1]) && /^\p{Ll}/u.test(rest) ? handles[handles.length - 1] + ' ' + rest : rest;
+}
 export function cleanText(text, range) {
   let s = text;
   if (Array.isArray(range) && range[0] > 0) s = [...s].slice(range[0]).join('');
   const noLink = s.replace(/(\s*https:\/\/t\.co\/\w+)+$/, '');
-  s = noLink.replace(/^(@\w+\s*)+/, '');
+  s = stripLeadingMentions(noLink);
   if (!s.trim()) s = noLink;   // mentions-only reply: keep the mentions rather than an empty turn
   return s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
 }
