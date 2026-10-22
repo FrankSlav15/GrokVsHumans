@@ -22,6 +22,7 @@ DISCOVER_PER_RUN = "50"        # recent-search results per scheduled discovery r
 MIN_ENGAGEMENT = "0"           # engagement on X is near zero for almost all Grok threads; the admin queue decides
 # Humans replying to Grok = multi-turn exchanges (anchored on the Grok post they answered). Tested 2026-10-19: 80/98 usable.
 DISCOVER_QUERY = "to:grok -from:grok is:reply -is:retweet lang:en"
+LEARN_QUERY = "1"              # 1 = the 23:00 UTC discovery adds learned OR-terms (docs/fetch-learning.md); 0 = off
 
 [[d1_databases]]
 binding = "DB"

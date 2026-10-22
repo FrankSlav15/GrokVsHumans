@@ -1,5 +1,6 @@
 import { WorkerEntrypoint } from 'cloudflare:workers';
 import { digest, chicagoHour } from './digest.js';
+import { buildProfile, loadProfile, likeness, queryTerms } from './learn.js';
 import { rebuildConfig, parseStatusUrl } from '../../../server/config.js';
 // gvh-fetch: discovers @grok reply threads on X, rebuilds the chain, stores them as *pending*
 // posts for the /admin/queue. Nothing is public until an admin approves it.
@@ -98,6 +99,7 @@ const eng = m => (m?.like_count || 0) + (m?.retweet_count || 0) + (m?.reply_coun
 // Stage 1: paid recent search for @grok replies -> fetch_candidates.
 async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = null, query = null, endHoursAgo = 48, job = null } = {}) {
   let token = start, added = 0, seen = 0; const engs = []; let noParent = 0;
+  const profile = await loadProfile(env);   // learned from manual adds / approvals; only affects ordering
   for (let i = 0; i < pages; i++) {
     const params = { query: query || 'from:grok is:reply -is:retweet lang:en', max_results: String(Math.min(100, Math.max(10, perPage))), sort_order: 'relevancy', 'tweet.fields': TWEET_FIELDS };
     if (token) params.next_token = token;
@@ -117,7 +119,7 @@ async function discover(env, b, { pages = 1, perPage = 50, minEng = 5, start = n
         if (t.in_reply_to_user_id !== GROK_ID || cleanText(t.text).length < 40) continue;
         anchor = parent; parent = null; e += 1;
       }
-      t._anchor = anchor; t._eng = score(t, e);
+      t._anchor = anchor; t._eng = score(t, e) + likeness(profile, t.note_tweet?.text || t.text || '', t.context_annotations || [], { multiTurn: t.author_id !== GROK_ID });
       stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO fetch_candidates (grok_tweet_id, conversation_id, human_x_id, payload, engagement, state, created_at)
         SELECT ?1, ?2, ?3, ?4, ?5, ?7, ?6 WHERE NOT EXISTS (SELECT 1 FROM posts WHERE grok_tweet_id = ?1 OR conversation_id = ?2)`)
         .bind(t._anchor, t.conversation_id, t.author_id === GROK_ID ? (t.in_reply_to_user_id || null) : t.author_id, JSON.stringify({ parent, reply_id: t.author_id === GROK_ID ? null : t.id, replier_id: t.author_id === GROK_ID ? null : t.author_id, annotations: t.context_annotations || [], created_at: t.created_at, text: t.text, ...(job ? { job, source: 'manual' } : {}) }), t._eng, now(), job ? 'job' : 'new'));
@@ -357,8 +359,22 @@ async function rebuildPost(env, b, postId, { search = true } = {}) {
   return 'rebuilt:' + old.length + '->' + r.tweets.length + (r.rootOk ? '' : ':root-gap') + (topics ? ':' + topics.join('/') : '');
 }
 
+// Free re-rank of queued candidates by likeness to the admin's manual adds / approvals (see docs/fetch-learning.md).
+async function rankedCandidates(env, max, pool = 40) {
+  const { results } = await env.DB.prepare(`SELECT * FROM fetch_candidates WHERE state = 'new' ORDER BY engagement DESC LIMIT ?1`).bind(Math.max(max, pool)).all();
+  const profile = await loadProfile(env);
+  for (const c of results) {
+    let p = {}; try { p = JSON.parse(c.payload); } catch {}
+    c._like = likeness(profile, p.text || '', p.annotations || [], { multiTurn: !!p.reply_id });
+    c._rank = c.engagement + c._like;
+  }
+  return results.sort((a, b) => b._rank - a._rank).slice(0, max);
+}
+
 async function expand(env, b, max = 3, order = 'engagement') {
-  const { results } = await env.DB.prepare(`SELECT * FROM fetch_candidates WHERE state = 'new' ORDER BY ${order === 'random' ? 'random()' : 'engagement DESC'} LIMIT ?1`).bind(max).all();
+  const results = order === 'random'
+    ? (await env.DB.prepare(`SELECT * FROM fetch_candidates WHERE state = 'new' ORDER BY random() LIMIT ?1`).bind(max).all()).results
+    : await rankedCandidates(env, max);
   const out = {};
   for (const c of results) {
     if (b.sub > SUB_BUDGET - 12) break;              // room for up to 7 up + 1 paid + a few down
@@ -611,14 +627,21 @@ export class QuickAdd extends WorkerEntrypoint {
 export default {
   async scheduled(event, env, ctx) {
     // Daily moderation digest at 08:00 America/Chicago (13:00 UTC in CDT, 14:00 UTC in CST; the other run is a no-op).
-    if (event.cron === '0 13,14 * * *') { if (chicagoHour() === 8) console.log('digest', JSON.stringify(await digest(env))); return; }
+    if (event.cron === '0 13,14 * * *') {
+      await buildProfile(env).catch(e => console.log('learn error', String(e)));   // free: D1 only
+      if (chicagoHour() === 8) console.log('digest', JSON.stringify(await digest(env)));
+      return;
+    }
     // Effective caps for the admin queue header (boost-aware).
     await env.DB.prepare("INSERT OR REPLACE INTO kv (k, v) VALUES ('caps', ?1)").bind(JSON.stringify({ day: boosted(env) ? Number(env.BOOST_DAILY_CAP_USD || 5) : Number(env.DAILY_CAP_USD || 1.5), month: Number(env.MONTHLY_CAP_USD || 45), boost_until: boosted(env) ? env.BOOST_UNTIL : null })).run().catch(() => {});
     API = env.X_API_BASE || API_DEFAULT;
     const b = new Budget(env, 'cron-' + Date.now());
     if (event.cron === '0 11,23 * * *') {
       if (!env.X_BEARER_TOKEN) return;
-      await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query: env.DISCOVER_QUERY || null, endHoursAgo: 24 });
+      // The 23:00 UTC run narrows the same query with learned OR-terms (same max_results, so same cost); 11:00 stays broad.
+      let query = env.DISCOVER_QUERY || null;
+      if (query && env.LEARN_QUERY !== '0' && new Date().getUTCHours() === 23) { const t = queryTerms(await loadProfile(env)); if (t) query += ' ' + t; }
+      await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query, endHoursAgo: 24 });
     } else {
       await expireFeatures(env);
       // approved-but-mid-thread posts first: the owner is waiting for them
@@ -648,6 +671,12 @@ export default {
     let result;
     if (o.stage === 'discover') result = await discover(env, b, { pages: Math.min(Number(o.pages) || 1, 10), perPage: Math.min(Math.max(Number(o.perPage) || 100, 10), 100), minEng: Number(o.minEng ?? 5), start: o.next || null, query: o.query || null, endHoursAgo: o.endHoursAgo ?? 48 });
     else if (o.stage === 'expand') result = await expand(env, b, Math.min(Number(o.max) || 3, 5), o.order);
+    else if (o.stage === 'learn') {   // dry run, free: rebuild the profile and show the next candidates expand would pick
+      const profile = await buildProfile(env);
+      const next = (await rankedCandidates(env, Math.min(Number(o.max) || 10, 40))).map(c => { let p = {}; try { p = JSON.parse(c.payload); } catch {}
+        return { id: c.grok_tweet_id, engagement: c.engagement, like: c._like, text: String(p.text || '').slice(0, 120) }; });
+      result = { profile, query_terms: queryTerms(profile), next };
+    }
     else if (o.stage === 'recheck') result = await recheck(env, b);
     else if (o.stage === 'usage') result = await usage(env, b);
     else if (o.stage === 'suggest') result = await runSuggestions(env, b, Math.min(Number(o.max) || 2, 5));
