@@ -26,5 +26,5 @@ for f in out.glob('*.html'):
 PY
 grep -l 'include:' "$OUT"/*.html && { echo "unresolved include"; exit 1; } || true
 # Cache-bust the non-fingerprinted v2 CSS/JS (served with max-age=14400) so a deploy reaches phones/iPads at once.
-V="$(git -C "$REPO" rev-parse --short HEAD 2>/dev/null || date +%s)$( [ -n "$(git -C "$REPO" status --porcelain 2>/dev/null)" ] && echo -d$(date +%s) )"
+V="$(git -C "$REPO" rev-parse --short HEAD 2>/dev/null || date +%s)$( [ -n "$(git -C "$REPO" status --porcelain 2>/dev/null)" ] && echo -d$(date +%s) || true)"
 sed -i -E "s#(/assets/(v2|admin)/[a-z0-9_-]+\.(css|js))\"#\1?v=$V\"#g" "$OUT"/*.html
