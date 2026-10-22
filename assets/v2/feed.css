@@ -376,3 +376,6 @@ a.tab{text-decoration:none;display:inline-flex;align-items:center}
   .top__auth .lang-btn,.top__auth .sg-btn,.top__auth .btn-x--top,.top__auth .queue{width:36px;min-width:36px;height:36px;min-height:36px;flex-basis:36px}
   .top__auth .me img{width:28px;height:28px;flex-basis:28px}
 }
+/* Seen chip: solid, readable outline everywhere; compact on phones where it sits right after "All". */
+.seenchip{border:1px solid rgba(192,132,252,.45);color:#d4d4d8;background:rgba(24,24,27,.85)}
+@media (max-width:699px){.seenchip{min-height:36px;padding:0 .2rem 0 .55rem;gap:.2rem;font-size:.72rem}.seenchip__w{display:none}.seenchip__r{min-width:36px;min-height:36px;padding:0 .35rem}}

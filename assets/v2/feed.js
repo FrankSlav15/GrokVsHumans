@@ -270,9 +270,12 @@
     : '<div id="more" class="more-wrap caught" role="status"><span aria-hidden="true">✨</span> You\'re all caught up</div>';
   const hotSeen = () => S.view === 'hot' && UNSEEN_FIRST();
   // Seen controls as one small chip at the end of the topic tags (last row on wide screens, end of the sideways row on phones).
+  // Phones (sideways-scrolling tag row): right after "All" so it is visible without scrolling. Wider: end of the last row.
+  const PHONE_MQ = matchMedia('(max-width:699px)');
   function renderSeenOpt() { const el = $('#chips'); if (!el) return; el.querySelector('.seenchip')?.remove();
-    el.insertAdjacentHTML('beforeend', `<span class="seenchip" role="group" aria-label="Seen posts">`
-      + (S.view === 'hot' ? `<label class="seenchip__t"><input type="checkbox" data-seen="first" ${UNSEEN_FIRST() ? 'checked' : ''}><span>Unseen first</span></label><span class="seenchip__sep" aria-hidden="true"></span>` : '')
+    const all = PHONE_MQ.matches ? el.querySelector('[data-topic="All"]') : null;
+    (all || el).insertAdjacentHTML(all ? 'afterend' : 'beforeend', `<span class="seenchip" role="group" aria-label="Seen posts">`
+      + (S.view === 'hot' ? `<label class="seenchip__t"><input type="checkbox" data-seen="first" ${UNSEEN_FIRST() ? 'checked' : ''}><span>Unseen<span class="seenchip__w"> first</span></span></label><span class="seenchip__sep" aria-hidden="true"></span>` : '')
       + `<button class="seenchip__r" data-seen="reset" ${SEEN.size ? '' : 'disabled'} aria-label="Reset seen${SEEN.size ? ' (' + SEEN.size + ' posts)' : ''}" title="Forget which posts you have seen"><span aria-hidden="true">↺</span> Reset${SEEN.size ? ' <span class="seenchip__n">' + SEEN.size + '</span>' : ''}</button></span>`); }
   // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
   const rerender = (p, full) => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p);
@@ -618,6 +621,7 @@
   const qs = new URLSearchParams(location.search);
   if (qs.get('login') === 'error') toast('Sign-in failed. Please try again.');
   if (qs.get('login') === 'banned') toast('This X account is banned from signing in.');
+  PHONE_MQ.addEventListener?.('change', () => renderSeenOpt());
   document.addEventListener('change', e => { if (e.target.matches?.('[data-seen="first"]')) { store.set('gvh_unseen_first', e.target.checked ? null : '0'); load(); window.scrollTo({ top: 0 }); } });
   fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()).then(d => { S.user = d.user; renderAuth(); notify(); syncSeen();
     if (qs.get('suggest') === '1') { history.replaceState(null, '', location.pathname); openSuggest(); }
