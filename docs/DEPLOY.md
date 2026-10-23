@@ -59,3 +59,9 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
   Pages service binding `FETCH` → service `gvh-fetch`, entrypoint `QuickAdd` (RPC; not reachable from workers.dev). Set on both Production and Preview.
 - Budget: `ADMIN_DAILY_USD` (default $1, run ids `admin-*`) replaces the daily cap for these adds; the monthly cap still applies; max $0.60 per add.
 - Stored as `source='manual'` + `suggested_by_x_id` = admin (posts.source has a CHECK constraint); shown as "➕ added by admin" at the top of the queue.
+- Deferred quick-add: when the add is blocked by `admin_cap`/`month_cap`/`day_cap` the link is saved as a `suggestions` row
+  (state `queued`, note `admin quick-add (deferred)`, x_id = admin) and the UI says "Saved — will fetch automatically when X budget allows".
+  The */10 cron (`runDeferredAdds`, before rebuilds) runs it through the same admin-allowance path once budget allows (free D1 pre-check,
+  no log spam while capped). Duplicates also cover links waiting in `suggestions` (`new`/`queued`) → `duplicate_waiting`.
+  `{"url":..., "dry_run":true}` checks dedupe/caps without spending or saving. `ADMIN_MONTH_EXTRA_USD` (default 0) is a one-off
+  override that raises the monthly cap for admin quick-adds only; set it with `wrangler deploy --var ADMIN_MONTH_EXTRA_USD:0.6` and redeploy without it afterwards.

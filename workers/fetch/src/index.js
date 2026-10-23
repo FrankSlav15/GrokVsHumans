@@ -30,6 +30,8 @@ class Budget {
     this.dayCap = boosted(env) ? Number(env.BOOST_DAILY_CAP_USD || 5) : Number(env.DAILY_CAP_USD || 1.5); this.monthCap = Number(env.MONTHLY_CAP_USD || 45);
     this.runCap = opts.runCap ?? null;
     this.adminCap = opts.adminCap ?? null;  // admin quick-add: own small daily allowance (run ids 'admin-*') instead of the daily cap     // seeding run: explicit budget (replaces the daily cap, month cap still applies)
+    // One-off admin override: ADMIN_MONTH_EXTRA_USD (default 0) raises the monthly cap for admin quick-adds only.
+    if (this.adminCap != null) this.monthCap += Number(env.ADMIN_MONTH_EXTRA_USD || 0);
     this.spent = 0;
   }
   async totals() {
@@ -413,7 +415,7 @@ async function usage(env, b) {
 // User suggestions approved in /admin/featured (state 'queued'): resolve the linked post to the Grok reply of its
 // exchange, build the chain like any candidate (same Budget = same X spend caps), store a pending post "suggested by".
 async function runSuggestions(env, b, max = 2) {
-  const { results } = await env.DB.prepare(`SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE s.state = 'queued' ORDER BY s.id LIMIT ?1`).bind(max).all();
+  const { results } = await env.DB.prepare(`SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE s.state = 'queued' AND COALESCE(s.note, '') <> ?2 ORDER BY s.id LIMIT ?1`).bind(max, QA_NOTE).all();
   const out = [];
   for (const s of results) {
     if (b.sub > SUB_BUDGET - 10) break;
@@ -593,8 +595,55 @@ async function runJob(env) {
 // service binding FETCH (entrypoint QuickAdd; RPC is not reachable from the public workers.dev URL).
 // Same path as suggestions: resolve the Grok reply, rebuild the chain root-first, main-human title, AI topics, pending.
 // Budget: ADMIN_DAILY_USD (default $1) per UTC day for admin runs, independent of the daily cap; the monthly cap still applies.
+// Deferred quick-adds: a quick-add blocked by admin_cap/month_cap/day_cap is saved as a suggestions row (state 'queued',
+// note QA_NOTE) and retried by the */10 cron through the same adminAdd() path once the budget allows.
+const QA_NOTE = 'admin quick-add (deferred)';
+const adminUsed = async env => (await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first()).s;
+const CAP_ERR = r => String(r || '').includes('month') ? 'month_cap' : String(r || '').includes('day_cap') ? 'day_cap' : 'admin_cap';
+async function adminAdd(env, tweetId, adminXId, adminHandle) {
+  const cap = Number(env.ADMIN_DAILY_USD || 1);
+  // Size this add to what is left of today's allowance (max $0.60 per add): the conversation search shrinks its page to fit,
+  // so a worst-case estimate cannot block an add that would really cost a few cents.
+  const used = await adminUsed(env);
+  const runCap = Math.min(0.6, cap - used);
+  if (runCap < 0.1) return { error: 'admin_cap', tweet_id: tweetId, cost: 0, admin_spent_today: Math.round(used * 1000) / 1000, admin_cap: cap };
+  const b = new Budget(env, 'admin-' + Date.now(), { adminCap: cap, runCap });
+  const res = await suggestionOne(env, b, { tweet_id: tweetId, x_id: adminXId, handle: adminHandle || null, source: 'manual' })   // posts.source CHECK allows fetch|manual|...; 'added by admin' = manual + suggested_by_x_id in ADMIN_X_IDS
+    .catch(e => ({ state: 'failed', result: 'error:' + String(e.message || e).slice(0, 80) }));
+  const left = await adminUsed(env);
+  const out = { tweet_id: tweetId, cost: Math.round(b.spent * 1000) / 1000, admin_spent_today: Math.round(left * 1000) / 1000, admin_cap: cap, result: res.result || null };
+  if (res.state === 'fetched') {
+    if (b.capped) await env.DB.prepare("UPDATE posts SET rebuild_note = 'quick-add hit the admin allowance; thread may be incomplete' WHERE id = ?1").bind(res.post_id).run();
+    return { ok: true, post_id: res.post_id, partial: !!b.capped, ...out };
+  }
+  if (res.state === 'duplicate') return { error: 'duplicate', post_id: res.post_id || null, ...out };
+  if (res.state === 'queued') return { error: CAP_ERR(res.result), ...out };
+  return { error: 'failed', ...out };
+}
+// Cron: process the oldest deferred quick-add if budget allows. Free pre-check (D1 only) so a capped month does not log every tick.
+async function runDeferredAdds(env) {
+  const s = await env.DB.prepare(`SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE s.state = 'queued' AND s.note = ?1 ORDER BY s.id LIMIT 1`).bind(QA_NOTE).first();
+  if (!s) return null;
+  const probe = new Budget(env, 'admin-probe', { adminCap: Number(env.ADMIN_DAILY_USD || 1) });
+  const t0 = await probe.totals();
+  if (t0.month + 0.05 > probe.monthCap || Number(env.ADMIN_DAILY_USD || 1) - await adminUsed(env) < 0.1) return { id: s.id, waiting: true };
+  const r = await adminAdd(env, s.tweet_id, s.x_id, s.handle);
+  const t = now();
+  if (/_cap$/.test(r.error || '') && !r.cost) {   // still capped and nothing spent: stay queued
+    await env.DB.prepare('UPDATE suggestions SET result = ?2, updated_at = ?3 WHERE id = ?1').bind(s.id, 'waiting: ' + r.error, t).run();
+    return { id: s.id, waiting: true, ...r };
+  }
+  const state = r.ok ? 'fetched' : r.error === 'duplicate' ? 'duplicate' : /_cap$/.test(r.error || '') ? 'queued' : 'failed';
+  await env.DB.prepare('UPDATE suggestions SET state = ?2, result = ?3, post_id = COALESCE(?4, post_id), updated_at = ?5 WHERE id = ?1')
+    .bind(s.id, state, String(r.result || r.error || '').slice(0, 80) + (r.ok ? ' (admin quick-add, deferred)' : ''), r.post_id || null, t).run();
+  return { id: s.id, state, ...r };
+}
+
+// service binding FETCH (entrypoint QuickAdd; RPC is not reachable from the public workers.dev URL).
+// Budget: ADMIN_DAILY_USD (default $1) per UTC day for admin runs, independent of the daily cap; the monthly cap still applies.
+// Blocked by a spend cap -> saved as a deferred quick-add (see runDeferredAdds) instead of dropped.
 export class QuickAdd extends WorkerEntrypoint {
-  async add({ url, adminXId, adminHandle }) {
+  async add({ url, adminXId, adminHandle, dryRun = false }) {
     const env = this.env;
     API = env.X_API_BASE || API_DEFAULT;
     const tweetId = parseStatusUrl(url);
@@ -602,25 +651,25 @@ export class QuickAdd extends WorkerEntrypoint {
     const onSite = await env.DB.prepare(`SELECT p.id, p.status FROM post_tweets t JOIN posts p ON p.id = t.post_id WHERE t.tweet_id = ?1
                                          UNION ALL SELECT id, status FROM posts WHERE grok_tweet_id = ?1 LIMIT 1`).bind(tweetId).first();
     if (onSite) return { error: 'duplicate', post_id: onSite.id, status: onSite.status, cost: 0 };
+    const waiting = await env.DB.prepare("SELECT id FROM suggestions WHERE tweet_id = ?1 AND state IN ('new','queued') LIMIT 1").bind(tweetId).first();
+    if (waiting) return { error: 'duplicate_waiting', suggestion_id: waiting.id, cost: 0 };
     if (!env.X_BEARER_TOKEN) return { error: 'no_x_token' };
-    const cap = Number(env.ADMIN_DAILY_USD || 1);
-    // Size this add to what is left of today's allowance (max $0.60 per add): the conversation search shrinks its page to fit,
-    // so a worst-case estimate cannot block an add that would really cost a few cents.
-    const used = (await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first()).s;
-    const runCap = Math.min(0.6, cap - used);
-    if (runCap < 0.1) return { error: 'admin_cap', tweet_id: tweetId, cost: 0, admin_spent_today: Math.round(used * 1000) / 1000, admin_cap: cap };
-    const b = new Budget(env, 'admin-' + Date.now(), { adminCap: cap, runCap });
-    const res = await suggestionOne(env, b, { tweet_id: tweetId, x_id: adminXId, handle: adminHandle || null, source: 'manual' })   // posts.source CHECK allows fetch|manual|...; 'added by admin' = manual + suggested_by_x_id in ADMIN_X_IDS
-      .catch(e => ({ state: 'failed', result: 'error:' + String(e.message || e).slice(0, 80) }));
-    const left = await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first();
-    const out = { tweet_id: tweetId, cost: Math.round(b.spent * 1000) / 1000, admin_spent_today: Math.round(left.s * 1000) / 1000, admin_cap: cap, result: res.result || null };
-    if (res.state === 'fetched') {
-      if (b.capped) await env.DB.prepare("UPDATE posts SET rebuild_note = 'quick-add hit the admin allowance; thread may be incomplete' WHERE id = ?1").bind(res.post_id).run();
-      return { ok: true, post_id: res.post_id, partial: !!b.capped, ...out };
-    }
-    if (res.state === 'duplicate') return { error: 'duplicate', post_id: res.post_id || null, ...out };
-    if (res.state === 'queued') return { error: String(res.result || '').includes('month') ? 'month_cap' : 'admin_cap', ...out };
-    return { error: 'failed', ...out };
+    const defer = async (why, extra = {}) => {
+      if (dryRun) return { deferred: true, dry_run: true, reason: why, ...extra };
+      const r = await env.DB.prepare("INSERT INTO suggestions (x_id, tweet_id, url, note, state, result, created_at) VALUES (?1, ?2, ?3, ?4, 'queued', ?5, ?6)")
+        .bind(adminXId, tweetId, url, QA_NOTE, 'waiting: ' + why, now()).run();
+      return { deferred: true, reason: why, suggestion_id: r.meta?.last_row_id ?? null, ...extra };
+    };
+    // free pre-check: monthly cap (admin view) and today's admin allowance
+    const probe = new Budget(env, 'admin-probe', { adminCap: Number(env.ADMIN_DAILY_USD || 1) });
+    const t0 = await probe.totals(), used0 = await adminUsed(env), cap = Number(env.ADMIN_DAILY_USD || 1);
+    const info = { tweet_id: tweetId, cost: 0, admin_spent_today: Math.round(used0 * 1000) / 1000, admin_cap: cap };
+    if (t0.month + 0.05 > probe.monthCap) return defer('month_cap', info);
+    if (cap - used0 < 0.1) return defer('admin_cap', info);
+    if (dryRun) return { dry_run: true, would: 'fetch', ...info };
+    const r = await adminAdd(env, tweetId, adminXId, adminHandle);
+    if (/^(admin|month|day)_cap$/.test(r.error || '')) return defer(r.error, r);
+    return r;
   }
 }
 
@@ -644,6 +693,8 @@ export default {
       await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query, endHoursAgo: 24 });
     } else {
       await expireFeatures(env);
+      // deferred admin quick-adds first (own admin allowance); a tick that spent on one ends here
+      if (env.X_BEARER_TOKEN) { const d = await runDeferredAdds(env).catch(e => (console.log('deferred add error', String(e)), null)); if (d && !d.waiting) return; }
       // approved-but-mid-thread posts first: the owner is waiting for them
       if (env.X_BEARER_TOKEN && (await runRebuilds(env, b).catch(e => (console.log('rebuild error', String(e)), []))).some(x => x.ok !== undefined)) return;
       // a suggestion skipped by the spend cap must not starve admin jobs (they carry their own budget)

@@ -13,14 +13,15 @@ export async function onRequestPost({ request, env }) {
   const tweetId = parseStatusUrl(url);
   if (!tweetId) return json({ error: 'bad_url' }, 400);
   if (!env.FETCH?.add) return json({ error: 'not_configured' }, 503);
-  const r = await env.FETCH.add({ url, adminXId: admin.x_id, adminHandle: admin.handle || null }).catch(e => ({ error: 'worker_error', message: String(e.message || e).slice(0, 120) }));
+  const r = await env.FETCH.add({ url, adminXId: admin.x_id, adminHandle: admin.handle || null, dryRun: body?.dry_run === true }).catch(e => ({ error: 'worker_error', message: String(e.message || e).slice(0, 120) }));
   await auditStmt(env, admin.x_id, 'post.quickadd', r.post_id ? 'post:' + r.post_id : 'tweet:' + tweetId,
-    { tweet_id: tweetId, ok: !!r.ok, error: r.error || null, cost: r.cost ?? null, partial: r.partial || false }).run();
+    { tweet_id: tweetId, ok: !!r.ok, deferred: !!r.deferred, dry_run: !!r.dry_run, error: r.error || null, cost: r.cost ?? null, partial: r.partial || false }).run();
   if (r.ok) {
     const p = await env.DB.prepare('SELECT id, headline, human_handle, status FROM posts WHERE id = ?1').bind(r.post_id).first();
     const t = await env.DB.prepare('SELECT topic FROM post_topics WHERE post_id = ?1').bind(r.post_id).all();
     return json({ ...r, post: { ...p, topics: t.results.map(x => x.topic) } });
   }
-  const code = r.error === 'duplicate' ? 409 : r.error === 'admin_cap' || r.error === 'month_cap' ? 429 : r.error === 'bad_url' ? 400 : 502;
+  if (r.deferred || r.dry_run) return json(r, r.deferred ? 202 : 200);
+  const code = r.error === 'duplicate_waiting' ? 409 : r.error === 'duplicate' ? 409 : r.error === 'admin_cap' || r.error === 'month_cap' ? 429 : r.error === 'bad_url' ? 400 : 502;
   return json(r, code);
 }

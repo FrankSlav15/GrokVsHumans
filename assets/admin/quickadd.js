@@ -19,7 +19,8 @@
       if (window.openPreview) window.openPreview(Number(d.post_id), [Number(d.post_id)]);
       return;
     }
-    const why = { duplicate: 'Already on the site' + (d.post_id ? ' (#' + d.post_id + (d.status ? ', ' + d.status : '') + ')' : ''), admin_cap: 'Admin allowance for today is used up', month_cap: 'Monthly X API cap reached',
+    if (d.deferred) { inp.value = ''; say('Saved — will fetch automatically when X budget allows (' + ({ month_cap: 'monthly X cap reached', admin_cap: 'admin allowance used up today', day_cap: 'daily cap reached' }[d.reason] || d.reason) + ')', 'ok'); return; }
+    const why = { duplicate_waiting: 'Already saved and waiting for X budget' + (d.suggestion_id ? ' (#' + d.suggestion_id + ')' : ''), duplicate: 'Already on the site' + (d.post_id ? ' (#' + d.post_id + (d.status ? ', ' + d.status : '') + ')' : ''), admin_cap: 'Admin allowance for today is used up', month_cap: 'Monthly X API cap reached',
       bad_url: 'Not a status link', not_configured: 'Quick-add is not configured (FETCH binding missing)', failed: 'Could not add: ' + (d.result || 'unknown') }[d.error] || ('Failed: ' + (d.error || 'error'));
     say(why + cost, 'err');
     if (d.error === 'duplicate' && d.post_id && window.openPreview) window.openPreview(Number(d.post_id), [Number(d.post_id)]);
