@@ -118,6 +118,8 @@ async function build({ request, env }) {
     for (const p of page) {
       p.topics = (T[p.id] || []).sort((a, b) => TOPICS.indexOf(a) - TOPICS.indexOf(b));
       p.tweets = W[p.id] || [];
+      // Link the deepest stored reply: X renders its whole parent chain above it.
+      if (p.tweets.length) p.url = `https://x.com/i/status/${p.tweets[p.tweets.length - 1].id}`;
       p.mine = { vote: M[p.id]?.v || null, react: Number(M[p.id]?.r || 0) };
     }
   }

@@ -55,6 +55,7 @@ async function batchView(env) {
   const [posts, topics, spend] = await env.DB.batch([
     env.DB.prepare(`SELECT p.id, p.headline, p.human_handle, p.source, p.suggested_by_x_id, p.x_engagement, p.grok_tweet_id, p.review_score, p.review_reason, p.review_batch, p.review_title, p.rebuild_state, p.rebuild_note, p.low_priority,
       (SELECT COUNT(*) FROM post_tweets t WHERE t.post_id = p.id) n_tweets,
+      (SELECT tweet_id FROM post_tweets t WHERE t.post_id = p.id ORDER BY t.pos DESC LIMIT 1) last_tweet_id,
       (p.conversation_id IS NOT NULL AND COALESCE((SELECT tweet_id FROM post_tweets t WHERE t.post_id = p.id AND t.pos = 0), '') != p.conversation_id) mid_thread
       FROM posts p WHERE p.status = 'pending' ORDER BY (p.source = 'manual' AND instr(?1, ',' || p.suggested_by_x_id || ',') > 0) DESC, CASE WHEN p.source = 'manual' AND instr(?1, ',' || p.suggested_by_x_id || ',') > 0 THEN -p.fetched_at END, COALESCE(p.review_score, 0) DESC, p.x_engagement DESC, p.id`).bind(ADM(env)),
     env.DB.prepare(`SELECT pt.post_id, pt.topic FROM post_topics pt JOIN posts p ON p.id = pt.post_id WHERE p.status = 'pending'`),

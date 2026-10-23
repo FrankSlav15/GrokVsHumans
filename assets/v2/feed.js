@@ -190,7 +190,7 @@
         <button class="act act--feat" data-act="feature" aria-label="Feature this thread"><i class="fa-solid fa-star"></i></button>
         <button class="act" data-act="share" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
       </div>
-      <a class="xlink" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
+      <a class="xlink" href="${esc(p.tweets?.length ? 'https://x.com/i/status/' + p.tweets[p.tweets.length - 1].id : p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
     </article>`;
   }
   // ---- projects ----

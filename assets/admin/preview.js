@@ -29,7 +29,7 @@
     <h2 class="post__title">${esc(title || 'Grok vs. a human')}</h2><div class="ex">${p.tweets.map(turn).join('') || '<p class="tw__t tw__t--none">No stored posts.</p>'}</div>
     <div class="vote"><button class="v-grok" tabindex="-1">Grok won <span class="n">0</span></button><button class="v-human" tabindex="-1"><span class="n">0</span> Human won</button></div>
     <div class="vote__pct"><span style="width:50%"></span></div>
-    <a class="xlink" href="${esc(p.url || ('https://x.com/i/status/' + p.grok_tweet_id))}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a></article>`;
+    <a class="xlink" href="${esc(p.tweets?.length ? 'https://x.com/i/status/' + p.tweets[p.tweets.length - 1].id : (p.url || ('https://x.com/i/status/' + p.grok_tweet_id)))}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a></article>`;
   const SHADOW_CSS = ':host{--bg:#09090b;--card:#18181b;--card2:#202024;--line:#27272a;--muted:#a1a1aa;--grok:#6b21a8;--grok-l:#c084fc;--human:#9f1239;--human-l:#fb7185;--grad:linear-gradient(90deg,#a855f7,#22d3ee);display:block;color:#e4e4e7;font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif}a{color:inherit}button{font:inherit;color:inherit}.post{margin:0 auto;max-width:640px}.vote button{pointer-events:none}';
 
   // --- modal state ---
