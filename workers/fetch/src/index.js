@@ -230,8 +230,10 @@ function pickBranch(known, startId, { grokId = GROK_ID, askers = new Set(), maxD
 
 async function buildChain(env, b, c, { seed = [], search = true } = {}) {
   const p = JSON.parse(c.payload);
-  // one batched lookup: the anchor, the root (conversation_id) and the first already-known post (to learn its parent)
-  const ids = [...new Set([c.grok_tweet_id, c.conversation_id, seed[0]?.tweet_id].filter(Boolean))];
+  // one batched lookup: the anchor, the root (conversation_id), the first already-known post (to learn its parent) and the
+  // 2nd stored post: seed rows are assumed to reply to the previous one, so a gap right after the root (e.g. a missing Grok
+  // reply from an earlier capped build) is only visible through the 2nd post's real parent (returned with it, one level up)
+  const ids = [...new Set([c.grok_tweet_id, c.conversation_id, seed[0]?.tweet_id, seed[1]?.tweet_id].filter(Boolean))];
   const first = await lookup(env, b, ids, 'chain');
   if (first.capped) return { status: 'capped:' + first.capped };
   const g = first.rows.get(c.grok_tweet_id);

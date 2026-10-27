@@ -65,3 +65,7 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
   no log spam while capped). Duplicates also cover links waiting in `suggestions` (`new`/`queued`) → `duplicate_waiting`.
   `{"url":..., "dry_run":true}` checks dedupe/caps without spending or saving. `ADMIN_MONTH_EXTRA_USD` (default 0) is a one-off
   override that raises the monthly cap for admin quick-adds only; set it with `wrangler deploy --var ADMIN_MONTH_EXTRA_USD:0.6` and redeploy without it afterwards.
+- Rebuilds (`rebuildPost`/`buildChain`) seed the stored chain assuming each row replies to the previous one, so a gap right after the root
+  was invisible. The first X lookup now also includes the 2nd stored post (its real parent comes back with it), so one rebuild finds and fills
+  that gap (e.g. a missing Grok reply after a build that hit its per-add budget). Costs ≈ one extra post read (≈$0.005) per rebuild; a `rebuilt:N->M` result means it was filled.
+  Rebuilds still use the normal daily/monthly caps (a capped rebuild such as post 159 simply waits); to run one past the monthly cap, raise `ADMIN_*` / `MONTHLY_CAP_USD` only briefly via `wrangler deploy --var …` and redeploy without it.
