@@ -11,7 +11,7 @@
     try { r = await fetch('/api/admin/quickadd', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) }); d = await r.json().catch(() => ({})); }
     catch { d = { error: 'network' }; r = { ok: false }; }
     btn.disabled = inp.disabled = false;
-    const cost = d.cost != null ? ' · cost $' + Number(d.cost).toFixed(3) + ' (admin today $' + Number(d.admin_spent_today || 0).toFixed(2) + ' of $' + Number(d.admin_cap || 1).toFixed(2) + ')' : '';
+    const cost = d.cost != null ? ' · cost $' + Number(d.cost).toFixed(3) + ' (admin allowance left $' + Number(d.admin_available ?? 0).toFixed(2) + ' · used $' + Number(d.admin_spent_month || 0).toFixed(2) + ' of $' + Number(d.admin_cap || 0).toFixed(2) + ' accrued this month)' : '';
     if (r.ok && d.post_id) {
       inp.value = ''; inp.blur();
       say('Added #' + d.post_id + ': ' + (d.post?.headline || '') + (d.partial ? ' (thread may be incomplete)' : '') + cost, 'ok');
@@ -19,8 +19,8 @@
       if (window.openPreview) window.openPreview(Number(d.post_id), [Number(d.post_id)]);
       return;
     }
-    if (d.deferred) { inp.value = ''; say('Saved — will fetch automatically when X budget allows (' + ({ month_cap: 'monthly X cap reached', admin_cap: 'admin allowance used up today', day_cap: 'daily cap reached' }[d.reason] || d.reason) + ')', 'ok'); return; }
-    const why = { duplicate_waiting: 'Already saved and waiting for X budget' + (d.suggestion_id ? ' (#' + d.suggestion_id + ')' : ''), duplicate: 'Already on the site' + (d.post_id ? ' (#' + d.post_id + (d.status ? ', ' + d.status : '') + ')' : ''), admin_cap: 'Admin allowance for today is used up', month_cap: 'Monthly X API cap reached',
+    if (d.deferred) { inp.value = ''; say('Saved — will fetch automatically when X budget allows (' + ({ month_cap: 'monthly X cap reached', admin_cap: 'admin allowance used up (+$1 tomorrow)', day_cap: 'daily cap reached' }[d.reason] || d.reason) + ')', 'ok'); return; }
+    const why = { duplicate_waiting: 'Already saved and waiting for X budget' + (d.suggestion_id ? ' (#' + d.suggestion_id + ')' : ''), duplicate: 'Already on the site' + (d.post_id ? ' (#' + d.post_id + (d.status ? ', ' + d.status : '') + ')' : ''), admin_cap: 'Admin allowance is used up (rolls over: +$1 per day this month)', month_cap: 'Monthly X API cap reached',
       bad_url: 'Not a status link', not_configured: 'Quick-add is not configured (FETCH binding missing)', failed: 'Could not add: ' + (d.result || 'unknown') }[d.error] || ('Failed: ' + (d.error || 'error'));
     say(why + cost, 'err');
     if (d.error === 'duplicate' && d.post_id && window.openPreview) window.openPreview(Number(d.post_id), [Number(d.post_id)]);

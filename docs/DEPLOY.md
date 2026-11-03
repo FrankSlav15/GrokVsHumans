@@ -57,7 +57,7 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 ## Admin quick-add (/admin/queue "Add a thread")
 - Pages Function `POST /api/admin/quickadd {url}` (requireAdmin → ADMIN_X_IDS; audit `post.quickadd`) calls gvh-fetch over the
   Pages service binding `FETCH` → service `gvh-fetch`, entrypoint `QuickAdd` (RPC; not reachable from workers.dev). Set on both Production and Preview.
-- Budget: `ADMIN_DAILY_USD` (default $1, run ids `admin-*`) replaces the daily cap for these adds; the monthly cap still applies; max $0.60 per add.
+- Budget: `ADMIN_DAILY_USD` (default $1/day, run ids `admin-*`) accrues per UTC day elapsed this month and rolls over (available = $1 × day-of-month − admin spend this month; resets on the 1st); it replaces the daily cap for these adds; the monthly cap still applies; max $0.60 per add.
 - Stored as `source='manual'` + `suggested_by_x_id` = admin (posts.source has a CHECK constraint); shown as "➕ added by admin" at the top of the queue.
 - Deferred quick-add: when the add is blocked by `admin_cap`/`month_cap`/`day_cap` the link is saved as a `suggestions` row
   (state `queued`, note `admin quick-add (deferred)`, x_id = admin) and the UI says "Saved — will fetch automatically when X budget allows".

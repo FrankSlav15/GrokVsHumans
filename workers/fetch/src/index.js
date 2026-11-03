@@ -29,7 +29,7 @@ class Budget {
     this.env = env; this.runId = runId; this.sub = 0;
     this.dayCap = boosted(env) ? Number(env.BOOST_DAILY_CAP_USD || 5) : Number(env.DAILY_CAP_USD || 1.5); this.monthCap = Number(env.MONTHLY_CAP_USD || 45);
     this.runCap = opts.runCap ?? null;
-    this.adminCap = opts.adminCap ?? null;  // admin quick-add: own small daily allowance (run ids 'admin-*') instead of the daily cap     // seeding run: explicit budget (replaces the daily cap, month cap still applies)
+    this.adminCap = opts.adminCap ?? null;  // admin quick-add: own rollover allowance (run ids 'admin-*', $ADMIN_DAILY_USD per day accrued this month) instead of the daily cap     // seeding run: explicit budget (replaces the daily cap, month cap still applies)
     // One-off admin override: ADMIN_MONTH_EXTRA_USD (default 0) raises the monthly cap for admin quick-adds only.
     if (this.adminCap != null) this.monthCap += Number(env.ADMIN_MONTH_EXTRA_USD || 0);
     this.spent = 0;
@@ -41,8 +41,8 @@ class Budget {
   async allow(est) {
     const t = await this.totals();
     if (this.adminCap != null && t.month + est <= this.monthCap) {   // admin allowance replaces the daily cap
-      const a = await this.env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first();
-      if (a.s + est > this.adminCap) { this.capped = 'admin_cap'; return 'admin_cap'; }
+      const a = await this.env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE month = ?1 AND run_id LIKE 'admin-%'").bind(ym()).first();
+      if (a.s + est > this.adminCap)   // adminCap = rollover allowance accrued this month (see adminAccrued) { this.capped = 'admin_cap'; return 'admin_cap'; }
       if (this.runCap != null && this.spent + est > this.runCap) { this.capped = 'run_cap'; return 'run_cap'; }
       return null;
     }
@@ -596,24 +596,27 @@ async function runJob(env) {
 // Admin quick-add (/admin/queue "Add a thread"), called by the Pages Function /api/admin/quickadd over the
 // service binding FETCH (entrypoint QuickAdd; RPC is not reachable from the public workers.dev URL).
 // Same path as suggestions: resolve the Grok reply, rebuild the chain root-first, main-human title, AI topics, pending.
-// Budget: ADMIN_DAILY_USD (default $1) per UTC day for admin runs, independent of the daily cap; the monthly cap still applies.
+// Budget: ADMIN_DAILY_USD (default $1) accrues per UTC day and rolls over within the month (adminAccrued), independent of the daily cap; the monthly cap still applies.
 // Deferred quick-adds: a quick-add blocked by admin_cap/month_cap/day_cap is saved as a suggestions row (state 'queued',
 // note QA_NOTE) and retried by the */10 cron through the same adminAdd() path once the budget allows.
 const QA_NOTE = 'admin quick-add (deferred)';
-const adminUsed = async env => (await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE day = ?1 AND run_id LIKE 'admin-%'").bind(ymd()).first()).s;
+// Rollover: ADMIN_DAILY_USD accrues per UTC day elapsed this month (today included: $1/day -> $3 on the 3rd); unused balance
+// carries within the month and resets on the 1st together with the monthly cap. Available = accrued - admin spend this month.
+const adminAccrued = (env, d = new Date()) => Number(env.ADMIN_DAILY_USD || 1) * d.getUTCDate();
+const adminUsed = async env => (await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE month = ?1 AND run_id LIKE 'admin-%'").bind(ym()).first()).s;
 const CAP_ERR = r => String(r || '').includes('month') ? 'month_cap' : String(r || '').includes('day_cap') ? 'day_cap' : 'admin_cap';
 async function adminAdd(env, tweetId, adminXId, adminHandle) {
-  const cap = Number(env.ADMIN_DAILY_USD || 1);
-  // Size this add to what is left of today's allowance (max $0.60 per add): the conversation search shrinks its page to fit,
+  const cap = adminAccrued(env);
+  // Size this add to what is left of the rollover allowance (max $0.60 per add): the conversation search shrinks its page to fit,
   // so a worst-case estimate cannot block an add that would really cost a few cents.
   const used = await adminUsed(env);
   const runCap = Math.min(0.6, cap - used);
-  if (runCap < 0.1) return { error: 'admin_cap', tweet_id: tweetId, cost: 0, admin_spent_today: Math.round(used * 1000) / 1000, admin_cap: cap };
+  if (runCap < 0.1) return { error: 'admin_cap', tweet_id: tweetId, cost: 0, admin_spent_month: Math.round(used * 1000) / 1000, admin_cap: cap, admin_available: Math.round((cap - used) * 1000) / 1000 };
   const b = new Budget(env, 'admin-' + Date.now(), { adminCap: cap, runCap });
   const res = await suggestionOne(env, b, { tweet_id: tweetId, x_id: adminXId, handle: adminHandle || null, source: 'manual' })   // posts.source CHECK allows fetch|manual|...; 'added by admin' = manual + suggested_by_x_id in ADMIN_X_IDS
     .catch(e => ({ state: 'failed', result: 'error:' + String(e.message || e).slice(0, 80) }));
   const left = await adminUsed(env);
-  const out = { tweet_id: tweetId, cost: Math.round(b.spent * 1000) / 1000, admin_spent_today: Math.round(left * 1000) / 1000, admin_cap: cap, result: res.result || null };
+  const out = { tweet_id: tweetId, cost: Math.round(b.spent * 1000) / 1000, admin_spent_month: Math.round(left * 1000) / 1000, admin_cap: cap, admin_available: Math.round((cap - left) * 1000) / 1000, result: res.result || null };
   if (res.state === 'fetched') {
     if (b.capped) await env.DB.prepare("UPDATE posts SET rebuild_note = 'quick-add hit the admin allowance; thread may be incomplete' WHERE id = ?1").bind(res.post_id).run();
     return { ok: true, post_id: res.post_id, partial: !!b.capped, ...out };
@@ -626,9 +629,9 @@ async function adminAdd(env, tweetId, adminXId, adminHandle) {
 async function runDeferredAdds(env) {
   const s = await env.DB.prepare(`SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE s.state = 'queued' AND s.note = ?1 ORDER BY s.id LIMIT 1`).bind(QA_NOTE).first();
   if (!s) return null;
-  const probe = new Budget(env, 'admin-probe', { adminCap: Number(env.ADMIN_DAILY_USD || 1) });
+  const probe = new Budget(env, 'admin-probe', { adminCap: adminAccrued(env) });
   const t0 = await probe.totals();
-  if (t0.month + 0.05 > probe.monthCap || Number(env.ADMIN_DAILY_USD || 1) - await adminUsed(env) < 0.1) return { id: s.id, waiting: true };
+  if (t0.month + 0.05 > probe.monthCap || adminAccrued(env) - await adminUsed(env) < 0.1) return { id: s.id, waiting: true };
   const r = await adminAdd(env, s.tweet_id, s.x_id, s.handle);
   const t = now();
   if (/_cap$/.test(r.error || '') && !r.cost) {   // still capped and nothing spent: stay queued
@@ -642,7 +645,7 @@ async function runDeferredAdds(env) {
 }
 
 // service binding FETCH (entrypoint QuickAdd; RPC is not reachable from the public workers.dev URL).
-// Budget: ADMIN_DAILY_USD (default $1) per UTC day for admin runs, independent of the daily cap; the monthly cap still applies.
+// Budget: ADMIN_DAILY_USD (default $1) accrues per UTC day and rolls over within the month (adminAccrued), independent of the daily cap; the monthly cap still applies.
 // Blocked by a spend cap -> saved as a deferred quick-add (see runDeferredAdds) instead of dropped.
 export class QuickAdd extends WorkerEntrypoint {
   async add({ url, adminXId, adminHandle, dryRun = false }) {
@@ -662,10 +665,10 @@ export class QuickAdd extends WorkerEntrypoint {
         .bind(adminXId, tweetId, url, QA_NOTE, 'waiting: ' + why, now()).run();
       return { deferred: true, reason: why, suggestion_id: r.meta?.last_row_id ?? null, ...extra };
     };
-    // free pre-check: monthly cap (admin view) and today's admin allowance
-    const probe = new Budget(env, 'admin-probe', { adminCap: Number(env.ADMIN_DAILY_USD || 1) });
-    const t0 = await probe.totals(), used0 = await adminUsed(env), cap = Number(env.ADMIN_DAILY_USD || 1);
-    const info = { tweet_id: tweetId, cost: 0, admin_spent_today: Math.round(used0 * 1000) / 1000, admin_cap: cap };
+    // free pre-check: monthly cap (admin view) and the admin rollover allowance
+    const probe = new Budget(env, 'admin-probe', { adminCap: adminAccrued(env) });
+    const t0 = await probe.totals(), used0 = await adminUsed(env), cap = adminAccrued(env);
+    const info = { tweet_id: tweetId, cost: 0, admin_spent_month: Math.round(used0 * 1000) / 1000, admin_cap: cap, admin_available: Math.round((cap - used0) * 1000) / 1000 };
     if (t0.month + 0.05 > probe.monthCap) return defer('month_cap', info);
     if (cap - used0 < 0.1) return defer('admin_cap', info);
     if (dryRun) return { dry_run: true, would: 'fetch', ...info };
