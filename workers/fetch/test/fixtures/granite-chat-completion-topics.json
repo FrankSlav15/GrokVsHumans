@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-granite-topics",
+  "object": "chat.completion",
+  "created": 1762000001,
+  "model": "@cf/ibm-granite/granite-4.0-h-micro",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Philosophy"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 510,
+    "completion_tokens": 2,
+    "total_tokens": 512
+  }
+}

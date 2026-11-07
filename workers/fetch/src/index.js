@@ -9,7 +9,8 @@ import { rebuildConfig, parseStatusUrl } from '../../../server/config.js';
 // the paid X API v2 (no syndication scraping); the public site shows posts as official X embeds.
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
-import { TOPICS, suggestTopics, suggestHeadline, mainHuman, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
+import { suggestHeadline, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
+import { aiHeadline, aiTopics } from './tagging.js';
 
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
@@ -293,42 +294,6 @@ async function expandOne(env, b, c) {
     headline: await aiHeadline(env, tweets, human), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
   });
   return id ? 'stored:' + tweets.length : 'duplicate';
-}
-
-// "Grok vs. @handle: <2-6 word topic>" via Workers AI (binding AI); falls back to the cleaned-question headline.
-const AI_MODEL = '@cf/meta/llama-3.2-3b-instruct';
-// TITLE RULE: the @handle is the main human participant (the one Grok answered most, = posts.human_handle from
-// buildChain), never simply the opening asker. Callers pass that human; mainHuman() is the same rule as a fallback.
-async function aiHeadline(env, tweets, humanIn) {
-  const human = humanIn || mainHuman(tweets);
-  if (!human || !env.AI) return suggestHeadline(tweets, human);
-  try {
-    const convo = tweets.slice(0, 6).map(w => `${String(w.author_handle).toLowerCase() === 'grok' ? 'Grok' : 'Human'}: ${String(w.text).replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').slice(0, 300)}`).join('\n');
-    const r = await env.AI.run(AI_MODEL, { max_tokens: 20, temperature: 0.2, messages: [
-      { role: 'system', content: 'You title debates. Reply with ONLY a 2-6 word topic summarizing what the thread is about, ideally a short question (e.g. "Does the universe have meaning?", "Are humans just meat computers?"). No quotes, no names, no hashtags, never copy the user\'s wording.' },
-      { role: 'user', content: convo }] });
-    let t = String(r?.response || '').split('\n')[0].replace(/^["'*\s]+|["'*\s]+$/g, '').replace(/^(topic|title)\s*:\s*/i, '').replace(/\s+/g, ' ');
-    const words = t.split(' ').filter(Boolean).length;
-    if (!t || words < 2 || words > 8 || t.length > 48 || /[@#<>]|https?:/.test(t)) return suggestHeadline(tweets, human);
-    return `Grok vs. @${human.author_handle}: ${t.charAt(0).toUpperCase() + t.slice(1)}`;
-  } catch { return suggestHeadline(tweets, human); }
-}
-
-// 1-2 topics from the root question + the overall thread: Workers AI picks from TOPICS, validated; keyword fallback.
-async function aiTopics(env, tweets, annotations = []) {
-  const kw = suggestTopics(tweets.map(w => w.text), annotations);
-  if (!env.AI) return kw;
-  try {
-    const clean = s => String(s || '').replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').trim();
-    const rest = tweets.slice(1).map(w => `${w.author_id === GROK_ID ? 'Grok' : 'Human'}: ${clean(w.text).slice(0, 160)}`).join('\n').slice(0, 2500);
-    const r = await env.AI.run(AI_MODEL, { max_tokens: 16, temperature: 0, messages: [
-      { role: 'system', content: `You categorize X threads. Allowed topics: ${TOPICS.join(', ')}. Judge mainly by what the ROOT post asks, then the thread as a whole; ignore passing jokes, emojis and side remarks. A famous person (e.g. Elon Musk) or a company being mentioned is not Politics; use Politics only for government, elections, parties, policy or wars. Reply with ONLY one topic, or two separated by a comma when both clearly apply. Use Wild Card only if nothing fits.` },
-      { role: 'user', content: `ROOT: ${clean(tweets[0]?.text).slice(0, 500)}\n\nTHREAD:\n${rest}` }] });
-    const out = [];
-    for (const part of String(r?.response || '').split(/[,\n]/)) { const t = TOPICS.find(x => x.toLowerCase() === part.trim().replace(/[."*]/g, '').toLowerCase()); if (t && !out.includes(t)) out.push(t); }
-    const res = out.filter(t => t !== 'Wild Card' || out.length === 1).slice(0, 2);
-    return res.length ? res : kw;
-  } catch { return kw; }
 }
 
 // Re-build an existing pending post in place (chain + auto headline), keeping its id, votes and admin edits to topics.

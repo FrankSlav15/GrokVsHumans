@@ -1,0 +1,8 @@
+{
+  "response": "Philosophy, Science",
+  "usage": {
+    "prompt_tokens": 420,
+    "completion_tokens": 4,
+    "total_tokens": 424
+  }
+}

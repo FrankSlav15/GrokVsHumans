@@ -1,0 +1,17 @@
+{
+  "object": "chat.completion",
+  "model": "@cf/ibm-granite/granite-4.0-h-micro",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": [
+          { "type": "text", "text": "Philosophy" },
+          { "type": "text", "text": ", Science" }
+        ]
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}
