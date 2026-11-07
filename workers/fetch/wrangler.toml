@@ -36,6 +36,8 @@ crons = ["0 11,23 * * *", "*/10 * * * *", "0 13,14 * * *"]   # last one: 08:00 C
 
 [ai]
 binding = "AI"
+# Title/topic model is AI_MODEL in src/tagging.js (@cf/ibm-granite/granite-4.0-h-micro).
+# Switch and rollback: docs/fetch-ai-model.md. The retired Llama 3.2 3B id is not configured here.
 
 # Daily moderation digest (Email Routing). Destination must be a verified Email Routing address.
 [[send_email]]

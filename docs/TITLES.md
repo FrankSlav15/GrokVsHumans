@@ -8,7 +8,8 @@ If the opener asked once and someone else carried the debate, title it after tha
 Ties: the first of the tied humans in the chain.
 
 - Code: `mainHuman()` in `server/v2.js`, same rule as `buildChain()` in `workers/fetch` (stored as `posts.human_handle`).
-  gvh-fetch AI titles (`aiHeadline`) and the fallback (`suggestHeadline`) use it; rebuilds re-sync `human_handle`.
+  gvh-fetch AI titles (`aiHeadline` in `workers/fetch/src/tagging.js`) and the fallback (`suggestHeadline`) use it; rebuilds re-sync `human_handle`.
+  The title/topic model and how to deploy or roll it back: `docs/fetch-ai-model.md`.
 - Check: `/admin/queue` (list and batch view) flags `⚠ title @ is not main human @…` when the headline's (or the
   suggested review title's) @handle differs from `posts.human_handle`.
 - Manual reviews / pre-reviews (docs/review-*.md, suggested titles in `posts.review_title`): apply the same rule.

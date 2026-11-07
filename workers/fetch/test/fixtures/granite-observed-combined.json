@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-granite-observed",
+  "object": "chat.completion",
+  "created": 1762000002,
+  "model": "@cf/ibm-granite/granite-4.0-h-micro",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"topic\":\"Gas Price Drop Post-Midterms\",\"tags\":[\"Politics\",\"Money\"]}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 240,
+    "completion_tokens": 22,
+    "total_tokens": 262
+  }
+}

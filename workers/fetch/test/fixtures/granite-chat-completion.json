@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-granite-headline",
+  "object": "chat.completion",
+  "created": 1762000000,
+  "model": "@cf/ibm-granite/granite-4.0-h-micro",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Are humans just meat computers?"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 176,
+    "completion_tokens": 7,
+    "total_tokens": 183
+  }
+}
