@@ -131,12 +131,13 @@ async function build({ request, env }) {
     const T = {}; for (const r of topics.results) (T[r.post_id] ||= []).push(r.topic);
     const W = {}; for (const r of tweets.results) (W[r.post_id] ||= []).push({
       id: r.tweet_id, pos: r.pos, handle: r.author_handle, name: r.author_name, avatar: r.author_avatar, verified: !!r.verified,
-      grok: !!r.is_grok, text: r.text, media: JSON.parse(r.media_json || '[]'), created_at: r.created_at });
+      grok: !!r.is_grok, text: r.text, ...goneMedia(r), created_at: r.created_at, ...(r.gone ? { gone: r.gone } : {}) });
     const fill = p => {
       p.topics = (T[p.id] || []).sort((a, b) => TOPICS.indexOf(a) - TOPICS.indexOf(b));
       p.tweets = W[p.id] || [];
       // Link the deepest stored reply: X renders its whole parent chain above it.
-      if (p.tweets.length) p.url = `https://x.com/i/status/${p.tweets[p.tweets.length - 1].id}`;
+      const live = p.tweets.filter(w => !w.gone);
+      if (live.length) p.url = `https://x.com/i/status/${live[live.length - 1].id}`;
       p.mine = { vote: M[p.id]?.v || null, react: Number(M[p.id]?.r || 0) };
     };
     for (const p of page) {
@@ -150,6 +151,14 @@ async function build({ request, env }) {
   return json({ view, range, topic, topics: TOPICS, signedIn: !!viewer, posts, total, offset, next });
 }
 
+// A tweet X no longer serves keeps its saved text; media is shown only when we host it (same-origin path),
+// because X's CDN links for deleted/private posts break. media_gone = how many items were dropped.
+function goneMedia(r) {
+  const m = JSON.parse(r.media_json || '[]');
+  if (!r.gone) return { media: m };
+  const keep = m.filter(x => x.type === 'quote' ? true : typeof x.url === 'string' && x.url.startsWith('/') && !x.video);
+  return { media: keep, media_gone: m.length - keep.length };
+}
 function mainsOf(raw) { const v = jsonOf(raw); return Array.isArray(v) ? v.map(x => String(x).replace(/^@/, '')).filter(Boolean) : []; }
 function jsonOf(raw) { if (!raw) return null; if (typeof raw === 'object') return raw; try { return JSON.parse(raw); } catch { return null; } }
 function publishPost(p) {
