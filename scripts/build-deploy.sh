@@ -28,3 +28,5 @@ grep -l 'include:' "$OUT"/*.html && { echo "unresolved include"; exit 1; } || tr
 # Cache-bust the non-fingerprinted v2 CSS/JS (served with max-age=14400) so a deploy reaches phones/iPads at once.
 V="$(git -C "$REPO" rev-parse --short HEAD 2>/dev/null || date +%s)$( [ -n "$(git -C "$REPO" status --porcelain 2>/dev/null)" ] && echo -d$(date +%s) || true)"
 sed -i -E "s#(/assets/(v2|admin)/[a-z0-9_-]+\.(css|js))\"#\1?v=$V\"#g" "$OUT"/*.html
+# feed.js is a module and imports ./branch-render.js. Stamp that import too, or phones keep a stale layout.
+find "$OUT/assets" -name '*.js' -print0 | xargs -0 sed -i -E "s#(from ['\"]\\./[^'\"]+\\.js)(['\"])#\\1?v=$V\\2#g"

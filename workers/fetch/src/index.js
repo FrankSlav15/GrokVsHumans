@@ -10,6 +10,8 @@ import { rebuildConfig, parseStatusUrl } from '../../../server/config.js';
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
 import { TOPICS, suggestTopics, suggestHeadline, mainHuman, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
+import { isOpeningTweet } from '../../../server/qualify.js';
+import { addOpening } from './branches.js';
 
 const API_DEFAULT = 'https://api.x.com/2';
 let API = API_DEFAULT;
@@ -156,6 +158,7 @@ function fromApi(t, users, media = {}, tweets = {}) {
     author_name: u.name || null, author_avatar: u.profile_image_url ? u.profile_image_url.replace('_normal.', '_bigger.') : null,
     verified: u.verified ? 1 : 0, text: turnText(t.note_tweet?.text || t.text || '', m), media: m,
     created_at: t.created_at ? Math.floor(Date.parse(t.created_at) / 1000) : null,
+    raw: t.note_tweet?.text || t.text || '',
     parent: (t.referenced_tweets || []).find(x => x.type === 'replied_to')?.id || null,
     conversation_id: t.conversation_id || null,
     likes: t.public_metrics?.like_count || 0, replies: t.public_metrics?.reply_count || 0,
@@ -198,6 +201,35 @@ async function conversation(env, b, conv, froms, pages = 1, { reserve = 0 } = {}
     token = r.json.meta?.next_token; if (!token) break;
   }
   return { map };
+}
+
+// One paid search for every Grok reply and every post addressed to Grok in a conversation.
+// Used when an admin or a suggestion adds the opening post. Page size is chosen by the caller
+// so the estimate fits the per-add cap. Parents X includes are kept (context posts).
+async function branchSearch(env, b, conv, maxResults) {
+  const mr = Math.min(100, Math.max(10, maxResults));
+  const params = {
+    query: `conversation_id:${conv} (from:grok OR to:grok) -is:retweet lang:en`,
+    max_results: String(mr),
+    'tweet.fields': 'created_at,referenced_tweets,author_id,in_reply_to_user_id,conversation_id,note_tweet,public_metrics,attachments',
+    expansions: 'author_id,attachments.media_keys,referenced_tweets.id,referenced_tweets.id.author_id',
+    'user.fields': USER_FIELDS, 'media.fields': MEDIA_FIELDS,
+  };
+  const r = await xGet(env, b, '/tweets/search/recent', params, 'expand', Math.ceil(mr * 1.4));
+  if (r.capped) return { capped: r.capped, tweets: [] };
+  if (!r.ok) return { tweets: [], error: r.status };
+  const users = Object.fromEntries((r.json.includes?.users || []).map(u => [u.id, u]));
+  const media = mediaMap(r.json);
+  const all = [...(r.json.data || []), ...(r.json.includes?.tweets || [])];
+  const byId = Object.fromEntries(all.map(t => [t.id, t]));
+  const tweets = [];
+  const seen = new Set();
+  for (const t of all) {
+    if (seen.has(t.id)) continue;
+    seen.add(t.id);
+    tweets.push(fromApi(t, users, media, byId));
+  }
+  return { tweets };
 }
 
 // Rebuild the full exchange around one Grok post:
@@ -435,6 +467,12 @@ async function suggestionOne(env, b, s) {
   if (first.capped) return { state: 'queued', result: 'capped:' + first.capped };
   const w = first.rows.get(s.tweet_id);
   if (!w) return { state: 'failed', result: 'post not found (deleted, private or not visible to the API)' };
+  // The opening post of a conversation: one search, every qualifying argument becomes its own pending battle.
+  // Any later post keeps the single-chain build below.
+  if (isOpeningTweet(w)) return addOpening(env, b, w, s, {
+    search: max => branchSearch(env, b, w.conversation_id || w.tweet_id, max),
+    lookup: ids => lookup(env, b, ids, 'chain'),
+  });
   let grok = null, conv = w.conversation_id;
   if (w.author_id === GROK_ID) grok = w.tweet_id;
   else if (w.parent && first.rows.get(w.parent)?.author_id === GROK_ID) grok = w.parent;
@@ -617,13 +655,14 @@ async function adminAdd(env, tweetId, adminXId, adminHandle) {
     .catch(e => ({ state: 'failed', result: 'error:' + String(e.message || e).slice(0, 80) }));
   const left = await adminUsed(env);
   const out = { tweet_id: tweetId, cost: Math.round(b.spent * 1000) / 1000, admin_spent_month: Math.round(left * 1000) / 1000, admin_cap: cap, admin_available: Math.round((cap - left) * 1000) / 1000, result: res.result || null };
+  const extra = { battles: res.battles || (res.post_id ? 1 : 0), thread_id: res.thread_id || null, post_ids: res.post_ids || (res.post_id ? [res.post_id] : []), rejected: res.rejected || 0, reasons: res.reasons || null };
   if (res.state === 'fetched') {
     if (b.capped) await env.DB.prepare("UPDATE posts SET rebuild_note = 'quick-add hit the admin allowance; thread may be incomplete' WHERE id = ?1").bind(res.post_id).run();
-    return { ok: true, post_id: res.post_id, partial: !!b.capped, ...out };
+    return { ok: true, post_id: res.post_id, partial: !!b.capped, ...out, ...extra };
   }
-  if (res.state === 'duplicate') return { error: 'duplicate', post_id: res.post_id || null, ...out };
-  if (res.state === 'queued') return { error: CAP_ERR(res.result), ...out };
-  return { error: 'failed', ...out };
+  if (res.state === 'duplicate') return { error: 'duplicate', post_id: res.post_id || null, ...out, ...extra };
+  if (res.state === 'queued') return { error: CAP_ERR(res.result), ...out, ...extra };
+  return { error: 'failed', ...out, ...extra };
 }
 // Cron: process the oldest deferred quick-add if budget allows. Free pre-check (D1 only) so a capped month does not log every tick.
 async function runDeferredAdds(env) {

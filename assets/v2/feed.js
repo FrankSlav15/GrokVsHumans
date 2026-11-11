@@ -1,6 +1,7 @@
 // Grok vs. Humans v2 feed. Data: /api/feed (approved posts only). Actions need Sign in with X.
+import { renderBranchThread } from './branch-render.js';
 (function () {
-  const S = { view: 'hot', topic: 'All', hof: 'all', posts: [], next: null, busy: false, topics: [], user: null, open: new Set(), sheet: null };
+  const S = { view: 'hot', topic: 'All', hof: 'all', posts: [], next: null, busy: false, topics: [], user: null, open: new Set(), sheet: null, feat: {} };
   const $ = s => document.querySelector(s);
   // /projects reuses this whole feed (auth, paging, seen, comments, translate, share) with project cards.
   const PROJ = location.pathname.replace(/\/+$/, '') === '/projects';
@@ -99,15 +100,18 @@
     const k = 'post_turn|' + w._k, tr = TR.get(k), shown = tr && tr.on ? tr.text : w.text;
     const hasText = !!String(w.text || '').trim(), hasMedia = (w.media || []).length > 0;
     const url = `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`;
-    return `<div class="tw ${w.grok ? 'tw--grok' : 'tw--human'}" data-trk="${esc(k)}">
+    const linked = linkX(shown);
+    const body = w._branch ? linked.replace(/@grok\b/gi, m => `<mark class="gmention">${m}</mark>`) : linked;
+    const called = w._branch && !w.grok && /@grok\b/i.test(String(w.text || ''));
+    return `<div class="tw ${w.grok ? 'tw--grok' : 'tw--human'}${w._ctx ? ' tw--ctx' : ''}" data-trk="${esc(k)}">
       <div class="tw__h">
         <a href="https://x.com/${encodeURIComponent(w.handle)}" target="_blank" rel="noopener noreferrer" class="tw__who">
           <img class="tw__av" src="${esc(w.avatar || '')}" alt="" loading="lazy" referrerpolicy="no-referrer">
           <span class="tw__n">${esc(w.name || w.handle)}${w.verified ? ' <i class="fa-solid fa-circle-check tw__v" aria-label="verified"></i>' : ''}</span>
-          <span class="tw__u">@${esc(w.handle)}</span>${w.grok ? '<span class="tw__badge" aria-hidden="true">Grok</span>' : ''}</a>
+          <span class="tw__u">@${esc(w.handle)}</span>${w.grok ? '<span class="tw__badge" aria-hidden="true">Grok</span>' : ''}${called ? '<span class="gcall">📣 Called @grok</span>' : ''}${w._ctx ? '<span class="ctxtag">CONTEXT</span>' : ''}</a>
         <a href="${url}" target="_blank" rel="noopener noreferrer" class="tw__x" aria-label="View on X">${X_SVG}</a>
       </div>
-      ${hasText ? `<p class="tw__t" data-trt>${linkX(shown)}</p>${trBar(k, w.text)}` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media, `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`)}
+      ${hasText ? `<p class="tw__t" data-trt>${body}</p>${trBar(k, w.text)}` : hasMedia ? '' : `<p class="tw__t tw__t--none">This reply has no text. <a href="https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}" target="_blank" rel="noopener noreferrer">View it on X</a></p>`}${media(w.media, `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`)}
       <a class="tw__time" href="${url}" target="_blank" rel="noopener noreferrer">${esc(stamp(w.created_at))}</a>
     </div>`;
   }
@@ -168,6 +172,7 @@
   }
   function card(p, rank) {
     if (p.kind === 'project') return pcard(p);
+    if (p.battles && p.battles.length > 1) return renderBranchThread(p, { esc, ago, turn, rank, featuredId: S.feat[p.id], isSeen: isSeen(p), view: S.view, xSvg: X_SVG });
     const t = p.votes.grok + p.votes.human, gp = t ? Math.round(p.votes.grok / t * 100) : 50;
     return `<article class="post${p.promoted ? ' post--promo' : ''}${isSeen(p) ? ' is-seen' : ''}" data-id="${p.id}" id="p${p.id}">
       ${p.promoted ? `<div class="promo" title="Paid placement until ${esc(new Date(p.promoted.until * 1000).toLocaleString())}"><span class="promo__star" aria-hidden="true">⭐</span> Featured <span class="promo__paid">Paid placement</span></div>` : ''}
@@ -278,10 +283,11 @@
       + (S.view === 'hot' ? `<label class="seenchip__t"><input type="checkbox" data-seen="first" ${UNSEEN_FIRST() ? 'checked' : ''}><span>Unseen<span class="seenchip__w"> first</span></span></label><span class="seenchip__sep" aria-hidden="true"></span>` : '')
       + `<button class="seenchip__r" data-seen="reset" ${SEEN.size ? '' : 'disabled'} aria-label="Reset seen${SEEN.size ? ' (' + SEEN.size + ' posts)' : ''}" title="Forget which posts you have seen"><span aria-hidden="true">↺</span> Reset${SEEN.size ? ' <span class="seenchip__n">' + SEEN.size + '</span>' : ''}</button></span>`); }
   // Re-render only the post's chrome (votes, reactions, counts) and keep the already-rendered embeds.
-  const rerender = (p, full) => { const el = document.getElementById('p' + p.id); if (!el) return; const i = S.posts.indexOf(p);
-    const tmp = document.createElement('div'); tmp.innerHTML = card(p, S.view === 'hall' ? i + 1 : 0); const fresh = tmp.firstElementChild;
-    if (!full) { const ex = el.querySelector('.ex'), nx = fresh.querySelector('.ex'); if (ex && nx) nx.replaceWith(ex); }
-    el.replaceWith(fresh); if (full) watch(fresh); autoWatch(fresh); };
+  const hostOf = p => !p ? p : (S.posts.find(x => x.id === p.id) || S.posts.find(x => x.battles?.some(b => b.id === p.id)) || p);
+  const rerender = (p, full) => { const host = hostOf(p); const el = document.getElementById('p' + host.id); if (!el) return; const i = S.posts.indexOf(host);
+    const tmp = document.createElement('div'); tmp.innerHTML = card(host, S.view === 'hall' ? i + 1 : 0); const fresh = tmp.firstElementChild;
+    if (!full && !host.battles) { const ex = el.querySelector('.ex'), nx = fresh.querySelector('.ex'); if (ex && nx) nx.replaceWith(ex); }
+    el.replaceWith(fresh); if (full) watch(fresh); autoWatch(fresh); seenWatch(fresh); };
 
   const feedQ = extra => { if (PROJ) return '/api/projects?' + new URLSearchParams({ view: S.view, ...extra });
     const q = new URLSearchParams({ view: S.view, range: S.hof, ...extra }); if (S.topic !== 'All') q.set('topic', S.topic); return '/api/feed?' + q; };
@@ -518,30 +524,38 @@
     if (a.dataset.act === 'more') return more();
     if (a.dataset.act === 'retry') return load();
     const el = a.closest('.post'), p = S.posts.find(x => x.id === el?.dataset.id), act = a.dataset.act;
-    if (p && ['vote', 'react', 'comments', 'expand', 'share', 'pvote'].includes(act)) markSeen(p, 1);
+    if (!p) return;
+    if (act === 'branch') {
+      S.feat[p.id] = a.dataset.bid; rerender(p, true);
+      if (a.hasAttribute('data-top')) document.getElementById('p' + p.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    const bid = a.closest('[data-battle]')?.dataset.battle;
+    const target = bid && p.battles ? (p.battles.find(b => String(b.id) === String(bid)) || p) : p;
+    if (['vote', 'react', 'comments', 'expand', 'share', 'pvote'].includes(act)) markSeen(p, 1);
     if (act === 'expand') { S.open.add(p.id); return rerender(p, true); }
-        if (act === 'comments') return openSheet(p);
-    if (act === 'feature') return S.user ? openFeature(p) : needSignIn('feature a thread', location.pathname + '#p' + p.id);
+        if (act === 'comments') return openSheet(target);
+    if (act === 'feature') return S.user ? openFeature(target) : needSignIn('feature a thread', location.pathname + '#p' + target.id);
     if (act === 'share') {
-      const url = location.origin + (PROJ ? '/projects#p' : '/#p') + p.id;
-      if (navigator.share) return navigator.share(PROJ ? { title: p.name, text: 'Built with SI, on Grok vs. Humans:', url } : { title: p.headline || 'Grok vs. Humans', text: 'Who won? Vote:', url }).catch(() => {});
+      const url = location.origin + (PROJ ? '/projects#p' : '/#p') + target.id;
+      if (navigator.share) return navigator.share(PROJ ? { title: target.name || target.headline, text: 'Built with SI, on Grok vs. Humans:', url } : { title: target.headline || 'Grok vs. Humans', text: 'Who won? Vote:', url }).catch(() => {});
       return navigator.clipboard.writeText(url).then(() => toast('Link copied'), () => toast(url));
     }
-    if (!S.user) return needSignIn(act === 'vote' || act === 'pvote' ? 'vote' : 'react', location.pathname + location.search + '#p' + p.id);
+    if (!S.user) return needSignIn(act === 'vote' || act === 'pvote' ? 'vote' : 'react', location.pathname + location.search + '#p' + target.id);
     if (act === 'pvote') {
       const v = Number(a.dataset.v), r = await post('/api/project-vote', { id: p.id, value: p.mine.vote === v ? 0 : v });
       if (!r.ok) return toast(ERR[r.data.error] || 'Vote failed');
       Object.assign(p, { up: r.data.up, down: r.data.down }); p.mine.vote = r.data.mine; return rerender(p);
     }
     if (act === 'vote') {
-      const choice = p.mine.vote === a.dataset.v ? null : a.dataset.v;
-      const r = await post('/api/vote', { type: 'post', id: p.id, choice });
+      const choice = target.mine.vote === a.dataset.v ? null : a.dataset.v;
+      const r = await post('/api/vote', { type: 'post', id: target.id, choice });
       if (!r.ok) return toast(ERR[r.data.error] || 'Vote failed');
-      p.votes = r.data.votes; p.mine.vote = r.data.mine; rerender(p);
+      target.votes = r.data.votes; target.mine.vote = r.data.mine; rerender(p);
     } else if (act === 'react') {
-      const v = Number(a.dataset.v), r = await post('/api/react', { type: 'post', id: p.id, value: p.mine.react === v ? 0 : v });
+      const v = Number(a.dataset.v), r = await post('/api/react', { type: 'post', id: target.id, value: target.mine.react === v ? 0 : v });
       if (!r.ok) return toast(ERR[r.data.error] || 'Failed');
-      Object.assign(p, { likes: r.data.likes, dislikes: r.data.dislikes }); p.mine.react = r.data.mine; rerender(p);
+      Object.assign(target, { likes: r.data.likes, dislikes: r.data.dislikes }); target.mine.react = r.data.mine; rerender(p);
     }
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.sheet) closeSheet(); });
@@ -573,7 +587,7 @@
     if (!S.user) return needSignIn('suggest a thread', location.pathname + '?suggest=1');
     const c = await cfg();
     panel('💡 Suggest a thread', `<form id="sgf" class="sx__form">
-      <label class="fld"><span>Link to the post on X</span><input name="url" type="url" inputmode="url" autocomplete="off" required placeholder="https://x.com/user/status/…" aria-describedby="sg-hint"><small class="hint" id="sg-hint">Paste the link to the LAST reply in the thread. We'll follow it back up to the original post automatically.</small></label>
+      <label class="fld"><span>Link to the post on X</span><input name="url" type="url" inputmode="url" autocomplete="off" required placeholder="https://x.com/user/status/…" aria-describedby="sg-hint"><small class="hint" id="sg-hint">Paste the opening post to collect every argument with Grok, or a later post to add just that one argument.</small></label>
       <label class="fld"><span>Note <em>(optional)</em></span><textarea name="note" rows="2" maxlength="280" placeholder="Why is this one good?"></textarea></label>
       <fieldset class="fld"><legend>⭐ Feature it at the top of Hot? <em>(optional, paid)</em></legend>${tierPicker(c.tiers || [], 'tier', true)}</fieldset>
       <button class="pill-btn" type="submit">Send suggestion</button>

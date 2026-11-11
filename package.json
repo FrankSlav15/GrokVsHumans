@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "node --experimental-detect-module --test server/qualify.test.js assets/v2/branch-render.test.js workers/fetch/src/branches.test.js"
+  }
+}

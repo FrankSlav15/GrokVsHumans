@@ -379,3 +379,62 @@ a.tab{text-decoration:none;display:inline-flex;align-items:center}
 /* Seen chip: solid, readable outline everywhere; compact on phones where it sits right after "All". */
 .seenchip{border:1px solid rgba(192,132,252,.45);color:#d4d4d8;background:rgba(24,24,27,.85)}
 @media (max-width:699px){.seenchip{min-height:36px;padding:0 .2rem 0 .55rem;gap:.2rem;font-size:.72rem}.seenchip__w{display:none}.seenchip__r{min-width:36px;min-height:36px;padding:0 .35rem}}
+
+/* Branching battles (layout E). Scoped so a one-battle post keeps the existing card. */
+.post--branches .sec{color:var(--muted);font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;margin:.7rem .2rem 0}
+.post--branches .branch-root{margin-top:.2rem}
+.post--branches .map{background:transparent;border:1px solid #232327;border-radius:1.1rem;padding:.8rem;margin:.7rem .75rem 0}
+.post--branches .map h3{margin:0 0 .5rem;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.post--branches .tree{list-style:none;margin:.3rem 0 0 16px;padding:0 0 0 14px;border-left:2px solid #6d28d9}
+.post--branches .tree li{position:relative;margin:.4rem 0}
+.post--branches .tree li:before{content:"";position:absolute;left:-14px;top:22px;width:12px;border-top:2px solid #6d28d9}
+.post--branches .node{display:flex;align-items:center;gap:.5rem;width:100%;background:#202024;border:1px solid #3f3f46;border-radius:999px;padding:.3rem .7rem .3rem .3rem;min-height:44px;text-align:left;min-width:0}
+.post--branches .node img{width:30px;height:30px;border-radius:50%;background:#27272a;object-fit:cover}
+.post--branches .node b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.85rem}
+.post--branches .node.on{border-color:#a855f7;background:#2e1065}
+.post--branches .node small{color:var(--muted);font-size:.72rem;flex:0 0 auto}
+.post--branches .mini{display:flex;gap:.6rem;align-items:center;background:transparent;border:1px solid #232327;border-radius:1rem;padding:.6rem .8rem;cursor:pointer;width:calc(100% - 1.5rem);text-align:left;min-height:56px;margin:.45rem .75rem}
+.post--branches .mini img{width:40px;height:40px;border-radius:50%;background:#27272a;object-fit:cover;flex:0 0 40px}
+.post--branches .mini span{min-width:0}
+.post--branches .mini b{display:block;color:#fff;font-size:.92rem;overflow-wrap:anywhere}
+.post--branches .mini small{color:var(--muted)}
+.post--branches .nextb{display:block;margin:.7rem auto .8rem;background:linear-gradient(90deg,#a855f7,#22d3ee);border:0;border-radius:999px;padding:.6rem 1.3rem;font-weight:800;color:#0b0614;min-height:44px;max-width:calc(100% - 1.5rem)}
+.post--branches .flag{font-size:.65rem;font-weight:800;padding:.2rem .45rem;border-radius:4px;background:#4c0519;color:#fecdd3}
+.post--branches .ctxlbl{font-size:.75rem;color:var(--muted);margin:0 0 .15rem}
+.post--branches .ctxlbl a{color:#7dd3fc}
+.post--branches .tw--ctx{opacity:.72}
+.post--branches .tw--ctx.tw--human{box-shadow:inset 0 0 0 1px #33333b,inset 3px 0 0 #71717a}
+.post--branches .ctxtag{font-size:.6rem;font-weight:800;padding:.2rem .35rem;border-radius:4px;background:#27272a;color:#a1a1aa;letter-spacing:.05em}
+.post--branches .ctxsep{border-top:1px dashed #3f3f46;margin:.35rem 0}
+.post--branches .gmention{background:#2e1065;color:#e9d5ff;font-weight:800;border-radius:4px;padding:0 .2rem;box-shadow:inset 0 0 0 1px #a855f7}
+.post--branches .gcall{font-size:.6rem;font-weight:800;padding:.2rem .4rem;border-radius:999px;background:#3b0764;color:#e9d5ff;border:1px solid #a855f7;white-space:nowrap}
+.post--branches .crew{font-size:.75rem;color:#fda4af;text-align:center;padding:.4rem .9rem 0;overflow-wrap:anywhere;line-height:1.45}
+.post--branches .crew a{color:#fecdd3;text-decoration:none;font-weight:700}
+.post--branches .crew b{color:#fda4af}
+.post--branches .post__title,.post--branches .msg__h a{overflow-wrap:anywhere}
+.post--branches .vote{display:flex;gap:6px}
+.post--branches .vote .v-grok{flex:0 0 auto;padding:0 .75rem}
+.post--branches .vote .v-human{flex:1 1 auto;min-width:0;padding:0 .6rem}
+.post--branches .vote button{min-width:0;gap:.35rem}
+.post--branches .vote .v-who{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.post--branches .vote .n{flex:0 0 auto}
+.post--branches .vote .v-plus{flex:0 0 auto;font-size:.8rem;background:rgba(0,0,0,.25);border-radius:999px;padding:.05rem .45rem}
+@media (max-width:520px){
+  .post--branches .vote{gap:5px;padding:0 .6rem}
+  .post--branches .vote button{font-size:14px;gap:.25rem}
+  .post--branches .vote .v-grok{padding:0 .6rem}
+  .post--branches .vote .v-human{padding:0 .5rem}
+  .post--branches .vote .n{font-size:1.05rem}
+  .post--branches .vote .v-plus{font-size:.72rem;padding:.05rem .35rem}
+}
+@media (min-width:521px){.post--branches .vote .n{font-size:1.15rem}}
+/* Thread line through the human-bubble dot on phone and iPad widths. Single posts keep the existing rule. */
+@media (max-width:1024px){
+  .post--branches .ex::before{left:calc(.75rem + 7px)}
+  .post--branches .tw--human::after{left:-19px;top:14px}
+}
+@media (max-width:420px){
+  .post--branches .ex::before{left:calc(.6rem + 5px)}
+  .post--branches .tw--human{margin-left:18px}
+  .post--branches .tw--human::after{left:-17px;top:13px}
+}

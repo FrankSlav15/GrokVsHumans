@@ -14,9 +14,15 @@
     const cost = d.cost != null ? ' · cost $' + Number(d.cost).toFixed(3) + ' (admin allowance left $' + Number(d.admin_available ?? 0).toFixed(2) + ' · used $' + Number(d.admin_spent_month || 0).toFixed(2) + ' of $' + Number(d.admin_cap || 0).toFixed(2) + ' accrued this month)' : '';
     if (r.ok && d.post_id) {
       inp.value = ''; inp.blur();
-      say('Added #' + d.post_id + ': ' + (d.post?.headline || '') + (d.partial ? ' (thread may be incomplete)' : '') + cost, 'ok');
+      const many = d.battles > 1 ? ' · ' + d.battles + ' battles in thread ' + d.thread_id + ', all pending' : '';
+      say('Added #' + d.post_id + ': ' + (d.post?.headline || '') + many + (d.partial ? ' (thread may be incomplete)' : '') + cost, 'ok');
       if (typeof window.load === 'function') { try { await window.load(); } catch {} }
-      if (window.openPreview) window.openPreview(Number(d.post_id), [Number(d.post_id)]);
+      if (window.openPreview) window.openPreview(Number(d.post_id), (d.post_ids || [d.post_id]).map(Number));
+      return;
+    }
+    if (d.result === 'no_qualifying_battle' || (d.error === 'failed' && String(d.result || '').indexOf('no_qualifying') === 0)) {
+      const why = (d.reasons || []).slice(0, 3).join(' · ');
+      say('No qualifying battle' + (d.rejected ? ' (' + d.rejected + ' logged)' : '') + (why ? ': ' + why : '') + cost, 'err');
       return;
     }
     if (d.deferred) { inp.value = ''; say('Saved — will fetch automatically when X budget allows (' + ({ month_cap: 'monthly X cap reached', admin_cap: 'admin allowance used up (+$1 tomorrow)', day_cap: 'daily cap reached' }[d.reason] || d.reason) + ')', 'ok'); return; }
