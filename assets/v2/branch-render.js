@@ -94,7 +94,7 @@ function battleBlock(b, h, nxt) {
       <button type="button" class="act act--feat" data-act="feature" aria-label="Feature this battle"><i class="fa-solid fa-star"></i></button>
       <button type="button" class="act" data-act="share" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
     </div>
-    <a class="xlink" href="${esc(xurl)}" target="_blank" rel="noopener noreferrer">${h.xSvg || ''} View thread on X</a>
+    ${last || !(b.tweets || []).length ? `<a class="xlink" href="${esc(xurl)}" target="_blank" rel="noopener noreferrer">${h.xSvg || ''} View thread on X</a>` : '<span class="xlink xlink--gone">This thread is no longer on X; saved copy shown.</span>'}
     ${next}
   </section>`;
 }
