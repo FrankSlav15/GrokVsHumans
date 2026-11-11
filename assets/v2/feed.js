@@ -97,6 +97,7 @@ import { renderBranchThread } from './branch-render.js';
     return `<a class="tw__q" href="${url}" target="_blank" rel="noopener noreferrer"><span class="tw__qh">${q.name ? `<b>${esc(q.name)}</b> ` : ''}${q.handle ? '@' + esc(q.handle) : 'Quoted post'}</span>${q.text ? `<span class="tw__qt">${esc(q.text)}</span>` : '<span class="tw__qt">View the quoted post on X</span>'}</a>`;
   }
   function turn(w) {
+    if (w.gone) return goneTurn(w);
     const k = 'post_turn|' + w._k, tr = TR.get(k), shown = tr && tr.on ? tr.text : w.text;
     const hasText = !!String(w.text || '').trim(), hasMedia = (w.media || []).length > 0;
     const url = `https://x.com/${encodeURIComponent(w.handle || 'i')}/status/${encodeURIComponent(w.id)}`;
@@ -115,6 +116,26 @@ import { renderBranchThread } from './branch-render.js';
       <a class="tw__time" href="${url}" target="_blank" rel="noopener noreferrer">${esc(stamp(w.created_at))}</a>
     </div>`;
   }
+  // A tweet X no longer serves (deleted / account now private), shown from the saved copy: no links to x.com
+  // (they would break), a small label, only self-hosted media (the API strips the rest).
+  function goneTurn(w) {
+    const k = 'post_turn|' + w._k, tr = TR.get(k), shown = tr && tr.on ? tr.text : w.text;
+    const label = w.gone === 'protected' ? 'Account now private' : 'Deleted on X';
+    const txt = String(shown || '').trim() ? esc(shown) : '';
+    const body = w._branch ? txt.replace(/@grok\b/gi, m => `<mark class="gmention">${m}</mark>`) : txt;
+    const lost = w.media_gone ? `<p class="tw__gm">${w.media_gone === 1 ? 'An image or video was' : w.media_gone + ' images or videos were'} attached; X no longer serves ${w.media_gone === 1 ? 'it' : 'them'}.</p>` : '';
+    return `<div class="tw ${w.grok ? 'tw--grok' : 'tw--human'} tw--gone${w._ctx ? ' tw--ctx' : ''}" data-trk="${esc(k)}">
+      <div class="tw__h">
+        <span class="tw__who">
+          <span class="tw__n">${esc(w.name || w.handle)}</span>
+          <span class="tw__u">@${esc(w.handle)}</span>${w.grok ? '<span class="tw__badge" aria-hidden="true">Grok</span>' : ''}${w._ctx ? '<span class="ctxtag">CONTEXT</span>' : ''}</span>
+        <span class="tw__gone" title="Saved copy: this post is no longer available on X">${label}</span>
+      </div>
+      ${body ? `<p class="tw__t" data-trt>${body}</p>${trBar(k, w.text)}` : '<p class="tw__t tw__t--none">No text was saved for this post.</p>'}${media(w.media, '')}${lost}
+      <span class="tw__time">${esc(stamp(w.created_at))} · saved copy</span>
+    </div>`;
+  }
+  const lastLive = p => (p.tweets || []).filter(w => !w.gone).pop();
   // Threads over 5 turns show the first 2 and last 2; "Show full thread" expands inline (never leaves the site).
   const thread = p => { const w = p.tweets; w.forEach((x, i) => { x._k = p.id + ':' + (x.pos ?? i); });
     if (w.length <= 5 || S.open.has(p.id)) return `<div class="ex">${w.map(turn).join('')}</div>`;
@@ -195,7 +216,7 @@ import { renderBranchThread } from './branch-render.js';
         <button class="act act--feat" data-act="feature" aria-label="Feature this thread"><i class="fa-solid fa-star"></i></button>
         <button class="act" data-act="share" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
       </div>
-      <a class="xlink" href="${esc(p.tweets?.length ? 'https://x.com/i/status/' + p.tweets[p.tweets.length - 1].id : p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
+      <a class="xlink" href="${esc(lastLive(p) ? 'https://x.com/i/status/' + lastLive(p).id : p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
     </article>`;
   }
   // ---- projects ----

@@ -74,7 +74,7 @@ function battleBlock(b, h, nxt) {
   const mineH = b.mine?.vote === 'human' ? ' is-mine' : '';
   const like = b.mine?.react === 1 ? ' is-like' : '';
   const dislike = b.mine?.react === -1 ? ' is-dislike' : '';
-  const last = (b.tweets || [])[b.tweets.length - 1];
+  const last = (b.tweets || []).filter(w => !w.gone).pop();
   const xurl = last ? 'https://x.com/i/status/' + last.id : (b.url || '#');
   const next = nxt ? `<button type="button" class="nextb" data-act="branch" data-bid="${esc(nxt.id)}" data-top>Next battle: vs. ${esc(voteLabel(nxt.mains || []).text)} →</button>` : '';
   return `<section class="branch" data-battle="${esc(b.id)}">

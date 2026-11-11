@@ -9,7 +9,7 @@ import { rebuildConfig, parseStatusUrl } from '../../../server/config.js';
 // the paid X API v2 (no syndication scraping); the public site shows posts as official X embeds.
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
-import { TOPICS, suggestTopics, suggestHeadline, mainHuman, insertPost, oembedAlive, cleanText, turnText } from '../../../server/v2.js';
+import { TOPICS, suggestTopics, suggestHeadline, mainHuman, insertPost, oembedAlive, oembedStatus, cleanText, turnText } from '../../../server/v2.js';
 import { isOpeningTweet } from '../../../server/qualify.js';
 import { addOpening } from './branches.js';
 
@@ -426,18 +426,33 @@ async function expand(env, b, max = 3, order = 'engagement') {
 
 // Free daily re-check of approved posts via oEmbed: any deleted/protected tweet in the chain hides the post.
 async function recheck(env, b) {
-  const { results } = await env.DB.prepare(`SELECT id FROM posts WHERE status = 'approved' AND COALESCE(last_checked_at, 0) < ?1 ORDER BY COALESCE(last_checked_at, 0) LIMIT 10`).bind(now() - 86400).all();
-  let checked = 0, hidden = 0, updated = 0;
-  for (const { id } of results) {
-    const { results: tw } = await env.DB.prepare('SELECT tweet_id FROM post_tweets WHERE post_id = ?1 ORDER BY pos').bind(id).all();
-    if (b.sub + tw.length > SUB_BUDGET) break;   // one subrequest per oEmbed (no redirect hop, see oembedAlive)
-    let dead = null, unknown = false;
-    for (const t of tw) { b.take(); const a = await oembedAlive(t.tweet_id); if (a === false) { dead = t.tweet_id; break; } if (a === null) unknown = true; }
-    if (dead) { await env.DB.prepare("UPDATE posts SET status='hidden', hidden_reason=?2, last_checked_at=?3 WHERE id=?1").bind(id, 'x_deleted:' + dead, now()).run(); hidden++; updated++; }
-    else if (!unknown) { await env.DB.prepare('UPDATE posts SET last_checked_at=?2, check_failures=0 WHERE id=?1').bind(id, now()).run(); updated++; }
+  // Every stored tweet is checked. A deleted (404) or now-private (403) tweet is marked on its post_tweets row and keeps
+  // rendering from the saved copy. The post is hidden only when a key tweet (the opening post or Grok's reply) is gone
+  // AND no saved copy of it exists (no text and no media), i.e. there is nothing left to show.
+  const { results } = await env.DB.prepare(`SELECT id, grok_tweet_id FROM posts WHERE status = 'approved' AND COALESCE(last_checked_at, 0) < ?1 ORDER BY COALESCE(last_checked_at, 0) LIMIT 10`).bind(now() - 86400).all();
+  let checked = 0, hidden = 0, updated = 0, gone = 0;
+  for (const post of results) {
+    const { results: tw } = await env.DB.prepare('SELECT pos, tweet_id, text, media_json, gone FROM post_tweets WHERE post_id = ?1 ORDER BY pos').bind(post.id).all();
+    if (b.sub + tw.length > SUB_BUDGET) break;   // one subrequest per oEmbed (no redirect hop, see oembedStatus)
+    let unknown = false, lost = null;
+    const marks = [];
+    for (const t of tw) {
+      b.take(); const st = await oembedStatus(t.tweet_id);
+      if (st === null) { unknown = true; continue; }
+      const now_ = st === true ? null : st;
+      if ((t.gone || null) !== now_) marks.push(env.DB.prepare('UPDATE post_tweets SET gone = ?3, gone_at = CASE WHEN ?3 IS NULL THEN NULL ELSE COALESCE(gone_at, ?4) END WHERE post_id = ?1 AND tweet_id = ?2').bind(post.id, t.tweet_id, now_, now()));
+      if (now_) { gone++;
+        const key = t.pos === 0 || t.tweet_id === post.grok_tweet_id;
+        const saved = String(t.text || '').trim() || (t.media_json && t.media_json !== '[]');
+        if (key && !saved && !lost) lost = t.tweet_id; }
+    }
+    if (lost) marks.push(env.DB.prepare("UPDATE posts SET status='hidden', hidden_reason=?2, last_checked_at=?3 WHERE id=?1").bind(post.id, 'x_gone_no_copy:' + lost, now()));
+    else if (!unknown) marks.push(env.DB.prepare('UPDATE posts SET last_checked_at=?2, check_failures=0 WHERE id=?1').bind(post.id, now()));
+    if (marks.length) { await env.DB.batch(marks); updated++; }
+    if (lost) hidden++;
     checked++;
   }
-  return { checked, hidden, updated };
+  return { checked, hidden, updated, gone };
 }
 
 async function usage(env, b) {

@@ -76,6 +76,13 @@ export function cleanText(text, range) {
 }
 
 // oEmbed: free existence check used by the daily re-check of approved posts.
+// 'deleted' (404), 'protected' (403, account now private), true (live) or null (unknown: rate limit, outage, redirect).
+export async function oembedStatus(tweetId, fetchImpl = fetch) {
+  const r = await fetchImpl(`https://publish.x.com/oembed?url=${encodeURIComponent('https://x.com/i/status/' + tweetId)}&omit_script=1`, { redirect: 'manual' });
+  if (r.status === 404) return 'deleted';
+  if (r.status === 403) return 'protected';
+  return r.ok ? true : null;
+}
 export async function oembedAlive(tweetId, fetchImpl = fetch) {
   // publish.x.com directly: publish.twitter.com answers 301 -> publish.x.com, and every redirect hop is one more
   // subrequest (free plan: 50 per invocation). 'manual' so a future redirect costs one hop and reads as unknown.
