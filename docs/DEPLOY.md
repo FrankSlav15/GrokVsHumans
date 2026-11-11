@@ -69,3 +69,7 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
   was invisible. The first X lookup now also includes the 2nd stored post (its real parent comes back with it), so one rebuild finds and fills
   that gap (e.g. a missing Grok reply after a build that hit its per-add budget). Costs ≈ one extra post read (≈$0.005) per rebuild; a `rebuilt:N->M` result means it was filled.
   Rebuilds still use the normal daily/monthly caps (a capped rebuild such as post 159 simply waits); to run one past the monthly cap, raise `ADMIN_*` / `MONTHLY_CAP_USD` only briefly via `wrangler deploy --var …` and redeploy without it.
+
+## Branching battles
+
+Opening-post adds can store several pending battles under one thread. A thread with one battle renders as a normal post. See `docs/BRANCHES.md` for the design, the cost of an opening-post add, and the preview (`--branch branches`) / migration / rollback commands. Migration file: `migrations-v2/0017_branches.sql`. Do not apply it, and do not deploy the fetch worker, until those steps are intentional.

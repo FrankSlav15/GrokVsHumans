@@ -5,6 +5,7 @@ const ADM = env => ',' + String(env.ADMIN_X_IDS || '').split(',').map(x => x.tri
 const byAdmin = (env, p) => p.source === 'manual' && !!p.suggested_by_x_id && isAdmin(env, p.suggested_by_x_id);
 import { TOPICS, headlineMismatch } from '../../../server/v2.js';
 import { rebuildConfig } from '../../../server/config.js';
+import { hasBranchSchema } from '../../../server/branchdb.js';
 
 export async function onRequestGet({ request, env }) {
   const [, denied] = await requireAdmin(env, request);
@@ -31,7 +32,19 @@ export async function onRequestGet({ request, env }) {
     blocked: blocked.results,
     // mid_thread: same free check the approve action uses (first stored post is not the conversation root)
     posts: posts.results.map(p => ({ ...p, added_by_admin: byAdmin(env, p), title_mismatch: headlineMismatch(p.headline, p.human_handle), tweets: W[p.id] || [], topics: T[p.id] || [], mid_thread: !!p.conversation_id && (W[p.id]?.[0]?.tweet_id || null) !== p.conversation_id })),
+    rejects: await recentRejects(env),
   });
+}
+
+async function recentRejects(env) {
+  if (!(await hasBranchSchema(env))) return [];
+  const since = Math.floor(Date.now() / 1000) - 14 * 86400;
+  const { results } = await env.DB.prepare(
+    `SELECT r.thread_id, r.title, r.reason, r.score, r.handles, t.headline AS thread_headline, t.root_tweet_id
+       FROM branch_rejects r JOIN threads t ON t.id = r.thread_id
+      WHERE r.created_at > ?1 ORDER BY r.id DESC LIMIT 40`
+  ).bind(since).all();
+  return results;
 }
 
 // ?id=N: one post in the live feed's shape (tweets as /api/feed returns them) for the batch-view preview modal.
@@ -52,8 +65,9 @@ async function onePost(env, id) {
 
 // ?view=batch: every pending post as a compact card (no chain text) grouped by review batch, with rebuild-cost inputs.
 async function batchView(env) {
+  const extra = (await hasBranchSchema(env)) ? ', p.battle_score, p.battle_borderline, p.battle_flags, p.thread_id, p.battle_reason' : '';
   const [posts, topics, spend] = await env.DB.batch([
-    env.DB.prepare(`SELECT p.id, p.headline, p.human_handle, p.source, p.suggested_by_x_id, p.x_engagement, p.grok_tweet_id, p.review_score, p.review_reason, p.review_batch, p.review_title, p.rebuild_state, p.rebuild_note, p.low_priority,
+    env.DB.prepare(`SELECT p.id, p.headline, p.human_handle, p.source, p.suggested_by_x_id, p.x_engagement, p.grok_tweet_id, p.review_score, p.review_reason, p.review_batch, p.review_title, p.rebuild_state, p.rebuild_note, p.low_priority${extra},
       (SELECT COUNT(*) FROM post_tweets t WHERE t.post_id = p.id) n_tweets,
       (SELECT tweet_id FROM post_tweets t WHERE t.post_id = p.id ORDER BY t.pos DESC LIMIT 1) last_tweet_id,
       (p.conversation_id IS NOT NULL AND COALESCE((SELECT tweet_id FROM post_tweets t WHERE t.post_id = p.id AND t.pos = 0), '') != p.conversation_id) mid_thread
