@@ -31,8 +31,16 @@ database_name = "gvh-v2"
 database_id = "d1a0f66c-826e-4394-915a-b5f93971aa85"
 
 [triggers]
-# 11:00 and 23:00 UTC: discovery (paid, capped). Every 10 min: expand queued candidates + free oEmbed re-check.
-crons = ["0 11,23 * * *", "*/10 * * * *", "0 13,14 * * *"]   # last one: 08:00 Chicago moderation digest
+# 11:00 and 23:00 UTC: discovery (paid, capped).
+# 00:30 and 14:30 UTC (06:30 PM / 08:30 AM CST, 30 min after the bookmarks routine): maintenance, the former 10-minute tick
+#   (deferred quick-adds, rebuilds, suggestions, jobs, expand, free oEmbed re-check) run as a loop of fresh invocations via SELF.
+crons = ["0 11,23 * * *", "30 0,14 * * *", "0 13,14 * * *"]   # last one: 08:00 Chicago moderation digest
+
+# Self binding: each maintenance step runs in its own invocation (own 50-subrequest allowance on the free plan).
+[[services]]
+binding = "SELF"
+service = "gvh-fetch"
+entrypoint = "Tick"
 
 [ai]
 binding = "AI"
