@@ -430,6 +430,15 @@ body[data-page="memes"] .modal__body-content{padding-top:0}
 .auth-user__out:hover{color:#fff}
 .vote-mine{box-shadow:inset 0 0 0 3px #fff}
 @media (max-width:768px){.header__auth{justify-content:center}}
+/* Tablet (641-1023px): logo + 4 links + Sign in + Submit did not fit on one row (the Sign in button ran off the right
+   edge at 768px). The nav already has a Submit link, so drop the duplicate pill and tighten spacing. */
+@media (min-width:641px) and (max-width:1023px){
+  .header__inner{gap:1rem;padding:1rem}
+  .header__nav{gap:1.1rem}
+  .header__title{font-size:1.35rem}
+  .header__submit-row{display:none}
+  .auth-btn{padding:.5rem .9rem}
+}
 /* Voted highlight follows the rounded card/modal corners */
 .card__vote-bar .grok-bar{border-radius:0 0 0 1rem}
 .card__vote-bar .human-bar{border-radius:0 0 1rem 0}

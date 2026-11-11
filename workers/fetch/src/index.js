@@ -18,7 +18,9 @@ let API = API_DEFAULT;
 const POST_USD = 0.005, USER_USD = 0.010;
 const MAX_CHAIN = 40, MAX_UP_LOOKUPS = 12;  // stored posts per thread (root..leaf); paid lookups allowed while walking up to the root
 const GROK_ID = '1720665183188922368';
-const SUB_BUDGET = 45;                       // free plan: 50 external subrequests per invocation
+const SUB_BUDGET = 40;                       // free plan: 50 external subrequests per invocation (D1/AI are internal, 1000); margin for redirects/retries
+const MAINT_CRON = '30 0,14 * * *';          // 08:30 / 18:30 Chicago (CST): 30 min after the bookmarks routine queues deferred quick-adds
+const MAINT_STEPS = 20;                      // max fresh invocations per maintenance run (service-binding limit: 32 per request)
 
 const ymd = (d = new Date()) => d.toISOString().slice(0, 10);
 // Initial-fill boost: higher daily cap / bigger runs through BOOST_UNTIL (inclusive, UTC date); reverts automatically.
@@ -425,17 +427,17 @@ async function expand(env, b, max = 3, order = 'engagement') {
 // Free daily re-check of approved posts via oEmbed: any deleted/protected tweet in the chain hides the post.
 async function recheck(env, b) {
   const { results } = await env.DB.prepare(`SELECT id FROM posts WHERE status = 'approved' AND COALESCE(last_checked_at, 0) < ?1 ORDER BY COALESCE(last_checked_at, 0) LIMIT 10`).bind(now() - 86400).all();
-  let checked = 0, hidden = 0;
+  let checked = 0, hidden = 0, updated = 0;
   for (const { id } of results) {
     const { results: tw } = await env.DB.prepare('SELECT tweet_id FROM post_tweets WHERE post_id = ?1 ORDER BY pos').bind(id).all();
-    if (b.sub + tw.length > SUB_BUDGET) break;
+    if (b.sub + tw.length > SUB_BUDGET) break;   // one subrequest per oEmbed (no redirect hop, see oembedAlive)
     let dead = null, unknown = false;
     for (const t of tw) { b.take(); const a = await oembedAlive(t.tweet_id); if (a === false) { dead = t.tweet_id; break; } if (a === null) unknown = true; }
-    if (dead) { await env.DB.prepare("UPDATE posts SET status='hidden', hidden_reason=?2, last_checked_at=?3 WHERE id=?1").bind(id, 'x_deleted:' + dead, now()).run(); hidden++; }
-    else if (!unknown) await env.DB.prepare('UPDATE posts SET last_checked_at=?2, check_failures=0 WHERE id=?1').bind(id, now()).run();
+    if (dead) { await env.DB.prepare("UPDATE posts SET status='hidden', hidden_reason=?2, last_checked_at=?3 WHERE id=?1").bind(id, 'x_deleted:' + dead, now()).run(); hidden++; updated++; }
+    else if (!unknown) { await env.DB.prepare('UPDATE posts SET last_checked_at=?2, check_failures=0 WHERE id=?1').bind(id, now()).run(); updated++; }
     checked++;
   }
-  return { checked, hidden };
+  return { checked, hidden, updated };
 }
 
 async function usage(env, b) {
@@ -717,6 +719,32 @@ export class QuickAdd extends WorkerEntrypoint {
   }
 }
 
+// One step of the former 10-minute tick (same order and same caps). Returns what it did and whether it made progress.
+async function tickOnce(env) {
+  API = env.X_API_BASE || API_DEFAULT;
+  const b = new Budget(env, 'cron-' + Date.now());
+  const res = (did, progress, detail) => ({ did, progress, sub: b.sub, detail });
+  await expireFeatures(env);
+  // deferred admin quick-adds first (own admin allowance); a step that spent on one ends here
+  if (env.X_BEARER_TOKEN) { const d = await runDeferredAdds(env).catch(e => (console.log('deferred add error', String(e)), null)); if (d && !d.waiting) return res('deferred', true, { id: d.id, state: d.state }); }
+  // approved-but-mid-thread posts first: the owner is waiting for them
+  if (env.X_BEARER_TOKEN) { const r = await runRebuilds(env, b).catch(e => (console.log('rebuild error', String(e)), [])); if (r.some(x => x.ok !== undefined)) return res('rebuild', true, r.length); }
+  // a suggestion skipped by the spend cap must not starve admin jobs (they carry their own budget)
+  if (env.X_BEARER_TOKEN) { const r = await runSuggestions(env, b).catch(e => (console.log('suggest error', String(e)), [])); if (r.some(x => !x.capped)) return res('suggest', true, r.length); }
+  if (env.X_BEARER_TOKEN && await runJob(env).catch(e => (console.log('job error', String(e)), null))) return res('job', true);   // a job step uses this invocation's subrequests
+  const lim = boosted(env) ? Number(env.BOOST_EXPAND_PER_DAY || 60) : Number(env.EXPAND_PER_DAY || 20);
+  const done = (await env.DB.prepare("SELECT COUNT(*) n FROM fetch_log WHERE kind='expand' AND day=?1 AND run_id LIKE 'cron-%'").bind(ymd()).first()).n;
+  let ex = {};
+  if (done < lim && env.X_BEARER_TOKEN) ex = await expand(env, b, Math.min(3, lim - done));
+  const rc = await recheck(env, b);
+  const expanded = Object.entries(ex).filter(([k]) => !k.startsWith('capped')).reduce((n, [, v]) => n + v, 0);
+  return res('maint', expanded > 0 || rc.updated > 0, { expanded: ex, ...rc });
+}
+// RPC entrypoint for the SELF service binding: one maintenance step per (fresh) invocation.
+export class Tick extends WorkerEntrypoint {
+  async step() { return tickOnce(this.env); }
+}
+
 export default {
   async scheduled(event, env, ctx) {
     // Daily moderation digest at 08:00 America/Chicago (13:00 UTC in CDT, 14:00 UTC in CST; the other run is a no-op).
@@ -736,18 +764,16 @@ export default {
       if (query && env.LEARN_QUERY !== '0' && new Date().getUTCHours() === 23) { const t = queryTerms(await loadProfile(env)); if (t) query += ' ' + t; }
       await discover(env, b, { pages: 1, perPage: boosted(env) ? 100 : Number(env.DISCOVER_PER_RUN || 50), minEng: Number(env.MIN_ENGAGEMENT || 0), query, endHoursAgo: 24 });
     } else {
-      await expireFeatures(env);
-      // deferred admin quick-adds first (own admin allowance); a tick that spent on one ends here
-      if (env.X_BEARER_TOKEN) { const d = await runDeferredAdds(env).catch(e => (console.log('deferred add error', String(e)), null)); if (d && !d.waiting) return; }
-      // approved-but-mid-thread posts first: the owner is waiting for them
-      if (env.X_BEARER_TOKEN && (await runRebuilds(env, b).catch(e => (console.log('rebuild error', String(e)), []))).some(x => x.ok !== undefined)) return;
-      // a suggestion skipped by the spend cap must not starve admin jobs (they carry their own budget)
-      if (env.X_BEARER_TOKEN && (await runSuggestions(env, b).catch(e => (console.log('suggest error', String(e)), []))).some(x => !x.capped)) return;
-      if (env.X_BEARER_TOKEN && await runJob(env).catch(e => (console.log('job error', String(e)), null))) return;   // a job tick uses this invocation's subrequests
-      const lim = boosted(env) ? Number(env.BOOST_EXPAND_PER_DAY || 60) : Number(env.EXPAND_PER_DAY || 20);
-      const done = (await env.DB.prepare("SELECT COUNT(*) n FROM fetch_log WHERE kind='expand' AND day=?1 AND run_id LIKE 'cron-%'").bind(ymd()).first()).n;
-      if (done < lim) await expand(env, b, Math.min(3, lim - done));
-      await recheck(env, b);
+      // Maintenance (MAINT_CRON, and the old */10 string if it is ever re-added): the former 10-minute tick, run as a
+      // loop of steps. Each step is a fresh invocation through the SELF service binding (entrypoint Tick), so each
+      // one has its own 50-subrequest allowance; the loop ends when a step makes no progress.
+      const out = [];
+      for (let i = 0; i < MAINT_STEPS; i++) {
+        const r = await (env.SELF ? env.SELF.step() : tickOnce(env)).catch(e => ({ did: 'error', error: String(e).slice(0, 200), progress: false }));
+        out.push(r);
+        if (!r.progress) break;
+      }
+      console.log('maintenance', JSON.stringify({ cron: event.cron, steps: out.length, out: out.map(r => [r.did, r.sub, r.detail ?? r.error ?? null]) }));
     }
   },
   // Manual run (seeding / testing). POST /run  Authorization: Bearer <RUN_KEY>
@@ -773,6 +799,7 @@ export default {
       result = { profile, query_terms: queryTerms(profile), next };
     }
     else if (o.stage === 'recheck') result = await recheck(env, b);
+    else if (o.stage === 'tick') result = await tickOnce(env);   // one maintenance step (what the MAINT_CRON loop runs per invocation)
     else if (o.stage === 'usage') result = await usage(env, b);
     else if (o.stage === 'suggest') result = await runSuggestions(env, b, Math.min(Number(o.max) || 2, 5));
     else if (o.stage === 'digest') result = await digest(env, { send: o.send === true, force: o.force === true });   // default: dry run (store only)

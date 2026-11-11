@@ -77,7 +77,9 @@ export function cleanText(text, range) {
 
 // oEmbed: free existence check used by the daily re-check of approved posts.
 export async function oembedAlive(tweetId, fetchImpl = fetch) {
-  const r = await fetchImpl(`https://publish.twitter.com/oembed?url=${encodeURIComponent('https://twitter.com/i/status/' + tweetId)}&omit_script=1`, { redirect: 'follow' });
+  // publish.x.com directly: publish.twitter.com answers 301 -> publish.x.com, and every redirect hop is one more
+  // subrequest (free plan: 50 per invocation). 'manual' so a future redirect costs one hop and reads as unknown.
+  const r = await fetchImpl(`https://publish.x.com/oembed?url=${encodeURIComponent('https://x.com/i/status/' + tweetId)}&omit_script=1`, { redirect: 'manual' });
   if (r.status === 404 || r.status === 403) return false;   // deleted / protected
   return r.ok ? true : null;                                // null = unknown (rate limit, outage)
 }
