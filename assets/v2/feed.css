@@ -445,3 +445,4 @@ a.tab{text-decoration:none;display:inline-flex;align-items:center}
 .tw__gone{flex:0 0 auto;font-size:.68rem;font-weight:600;letter-spacing:.02em;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:999px;padding:.1rem .45rem;white-space:nowrap}
 .tw__gm{margin:.35rem 0 0;color:#a1a1aa;font-size:.78rem;font-style:italic}
 .tw--gone .tw__time{color:#71717a}
+.xlink--gone{color:#71717a;font-size:.78rem;font-style:italic}

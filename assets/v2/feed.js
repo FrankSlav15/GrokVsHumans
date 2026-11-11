@@ -216,7 +216,7 @@ import { renderBranchThread } from './branch-render.js';
         <button class="act act--feat" data-act="feature" aria-label="Feature this thread"><i class="fa-solid fa-star"></i></button>
         <button class="act" data-act="share" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
       </div>
-      <a class="xlink" href="${esc(lastLive(p) ? 'https://x.com/i/status/' + lastLive(p).id : p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>
+      ${lastLive(p) || !(p.tweets || []).length ? `<a class="xlink" href="${esc(lastLive(p) ? 'https://x.com/i/status/' + lastLive(p).id : p.url)}" target="_blank" rel="noopener noreferrer">${X_SVG} View thread on X</a>` : '<span class="xlink xlink--gone">This thread is no longer on X; saved copy shown.</span>'}
     </article>`;
   }
   // ---- projects ----
