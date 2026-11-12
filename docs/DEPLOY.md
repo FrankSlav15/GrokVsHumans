@@ -51,7 +51,7 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 - Deploy: `bash scripts/build-deploy.sh /workspace/gvh-site && npx -y -p node@22 -p wrangler@latest -- wrangler pages deploy /workspace/gvh-site --project-name grokvshumans --branch v2-feed`
 - Old battles: the one-time syndication-based history import was removed (no syndication scraping any more); posts imported earlier stay in gvh-v2. New posts come only from the fetch Worker (paid X API v2).
 - Fetch Worker `workers/fetch` (`gvh-fetch`): `cd workers/fetch && wrangler deploy`; secrets `wrangler secret put X_BEARER_TOKEN` and `wrangler secret put RUN_KEY`.
-  Crons: 11:00/23:00 UTC discovery (50 results, ≈$0.25/run), every 10 min expand 3 candidates (≈$0.05 each) + free oEmbed re-check.
+  Crons: 11:00/23:00 UTC discovery (50 results, ≈$0.25/run). Maintenance at 00:30 and 14:30 UTC (8:30 AM and 6:30 PM CST) runs deferred quick-adds, rebuilds, suggestions, jobs, up to 20 expansions/day, and the free oEmbed re-check.
   Caps: $1.50/day, $45/month (estimated from fetch_log, before every paid call). Manual run: `POST /run` with `Authorization: Bearer $RUN_KEY`, body `{"stage":"discover|expand|recheck|usage|status","budget":8}` (budget capped at $8 per UTC day for manual runs; the run id is server-chosen, `manual-YYYY-MM-DD`; key compared in constant time).
 
 ## Admin quick-add (/admin/queue "Add a thread")
@@ -61,10 +61,11 @@ With a Cloudflare API token (Pages:Edit, D1:Edit) step 2–3 collapse into a nor
 - Stored as `source='manual'` + `suggested_by_x_id` = admin (posts.source has a CHECK constraint); shown as "➕ added by admin" at the top of the queue.
 - Deferred quick-add: when the add is blocked by `admin_cap`/`month_cap`/`day_cap` the link is saved as a `suggestions` row
   (state `queued`, note `admin quick-add (deferred)`, x_id = admin) and the UI says "Saved — will fetch automatically when X budget allows".
-  The */10 cron (`runDeferredAdds`, before rebuilds) runs it through the same admin-allowance path once budget allows (free D1 pre-check,
+  The maintenance cron (`runDeferredAdds`, before rebuilds, 8:30 AM and 6:30 PM CST) runs it through the same admin-allowance path once budget allows (free D1 pre-check,
   no log spam while capped). Duplicates also cover links waiting in `suggestions` (`new`/`queued`) → `duplicate_waiting`.
   `{"url":..., "dry_run":true}` checks dedupe/caps without spending or saving. `ADMIN_MONTH_EXTRA_USD` (default 0) is a one-off
   override that raises the monthly cap for admin quick-adds only; set it with `wrangler deploy --var ADMIN_MONTH_EXTRA_USD:0.6` and redeploy without it afterwards.
+- Bookmark imports use the same note and `result = 'waiting: bookmark import'`. The cron does not build those until an admin approves them on `/admin/featured` (Suggestions → Fetching). Approve marks `waiting: approved` (no X spend). Build now calls `QuickAdd.buildDeferred`, which spends the admin allowance only when the same caps allow it, and otherwise marks the row approved for the next run. Previews use the public syndication endpoint (fallback: oEmbed), not the paid X API. Optional `title` / `topics` are applied when the post is built. That needs migration `migrations-v2/0019_deferred_quickadd.sql` on `gvh-v2` before the Pages deploy, then `gvh-fetch`, then Pages. Do not apply the migration until that deploy is intentional. Preview and reject work without it; Save (title/topic/link) returns `migration_required` until the columns exist.
 - Rebuilds (`rebuildPost`/`buildChain`) seed the stored chain assuming each row replies to the previous one, so a gap right after the root
   was invisible. The first X lookup now also includes the 2nd stored post (its real parent comes back with it), so one rebuild finds and fills
   that gap (e.g. a missing Grok reply after a build that hit its per-add budget). Costs ≈ one extra post read (≈$0.005) per rebuild; a `rebuilt:N->M` result means it was filled.
