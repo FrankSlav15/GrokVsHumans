@@ -10,6 +10,7 @@ import { rebuildConfig, parseStatusUrl } from '../../../server/config.js';
 // Every paid request is pre-checked against DAILY_CAP_USD / MONTHLY_CAP_USD using fetch_log
 // (conservative: no credit for X's 24h de-duplication), then logged with the real result count.
 import { TOPICS, suggestTopics, suggestHeadline, mainHuman, insertPost, oembedAlive, oembedStatus, cleanText, turnText } from '../../../server/v2.js';
+import { QA_NOTE, APPROVED_WAITING, BUILDING_STALE_SEC, DEFERRED_READY_WHERE, applySuggestionPrefs, normalizeTitle, suggestionPrefs } from '../../../server/deferred.js';
 import { isOpeningTweet } from '../../../server/qualify.js';
 import { addOpening } from './branches.js';
 
@@ -324,7 +325,7 @@ async function expandOne(env, b, c) {
   const topics = p.topics?.length ? p.topics : await aiTopics(env, tweets, p.annotations);
   const id = await insertPost(env.DB, {
     grok_tweet_id: c.grok_tweet_id, conversation_id: conv, human_x_id: human.author_id, human_handle: human.author_handle,
-    headline: await aiHeadline(env, tweets, human), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
+    headline: normalizeTitle(p.headline) || await aiHeadline(env, tweets, human), source: p.source || 'fetch', low_priority: p.low_priority ?? (tweets.some(w => EXPLICIT.test(w.text)) ? 1 : 0), x_engagement: c.engagement, tweet_created_at: tweets.find(w => w.tweet_id === c.grok_tweet_id)?.created_at, tweets, topics,
   });
   return id ? 'stored:' + tweets.length : 'duplicate';
 }
@@ -480,16 +481,21 @@ async function runSuggestions(env, b, max = 2) {
   return out;
 }
 async function suggestionOne(env, b, s) {
+  const prefs = suggestionPrefs(s);
   const first = await lookup(env, b, [s.tweet_id], 'suggest');
   if (first.capped) return { state: 'queued', result: 'capped:' + first.capped };
   const w = first.rows.get(s.tweet_id);
   if (!w) return { state: 'failed', result: 'post not found (deleted, private or not visible to the API)' };
   // The opening post of a conversation: one search, every qualifying argument becomes its own pending battle.
   // Any later post keeps the single-chain build below.
-  if (isOpeningTweet(w)) return addOpening(env, b, w, s, {
-    search: max => branchSearch(env, b, w.conversation_id || w.tweet_id, max),
-    lookup: ids => lookup(env, b, ids, 'chain'),
-  });
+  if (isOpeningTweet(w)) {
+    const res = await addOpening(env, b, w, s, {
+      search: max => branchSearch(env, b, w.conversation_id || w.tweet_id, max),
+      lookup: ids => lookup(env, b, ids, 'chain'),
+    });
+    if (res.state === 'fetched') await applySuggestionPrefs(env.DB, res.post_ids?.length ? res.post_ids : (res.post_id ? [res.post_id] : []), s).catch(e => console.log('prefs', String(e).slice(0, 120)));
+    return res;
+  }
   let grok = null, conv = w.conversation_id;
   if (w.author_id === GROK_ID) grok = w.tweet_id;
   else if (w.parent && first.rows.get(w.parent)?.author_id === GROK_ID) grok = w.parent;
@@ -503,11 +509,12 @@ async function suggestionOne(env, b, s) {
   const dup = await env.DB.prepare('SELECT id FROM posts WHERE grok_tweet_id = ?1 OR (conversation_id IS NOT NULL AND conversation_id = ?2) LIMIT 1').bind(grok, conv || '').first();
   if (dup) return { state: 'duplicate', result: 'already on the site', post_id: dup.id };
   const res = await expandOne(env, b, { grok_tweet_id: grok, conversation_id: conv, engagement: 0,
-    payload: JSON.stringify({ source: s.source || 'manual', replier_id: w.author_id !== GROK_ID ? w.author_id : null, annotations: [] }) });
+    payload: JSON.stringify({ source: s.source || 'manual', replier_id: w.author_id !== GROK_ID ? w.author_id : null, annotations: [], topics: prefs.topics, headline: prefs.title }) });
   if (String(res).startsWith('capped')) return { state: 'queued', result: res };
   if (!String(res).startsWith('stored')) return { state: res === 'dup_conv' || res === 'duplicate' ? 'duplicate' : 'failed', result: res };
   const p = await env.DB.prepare('SELECT id FROM posts WHERE grok_tweet_id = ?1').bind(grok).first();
   await env.DB.prepare('UPDATE posts SET suggested_by_x_id = ?2, suggested_by_handle = ?3 WHERE id = ?1').bind(p.id, s.x_id, s.handle).run();
+  if (p?.id) await applySuggestionPrefs(env.DB, [p.id], s).catch(e => console.log('prefs', String(e).slice(0, 120)));
   return { state: 'fetched', result: res, post_id: p.id };
 }
 // Rebuild-on-approve (posts.rebuild_state = 'queued', set by /admin/queue): rebuild the chain from its root, then
@@ -653,14 +660,14 @@ async function runJob(env) {
 // Same path as suggestions: resolve the Grok reply, rebuild the chain root-first, main-human title, AI topics, pending.
 // Budget: ADMIN_DAILY_USD (default $1) accrues per UTC day and rolls over within the month (adminAccrued), independent of the daily cap; the monthly cap still applies.
 // Deferred quick-adds: a quick-add blocked by admin_cap/month_cap/day_cap is saved as a suggestions row (state 'queued',
-// note QA_NOTE) and retried by the */10 cron through the same adminAdd() path once the budget allows.
-const QA_NOTE = 'admin quick-add (deferred)';
+// note QA_NOTE) and retried by the maintenance cron through the same adminAdd() path once the budget allows.
+// Bookmark imports use the same note but result BOOKMARK_WAITING, and stay put until an admin approves them.
 // Rollover: ADMIN_DAILY_USD accrues per UTC day elapsed this month (today included: $1/day -> $3 on the 3rd); unused balance
 // carries within the month and resets on the 1st together with the monthly cap. Available = accrued - admin spend this month.
 const adminAccrued = (env, d = new Date()) => Number(env.ADMIN_DAILY_USD || 1) * d.getUTCDate();
 const adminUsed = async env => (await env.DB.prepare("SELECT COALESCE(SUM(est_cost),0) s FROM fetch_log WHERE month = ?1 AND run_id LIKE 'admin-%'").bind(ym()).first()).s;
 const CAP_ERR = r => String(r || '').includes('month') ? 'month_cap' : String(r || '').includes('day_cap') ? 'day_cap' : 'admin_cap';
-async function adminAdd(env, tweetId, adminXId, adminHandle) {
+async function adminAdd(env, tweetId, adminXId, adminHandle, prefs = null) {
   const cap = adminAccrued(env);
   // Size this add to what is left of the rollover allowance (max $0.60 per add): the conversation search shrinks its page to fit,
   // so a worst-case estimate cannot block an add that would really cost a few cents.
@@ -668,7 +675,8 @@ async function adminAdd(env, tweetId, adminXId, adminHandle) {
   const runCap = Math.min(0.6, cap - used);
   if (runCap < 0.1) return { error: 'admin_cap', tweet_id: tweetId, cost: 0, admin_spent_month: Math.round(used * 1000) / 1000, admin_cap: cap, admin_available: Math.round((cap - used) * 1000) / 1000 };
   const b = new Budget(env, 'admin-' + Date.now(), { adminCap: cap, runCap });
-  const res = await suggestionOne(env, b, { tweet_id: tweetId, x_id: adminXId, handle: adminHandle || null, source: 'manual' })   // posts.source CHECK allows fetch|manual|...; 'added by admin' = manual + suggested_by_x_id in ADMIN_X_IDS
+  const pref = prefs || {};
+  const res = await suggestionOne(env, b, { tweet_id: tweetId, x_id: adminXId, handle: adminHandle || null, source: 'manual', title: pref.title ?? null, topics: pref.topics ?? null })   // posts.source CHECK allows fetch|manual|...; 'added by admin' = manual + suggested_by_x_id in ADMIN_X_IDS
     .catch(e => ({ state: 'failed', result: 'error:' + String(e.message || e).slice(0, 80) }));
   const left = await adminUsed(env);
   const out = { tweet_id: tweetId, cost: Math.round(b.spent * 1000) / 1000, admin_spent_month: Math.round(left * 1000) / 1000, admin_cap: cap, admin_available: Math.round((cap - left) * 1000) / 1000, result: res.result || null };
@@ -681,23 +689,70 @@ async function adminAdd(env, tweetId, adminXId, adminHandle) {
   if (res.state === 'queued') return { error: CAP_ERR(res.result), ...out, ...extra };
   return { error: 'failed', ...out, ...extra };
 }
-// Cron: process the oldest deferred quick-add if budget allows. Free pre-check (D1 only) so a capped month does not log every tick.
-async function runDeferredAdds(env) {
-  const s = await env.DB.prepare(`SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE s.state = 'queued' AND s.note = ?1 ORDER BY s.id LIMIT 1`).bind(QA_NOTE).first();
-  if (!s) return null;
+// Free pre-check (D1 only) so a capped month does not log a paid call. null = the admin allowance can take one add.
+async function deferredBlocked(env) {
   const probe = new Budget(env, 'admin-probe', { adminCap: adminAccrued(env) });
   const t0 = await probe.totals();
-  if (t0.month + 0.05 > probe.monthCap || adminAccrued(env) - await adminUsed(env) < 0.1) return { id: s.id, waiting: true };
-  const r = await adminAdd(env, s.tweet_id, s.x_id, s.handle);
+  const used = await adminUsed(env), cap = adminAccrued(env);
+  const info = { cost: 0, admin_spent_month: Math.round(used * 1000) / 1000, admin_cap: cap, admin_available: Math.round((cap - used) * 1000) / 1000 };
+  if (t0.month + 0.05 > probe.monthCap) return { reason: 'month_cap', ...info };
+  if (cap - used < 0.1) return { reason: 'admin_cap', ...info };
+  return null;
+}
+async function claimDeferred(env, id) {
   const t = now();
-  if (/_cap$/.test(r.error || '') && !r.cost) {   // still capped and nothing spent: stay queued
-    await env.DB.prepare('UPDATE suggestions SET result = ?2, updated_at = ?3 WHERE id = ?1').bind(s.id, 'waiting: ' + r.error, t).run();
-    return { id: s.id, waiting: true, ...r };
+  const claim = await env.DB.prepare(`UPDATE suggestions SET result = 'building', updated_at = ?2 WHERE id = ?1 AND state IN ('queued','failed','rejected') AND note = ?4 AND (COALESCE(result,'') <> 'building' OR COALESCE(updated_at, 0) <= ?3)`).bind(id, t, t - BUILDING_STALE_SEC, QA_NOTE).run();
+  return claim.meta?.changes !== 0;
+}
+async function settleDeferred(env, s, r) {
+  const t = now();
+  if (/_cap$/.test(r.error || '') && !r.cost) {   // still capped and nothing spent: stay queued for a later run
+    await env.DB.prepare("UPDATE suggestions SET state = 'queued', result = ?2, updated_at = ?3 WHERE id = ?1").bind(s.id, 'waiting: ' + r.error, t).run();
+    return { id: s.id, waiting: true, deferred: true, reason: r.error, ...r };
   }
   const state = r.ok ? 'fetched' : r.error === 'duplicate' ? 'duplicate' : /_cap$/.test(r.error || '') ? 'queued' : 'failed';
   await env.DB.prepare('UPDATE suggestions SET state = ?2, result = ?3, post_id = COALESCE(?4, post_id), updated_at = ?5 WHERE id = ?1')
     .bind(s.id, state, String(r.result || r.error || '').slice(0, 80) + (r.ok ? ' (admin quick-add, deferred)' : ''), r.post_id || null, t).run();
-  return { id: s.id, state, ...r };
+  return { id: s.id, state, waiting: false, ...r };
+}
+// Cron: the oldest deferred quick-add that an admin already asked for (cap-deferred, or a bookmark import they approved).
+// Unreviewed bookmark imports are excluded by DEFERRED_READY_WHERE. Free pre-check so a capped month does not log every tick.
+async function runDeferredAdds(env) {
+  const s = await env.DB.prepare(`SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE ${DEFERRED_READY_WHERE} ORDER BY s.id LIMIT 1`).bind(QA_NOTE, now() - BUILDING_STALE_SEC).first();
+  if (!s) return null;
+  const blocked = await deferredBlocked(env);
+  if (blocked) {
+    await env.DB.prepare('UPDATE suggestions SET result = ?2, updated_at = ?3 WHERE id = ?1').bind(s.id, 'waiting: ' + blocked.reason, now()).run();
+    return { id: s.id, waiting: true, ...blocked };
+  }
+  if (!await claimDeferred(env, s.id)) return { id: s.id, waiting: true, busy: true };
+  try {
+    return await settleDeferred(env, s, await adminAdd(env, s.tweet_id, s.x_id, s.handle, suggestionPrefs(s)));
+  } catch (e) {
+    await env.DB.prepare("UPDATE suggestions SET state = 'failed', result = ?2, updated_at = ?3 WHERE id = ?1").bind(s.id, ('error:' + String(e.message || e)).slice(0, 80), now()).run();
+    return { id: s.id, state: 'failed' };
+  }
+}
+// One deferred row, on purpose (the admin tapped Build now). Same allowance as the cron. If a cap blocks it
+// before any spend, the row is marked approved so the next maintenance run builds it.
+async function buildDeferredRow(env, suggestionId) {
+  const id = Number(suggestionId);
+  if (!Number.isInteger(id)) return { error: 'bad_state' };
+  const s = await env.DB.prepare('SELECT s.*, u.handle FROM suggestions s JOIN users u ON u.x_id = s.x_id WHERE s.id = ?1').bind(id).first();
+  if (!s || s.note !== QA_NOTE || !['queued', 'failed', 'rejected'].includes(s.state)) return { error: 'bad_state' };
+  if (s.result === 'building' && now() - Number(s.updated_at || 0) < BUILDING_STALE_SEC) return { error: 'busy' };
+  const blocked = await deferredBlocked(env);
+  if (blocked) {
+    await env.DB.prepare("UPDATE suggestions SET state = 'queued', result = ?2, updated_at = ?3 WHERE id = ?1").bind(id, APPROVED_WAITING, now()).run();
+    return { deferred: true, id, ...blocked };
+  }
+  if (!await claimDeferred(env, id)) return { error: 'busy' };
+  try {
+    return await settleDeferred(env, s, await adminAdd(env, s.tweet_id, s.x_id, s.handle, suggestionPrefs(s)));
+  } catch (e) {
+    await env.DB.prepare("UPDATE suggestions SET state = 'failed', result = ?2, updated_at = ?3 WHERE id = ?1").bind(id, ('error:' + String(e.message || e)).slice(0, 80), now()).run();
+    return { error: 'failed', result: String(e.message || e).slice(0, 80) };
+  }
 }
 
 // service binding FETCH (entrypoint QuickAdd; RPC is not reachable from the public workers.dev URL).
@@ -732,6 +787,7 @@ export class QuickAdd extends WorkerEntrypoint {
     if (/^(admin|month|day)_cap$/.test(r.error || '')) return defer(r.error, r);
     return r;
   }
+  async buildDeferred({ suggestionId }) { return buildDeferredRow(this.env, suggestionId); }
 }
 
 // One step of the former 10-minute tick (same order and same caps). Returns what it did and whether it made progress.

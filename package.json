@@ -1,6 +1,6 @@
 {
   "private": true,
   "scripts": {
-    "test": "node --experimental-detect-module --test server/qualify.test.js assets/v2/branch-render.test.js workers/fetch/src/branches.test.js"
+    "test": "node --experimental-detect-module --test server/qualify.test.js server/deferred.test.js assets/v2/branch-render.test.js assets/admin/deferred-card.test.js functions/api/admin/suggestions.test.js workers/fetch/src/branches.test.js"
   }
 }
